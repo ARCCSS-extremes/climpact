@@ -91,7 +91,7 @@ can take anywhere from one to twelve hours.
   http://nco.sourceforge.net/
 
 				
-#  Advanced: Calculate thresholds on netCDF data via command line
+##  Advanced: Calculate thresholds on netCDF data via command line
 
 Modify the climpact.ncdf.thresholds.wrapper.r file to suit your needs (see manual
 for optional parameters to specify). Then execute this file by running 
@@ -115,7 +115,7 @@ the indices.
   http://nco.sourceforge.net/
 
 				
-#  Advanced: batch process multiple station files via command line
+##  Advanced: batch process multiple station files via command line
 
 From the terminal run the following command, replacing the flags
 with the folder where your station text files are kept, a metadata file
