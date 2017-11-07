@@ -16,7 +16,7 @@
   Where can I get it?
   -------------------
   
-  ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact2
+  ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
 
 
   How to install ClimPACT?
@@ -30,16 +30,16 @@
          on Ubuntu).
 
     1) Download and extract the following file to your computer:
-       https://github.com/ARCCSS-extremes/climpact2/archive/master.zip
-       This will create a directory named "climpact2-master".
+       https://github.com/ARCCSS-extremes/climpact/archive/master.zip
+       This will create a directory named "climpact-master".
 
     2) Install the required R-packages.
 
        In Windows: open R and select "File->Change dir..." and select the
-       climpact2-master directory created in step 1. Then type
+       climpact-master directory created in step 1. Then type
        *source('server/climpact.master.installer.r')*
 
-       In Linux/MacOS: cd to the climpact2-master directory created in
+       In Linux/MacOS: cd to the climpact-master directory created in
        step 1, then open R in a terminal window and type
        *source('server/climpact.master.installer.r')*.
 
@@ -56,12 +56,12 @@
   ------------------------
 
     In Windows: open R and select "File->Change dir..." and select the 
-    climpact2-master directory created when installing ClimPACT. Then run the 
+    climpact-master directory created when installing ClimPACT. Then run the 
     following two commands;
     *library(shiny)*
     *runApp()*
 
-    In Linux/MacOS: cd to the climpact2-master directory created in
+    In Linux/MacOS: cd to the climpact-master directory created in
     step 1, then open R in a terminal window and run the following two
     commands;
     *library(shiny)*
@@ -73,8 +73,8 @@
     -> 
 
 
-  Advanced users: Calculate indices on netCDF datasets via the command line
-  -------------------------------------------------------------------------
+  Advanced: Calculate indices on netCDF data via command line
+  -----------------------------------------------------------
 
     Modify the climpact.ncdf.wrapper.r file to suit your needs (see manual
     for optional parameters to specify). Then execute this file by running 
@@ -97,8 +97,8 @@
                 http://nco.sourceforge.net/
 
 				
-  Advanced users: Calculate thresholds on netCDF datasets via the command line
-  ----------------------------------------------------------------------------
+  Advanced: Calculate thresholds on netCDF data via command line
+  --------------------------------------------------------------
 
     Modify the climpact.ncdf.thresholds.wrapper.r file to suit your needs (see manual
     for optional parameters to specify). Then execute this file by running 
@@ -122,8 +122,8 @@
                 http://nco.sourceforge.net/
 
 				
-  Advanced users: batch process multiple station files via the command line
-  -------------------------------------------------------------------------
+  Advanced: batch process multiple station files via command line
+  ---------------------------------------------------------------
 
     From the terminal run the following command, replacing the flags
     with the folder where your station text files are kept, a metadata file
