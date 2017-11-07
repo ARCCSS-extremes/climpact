@@ -41,10 +41,10 @@ Software requirements:
 
    This process can take several minutes.
 
-Video tutorial on how to install R in Windows
+Video tutorial on how to install R in Windows  
 -> 
 
-Video tutorial on how to install ClimPACT in Windows
+Video tutorial on how to install ClimPACT in Windows  
 -> 
 
 
@@ -52,19 +52,19 @@ Video tutorial on how to install ClimPACT in Windows
 
 * In Windows: open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing ClimPACT. Then run the 
-following two commands;
+following two commands;  
 *library(shiny)*  
 *runApp()* 
 
 * In Linux/MacOS: cd to the climpact-master directory created in
 step 1, then open R in a terminal window and run the following two
-commands;
+commands;  
 *library(shiny)*  
 *runApp()* 
 
 Follow the on-screen instructions.
 
-Video tutorial on calculating indices from a station text file.
+Video tutorial on calculating indices from a station text file.  
 -> 
 
 
@@ -76,7 +76,7 @@ for optional parameters to specify). Then execute this file by running
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to twelve hours.
 
-###Notes on netCDF data format:
+### Notes on netCDF data format:
 * Look at the sample netCDF file for guidance in formatting your
   data.
 * Files must be CF compliant.
@@ -100,7 +100,7 @@ on the size of your data and the number of cores selected, this process
 can take anywhere from one to a few hours, but is quicker than calculating 
 the indices.
 
-###Notes on netCDF data format:
+### Notes on netCDF data format:
 * Look at the sample netCDF file for guidance in formatting your
   data.
 * Files must be CF compliant.
