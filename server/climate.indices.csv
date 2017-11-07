@@ -1,0 +1,90 @@
+Short.name	Units	Long.name	Definition	Expert.team	Annual.flag	Base.period.flag
+fd	days	Frost Days	Annual number of days when TN < 0 °C	ETCCDI	T	F
+fd	days	Frost Days	Monthly number of days when TN < 0 °C	ETCCDI	F	F
+tnlt2	days	TN below 2°C	Annual number of days when TN < 2 °C	ETSCI	T	F
+tnlt2	days	TN below 2°C	Monthly number of days when TN < 2 °C	ETSCI	F	F
+tnltm2	days	TN below -2°C	Annual number of days when TN < -2 °C	ETSCI	T	F
+tnltm2	days	TN below -2°C	Monthly number of days when TN < -2 °C	ETSCI	F	F
+tnltm20	days	TN below -20°C	Annual number of days when TN < -20 °C	ETSCI	T	F
+tnltm20	days	TN below -20°C	Monthly number of days when TN < -20 °C	ETSCI	F	F
+id	days	Ice Days	Annual number of days when TX < 0 °C	ETCCDI	T	F
+id	days	Ice Days	Monthly number of days when TX < 0 °C	ETCCDI	F	F
+su	days	Summer days	Annual number of days when TX > 25 °C	ETCCDI	T	F
+su	days	Summer days	Monthly number of days when TX > 25 °C	ETCCDI	F	F
+tr	days	Tropical nights	Annual number of days when TN > 20 °C	ETCCDI	T	F
+tr	days	Tropical nights	Monthly number of days when TN > 20 °C	ETCCDI	F	F
+gsl	days	Growing Season Length	Annual number of days between the first occurrence of 6 consecutive days with TM > 5 °C and the first occurrence of 6 consecutive days with TM < 5 °C	ETCCDI	T	F
+txx	°C	Max TX	Annual warmest daily TX	ETCCDI	T	F
+txx	°C	Max TX	Monthly warmest daily TX	ETCCDI	F	F
+tnn	°C	Min TN	Annual coldest daily TN	ETCCDI	T	F
+tnn	°C	Min TN	Monthly coldest daily TN	ETCCDI	F	F
+tnx	°C	Max TN	Annual warmest daily TN	ETCCDI	T	F
+tnx	°C	Max TN	Monthly warmest daily TN	ETCCDI	F	F
+txn	°C	Min TX	Annual coldest daily TX	ETCCDI	T	F
+txn	°C	Min TX	Monthly coldest daily TX	ETCCDI	F	F
+dtr	°C	Daily Temperature Range	Mean annual difference between daily TX and daily TN	ETCCDI	T	F
+dtr	°C	Daily Temperature Range	Mean monthly difference between daily TX and daily TN	ETCCDI	F	F
+wsdi	days	Warm spell duration indicator	Annual number of days contributing to events where 6 or more consecutive days experience TX > 90th percentile	ETCCDI	T	T
+wsdid	days	User-defined WSDI	Annual number of days contributing to events where d or more consecutive days experience TX > 90th percentile	ETSCI	T	T
+csdi	days	Cold spell duration indicator	Annual number of days contributing to events where 6 or more consecutive days experience TN < 10th percentile	ETCCDI	T	T
+csdid	days	User-defined CSDI	Annual number of days contributing to events where d or more consecutive days experience TN < 10th percentile	ETSCI	T	T
+txgt50p	%	Fraction of days with above average temperature	Annual percentage of days when TX > 50th percentile	 ETSCI	T	T
+txgt50p	%	Fraction of days with above average temperature	Monthly percentage of days when TX > 50th percentile	 ETSCI	F	T
+tx10p	%	Amount of cool days	Annual percentage of days when TX < 10th percentile	ETCCDI	T	T
+tx10p	%	Amount of cool days	Monthly percentage of days when TX < 10th percentile	ETCCDI	F	T
+tx90p	%	Amount of hot days	Annual percentage of days when TX > 90th percentile	ETCCDI	T	T
+tx90p	%	Amount of hot days	Monthly percentage of days when TX > 90th percentile	ETCCDI	F	T
+tn10p	%	Amount of cold nights	Annual percentage of days when TN < 10th percentile	ETCCDI	T	T
+tn10p	%	Amount of cold nights	Monthly percentage of days when TN < 10th percentile	ETCCDI	F	T
+tn90p	%	Amount of warm nights	Annual percentage of days when TN > 90th percentile	ETCCDI	T	T
+tn90p	%	Amount of warm nights	Monthly percentage of days when TN > 90th percentile	ETCCDI	F	T
+tmge5	days	TM of at least 5°C	Annual number of days when TM >= 5 °C	ETSCI	T	F
+tmge5	days	TM of at least 5°C	Monthly number of days when TM >= 5 °C	ETSCI	F	F
+tmlt5	days	TM below 5°C	Annual number of days when TM < 5 °C	ETSCI	T	F
+tmlt5	days	TM below 5°C	Monthly number of days when TM < 5 °C	ETSCI	F	F
+tmge10	days	TX of at least 10°C	Annual number of days when TM >= 10 °C	ETSCI	T	F
+tmge10	days	TX of at least 10°C	Monthly number of days when TM >= 10 °C	ETSCI	F	F
+tmlt10	days	TM below 10°C	Annual number of days when TM < 10 °C	ETSCI	T	F
+tmlt10	days	TM below 10°C	Monthly number of days when TM < 10 °C	ETSCI	F	F
+txge30	days	TX of at least 30°C	Annual number of days when TX >= 30 °C	ETSCI	T	F
+txge30	days	TX of at least 30°C	Monthly number of days when TX >= 30 °C	ETSCI	F	F
+txge35	days	TX of at least 35°C	Annual number of days when TX >= 35 °C	ETSCI	T	F
+txge35	days	TX of at least 35°C	Monthly number of days when TX >= 35 °C	ETSCI	F	F
+tx95t	°C	Very warm day threshold	Value of 95th percentile of TX	ETSCI	NA	F
+hddheatn	degree-days	Heating Degree Days	Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)	ETSCI	T	F
+cddcoldn	degree-days	Cooling Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
+gddgrown	degree-days	Growing Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
+cdd	days	Consecutive Dry Days	Maximum annual number of consecutive dry days (when precipitation < 1.0 mm)	ETCCDI	T	F
+cdd	days	Consecutive Dry Days	Maximum monthly number of consecutive dry days (when precipitation < 1.0 mm)	ETCCDI	F	F
+cwd	days	Consecutive Wet Days	Maximum annual number of consecutive wet days (when precipitation >= 1.0 mm)	ETCCDI	T	F
+cwd	days	Consecutive Wet Days	Maximum monthly number of consecutive wet days (when precipitation >= 1.0 mm)	ETCCDI	F	F
+r10mm	days	Number of heavy rain days	Annual number of days when precipitation >= 10 mm	ETCCDI	T	F
+r10mm	days	Number of heavy rain days	Monthly number of days when precipitation >= 10 mm	ETCCDI	F	F
+r20mm	days	Number of very heavy rain days	Annual number of days when precipitation >= 20 mm	ETCCDI	T	F
+r20mm	days	Number of very heavy rain days	Monthly number of days when precipitation >= 20 mm	ETCCDI	F	F
+rx1day	mm	Max 1-day PR	Maximum annual 1-day precipitation total	ETCCDI	T	F
+rx1day	mm	Max 1-day PR	Maximum monthly 1-day precipitation total	ETCCDI	F	F
+rx5day	mm	Max 5-day PR	Maximum annual 5-day precipitation total	ETCCDI	T	F
+rx5day	mm	Max 5-day PR	Maximum monthly 5-day precipitation total	ETCCDI	F	F
+prcptot	mm	Annual total wet-day PR	Annual sum of daily precipitation >= 1.0 mm	ETCCDI	T	F
+prcptot	mm	Annual total wet-day PR	Monthly sum of daily precipitation >= 1.0 mm	ETCCDI	F	F
+sdii	mm/day	Daily PR intensity	Annual total precipitation divided by the number of wet days (when total precipitation >= 1.0 mm)	ETCCDI	T	F
+r95p	mm	Total annual PR from heavy rain days	Annual sum of daily precipitation > 95th percentile	ETCCDI	T	T
+r99p	mm	Total annual PR from very heavy rain days	Annual sum of daily precipitation > 99th percentile	ETCCDI	T	T
+r95ptot	%	Contribution from very wet days	100*r95p / PRCPTOT	ETCCDI	T	T
+r99ptot	%	Contribution from extremely wet days	100*r99p / PRCPTOT	ETCCDI	T	T
+rxdday	mm	User-defined consecutive days PR amount	Maximum annual d-day precipitation total	ETSCI	T	F
+rxdday	mm	User-defined consecutive days PR amount	Maximum monthly d-day precipitation total	ETSCI	F	F
+rnnmm	days	Number of customised rain days	Annual number of days when precipitation >= nn	ETSCI	T	F
+rnnmm	days	Number of customised rain days	Monthly number of days when precipitation >= nn	ETSCI	F	F
+txdtnd	events	User-defined consecutive number of hot days and nights	Annual number of d consecutive days where both TX > 95th percentile and TN > 95th percentile, where 10 >= d >= 2	ETSCI	T	T
+txbdtnbd	events	User-defined consecutive number of cold days and Nights	Annual number of d consecutive days where both TX < 5th percentile and TN < 5th percentile, where 10 >= d >=2	ETSCI	T	T
+hw	NA	Heatwave aspects and definitions	Heat wave magnitude amplitude number duration and frequency calculated for the three definitions of TX90, TN90 and EHF	ETSCI	T	T
+spei	unitless	Standardised Precipitation Evapotranspiration Index	Measure of 'drought' using the Standardised Precipitation Evapotranspiration Index on time scales of 3, 6 and 12 months	ETSCI	F	T
+spi	unitless	Standardised Precipitation Index	Measure of 'drought' using the Standardised Precipitation Index on time scales of 3, 6 and 12 months	ETSCI	F	T
+tmm	°C	Mean TM	Annual mean daily mean temperature	ETSCI	T	F
+tmm	°C	Mean TM	Monthly mean daily mean temperature	ETSCI	F	F
+txm	°C	Mean TX	Annual mean daily maximum temperature	ETSCI	T	F
+txm	°C	Mean TX	Monthly mean daily maximum temperature	ETSCI	F	F
+tnm	°C	Mean TN	Annual mean daily minimum temperature	ETSCI	T	F
+tnm	°C	Mean TN	Monthly mean daily minimum temperature	ETSCI	F	F
