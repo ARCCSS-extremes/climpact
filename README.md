@@ -1,7 +1,7 @@
 
 
-#				ClimPACT
-			Last updated: November 2017
+# ClimPACT
+Last updated: November 2017
 
 
 ##  What is it?
@@ -53,14 +53,14 @@ Video tutorial on how to install ClimPACT in Windows
 * In Windows: open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing ClimPACT. Then run the 
 following two commands;
-*library(shiny)*
-*runApp()*
+*library(shiny)*  
+*runApp()* 
 
 * In Linux/MacOS: cd to the climpact-master directory created in
 step 1, then open R in a terminal window and run the following two
 commands;
-*library(shiny)*
-*runApp()*
+*library(shiny)*  
+*runApp()* 
 
 Follow the on-screen instructions.
 
@@ -76,19 +76,19 @@ for optional parameters to specify). Then execute this file by running
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to twelve hours.
 
->          Notes on netCDF data format:
->          * Look at the sample netCDF file for guidance in formatting your
->            data.
->          * Files must be CF compliant.
->          * There must be no 'bounds' attributes in your latitude or 
->            longitude variables.
->          * Your precipitation variable must have units of "kg m-2 d-1",
->            not "mm/day". These are numerically equivalent.
->          * Your minimum and maximum temperature variables must be 
->            uniquely named.
->          * ncrename, ncatted and ncks from the NCO toolset can help 
->            you modify your netCDF files.
->            http://nco.sourceforge.net/
+###Notes on netCDF data format:
+* Look at the sample netCDF file for guidance in formatting your
+  data.
+* Files must be CF compliant.
+* There must be no 'bounds' attributes in your latitude or 
+  longitude variables.
+* Your precipitation variable must have units of "kg m-2 d-1",
+  not "mm/day". These are numerically equivalent.
+* Your minimum and maximum temperature variables must be 
+  uniquely named.
+* ncrename, ncatted and ncks from the NCO toolset can help 
+  you modify your netCDF files.
+  http://nco.sourceforge.net/
 
 				
 #  Advanced: Calculate thresholds on netCDF data via command line
@@ -100,19 +100,19 @@ on the size of your data and the number of cores selected, this process
 can take anywhere from one to a few hours, but is quicker than calculating 
 the indices.
 
->          Notes on netCDF data format:
->          * Look at the sample netCDF file for guidance in formatting your
->            data.
->          * Files must be CF compliant.
->          * There must be no 'bounds' attributes in your latitude or 
->            longitude variables.
->          * Your precipitation variable must have units of "kg m-2 d-1",
->            not "mm/day". These are numerically equivalent.
->          * Your minimum and maximum temperature variables must be 
->            uniquely named.
->          * ncrename, ncatted and ncks from the NCO toolset can help 
->            you modify your netCDF files.
->            http://nco.sourceforge.net/
+###Notes on netCDF data format:
+* Look at the sample netCDF file for guidance in formatting your
+  data.
+* Files must be CF compliant.
+* There must be no 'bounds' attributes in your latitude or 
+  longitude variables.
+* Your precipitation variable must have units of "kg m-2 d-1",
+  not "mm/day". These are numerically equivalent.
+* Your minimum and maximum temperature variables must be 
+  uniquely named.
+* ncrename, ncatted and ncks from the NCO toolset can help 
+  you modify your netCDF files.
+  http://nco.sourceforge.net/
 
 				
 #  Advanced: batch process multiple station files via command line
