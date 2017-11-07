@@ -17,19 +17,20 @@ runs on Windows, Linux and MacOS.
 ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
 
 
-How to install ClimPACT?
+## How do I install ClimPACT?
 
 Software requirements:  
-* R (version 3.3 or later or later). You will need administrator privileges 
+* R version 3.3 or later. You will need administrator privileges 
   on your computer or the ability to install R packages.
 * Linux users require the PROJ4 development files (libproj-dev package on 
   Ubuntu) and the udunits development files (libudunits2-dev package 
   on Ubuntu).
 
+
 1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
    This will create a directory named "climpact-master".
 
-2. Install the required R-packages.
+2. Install the required R-packages. This process can take several minutes.
 
    In Windows: open R and select "File->Change dir..." and select the
    climpact-master directory created in step 1. Then type;  
@@ -39,9 +40,8 @@ Software requirements:
    In Linux/MacOS: cd to the climpact-master directory created in
    step 1, then open R in a terminal window and type;  
 
-   *source('server/climpact.master.installer.r')*.
+   *source('server/climpact.master.installer.r')*
 
-   This process can take several minutes.
 
 Video tutorial on how to install R in Windows  
 -> 
