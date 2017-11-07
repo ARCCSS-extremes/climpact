@@ -1,7 +1,5 @@
 # ------------------------------------------------
 # This file contains functionality to batch process station files stored in "RClimdex format" (i.e. 6 column format, see www/sample_data/sydney_observatory_hill_1936-2015.txt for an example)
-# University of New South Wales
-# nherold, November 2017.
 # ------------------------------------------------
 #
 # CALLING THIS FILE:

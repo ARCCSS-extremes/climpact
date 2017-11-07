@@ -1,7 +1,6 @@
 # ------------------------------------------------
 # ClimPACT
 # University of New South Wales
-# nherold, November 2017.
 # This package is available on github https://github.com/ARCCSS-extremes/climpact2.
 # ------------------------------------------------
 #    
@@ -25,7 +24,7 @@
 #   - the indices can now be calculated on netCDF files.
 #
 #   Several people contributed significantly to the development of the original ClimPACT software (which was originally derived
-#   from RClimdex). For posterity and credit, below is a list of the key names and dates.
+#   from RClimdex). For posterity and credit, below is a list of the key names and dates attributed to different changes.
 #
 #   Programmed by Yujun Ouyang,Mar,2004
 #   rewritten by Yang Feng, July 2004

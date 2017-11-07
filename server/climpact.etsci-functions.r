@@ -1,8 +1,6 @@
 # ------------------------------------------------
 # This file contains functions for ET-SCI indices. These functions build upon the functionality provided by the R package
 # climdex.pcic developed by the Pacific Climate Impacts Consortium (PCIC).
-# University of New South Wales
-# nherold, May 2016.
 # ------------------------------------------------
 
 library(climdex.pcic)

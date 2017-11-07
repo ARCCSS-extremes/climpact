@@ -19,12 +19,12 @@ ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
 
 How to install ClimPACT?
 
-Software requirements:
-    -R (version 3.3 or later or later). You will need administrator privileges 
-     on your computer or the ability to install R packages.
-    -Linux users require the PROJ4 development files (libproj-dev package on 
-     Ubuntu) and the udunits development files (libudunits2-dev package 
-     on Ubuntu).
+Software requirements:  
+* R (version 3.3 or later or later). You will need administrator privileges 
+  on your computer or the ability to install R packages.
+* Linux users require the PROJ4 development files (libproj-dev package on 
+  Ubuntu) and the udunits development files (libudunits2-dev package 
+  on Ubuntu).
 
 1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
    This will create a directory named "climpact-master".
@@ -32,11 +32,13 @@ Software requirements:
 2. Install the required R-packages.
 
    In Windows: open R and select "File->Change dir..." and select the
-   climpact-master directory created in step 1. Then type
+   climpact-master directory created in step 1. Then type;  
+
    *source('server/climpact.master.installer.r')*
 
    In Linux/MacOS: cd to the climpact-master directory created in
-   step 1, then open R in a terminal window and type
+   step 1, then open R in a terminal window and type;  
+
    *source('server/climpact.master.installer.r')*.
 
    This process can take several minutes.
@@ -53,12 +55,14 @@ Video tutorial on how to install ClimPACT in Windows
 * In Windows: open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing ClimPACT. Then run the 
 following two commands;  
+
 *library(shiny)*  
 *runApp()* 
 
 * In Linux/MacOS: cd to the climpact-master directory created in
 step 1, then open R in a terminal window and run the following two
 commands;  
+
 *library(shiny)*  
 *runApp()* 
 
@@ -72,7 +76,7 @@ Video tutorial on calculating indices from a station text file.
 
 Modify the climpact.ncdf.wrapper.r file to suit your needs (see manual
 for optional parameters to specify). Then execute this file by running 
-"Rscript climpact.ncdf.wrapper.r" from the Linux command line. Depending
+*Rscript climpact.ncdf.wrapper.r* from the command line. Depending
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to twelve hours.
 
@@ -95,7 +99,7 @@ can take anywhere from one to twelve hours.
 
 Modify the climpact.ncdf.thresholds.wrapper.r file to suit your needs (see manual
 for optional parameters to specify). Then execute this file by running 
-"Rscript climpact.ncdf.thresholds.wrapper.r" from the Linux command line. Depending
+*Rscript climpact.ncdf.thresholds.wrapper.r* from the command line. Depending
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to a few hours, but is quicker than calculating 
 the indices.
@@ -122,7 +126,8 @@ with the folder where your station text files are kept, a metadata file
 containing the file name of each station text file along with relevant 
 station information (see the sample file), the beginning and end years of 
 the base period, and the number of cores to use in processing, respectively. 
-See the user guide for more information.
+See the user guide for more information.  
+
 *Rscript climpact.batch.stations.r ./sample_data/ ./sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
 
@@ -133,6 +138,9 @@ See the user guide for more information.
 
 * If you experience trouble installing R packages in Windows, try to disable
   your antivirus software temporarily.
+
+* If you are trying to use the wrapper scripts in Windows, ensure your PATH
+  environment variable is changed to include the installation directory of R.
 
 
 ##  Documentation
