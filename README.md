@@ -1,10 +1,10 @@
 
 
-				ClimPACT
+#				ClimPACT
 			Last updated: November 2017
 
 
-#  What is it?
+##  What is it?
   
 ClimPACT is an R software package that calculates the [ET-SCI](http://www.wmo.int/pages/prog/wcp/ccl/opace/opace4/ET-SCI-4-1.php) indices. It can read 
 data from text or netCDF files. It directly incorporates the R packages climdex.pcic 
@@ -12,7 +12,7 @@ and climdex.pcic.ncdf developed by the Pacific Climate Impacts Consortium (PCIC)
 runs on Windows, Linux and MacOS.
   
   
-#  Where can I get it?
+##  Where can I get it?
   
 ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
 
@@ -26,8 +26,7 @@ Software requirements:
      Ubuntu) and the udunits development files (libudunits2-dev package 
      on Ubuntu).
 
-1. Download and extract the following file to your computer:
-   https://github.com/ARCCSS-extremes/climpact/archive/master.zip
+1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
    This will create a directory named "climpact-master".
 
 2. Install the required R-packages.
@@ -49,7 +48,7 @@ Video tutorial on how to install ClimPACT in Windows
 -> 
 
 
-#  How do I start ClimPACT?
+##  How do I start ClimPACT?
 
 * In Windows: open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing ClimPACT. Then run the 
@@ -69,7 +68,7 @@ Video tutorial on calculating indices from a station text file.
 -> 
 
 
-#  Advanced: Calculate indices on netCDF data via command line
+##  Advanced: Calculate indices on netCDF data via command line
 
 Modify the climpact.ncdf.wrapper.r file to suit your needs (see manual
 for optional parameters to specify). Then execute this file by running 
@@ -77,19 +76,19 @@ for optional parameters to specify). Then execute this file by running
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to twelve hours.
 
-          Notes on netCDF data format:
-          * Look at the sample netCDF file for guidance in formatting your
-            data.
-          * Files must be CF compliant.
-          * There must be no 'bounds' attributes in your latitude or 
-            longitude variables.
-          * Your precipitation variable must have units of "kg m-2 d-1",
-            not "mm/day". These are numerically equivalent.
-          * Your minimum and maximum temperature variables must be 
-            uniquely named.
-          * ncrename, ncatted and ncks from the NCO toolset can help 
-            you modify your netCDF files.
-            http://nco.sourceforge.net/
+>          Notes on netCDF data format:
+>          * Look at the sample netCDF file for guidance in formatting your
+>            data.
+>          * Files must be CF compliant.
+>          * There must be no 'bounds' attributes in your latitude or 
+>            longitude variables.
+>          * Your precipitation variable must have units of "kg m-2 d-1",
+>            not "mm/day". These are numerically equivalent.
+>          * Your minimum and maximum temperature variables must be 
+>            uniquely named.
+>          * ncrename, ncatted and ncks from the NCO toolset can help 
+>            you modify your netCDF files.
+>            http://nco.sourceforge.net/
 
 				
 #  Advanced: Calculate thresholds on netCDF data via command line
@@ -99,21 +98,21 @@ for optional parameters to specify). Then execute this file by running
 "Rscript climpact.ncdf.thresholds.wrapper.r" from the Linux command line. Depending
 on the size of your data and the number of cores selected, this process
 can take anywhere from one to a few hours, but is quicker than calculating 
-    the indices.
+the indices.
 
-          Notes on netCDF data format:
-          * Look at the sample netCDF file for guidance in formatting your
-            data.
-          * Files must be CF compliant.
-          * There must be no 'bounds' attributes in your latitude or 
-            longitude variables.
-          * Your precipitation variable must have units of "kg m-2 d-1",
-            not "mm/day". These are numerically equivalent.
-          * Your minimum and maximum temperature variables must be 
-            uniquely named.
-          * ncrename, ncatted and ncks from the NCO toolset can help 
-            you modify your netCDF files.
-            http://nco.sourceforge.net/
+>          Notes on netCDF data format:
+>          * Look at the sample netCDF file for guidance in formatting your
+>            data.
+>          * Files must be CF compliant.
+>          * There must be no 'bounds' attributes in your latitude or 
+>            longitude variables.
+>          * Your precipitation variable must have units of "kg m-2 d-1",
+>            not "mm/day". These are numerically equivalent.
+>          * Your minimum and maximum temperature variables must be 
+>            uniquely named.
+>          * ncrename, ncatted and ncks from the NCO toolset can help 
+>            you modify your netCDF files.
+>            http://nco.sourceforge.net/
 
 				
 #  Advanced: batch process multiple station files via command line
@@ -127,7 +126,7 @@ See the user guide for more information.
 *Rscript climpact.batch.stations.r ./sample_data/ ./sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
 
-#  Common problems
+##  Common problems
 
 * Running the GUI on MacOS. Users may need to install XQuartz, ensure
   to restart your computer after installing. https://www.xquartz.org/
@@ -136,13 +135,13 @@ See the user guide for more information.
   your antivirus software temporarily.
 
 
-#  Documentation
+##  Documentation
   
 Documentation exists in the form of this README file, the official ClimPACT
 user guide (available with this software) as well as the source code.
 
 
-#  Contact
+##  Contact
   
 Software issues contact Nicholas Herold : nicholas.herold@unsw.edu.au
  
