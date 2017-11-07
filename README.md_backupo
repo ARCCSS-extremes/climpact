@@ -4,7 +4,8 @@
 			Last updated: November 2017
 
 
-#  What is it?
+  What is it?
+  -----------
   
   ClimPACT is an R software package that calculates the [ET-SCI](http://www.wmo.int/pages/prog/wcp/ccl/opace/opace4/ET-SCI-4-1.php) indices. It can read 
   data from text or netCDF files. It directly incorporates the R packages climdex.pcic 
@@ -12,12 +13,14 @@
   runs on Windows, Linux and MacOS.
   
   
-#  Where can I get it?
+  Where can I get it?
+  -------------------
   
   ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
 
 
   How to install ClimPACT?
+  ------------------------
 
     Software requirements:
         -R (version 3.3 or later or later). You will need administrator privileges 
@@ -49,7 +52,8 @@
     -> 
 
 
-#  How do I start ClimPACT?
+  How do I start ClimPACT?
+  ------------------------
 
     In Windows: open R and select "File->Change dir..." and select the 
     climpact-master directory created when installing ClimPACT. Then run the 
@@ -69,7 +73,8 @@
     -> 
 
 
-#  Advanced: Calculate indices on netCDF data via command line
+  Advanced: Calculate indices on netCDF data via command line
+  -----------------------------------------------------------
 
     Modify the climpact.ncdf.wrapper.r file to suit your needs (see manual
     for optional parameters to specify). Then execute this file by running 
@@ -92,7 +97,8 @@
                 http://nco.sourceforge.net/
 
 				
-#  Advanced: Calculate thresholds on netCDF data via command line
+  Advanced: Calculate thresholds on netCDF data via command line
+  --------------------------------------------------------------
 
     Modify the climpact.ncdf.thresholds.wrapper.r file to suit your needs (see manual
     for optional parameters to specify). Then execute this file by running 
@@ -116,7 +122,8 @@
                 http://nco.sourceforge.net/
 
 				
-#  Advanced: batch process multiple station files via command line
+  Advanced: batch process multiple station files via command line
+  ---------------------------------------------------------------
 
     From the terminal run the following command, replacing the flags
     with the folder where your station text files are kept, a metadata file
@@ -127,7 +134,8 @@
 	*Rscript climpact.batch.stations.r ./sample_data/ ./sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
 
-#  Common problems
+  Common problems
+  ---------------
 
      - Running the GUI on MacOS. Users may need to install XQuartz, ensure
        to restart your computer after installing. https://www.xquartz.org/
@@ -136,13 +144,15 @@
        your antivirus software temporarily.
 
 
-#  Documentation
+  Documentation
+  -------------
   
   Documentation exists in the form of this README file, the official ClimPACT
   user guide (available with this software) as well as the source code.
 
 
-#  Contact
+  Contact
+  -------
   
   Software issues contact Nicholas Herold : nicholas.herold@unsw.edu.au
   
