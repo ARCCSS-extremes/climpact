@@ -1,9 +1,0 @@
-"Description: ","Dates where TN>TX"
-"Station: ","sydney"
-"Latitude: ","0"
-"Longitude: ","0"
-"Base period: ","1971 - 2000"
-"ClimPACT_version: ","2.0.0"
-"Date_of_calculation: ","2017-11-08"
-Date,Prec,TX,TN
-1988-11-16,42.8,12.6,12.6
