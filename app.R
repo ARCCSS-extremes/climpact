@@ -47,7 +47,6 @@ source("server/server.R")
 source("server/sector_correlation.R")
 source("server/climpact.etsci-functions.r")
 package.check()
-
 library(zoo)
 library(zyp)
 library(tcltk2)

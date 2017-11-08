@@ -1,0 +1,12 @@
+"Description: ","Dates where the change in TX is > 20 degrees."
+"Station: ","sydney"
+"Latitude: ","0"
+"Longitude: ","0"
+"Base period: ","1971 - 2000"
+"ClimPACT_version: ","2.0.0"
+"Date_of_calculation: ","2017-11-08"
+Date,TX
+1946-11-6,21.1
+1973-2-6,20.8
+2006-1-1,22
+2013-1-18,21

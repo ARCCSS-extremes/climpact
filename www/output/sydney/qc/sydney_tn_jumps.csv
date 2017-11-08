@@ -1,0 +1,9 @@
+"Description: ","Dates where the change in TN is > 20 degrees."
+"Station: ","sydney"
+"Latitude: ","0"
+"Longitude: ","0"
+"Base period: ","1971 - 2000"
+"ClimPACT_version: ","2.0.0"
+"Date_of_calculation: ","2017-11-08"
+Date,TN
+"NO LARGE TN JUMPS FOUND"

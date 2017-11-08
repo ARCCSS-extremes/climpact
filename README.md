@@ -66,7 +66,7 @@ commands;
 *library(shiny)*  
 *runApp()* 
 
-Follow the on-screen instructions.
+Follow the on-screen instructions to calculate the ClimPACT indices.
 
 Video tutorial on calculating indices from a station text file.  
 -> 
