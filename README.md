@@ -44,10 +44,10 @@ Software requirements:
 
 
 Video tutorial on how to install R in Windows  
--> 
+-> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
 
 Video tutorial on how to install ClimPACT in Windows  
--> 
+-> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
 
 
 ##  How do I start ClimPACT?
@@ -146,7 +146,7 @@ See the user guide for more information.
 ##  Documentation
   
 Documentation exists in the form of this README file, the official ClimPACT
-user guide (available with this software) as well as the source code.
+user guide (available in the *server* folder) as well as the source code.
 
 
 ##  Contact
