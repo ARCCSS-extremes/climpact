@@ -1428,7 +1428,8 @@ get.thresholds.metadata <- function(var.names) {
                         tnraw=list(units="degrees_C",longname="tasmin_baseline",has.time=FALSE,q.path=c("raw","tmin")),
                         precraw=list(units="kg m-2 d-1",longname="prec_baseline",has.time=FALSE,q.path=c("raw","prec")))
 
-  return(threshold.dat)	#[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
+  return(threshold.dat[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
+#  return(threshold.dat)	#[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
 }
 
 unsquash.dims <- function(dat.dim, subset, f, n) {

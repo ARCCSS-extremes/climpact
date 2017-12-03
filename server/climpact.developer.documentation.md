@@ -1,6 +1,6 @@
 # ClimPACT developer document
 
-This document provides a high level description of the [ClimPACT](https://github.com/ARCCSS-extremes/climpact2) source code as of November 2017. 
+This document provides a high level description of the [ClimPACT](https://github.com/ARCCSS-extremes/climpact) source code as of November 2017. 
 
 ClimPACT is an R based program that runs on the user's computer, primarily via the web browser. It uses the R [Shiny](http://shiny.rstudio.com) package to do this. ClimPACT is also dependent on numerous other R packages which are installed by the installer script (see the README for instructions).
 
@@ -26,13 +26,13 @@ Needless to say, modifications to the user interface occur via the app.R file an
 
 Adding new indices to ClimPACT should not require knowledge of R Shiny. However, it does require knowledge of R packages climdex.pcic and - particularly - climdex.pcic.ncdf. ClimPACT makes use of both of these packages for calculating the indices and the latter is reasonably complex.
 
-While ClimPACT depends on the publically available version of climdex.pcic, it relies on a modified version of climdex.pcic.ncdf. This is because additional indices included in ClimPACT but not included in the base climdex.pcic package are simply added via the climpact2.GUI-functions.r file, which calls necessary functions from climdex.pcic when needed. However, for calculating new indices on netCDF files the climdex.pcic.ncdf package had to be modified. Thus, when ClimPACT is installed it installs a modified version of climdex.pcic.ncdf and overwrites any previously installed version (with warning). 
+While ClimPACT depends on the publically available version of climdex.pcic, it relies on a modified version of climdex.pcic.ncdf. This is because additional indices included in ClimPACT but not included in the base climdex.pcic package are simply added via the climpact.GUI-functions.r file, which calls necessary functions from climdex.pcic when needed. However, for calculating new indices on netCDF files the climdex.pcic.ncdf package had to be modified. Thus, when ClimPACT is installed it installs a modified version of climdex.pcic.ncdf and overwrites any previously installed version (with warning). 
 
 How complex the code changes need to be when adding a new index will depend on how complex the new index is to calculate and write out. If it has similar inputs and outputs to current indices then the changes are minimal, however, for example, when the SPEI and heatwave indices were added, significant modifications were needed to pass the needed data to the index functions and then to write out netCDF files with the correct structure.
 
 ### Adding a new function for your index
 
-The first step to adding a new index to ClimPACT is to create the function that calculates the index. This should be placed inside server/climpact2.etsci-functions.r. See other examples of ET-SCI indices added in this file. New indices also need to be added to server/climate.indices.csv. 
+The first step to adding a new index to ClimPACT is to create the function that calculates the index. This should be placed inside server/climpact.etsci-functions.r. See other examples of ET-SCI indices added in this file. New indices also need to be added to server/climate.indices.csv. 
 
 ### Modifying climdex.pcic.ncdf
 
@@ -51,7 +51,7 @@ The second step in adding a new index to ClimPACT requires modifying the climdex
 ## TO-DO list for future updates
 
 * Improve exception handling when errors occur for gridded indices and batch processing. This should include displaying *realtime* console output to the browser while indices are being calculated. Current version of Shiny inhibits this. **A decent step in the right direction is to remove the need for a system call to 'Rscript' when calculating gridded indices, as this prevents proper errors messages being returned to the R console**.
-* Allow indices to be 'loaded' into ClimPACT when calculating correlations with sector data. Currently, the *Load and Check Data* and *Calculate Indices* processes have to be completed before the user can calculate correlations with sector data, even if the indices have been calculated previously.
+* Allow indices to be 'loaded' into ClimPACT when calculating correlations with sector data. Currently, the *Load and Check Data* and *Calculate Indices* processes have to be completed before the user can calculate correlations with sector data, even if the indices have been calculated previously. An alternate and possibly better option is to have the ability to load sector data in the Load and Check Data tab, and thus have correlations calculated automatically from the beginning of the process.
 * Allow monthly sector data to be loaded and correlated with indices.
 * Implement simple regression plots between sector data and indices.
 * New index: % of mean precipitaiton. Similar to Tosi's index.
