@@ -1,29 +1,29 @@
 Short.name	Units	Long.name	Definition	Expert.team	Annual.flag	Base.period.flag
-fd	days	Frost Days	Annual number of days when TN < 0 °C	ETCCDI	T	F
-fd	days	Frost Days	Monthly number of days when TN < 0 °C	ETCCDI	F	F
-tnlt2	days	TN below 2°C	Annual number of days when TN < 2 °C	ETSCI	T	F
-tnlt2	days	TN below 2°C	Monthly number of days when TN < 2 °C	ETSCI	F	F
-tnltm2	days	TN below -2°C	Annual number of days when TN < -2 °C	ETSCI	T	F
-tnltm2	days	TN below -2°C	Monthly number of days when TN < -2 °C	ETSCI	F	F
-tnltm20	days	TN below -20°C	Annual number of days when TN < -20 °C	ETSCI	T	F
-tnltm20	days	TN below -20°C	Monthly number of days when TN < -20 °C	ETSCI	F	F
-id	days	Ice Days	Annual number of days when TX < 0 °C	ETCCDI	T	F
-id	days	Ice Days	Monthly number of days when TX < 0 °C	ETCCDI	F	F
-su	days	Summer days	Annual number of days when TX > 25 °C	ETCCDI	T	F
-su	days	Summer days	Monthly number of days when TX > 25 °C	ETCCDI	F	F
-tr	days	Tropical nights	Annual number of days when TN > 20 °C	ETCCDI	T	F
-tr	days	Tropical nights	Monthly number of days when TN > 20 °C	ETCCDI	F	F
-gsl	days	Growing Season Length	Annual number of days between the first occurrence of 6 consecutive days with TM > 5 °C and the first occurrence of 6 consecutive days with TM < 5 °C	ETCCDI	T	F
-txx	°C	Max TX	Annual warmest daily TX	ETCCDI	T	F
-txx	°C	Max TX	Monthly warmest daily TX	ETCCDI	F	F
-tnn	°C	Min TN	Annual coldest daily TN	ETCCDI	T	F
-tnn	°C	Min TN	Monthly coldest daily TN	ETCCDI	F	F
-tnx	°C	Max TN	Annual warmest daily TN	ETCCDI	T	F
-tnx	°C	Max TN	Monthly warmest daily TN	ETCCDI	F	F
-txn	°C	Min TX	Annual coldest daily TX	ETCCDI	T	F
-txn	°C	Min TX	Monthly coldest daily TX	ETCCDI	F	F
-dtr	°C	Daily Temperature Range	Mean annual difference between daily TX and daily TN	ETCCDI	T	F
-dtr	°C	Daily Temperature Range	Mean monthly difference between daily TX and daily TN	ETCCDI	F	F
+fd	days	Frost Days	Annual number of days when TN < 0 degrees_C	ETCCDI	T	F
+fd	days	Frost Days	Monthly number of days when TN < 0 degrees_C	ETCCDI	F	F
+tnlt2	days	TN below 2 degrees_C	Annual number of days when TN < 2 degrees_C	ETSCI	T	F
+tnlt2	days	TN below 2 degrees_C	Monthly number of days when TN < 2 degrees_C	ETSCI	F	F
+tnltm2	days	TN below -2 degrees_C	Annual number of days when TN < -2 degrees_C	ETSCI	T	F
+tnltm2	days	TN below -2 degrees_C	Monthly number of days when TN < -2 degrees_C	ETSCI	F	F
+tnltm20	days	TN below -20 degrees_C	Annual number of days when TN < -20 degrees_C	ETSCI	T	F
+tnltm20	days	TN below -20 degrees_C	Monthly number of days when TN < -20 degrees_C	ETSCI	F	F
+id	days	Ice Days	Annual number of days when TX < 0 degrees_C	ETCCDI	T	F
+id	days	Ice Days	Monthly number of days when TX < 0 degrees_C	ETCCDI	F	F
+su	days	Summer days	Annual number of days when TX > 25 degrees_C	ETCCDI	T	F
+su	days	Summer days	Monthly number of days when TX > 25 degrees_C	ETCCDI	F	F
+tr	days	Tropical nights	Annual number of days when TN > 20 degrees_C	ETCCDI	T	F
+tr	days	Tropical nights	Monthly number of days when TN > 20 degrees_C	ETCCDI	F	F
+gsl	days	Growing Season Length	Annual number of days between the first occurrence of 6 consecutive days with TM > 5 degrees_C and the first occurrence of 6 consecutive days with TM < 5 degrees_C	ETCCDI	T	F
+txx	degrees_C	Max TX	Annual warmest daily TX	ETCCDI	T	F
+txx	degrees_C	Max TX	Monthly warmest daily TX	ETCCDI	F	F
+tnn	degrees_C	Min TN	Annual coldest daily TN	ETCCDI	T	F
+tnn	degrees_C	Min TN	Monthly coldest daily TN	ETCCDI	F	F
+tnx	degrees_C	Max TN	Annual warmest daily TN	ETCCDI	T	F
+tnx	degrees_C	Max TN	Monthly warmest daily TN	ETCCDI	F	F
+txn	degrees_C	Min TX	Annual coldest daily TX	ETCCDI	T	F
+txn	degrees_C	Min TX	Monthly coldest daily TX	ETCCDI	F	F
+dtr	degrees_C	Daily Temperature Range	Mean annual difference between daily TX and daily TN	ETCCDI	T	F
+dtr	degrees_C	Daily Temperature Range	Mean monthly difference between daily TX and daily TN	ETCCDI	F	F
 wsdi	days	Warm spell duration indicator	Annual number of days contributing to events where 6 or more consecutive days experience TX > 90th percentile	ETCCDI	T	T
 wsdid	days	User-defined WSDI	Annual number of days contributing to events where d or more consecutive days experience TX > 90th percentile	ETSCI	T	T
 csdi	days	Cold spell duration indicator	Annual number of days contributing to events where 6 or more consecutive days experience TN < 10th percentile	ETCCDI	T	T
@@ -38,19 +38,19 @@ tn10p	%	Amount of cold nights	Annual percentage of days when TN < 10th percentil
 tn10p	%	Amount of cold nights	Monthly percentage of days when TN < 10th percentile	ETCCDI	F	T
 tn90p	%	Amount of warm nights	Annual percentage of days when TN > 90th percentile	ETCCDI	T	T
 tn90p	%	Amount of warm nights	Monthly percentage of days when TN > 90th percentile	ETCCDI	F	T
-tmge5	days	TM of at least 5°C	Annual number of days when TM >= 5 °C	ETSCI	T	F
-tmge5	days	TM of at least 5°C	Monthly number of days when TM >= 5 °C	ETSCI	F	F
-tmlt5	days	TM below 5°C	Annual number of days when TM < 5 °C	ETSCI	T	F
-tmlt5	days	TM below 5°C	Monthly number of days when TM < 5 °C	ETSCI	F	F
-tmge10	days	TX of at least 10°C	Annual number of days when TM >= 10 °C	ETSCI	T	F
-tmge10	days	TX of at least 10°C	Monthly number of days when TM >= 10 °C	ETSCI	F	F
-tmlt10	days	TM below 10°C	Annual number of days when TM < 10 °C	ETSCI	T	F
-tmlt10	days	TM below 10°C	Monthly number of days when TM < 10 °C	ETSCI	F	F
-txge30	days	TX of at least 30°C	Annual number of days when TX >= 30 °C	ETSCI	T	F
-txge30	days	TX of at least 30°C	Monthly number of days when TX >= 30 °C	ETSCI	F	F
-txge35	days	TX of at least 35°C	Annual number of days when TX >= 35 °C	ETSCI	T	F
-txge35	days	TX of at least 35°C	Monthly number of days when TX >= 35 °C	ETSCI	F	F
-tx95t	°C	Very warm day threshold	Value of 95th percentile of TX	ETSCI	NA	F
+tmge5	days	TM of at least 5 degrees_C	Annual number of days when TM >= 5 degrees_C	ETSCI	T	F
+tmge5	days	TM of at least 5 degrees_C	Monthly number of days when TM >= 5 degrees_C	ETSCI	F	F
+tmlt5	days	TM below 5 degrees_C	Annual number of days when TM < 5 degrees_C	ETSCI	T	F
+tmlt5	days	TM below 5 degrees_C	Monthly number of days when TM < 5 degrees_C	ETSCI	F	F
+tmge10	days	TX of at least 10 degrees_C	Annual number of days when TM >= 10 degrees_C	ETSCI	T	F
+tmge10	days	TX of at least 10 degrees_C	Monthly number of days when TM >= 10 degrees_C	ETSCI	F	F
+tmlt10	days	TM below 10 degrees_C	Annual number of days when TM < 10 degrees_C	ETSCI	T	F
+tmlt10	days	TM below 10 degrees_C	Monthly number of days when TM < 10 degrees_C	ETSCI	F	F
+txge30	days	TX of at least 30 degrees_C	Annual number of days when TX >= 30 degrees_C	ETSCI	T	F
+txge30	days	TX of at least 30 degrees_C	Monthly number of days when TX >= 30 degrees_C	ETSCI	F	F
+txge35	days	TX of at least 35 degrees_C	Annual number of days when TX >= 35 degrees_C	ETSCI	T	F
+txge35	days	TX of at least 35 degrees_C	Monthly number of days when TX >= 35 degrees_C	ETSCI	F	F
+tx95t	degrees_C	Very warm day threshold	Value of 95th percentile of TX	ETSCI	NA	F
 hddheatn	degree-days	Heating Degree Days	Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)	ETSCI	T	F
 cddcoldn	degree-days	Cooling Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
 gddgrown	degree-days	Growing Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
@@ -82,9 +82,9 @@ txbdtnbd	events	User-defined consecutive number of cold days and Nights	Annual n
 hw	NA	Heatwave aspects and definitions	Heat wave magnitude amplitude number duration and frequency calculated for the three definitions of TX90, TN90 and EHF	ETSCI	T	T
 spei	unitless	Standardised Precipitation Evapotranspiration Index	Measure of 'drought' using the Standardised Precipitation Evapotranspiration Index on time scales of 3, 6 and 12 months	ETSCI	F	T
 spi	unitless	Standardised Precipitation Index	Measure of 'drought' using the Standardised Precipitation Index on time scales of 3, 6 and 12 months	ETSCI	F	T
-tmm	°C	Mean TM	Annual mean daily mean temperature	ETSCI	T	F
-tmm	°C	Mean TM	Monthly mean daily mean temperature	ETSCI	F	F
-txm	°C	Mean TX	Annual mean daily maximum temperature	ETSCI	T	F
-txm	°C	Mean TX	Monthly mean daily maximum temperature	ETSCI	F	F
-tnm	°C	Mean TN	Annual mean daily minimum temperature	ETSCI	T	F
-tnm	°C	Mean TN	Monthly mean daily minimum temperature	ETSCI	F	F
+tmm	degrees_C	Mean TM	Annual mean daily mean temperature	ETSCI	T	F
+tmm	degrees_C	Mean TM	Monthly mean daily mean temperature	ETSCI	F	F
+txm	degrees_C	Mean TX	Annual mean daily maximum temperature	ETSCI	T	F
+txm	degrees_C	Mean TX	Monthly mean daily maximum temperature	ETSCI	F	F
+tnm	degrees_C	Mean TN	Annual mean daily minimum temperature	ETSCI	T	F
+tnm	degrees_C	Mean TN	Monthly mean daily minimum temperature	ETSCI	F	F

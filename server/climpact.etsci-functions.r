@@ -642,6 +642,8 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 # OUTPUT:
 #    - aspect.array: filled with calculated aspects.
 get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.date.factors,daily.data,northern.hemisphere,ehfdef,ehf=FALSE,ecf=FALSE) {
+	if(all(is.na(daily.data))) { return(aspect.array) }
+
 	month <- substr(monthly.date.factors,nchar(as.character(levels(monthly.date.factors)[1]))-1,nchar(as.character(levels(monthly.date.factors)[1])))
 
 	daily.data.full = daily.data # make a copy of all daily data

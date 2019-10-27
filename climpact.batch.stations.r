@@ -47,35 +47,17 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 		if(interactive()) { progress$inc(prog_int) }
 	}
 	opts <- list(progress = progressSNOW)
-	registerDoSNOW(cl)
-	
-	try(foreach(file.number=1:length(metadata$station),.options.snow = opts) %dopar%
-	{
-		library(zoo)
-		library(zyp)
+#	registerDoSNOW(cl)
 
-		source("server/climpact.GUI-functions.r")
-		source("server/climpact.etsci-functions.r")
-		assign("base.year.start",base.start,envir=.GlobalEnv)
-		assign("base.year.end",base.end,envir=.GlobalEnv)
-	  
+	# foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
+	func = function(file.number) {
 		file=paste(input.directory,"/",metadata$station[file.number],sep="")
-		file.remove(paste(file,".error.txt",sep=""))
 		print(file)
-		
 		user.data <- read.user.file(file)
-		
-		if(grepl("error",class(user.data),ignore.case=TRUE)) { 
-		  print("Outer batch error caught") 
-		  fileConn<-file(paste(file,".error.txt",sep="")) 
-		  writeLines(user.data$message, fileConn) 
-		  close(fileConn) 
-		}
-
 		user.data <- check.and.create.dates(user.data)
 		get.file.path(file)
 		create.dir(file)
-
+	
 		# define variables for indices
 		lat <- as.numeric(metadata$latitude[file.number])
 		lon <- as.numeric(metadata$longitude[file.number])
@@ -84,13 +66,14 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 		Tb_HDD <<- metadata$Tb_HDD[file.number]
 		Tb_CDD <<- metadata$Tb_CDD[file.number]
 		Tb_GDD <<- metadata$Tb_GDD[file.number]
-		rx_ud <<- metadata$rx_ud[file.number]
-		rnnmm_ud <<- metadata$rnnmm_ud[file.number]
-		txtn_ud <<- metadata$txtn_ud[file.number]
+		rx_ud <<- metadata$rxnday[file.number]
+		rnnmm_ud <<- metadata$rnnmm[file.number]
+		txtn_ud <<- metadata$txtn[file.number]
 		custom_SPEI <<- metadata$SPEI[file.number]
-
-		# global variables needed for calling climpact.GUI.r functionality
+	
+		# global variables needed for calling climpact2.GUI.r functionality
 		station.metadata <- create.metadata(lat,lon,base.start,base.end,user.data$dates,"ofile_filler")
+		assign("metadata",station.metadata,envir=.GlobalEnv)
 		version.climpact <<- software_id
 		quantiles <<- NULL
 		if(lat<0) lat_text = "°S" else lat_text = "°N"
@@ -106,30 +89,39 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 		prec.quantiles <<- c(0.05,0.1,0.5,0.9,0.95,0.99)
 		op.choice <<- NULL
 		skip <<- FALSE
-
+	
+		if(file_test("-f",paste(file,".error.txt",sep=""))) { file.remove(paste(file,".error.txt",sep="")) }
 		# run quality control and create climdex input object
 		catch1 <- tryCatch(QC.wrapper(NULL,station.metadata,user.data,file),
 				error=function(msg) {
 					fileConn<-file(paste(file,".error.txt",sep=""))
 					writeLines(toString(msg), fileConn)
 					close(fileConn)
-					skip <<- TRUE
+					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
 				})
-
+		if(skip) { return(NA) }
+		
 		# calculate indices
 		catch2 <- tryCatch(index.calc(NULL,station.metadata),
 				error=function(msg) {
 					fileConn<-file(paste(file,".error.txt",sep=""))
 					writeLines(toString(msg), fileConn)
 					close(fileConn)
-					skip <<- TRUE
+					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
 				})
-		
-		# close graphics devices. Good practice.
-		graphics.off()
-		
-		if(exists("progress") && !is.null(progress)) { progress$inc(prog_int) }
-	})
+		if(skip) { return(NA) }
+			
+	# RJHD - NH addition for pdf error 2-aug-17                  
+	        graphics.off()
+		print(paste(file," done",sep=""))
+	}
+
+#	capture.output(stdout <- foreach(file.number=1:length(metadata$station)) %dopar%
+	for (file.number in 1:length(metadata$station))
+#	foreach(file.number=1:length(metadata$station)) %dopar%
+	{
+		func(file.number)
+	}
 
 	print("",quote=FALSE)
 	print("",quote=FALSE)
@@ -144,14 +136,14 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 	print("",quote=FALSE)
 	print("",quote=FALSE)
 	print("",quote=FALSE)
+	print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.",quote=FALSE)
 	print("",quote=FALSE)
-	error.files <- suppressWarnings(list.files(path=input.directory,pattern="*error.txt"))		#system(paste("ls ",input.directory,"/*error.txt",sep=""),ignore.stderr=TRUE,intern=TRUE))
+	error.files <- suppressWarnings(list.files(path=input.directory,pattern=paste("*error.txt",sep="")))
 	if(length(error.files)==0) { print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) } 
 	else {
-	  print("Errors were encountered during processing. These were recorded in *error.txt files created in your input directory. These files are listed below along with their error messages.",quote=FALSE)
 		for (i in 1:length(error.files)) { #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
 			print(error.files[i],quote=FALSE)
-			cat(readLines(paste0(input.directory,.Platform$file.sep,error.files[i])), sep="\n")	#system(paste("cat ",error.files[i],sep=""))
+			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
 		} 
 	}
 }

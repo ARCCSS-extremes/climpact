@@ -69,11 +69,10 @@ write_header <- function(filename,header="")
     # No error checking here, file access is guaranteed because ClimPACT has own copy.
 	write.table(header, sep=",", file = filename, append = FALSE, row.names=FALSE,col.names = FALSE)
 
-	first_lines = cbind(c("Station: ","Latitude: ","Longitude: ","Base period: ","ClimPACT_version: ","Date_of_calculation: "),c(ofilename,latitude,longitude,paste0(base.year.start," - ",base.year.end),version.climpact,toString(Sys.Date())))
+        first_lines = cbind(c("Station: ","Latitude: ","Longitude: ","ClimPACT2_version: ","Date_of_calculation: "),c(ofilename,latitude,longitude,version.climpact,toString(Sys.Date())))
 	write.table(first_lines, sep=",", file = filename, append = TRUE, row.names=FALSE,col.names = FALSE)
 
 }
-
 
 check_open <- function(filename)
 {
@@ -453,7 +452,7 @@ pplotts <- function(var = "prcp", type = "h", tit = NULL,cio,metadata)
 	{
 		ymax <- 100
 		ymin <- -100
-		warning(paste("Warnings have been generated because there is no available data for","one or more of tmax, tmin or precip. Check the plots in /qc to confirm this."))
+		warning(paste("Warnings have been generated because there is no available data for one or more of tmax, tmin or precip. Check the plots in the /qc folder to confirm this."))
 	}
 	
 	par(mfrow = c(4, 1))
@@ -562,6 +561,25 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
         }
 	}
 
+        # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
+        # is longer than the length of the user's data.
+        length.of.user.data=length(user.data$year)
+        first.date=as.Date(paste(user.data$year[1],user.data$month[1],user.data$day[1],sep="-"),"%Y-%m-%d")
+        last.date=as.Date(paste(user.data$year[length.of.user.data],user.data$month[length.of.user.data],user.data$day[length.of.user.data],sep="-"),"%Y-%m-%d")
+        date.series=seq(first.date,last.date,"day")
+        user.date.series=as.Date(paste(user.data$year,user.data$month,user.data$day,sep="-"))
+        missing.dates = date.series[!date.series %in% user.date.series]
+        # Write out the missing.dates to a text file. Report the filename to the user.
+        missing.dates.file = paste0(basename(user.file),".missing_dates")
+        if(file_test("-f",missing.dates.file)) { file.remove(missing.dates.file) }
+        if(length(date.series[!date.series %in% user.date.series]) > 0) {
+                write.table(date.series[!date.series %in% user.date.series], sep=",", file = paste0(outdirtmp,missing.dates.file), append = FALSE, row.names=FALSE,col.names = FALSE)
+                error.msg = HTML(paste0("You seem to have missing dates. See <a href=",missing.dates.file,"> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control."))
+                skip <<- TRUE
+		stop(error.msg)
+                return()
+        }
+
 	# Check for ascending order of years
 	if(!all(user.data$year == cummax(user.data$year))) {
         return("Years are not in ascending order, please check your input file.")
@@ -602,7 +620,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	
     # write raw tmin, tmax and prec data for future SPEI/SPI calcs
 	yeardate2 <- format(cio@dates,format="%Y")
-	dates <-format(cio@dates[1:50],format="%Y-%m-%d")
+	dates <-format(cio@dates,format="%Y-%m-%d")
 	base.dates <- dates[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)]
 	thres2 <- list(dates=base.dates,tmin=cio@data$tmin[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)],tmax=cio@data$tmax[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)],
 	prec=cio@data$prec[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)])
@@ -764,7 +782,7 @@ read.user.file <- function(user.file) {
 	if(grepl("error",class(data),ignore.case=TRUE)) { return(data) }
 	
 	# Replace -99.9 data with NA
-	if(!is.null(data)) { data$prcp[data$prcp==-99.9]=NA ; data[data$tmax==(-99.9),"tmax"]=NA ; data[data$tmin==(-99.9),"tmin"]=NA }
+	if(!is.null(data)) { print(str(data)); data$prcp[data$prcp==-99.9]=NA ; data$tmax[data$tmax==-99.9]=NA ; data$tmin[data$tmin==-99.9]=NA }
 
 	return(data)
 }
@@ -861,7 +879,7 @@ index.calc<-function(progress, metadata) {
 			if(var.choice=="DTR") { var.choice2=cio@data$dtr ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmin * cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmax } 
 			else if (var.choice=="TX") { var.choice2=cio@data$tmax ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmax } 
 			else if (var.choice=="TN") { var.choice2=cio@data$tmin ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmin }
-			else if (var.choice=="TM") { var.choice2=cio@data$tmean ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmin }
+			else if (var.choice=="TM") { var.choice2=cio@data$tavg ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$tmin }
 			else if (var.choice=="PR") { var.choice2=cio@data$prec ; mask.choice = cio@namasks[[match.arg(frequency,choices=c("annual","monthly"))]]$prec }
 	
 			if(op.choice==">") { op.choice2="gt" }
@@ -904,7 +922,7 @@ index.calc<-function(progress, metadata) {
 	}
 
 	calculate.spei <- function() {
-		if(all(is.na(cio@data$tmin)) | all(is.na(cio@data$tmax)) | all(is.na(cio@data$prec))) { warning("NOT PLOTTING SPEI: climdex.spei REQUIRES TMIN, TMAX AND PRECIP DATA.") } else {
+		if(all(is.na(cio@data$tmin)) | all(is.na(cio@data$tmax)) | all(is.na(cio@data$prec))) { print("NO DATA FOR SPEI.",quote=FALSE) ; return() } else {
 		# If SPEI/SPI thresholds have been read in by user then use these in SPEI/SPI calculations.
 		if(exists("speiprec")) { tnraw <- speitmin ; txraw <- speitmax ; praw <- speiprec ; btime <- speidates } else {
 			tnraw <- txraw <- praw <- btime <- NULL }
@@ -998,7 +1016,7 @@ index.calc<-function(progress, metadata) {
 	}
 		
 	calculate.spi <- function() {
-			if(all(is.na(cio@data$prec))) warning("NOT PLOTTING SPI: climdex.spi REQUIRES PRECIP DATA.") else {
+		if(all(is.na(cio@data$prec))) { print("NO DATA FOR SPI.",quote=FALSE) ; return() } else {
                 if(exists("speiprec")) { tnraw <- speitmin ; txraw <- speitmax ; praw <- speiprec ; btime <- speidates } else {
                         tnraw <- txraw <- praw <- btime <- NULL }
 
@@ -1075,7 +1093,7 @@ index.calc<-function(progress, metadata) {
 	# trend file
 	trend_file<-paste(outtrddir,paste(ofilename,"_trend.csv",sep=""),sep="/") ; assign('trend_file',trend_file,envir=.GlobalEnv)
 	write_header(trend_file,"Linear trend statistics")
-	cat(file=trend_file,paste("Indices","Frequency","Start Year","End Year","Lower bound","Trend","Upper bound",sep=","),fill=180,append=T) 
+        cat(file=trend_file,paste("Index","Frequency","StartYear","EndYear","Slope","STD_of_Slope","P_Value",sep=","),fill=180,append=T)
 	
 	# Read in index .csv file
 	index.list <- read.csv("server/climate.indices.csv",header=T,sep='\t')
@@ -1146,6 +1164,7 @@ index.calc<-function(progress, metadata) {
 			tmp.index.def = paste("Annual sum of TM - ",Tb_GDD,sep="") }
 			
 		index.stored <- eval(parse(text=paste("climdex.",as.character(index.list$Short.name[i]),"(",index.parameter,")",sep=""))) #index.function(cio)
+                index.stored[index.stored==-Inf] = NA   # Because climdex functions (called in above line) will still calculate even if all data are NA, resulting in -Inf values being inserted into index.stored. Climdex functions only check if cio data are NULL.
 		write.index.csv(index.stored,index.name=tmp.index.name,freq=frequency,header=tmp.index.def)
 		plot.call(index.stored,index.name=tmp.index.name,index.units=as.character(index.list$Units[i]),x.label="Years",sub=tmp.index.def,freq=frequency)
 		
@@ -1177,7 +1196,7 @@ index.calc<-function(progress, metadata) {
 # write.index.csv
 # takes a time series of a given index and writes to file
 write.index.csv <- function(index=NULL,index.name=NULL,freq="annual",header="") {
-	if(is.null(index.name) | is.null(index)) stop("Need index data and index.name in order to write CSV file.")
+	if(is.null(index) | all(is.na(index))) { print(paste0("NO DATA FOR ",index.name,". NOT WRITING .csv FILE."),quote=FALSE) ; return() }
 
 	if(index.name=="tx95t") { freq="DAY" } 
 	else {
@@ -1284,20 +1303,23 @@ plot.hw <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,met
 			ci=confint(zsen,level=0.95)
 			mktrend <<- list(stat=array(NA,5))
 			mktrend$stat[1] <<- unname(ci[2,1])
-			mktrend$stat[2] <<- unname(zsen[[1]][2])
+			mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 			mktrend$stat[3] <<- unname(ci[2,2])
+	                mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
 			
 			plotx((date.years), index[def,asp,], main = gsub('\\*', unit, plot.title),ylab = unit,xlab = x.label,index.name=index.name,sub=sub)
 
 			dev.set(which = pdf.dev)
 			plotx((date.years), index[def,asp,], main = gsub('\\*', unit, plot.title),ylab = unit,xlab = x.label,index.name=index.name,sub=sub)
-			dev.copy()
+#			dev.copy()
 			dev.off(dev0)
 
-			cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"annual",metadata$year.start,metadata$year.end,mktrend[[1]][1],mktrend[[1]][2],mktrend[[1]][3],sep=","),fill=180,append=T)
+                        cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
 			remove(mktrend,envir=.GlobalEnv)
 		}
 	}
+	# close all jpeg graphics devices  - RJHD 2017-12-19
+	graphics.off()
 }
 
 # write.precindex.csv
@@ -1350,15 +1372,16 @@ plot.precindex <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=N
 			ci=confint(zsen,level=0.95)
 			mktrend <<- list(stat=array(NA,5))
 			mktrend$stat[1] <<- unname(ci[2,1])
-			mktrend$stat[2] <<- unname(zsen[[1]][2])
+			mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 			mktrend$stat[3] <<- unname(ci[2,2])
-			
+	                mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+
 			dev0 = dev.cur()
 	          plotx(unique(as.character(spifactor)), index[time,], main = paste(gsub('\\*', index.name, plot.title),sep=""),ylab = index.units,xlab = x.label,index.name=index.name,sub=subtmp)
 
             dev.set(which = pdf.dev)
             plotx(unique(as.character(spifactor)), index[time,], main = paste(gsub('\\*', index.name, plot.title),sep=""),ylab = index.units,xlab = x.label,index.name=index.name,sub=subtmp)
-            dev.copy()
+#            dev.copy()
             dev.off(dev0)
             
             # Seasonal trend code.
@@ -1481,7 +1504,9 @@ plot.precindex <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=N
 
 # plot.index
 plot.call <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,sub="",freq="annual") {
+print(index)
         if(is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
+	if(all(is.na(index))) { print(paste0("NO DATA FOR ",index.name,". NOT PLOTTING."),quote=FALSE) ; return() }
 
 		Encoding(sub) <- "UTF-8"
 		Encoding(index.units) <- "UTF-8"
@@ -1506,11 +1531,14 @@ plot.call <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,s
 		x1 = seq(1,length(index),1)#as.numeric(names(index))
 		y1 = unname(index)
 		zsen=zyp.sen(y1~x1)
+print("zyp.sen")
+print(zsen)
 		ci=confint(zsen,level=0.95)
 		mktrend <<- list(stat=array(NA,5))
 		mktrend$stat[1] <<- unname(ci[2,1])
-		mktrend$stat[2] <<- unname(zsen[[1]][2])
+		mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 		mktrend$stat[3] <<- unname(ci[2,2])
+		mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
 
 		  years = as.numeric(substr(names(index),1,4))
 		  firstyear = years[1]
@@ -1596,7 +1624,7 @@ plot.call <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,s
 	dev.set(which = pdf.dev)
 	plotx(xdata, index, main = gsub('\\*', tmp.name, plot.title),
 	  ylab = index.units, xlab = x.label,index.name=index.name,sub=sub)
-	dev.copy()
+#	dev.copy()
 	dev.off(dev0)
 }
 
@@ -1628,19 +1656,19 @@ plotx <- function (x, y, main = "", xlab = "", ylab = "", opt = 0,index.name=NUL
 		if(index.name=="spei" | index.name=="spi") {
 			bp <- barplot(y, main = main, cex.main = 2,ylim = range(y, na.rm = TRUE),xlab = NULL, ylab = ylab,cex.lab = 1.5, cex.axis = 1.5,xpd = FALSE,col=ifelse(y>0,"blue","red"),border=NA,space=c(0,0))
 			mtext(sub,cex=1)
-            # NA points
-            na.x <- bp
-            na.y <- rep(NA, length(na.x))
-            na.y[is.na(y)] <- par("usr")[3]
-            points(na.x, na.y, pch = 17, col = "blue", cex = 1.5)
-	                
+			# NA points
+			na.x <- bp
+			na.y <- rep(NA, length(na.x))
+			na.y[is.na(y)] <- par("usr")[3]
+			points(na.x, na.y, pch = 17, col = "blue", cex = 1.5)
+			            
 			subx = as.numeric(substr(x,1,4))
 			xind = which(subx%%5==0)
 			xind = xind[seq(1,length(xind),12)]
 			xtmp.int = unique(subx[xind]) 
 			axis(1,at=xind,labels=c(xtmp.int))
-
-            box()
+			
+			box()
 #			xy <- cbind(bp,y)
 		} else {
 			op <- par(mar=c(5, 4, 5, 2) + 0.1)
@@ -1682,24 +1710,38 @@ plotx <- function (x, y, main = "", xlab = "", ylab = "", opt = 0,index.name=NUL
 	# xtmp = x[!is.na(xy)]
 	# xy <- na.omit(xy)
 	tmp_seq = 1:length(x)
-	
-	if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2])))
+
+
+
+	# NOTE by nherold. The zyp.sen function in some cases returns an intercept of NA even though there is a valid slope. This seems erroneous and results in slopes being
+	# printed but prevents a trend line from being plotted! Must fix. If this is a bug in the zyp package then need to try another package.
+	if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
 	{
-	  subtit <- paste0("Mann-Kendall slope = ", round(mktrend$stat[2],3), "   lower bound = ", round(mktrend$stat[1],3), ",   upper bound = ", round(mktrend$stat[3],3))             # least squares regression
+		subtit <- paste0("Mann-Kendall slope = ", round(mktrend$stat[2],3), "   lower bound = ", round(mktrend$stat[1],3), ",   upper bound = ", round(mktrend$stat[3],3))             # least squares regression
+                print(paste0(mktrend$stat[4]," : ",mktrend$stat[2]))
+                #abline(mktrend$stat[4],mktrend$stat[2])
 	} else
 	{
 	  subtit <- paste0("No linear trend due to insufficient valid data points (",min_trend,").")
 	}
 
-	tmp_lowess=lowess(tmp_seq[!is.na(y)], y[!is.na(y)])   #xy[,2])
-	lines(tmp_lowess, lwd = 3, lty = 2, col = "red")  # add fitting curve
+#	tmp_lowess=lowess(tmp_seq[!is.na(y)], y[!is.na(y)])   #xy[,2])
+#	lines(tmp_lowess, lwd = 3, lty = 2, col = "red")  # add fitting curve
+
+	# add mktrend line. nherold.
+#	if(!is.na(mktrend$stat[4]) && !is.na(mktrend$stat[2])) {
+		print(paste0(mktrend$stat[4]," : ",mktrend$stat[2]))
+#		abline(mktrend$stat[4],mktrend$stat[2])
+#	}
+
+
 
 	title(sub = subtit, cex.sub = 1.5)
 
 	old.par = par()	# store par settings to plot legend outside figure margins
 	par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
 	plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-	legend("bottomleft","locally weighted scatterplot smoothing",col = "red", lty = 2, lwd = 3, bty = "n")
+#	legend("bottomleft","locally weighted scatterplot smoothing",col = "red", lty = 2, lwd = 3, bty = "n")
 	legend("bottomright",paste("ClimPACT v ",version.climpact,sep=""),col = "white", lty = 2, lwd = 0, bty = "n")
 	suppressWarnings(par(old.par)) # restore previous par settings. Suppress warnings regarding parameters that cannot be set.
 }

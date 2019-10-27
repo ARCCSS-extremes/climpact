@@ -165,12 +165,13 @@ climpact.server <- function(input, output, session) {
         # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
         # trendsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.trends.dir()), ">trends</a>", sep="")
         # threshDirLink <- paste("<a target=\"_blank\" href=",fileServerUrl(),gsub(" ","%20",get.thresh.dir()), ">thresholds</a>", sep="")
-        # zipFileLink <- paste("<a target=\"_blank\" href=", gsub(" ","%20",get.output.zipfile()), ">download all</a>.", sep="")
+        zipFileLink <- paste("<a target=\"_blank\" href=", gsub(" ","%20",get.output.zipfile()), ">here</a>.", sep="")
         # HTML(paste("View ", indicesDirLink, ", ", plotsDirLink, ", ", trendsDirLink, ", ",
         #            threshDirLink, " OR ", zipFileLink, sep=""))
         
-        HTML("Output has been created in the following directory: ",
+        HTML("All output has been created in the following server directory: ",
              paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdir,"</b>"),
+		    "<br><br>or can be downloaded ",zipFileLink," if you are accessing ClimPACT remotely",
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
                     "<br>The <i>trends</i> subdirectory contains a .csv file containing linear trend information for each index.",

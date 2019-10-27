@@ -434,7 +434,9 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim),list(scale.dim)),
 			missval=1e20, longname=cdx.dat$long.name[x])))
     } else if (cdx.dat$var.name[x]=="tx95t") {
-		day.dim <- ncdim_def("time","calendar day",1:365,calendar="365_day")
+                if(attr(ts, "cal")=="360_day" || attr(ts, "cal")=="360") last_calday = 360
+                else last_calday = 365
+		day.dim <- ncdim_def("time","calendar day",1:last_calday,calendar="365_day")
 		nc.var.list <- c(vars.ncvars, list(ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2],list(day.dim)),
 			missval=1e20, longname=cdx.dat$long.name[x])))
     } else if (cdx.dat$var.name[x]=="hw") {
@@ -516,7 +518,7 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
 #    for(v in 1:length(vars.to.copy))
     for(v in vars.to.copy)
       if(!is.null(vars.data[[v]]))
-         ncdf4::ncvar_put(new.file, vars.to.copy[[v]], vars.data[[v]])
+	 ncdf4::ncvar_put(new.file, v, vars.data[[v]])
     
     new.file
   }))
@@ -1428,8 +1430,8 @@ get.thresholds.metadata <- function(var.names) {
                         tnraw=list(units="degrees_C",longname="tasmin_baseline",has.time=FALSE,q.path=c("raw","tmin")),
                         precraw=list(units="kg m-2 d-1",longname="prec_baseline",has.time=FALSE,q.path=c("raw","prec")))
 
-  return(threshold.dat[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
-#  return(threshold.dat)	#[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
+#  return(threshold.dat[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
+  return(threshold.dat)	#[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
 }
 
 unsquash.dims <- function(dat.dim, subset, f, n) {
