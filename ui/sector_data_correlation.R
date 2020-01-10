@@ -11,7 +11,9 @@ tabPanel(title="Sector Data Correlation", fluidPage(
             textInput("sectorPlotName", "Plot name:"),
             checkboxInput("detrendCheck", "Detrend data", value = TRUE, width = NULL)
           )
-        ),
+        )
+      ),
+      fluidRow(
         column(6,
           h4('11. Make correlation plots'),
           conditionalPanel(
@@ -28,10 +30,6 @@ tabPanel(title="Sector Data Correlation", fluidPage(
                  textOutput("sectorCorrelationError")
             )
           ),
-          # wellPanel(
-          #   actionButton("calculateSectorCorrelation", "Calculate Correlation"),
-          #   textOutput("sectorCorrelationError")
-          # ),
           h4('12. View correlation'),
            conditionalPanel(
              condition = "output.sectorCorrelationError== ''",
