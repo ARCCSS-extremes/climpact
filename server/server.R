@@ -335,7 +335,7 @@ climpact.server <- function(input, output, session) {
             wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCores,sep=""),x=wraptext) 
           }
           if(exists("gridNcThresh") && !is.null(gridNcThresh)) {
-            wraptext <- gsub(pattern=".*thresholds.files=NULL.*",replace=paste("thresholds.files=\"",gridNcThresh,"\"",sep=""),x=wraptexet)
+            wraptext <- gsub(pattern=".*thresholds.files=NULL.*",replace=paste("thresholds.files=\"",gridNcThresh,"\"",sep=""),x=wraptext)
           }
           wraptext <- gsub(pattern=".*EHF_DEF = .*",replace=paste("EHF_DEF=\"",input$EHFcalc,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*maxvals=10.*",replace=paste("maxvals=",input$maxVals,sep=""),x=wraptext)
