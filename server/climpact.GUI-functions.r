@@ -1909,7 +1909,7 @@ package.check <- function() {
     print("******************************")
     print(paste("The following packages are not installed...",new.packages,sep=""))
     print("Running master install script (this only needs to occur once).")
-    source("server/climpact.master.installer.r")
+    # source("server/climpact.master.installer.r")
     print("Continuing with ClimPACT execution...")
     print("******************************")
   }

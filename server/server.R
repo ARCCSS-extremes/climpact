@@ -97,16 +97,16 @@ climpact.server <- function(input, output, session) {
     })
 
     userGuildLink <- reactive({
-      paste("<a target=\"_blank\" href=/user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>", sep="")
+      paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>", sep="")
     })
 
     appendixBLink <- reactive({
-      paste("<a target=\"_blank\" href=/user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
+      paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
     })
 
     # Create some html text to be displayed to the client.
     output$loadDatasetText <- renderText({
-      sydneySampleLink <- paste("<a target=\"_blank\" href=/sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>", sep="")
+      sydneySampleLink <- paste("<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>", sep="")
       HTML(paste("The dataset <strong>must</strong> use the format described in ",
                   appendixBLink(), " of the ", userGuildLink(),".",
                   "<br>", "<br>",
@@ -116,7 +116,7 @@ climpact.server <- function(input, output, session) {
 
     # Create some html text to be displayed to the client.
     output$loadSectorDataText <- renderText({
-      wheatSampleLink <- paste("<a target=\"_blank\" href=/sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>", sep="")
+      wheatSampleLink <- paste("<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>", sep="")
       HTML(paste("The dataset <strong>must</strong> use the format described in ",
                   appendixBLink(), " of the ", userGuildLink(),
                   "<br>", "<br>",
@@ -125,20 +125,20 @@ climpact.server <- function(input, output, session) {
     })
 
     output$loadParamHelpText <- renderText({
-        indexParamLink <- paste("<a target=\"_blank\" href=/user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>", sep="")
+        indexParamLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>", sep="")
         HTML(paste("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
                     in these indices. See ", indexParamLink, " of the ", userGuildLink(), " for guidance.", sep=""))
     })
 
     output$batchIntroText <- renderText({
-      guideBatchLink <- paste("<a target=\"_blank\" href=/user_guide/ClimPACT_user_guide.htm#batch>section 5</a>", sep="")
+      guideBatchLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>", sep="")
       sampleBatchLink <- paste("<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",sep="")
       HTML(paste("A text file must be created with information for each station. Refer to ",guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
                          Once done supply ClimPACT with the file below."))
     })
     
     output$batchFolderText <- renderText({
-      batchFormatLink <- paste("<a target=\"_blank\" href=/user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
+      batchFormatLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
       HTML(paste("Select the directory containing the ClimPACT formatted station text files that you would like to process. These must be formatted according to ",batchFormatLink," of the user guide.",sep=""),
            "<br> "
            )
@@ -152,7 +152,7 @@ climpact.server <- function(input, output, session) {
         print(qcDir)
         print(strsplit(qcDir,"/|\\\\"))
         print(file.path(strsplit(qcDir,"/|\\\\")))
-        appendixCLink <- paste("<a target=\"_blank\" href=", "/user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>", sep="")
+        appendixCLink <- paste("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>", sep="")
         HTML(paste("Please view the quality control output in the directory below and carefully evaluate before continuing. Refer to ",
                    appendixCLink, " of the ", userGuildLink(), " for help.", sep=""),
              paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")
