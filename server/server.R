@@ -1,4 +1,9 @@
 climpact.server <- function(input, output, session) {
+  
+    if (Sys.getenv('SHINY_PORT') != "") {
+      hideTab(inputId = "mainNavbar", target = "advmenu")
+    }
+
     master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
     master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
     batch.script <<- paste0("climpact.batch.stations.r")
@@ -576,7 +581,7 @@ climpact.server <- function(input, output, session) {
             br(),
             br(),
             "You will see a message printed at the bottom of the screen when processing is complete.",
-            paste0("In the mean time, you should start to see your output appear in ",batchInDir,"."),
+            paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
             footer = modalButton("OK, thanks.")
           ))
 

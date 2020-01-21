@@ -78,13 +78,14 @@ ui <- tagList(
       source(file.path("ui", "load_and_check.R"), local=TRUE)$value,
       source(file.path("ui", "calculate_indices.R"),local=TRUE)$value,
       source(file.path("ui", "sector_data_correlation.R"),local=TRUE)$value,
-      navbarMenu("EXPERIMENTAL",
+      source(file.path("ui", "batch_processing.R"), local = TRUE)$value,
+      navbarMenu("Gridded Data",
             source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value,
             source(file.path("ui", "gridded_data_thresholds.R"),local=TRUE)$value,
-            source(file.path("ui", "batch_processing.R"), local = TRUE)$value,
             menuName="advmenu")
   #    source(file.path("ui", "close_tab.R"), local=TRUE)$value
   )
 )
 
 shinyApp(ui, climpact.server)
+

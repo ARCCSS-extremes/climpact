@@ -12,4 +12,4 @@ ClimPACT is a web app which can be run on a personal computer without connecting
 ### More
 For more help and an introduction to ClimPACT and the [Expert Team on Sector-specific Climate Indices (ET-SCI)](https://www.wmo.int/pages/prog/wcp/ccl/opace/opace4/ET-SCI-4-1.php) view the [user-guide](user_guide/ClimPACT_user_guide.htm).
 
-Get the latest version and/or contribute to the code at the [ClimPACT GitHub page](https://github.com/ARCCSS-extremes/climpact2).
+Get the latest version and/or contribute to the code at the [ClimPACT GitHub page](https://github.com/ARCCSS-extremes/climpact).
