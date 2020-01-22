@@ -572,7 +572,7 @@ climpact.server <- function(input, output, session) {
           nCoresBatch <- nCoresBatch()
 
           tmp = read.table(input$batchMeta$datapath,header=TRUE)
-
+          cat(file=stderr(), "input$batchMeta$datapath", input$batchMeta$datapath, "\n")
           # Display notification before processing
           showModal(modalDialog(
             title = "Important message",
@@ -592,12 +592,16 @@ climpact.server <- function(input, output, session) {
           on.exit(progress$close())
           progress$set(message="Processing data", value=0)
 
-          source("climpact.batch.stations.r")
-          batchMode <<- TRUE
-		      cl <<- makeCluster(nCoresBatch)
-
           #JMC batch(input.directory=batchInDir,file.list.metadata=input$batchMeta$datapath,base.start=input$startYearBatch,base.end=input$endYearBatch)
-          batch(file.list.metadata=input$batchMeta$datapath,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
+          cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
+          assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
+          cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
+
+          source("climpact.batch.stations.r")
+          batchMode <<- FALSE #JMC was TRUE
+		      #JMC cl <<- makeCluster(nCoresBatch)
+
+          batch(file.list.metadata=file.list.metadata.global,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
           enable("calculateBatchIndices")
 
           paste0("Done. Output created in ",outputFolder,". Results for each station are stored in separate directories. See *error.txt files for stations that had problems.")
@@ -718,8 +722,12 @@ climpact.server <- function(input, output, session) {
     outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
 
     # toggle state of buttons depending on certain criteria
+    # Single station
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
+    # Batch
+    observe(toggleState('calculateBatchIndices', !is.null(input$batchMeta) && !is.null(input$batchCsvs)))
+    # Sector correlation
     observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 
 }

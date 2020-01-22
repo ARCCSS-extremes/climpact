@@ -29,14 +29,19 @@ source("server/climpact.etsci-functions.r")
 # return a nice list of station metadata
 read.file.list.metadata <- function(file.list.metadata)
 {
+
 	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
 					colClasses=c("character","real","real","integer","integer","real","real","integer","real","real","integer"))
+
 	return(file.list.metadata)
 }
 
 # call QC and index calculation functionality for each file specified in metadata.txt
 batch <- function(file.list.metadata,batch_files,base.start,base.end) {
-	batchMode <<- TRUE
+	batchMode <<- FALSE #JMC was TRUE
+
+	cat(file=stderr(), "in batch, file.list.metadata:", file.list.metadata, "\n")
+
 	metadata <- read.file.list.metadata(file.list.metadata)
 
 	if(exists("progress") && !is.null(progress)) {
@@ -55,6 +60,7 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 		print(file.name)
 
 		file <- batch_files[file.name,'datapath']
+		print(file)
 		user.data <- read.user.file(file)
 		user.data <- check.and.create.dates(user.data)
 		get.file.path(file)
@@ -113,22 +119,32 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 				})
 		if(skip) { return(NA) }
 
-	# RJHD - NH addition for pdf error 2-aug-17
-	        graphics.off()
+		# Create a zip file containing all of the results.
+		# in format '{station_name}.zip'
+		# curwd <- getwd()
+		# setwd(paste(outdirtmp, '..', sep="/"))
+		# files2zip <- dir(basename(outdirtmp), full.names = TRUE)
+		# #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
+		# zip(zipfile = basename(outdirtmp), files = files2zip)
+		# setwd(curwd)
+		
+		# RJHD - NH addition for pdf error 2-aug-17
+		graphics.off()
 		print(paste(file," done",sep=""))
 	}
 
 	# batch_files %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
 	# batch_files <- data.frame(batch_files[,-1], row.names=batch_files[,1])
-	# set each row namein batch file to station name for indexing
+	# set each row name in batch file to station name for indexing
 	row.names(batch_files) <- batch_files$name
 	batch_files[1] <- NULL
-	browser()
 
 	assign('outputFolder',dirname(batch_files[1,'datapath']),envir=.GlobalEnv)
+	cat(file=stderr(), "outputFolder global:", outputFolder, "\n")
 
 	for (file.number in 1:length(metadata$station))
 	{
+	  print(paste0("Processing file ",file.number))
 		func(file.number, batch_files)
 
 	  if(!is.null(progress)) progress$inc(prog_int)

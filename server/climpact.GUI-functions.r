@@ -1304,7 +1304,7 @@ plot.hw <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,met
 			mktrend$stat[1] <<- unname(ci[2,1])
 			mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 			mktrend$stat[3] <<- unname(ci[2,2])
-	                mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+			mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
 
 			plotx((date.years), index[def,asp,], main = gsub('\\*', unit, plot.title),ylab = unit,xlab = x.label,index.name=index.name,sub=sub)
 
@@ -1313,7 +1313,7 @@ plot.hw <- function(index=NULL,index.name=NULL,index.units=NULL,x.label=NULL,met
 #			dev.copy()
 			dev.off(dev0)
 
-                        cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
+			#JMC bug now climdex.pcic not available: cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
 			remove(mktrend,envir=.GlobalEnv)
 		}
 	}
