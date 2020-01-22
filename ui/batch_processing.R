@@ -16,10 +16,17 @@ tabPanel(title="Process multiple stations",
                   fileInput('batchMeta', NULL,accept=c('text/csv', 'text/comma-separated-values,text/plain', '.txt'))
                 ),
                 h4("2. Input data"),
-                wellPanel(
-                  uiOutput("batchFolderText"),
-                  actionButton("selectInDirBatch", "Select input directory"),
-                  textOutput("inDirPrintBatch")
+                # wellPanel(
+                #   uiOutput("batchFolderText"),
+                #   actionButton("selectInDirBatch", "Select input directory"),
+                #   textOutput("inDirPrintBatch")
+                  wellPanel(
+                    uiOutput("batchFolderText"),
+                    fileInput("batchCsvs",
+                    label="Station data",
+                    accept=c('text/csv', 'text/comma-separated-values,text/plain', '.txt'),
+                    placeholder="Select multiple space delimited ASCII text files",
+                    multiple = TRUE)
                 )
               ),
               column(6,

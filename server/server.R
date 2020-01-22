@@ -1,5 +1,5 @@
 climpact.server <- function(input, output, session) {
-  
+
     if (Sys.getenv('SHINY_PORT') != "") {
       hideTab(inputId = "mainNavbar", target = "advmenu")
     }
@@ -7,10 +7,10 @@ climpact.server <- function(input, output, session) {
     master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
     master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
     batch.script <<- paste0("climpact.batch.stations.r")
-    
+
     # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
-    options(shiny.maxRequestSize=1000000*1024^2) 
-  
+    options(shiny.maxRequestSize=1000000*1024^2)
+
     # These element validate and return user input values.
     # Validate latitude
     stationLat <- reactive({
@@ -141,14 +141,14 @@ climpact.server <- function(input, output, session) {
       HTML(paste("A text file must be created with information for each station. Refer to ",guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
                          Once done supply ClimPACT with the file below."))
     })
-    
+
     output$batchFolderText <- renderText({
       batchFormatLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
-      HTML(paste("Select the directory containing the ClimPACT formatted station text files that you would like to process. These must be formatted according to ",batchFormatLink," of the user guide.",sep=""),
+      HTML(paste("Select the ClimPACT formatted station text files that you would like to process. These must be formatted according to ",batchFormatLink," of the user guide.",sep=""),
            "<br> "
            )
     })
-    
+
     # Create some html text to be displayed to the client.
     output$qcLink <- renderText({
         datasetChanges()
@@ -170,10 +170,10 @@ climpact.server <- function(input, output, session) {
         # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
         # trendsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.trends.dir()), ">trends</a>", sep="")
         # threshDirLink <- paste("<a target=\"_blank\" href=",fileServerUrl(),gsub(" ","%20",get.thresh.dir()), ">thresholds</a>", sep="")
-        zipFileLink <- paste("<a target=\"_blank\" href=", gsub(" ","%20",get.output.zipfile()), ">here</a>.", sep="")
+        zipFileLink <- paste("<a target=\"_blank\" href=", gsub(" ","%20",get.output.zipfile()), ">here</a>", sep="")
         # HTML(paste("View ", indicesDirLink, ", ", plotsDirLink, ", ", trendsDirLink, ", ",
         #            threshDirLink, " OR ", zipFileLink, sep=""))
-        
+
         HTML("All output has been created in the following server directory: ",
              paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdir,"</b>"),
 		    "<br><br>or can be downloaded ",zipFileLink," if you are accessing ClimPACT remotely",
@@ -217,7 +217,7 @@ climpact.server <- function(input, output, session) {
     output$qualityControlError <- eventReactive(input$doQualityControl, {
         source("server/climpact.etsci-functions.r")
         batchMode <<- FALSE
-        
+
         # Set up globals in ClimPACT
         global.vars()
 
@@ -261,7 +261,7 @@ climpact.server <- function(input, output, session) {
         gridNcFiles <<- fchoose(filters=ncFilter)
         output$ncFilePrint <- renderText({print(paste0("Input file(s): ",paste0(gridNcFiles,collapse=", ")))})
       })
-      
+
       observeEvent(input$selectNcFilesThreshInput,{
         gridNcThresh <<- fchoose(filters=ncFilter)
         output$ncFilePrintThreshInput <- renderText({print(paste0("Threshold file: ",paste0(gridNcThresh,collapse=", ")))})
@@ -271,22 +271,23 @@ climpact.server <- function(input, output, session) {
         gridOutDir <<- dchoose()
         output$outDirPrint <- renderText({print(paste("Output directory: ",gridOutDir,sep=""))})
       })
-      
+
       observeEvent(input$selectNcFilesThresh,{
         gridNcFilesThresh <<- fchoose(filters=ncFilter)
         output$ncFilePrintThresh <- renderText({print(paste0("Input file(s): ",paste0(gridNcFilesThresh,collapse=", ")))})
       })
-      
+
       observeEvent(input$selectOutDirThresh,{
         gridOutDirThresh <<- dchoose()
         output$outDirPrintThresh <- renderText({print(paste("Output directory: ",gridOutDirThresh,sep=""))})
       })
-      
-      observeEvent(input$selectInDirBatch,{
-        batchInDir <<- dchoose()
-        output$inDirPrintBatch <- renderText({print(paste("Input directory: ",batchInDir,sep=""))})
-      })
-      
+
+     # now batchCsvs
+      # observeEvent(input$selectInDirBatch,{
+      #   batchInDir <<- dchoose()
+      #   output$inDirPrintBatch <- renderText({print(paste("Input directory: ",batchInDir,sep=""))})
+      # })
+
       # Create the ncdf wrapper file that will be executed from the Linux command line.
       # All code needs to be placed inside the renderText() function so that validate() can abort this code if any errors are detected.
       output$ncPrint <- eventReactive(input$calculateGriddedIndices, {
@@ -311,48 +312,48 @@ climpact.server <- function(input, output, session) {
           # ------------------------------------------------------------------ #
           user_wrapper_file <<- paste("climpact.ncdf.",input$instituteID,".wrapper.r",sep="")
           file.copy(master.ncdf.gridded.wrapper.file,user_wrapper_file,overwrite=TRUE)
-          
+
           wraptext <- readLines(user_wrapper_file)
           fileText = ""
-          for (i in 1:length(gridNcFiles)) { 
+          for (i in 1:length(gridNcFiles)) {
             fileText = paste(fileText,"\"",gridNcFiles[i],"\"",sep="")
             if(i < length(gridNcFiles)) {
               fileText = paste(fileText,",",sep="")
             }
           }
-		  
+
 		  # Take care of backward slashes (in Windows)
 		  fileText <- gsub(pattern="\\\\",replace="/",x=fileText)
-		  
+
 		  tmp1 <- gridOutDir
 		  split_path <- function(x) if (dirname(x)==x) x else c(basename(x),split_path(dirname(x)))
 		  tmp2 <- split_path(tmp1)
 		  tmp3 <- do.call('file.path',as.list(rev(tmp2)))
 		  rm(tmp1,tmp2)
-		  
+
           wraptext <- gsub(pattern=".*infiles=.*",replace=paste("infiles=c(",fileText,")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*vars=.*",replace=paste("vars=c(prec=\"",input$prName,"\",tmax=\"",input$txName,"\",tmin=\"",input$tnName,"\")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*outdir=.*",replace=paste("outdir=\"",tmp3,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*file.template=.*",replace=paste("file.template=\"",input$fileConvention,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*author.data=list.*",replace=paste("author.data=list(institution=\"",input$instituteName,"\",institution_id=\"",input$instituteID,"\")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*base.range=c.*",replace=paste("base.range=c(",input$baseBegin,",",input$baseEnd,")",sep=""),x=wraptext)
-          if(input$nCores>1) { 
-            wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCores,sep=""),x=wraptext) 
+          if(input$nCores>1) {
+            wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCores,sep=""),x=wraptext)
           }
           if(exists("gridNcThresh") && !is.null(gridNcThresh)) {
             wraptext <- gsub(pattern=".*thresholds.files=NULL.*",replace=paste("thresholds.files=\"",gridNcThresh,"\"",sep=""),x=wraptext)
           }
           wraptext <- gsub(pattern=".*EHF_DEF = .*",replace=paste("EHF_DEF=\"",input$EHFcalc,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*maxvals=10.*",replace=paste("maxvals=",input$maxVals,sep=""),x=wraptext)
-          
+
           writeLines(wraptext,con=user_wrapper_file)
-          
+
           showModal(modalDialog(
             title = "Important message",
             "Calculating gridded indices usually takes many hours, depending on how large your dataset is, how fast your computer is and how many cores you choose.",
             br(),
             br(),
-            paste0("Do not close the ClimPACT browser window until this process is complete. You will see \"Done\" printed below the \"Calculate NetCDF indices\" 
+            paste0("Do not close the ClimPACT browser window until this process is complete. You will see \"Done\" printed below the \"Calculate NetCDF indices\"
                    button when ClimPACT is finished."),
             br(),
             br(),
@@ -362,11 +363,11 @@ climpact.server <- function(input, output, session) {
               actionButton("proceedGridded", "PROCEED")
             )
           ))
-          
+
           # HOW CAN WE DISPLAY THE R CONSOLE OUTPUT TO THE USER IN REALTIME?
           return("")
       })
-      
+
       observeEvent(input$proceedGridded,{
         disable("calculateGriddedIndices")
         removeModal()
@@ -401,11 +402,11 @@ climpact.server <- function(input, output, session) {
                         }, finally={
                           invisible(file.remove(user_wrapper_file))
                         })
-        
+
 		    print(data)
-		
+
         if(is.character(data) && !error) output$ncGriddedDone <- renderText({ HTML("Done.",paste0("Look in the following directory for your output: ",gridOutDir)) })
-		
+
         gridNcThresh <<- NULL
         enable("calculateGriddedIndices")
       })
@@ -435,41 +436,41 @@ climpact.server <- function(input, output, session) {
           file.copy(master.ncdf.threshold.wrapper.file,user_wrapper_thresh_file,overwrite=TRUE)
           wraptext <- readLines(user_wrapper_thresh_file)
           fileText = ""
-          for (i in 1:length(gridNcFilesThresh)) { 
+          for (i in 1:length(gridNcFilesThresh)) {
             fileText = paste(fileText,"\"",gridNcFilesThresh[i],"\"",sep="")
             if(i < length(gridNcFilesThresh)) {
               fileText = paste(fileText,",",sep="")
             }
           }
-		  
+
 		  # Take care of backward slashes (in Windows)
 		  fileText <- gsub(pattern="\\\\",replace="/",x=fileText)
-		  
+
 		  tmp1 <- paste0(gridOutDirThresh,"/",input$outFileThresh)
 		  split_path <- function(x) if (dirname(x)==x) x else c(basename(x),split_path(dirname(x)))
 		  tmp2 <- split_path(tmp1)
 		  tmp3 <- do.call('file.path',as.list(rev(tmp2)))
 		  tmp3 <- gsub(pattern="//",replace="/",x=tmp3)
 		  rm(tmp1,tmp2)
-		  
+
           wraptext <- gsub(pattern=".*input.files=.*",replace=paste("input.files=c(",fileText,")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*vars=.*",replace=paste("vars=c(prec=\"",input$prNameThresh,"\",tmax=\"",input$txNameThresh,"\",tmin=\"",input$tnNameThresh,"\")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*output.file=.*",replace=paste("output.file=\"",tmp3,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*author.data=list.*",replace=paste("author.data=list(institution=\"",input$instituteNameThresh,"\",institution_id=\"",input$instituteIDThresh,"\")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*base.range=c.*",replace=paste("base.range=c(",input$baseBeginThresh,",",input$baseEndThresh,")",sep=""),x=wraptext)
-          if(input$nCoresThresh>1) { 
-            wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCoresThresh,sep=""),x=wraptext) 
+          if(input$nCoresThresh>1) {
+            wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCoresThresh,sep=""),x=wraptext)
           }
 
           writeLines(wraptext,con=user_wrapper_thresh_file)
-          
+
           showModal(modalDialog(
             title = "Important message",
             "Calculating gridded thresholds usually takes an hour or more, depending on how large your dataset is, how fast your computer is and how many cores you choose.",
             br(),
             br(),
-            paste0("Do not close the ClimPACT browser window until this process is complete. You will see \"Done\" printed below the \"Calculate NetCDF thresholds\" 
-                   button when ClimPACT is finished."),            
+            paste0("Do not close the ClimPACT browser window until this process is complete. You will see \"Done\" printed below the \"Calculate NetCDF thresholds\"
+                   button when ClimPACT is finished."),
             br(),
             br(),
             footer = tagList(
@@ -480,13 +481,13 @@ climpact.server <- function(input, output, session) {
 
             return("")
 		})
-      
+
 		observeEvent(input$proceedGriddedThresh,{
         disable("calculateGriddedThresholds")
         removeModal()
-		
+
 		error <- FALSE
-		
+
         data <- tryCatch(system(paste("Rscript ",user_wrapper_thresh_file,sep=""),intern=TRUE),
                          error= function(c) {
                            if(interactive()) {
@@ -519,7 +520,7 @@ climpact.server <- function(input, output, session) {
 		print(data)
 
         if(is.character(data) && !error) output$ncGriddedThreshDone <- renderText({ HTML(paste0("Done. Threshold file stored here: ",gridOutDirThresh,.Platform$file.sep,input$outFileThresh)) })
-        
+
         enable("calculateGriddedThresholds")
       })
 
@@ -529,14 +530,14 @@ climpact.server <- function(input, output, session) {
         )
         input$startYearBatch
       })
-      
+
       endYearBatch <- reactive({
         validate(
           need(input$endYearBatch,message="Please specify end year of base period.")
         )
         input$endYearBatch
       })
-      
+
       nCoresBatch <- reactive({
         validate(
           need(input$nCoresBatch>0,message="You require a minimum of 1 core to perform this operation."),
@@ -544,33 +545,34 @@ climpact.server <- function(input, output, session) {
         )
         input$nCoresBatch
       })
-      
+
       batchMeta <- reactive({
         validate(
           need(input$batchMeta,message="Please specify the name of metadata text file (Step 1).")
         )
         input$batchMeta
       })
-      
-      inBatchDir <- reactive({
+
+      batchCsvs <- reactive({
         validate(
-          need(batchInDir,message="Please specify the input directory (Step 2).")
+          need(input$batchCsvs,message="Please upload files to process (Step 2).")
         )
-        input$inBatchDir
+        input$batchCsvs
       })
-      
+
+      # handle calculateBatchIndices click
       output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
         # ------------------------------------------------------------------ #
         # Validate inputs
         # ------------------------------------------------------------------ #
           startYearBatch <- startYearBatch()
           endYearBatch <- endYearBatch()
-          BatchDir <- inBatchDir()
+          batchCsvs <- batchCsvs()
           batchMeta <- batchMeta()
           nCoresBatch <- nCoresBatch()
-        
+
           tmp = read.table(input$batchMeta$datapath,header=TRUE)
-          
+
           # Display notification before processing
           showModal(modalDialog(
             title = "Important message",
@@ -581,7 +583,7 @@ climpact.server <- function(input, output, session) {
             br(),
             br(),
             "You will see a message printed at the bottom of the screen when processing is complete.",
-            paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
+            # paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
             footer = modalButton("OK, thanks.")
           ))
 
@@ -589,17 +591,18 @@ climpact.server <- function(input, output, session) {
           progress <<- shiny::Progress$new()
           on.exit(progress$close())
           progress$set(message="Processing data", value=0)
-          
+
           source("climpact.batch.stations.r")
           batchMode <<- TRUE
 		      cl <<- makeCluster(nCoresBatch)
 
-          batch(input.directory=batchInDir,file.list.metadata=input$batchMeta$datapath,base.start=input$startYearBatch,base.end=input$endYearBatch)
+          #JMC batch(input.directory=batchInDir,file.list.metadata=input$batchMeta$datapath,base.start=input$startYearBatch,base.end=input$endYearBatch)
+          batch(file.list.metadata=input$batchMeta$datapath,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
           enable("calculateBatchIndices")
-          
-          paste0("Done. Output created in ",batchInDir,". Results for each station are stored in separate directories. See *error.txt files for stations that had problems.")
+
+          paste0("Done. Output created in ",outputFolder,". Results for each station are stored in separate directories. See *error.txt files for stations that had problems.")
       })
-      
+
       output$sliders <- renderUI({
         numStations <- as.integer(input$nStations)
         lapply(1:numStations, function(i) {
@@ -614,7 +617,7 @@ climpact.server <- function(input, output, session) {
             )
         })
       })
-      
+
       withConsoleRedirect <- function(containerId, expr) {
         # Change type="output" to type="message" to catch stderr
         # (messages, warnings, and errors) instead of stdout.
@@ -626,7 +629,7 @@ climpact.server <- function(input, output, session) {
         }
         results
       }
-      
+
     # Index calculation has been requested by the user.
     output$indiceCalculationError <- eventReactive(input$calculateIndices, {
       # ------------------------------------------------------------------ #
@@ -718,4 +721,5 @@ climpact.server <- function(input, output, session) {
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
     observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
+
 }
