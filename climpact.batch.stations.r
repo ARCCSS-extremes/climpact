@@ -30,19 +30,26 @@ source("server/climpact.etsci-functions.r")
 read.file.list.metadata <- function(file.list.metadata)
 {
 
-	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
+	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station_file","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
 					colClasses=c("character","real","real","integer","integer","real","real","integer","real","real","integer"))
 
 	return(file.list.metadata)
 }
 
+strip.file.extension <- function(file.name)
+{
+	file_parts <- strsplit(file.name,"\\.")[[1]]
+	stripped <- substr(file.name,start=1,stop=nchar(file.name)-nchar(file_parts[length(file_parts)])-1)
+	print (paste0("input: ", file.name, " output: ", stripped))
+	return(stripped)
+}
 # call QC and index calculation functionality for each file specified in metadata.txt
-batch <- function(file.list.metadata,batch_files,base.start,base.end) {
+batch <- function(metadata_file,batch_files,base.start,base.end) {
 	batchMode <<- FALSE #JMC was TRUE
 
-	cat(file=stderr(), "in batch, file.list.metadata:", file.list.metadata, "\n")
+	#cat(file=stderr(), "in batch, file.list.metadata:", file.list.metadata, "\n")
 
-	metadata <- read.file.list.metadata(file.list.metadata)
+	metadata <- read.file.list.metadata(metadata_file$datapath)
 
 	if(exists("progress") && !is.null(progress)) {
 		prog_int <- 1/length(metadata$station)
@@ -56,15 +63,19 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 
 	# foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
 	func = function(file.number, batch_files) {
-		file.name = metadata$station[file.number]
+		file.name = metadata$station_file[file.number]
+	
 		print(file.name)
 
 		file <- batch_files[file.name,'datapath']
 		print(file)
 		user.data <- read.user.file(file)
 		user.data <- check.and.create.dates(user.data)
-		get.file.path(file)
-		create.dir(file)
+
+		station.name <- strip.file.extension(file.name)
+
+		get.file.path(file, station.name)
+		create.dir(file, outdirtmp)
 
 		# define variables for indices
 		lat <- as.numeric(metadata$latitude[file.number])
@@ -127,11 +138,12 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 		# #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
 		# zip(zipfile = basename(outdirtmp), files = files2zip)
 		# setwd(curwd)
-		
+
 		# RJHD - NH addition for pdf error 2-aug-17
 		graphics.off()
 		print(paste(file," done",sep=""))
 	}
+
 
 	# batch_files %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
 	# batch_files <- data.frame(batch_files[,-1], row.names=batch_files[,1])
@@ -142,13 +154,24 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 	assign('outputFolder',dirname(batch_files[1,'datapath']),envir=.GlobalEnv)
 	cat(file=stderr(), "outputFolder global:", outputFolder, "\n")
 
-	for (file.number in 1:length(metadata$station))
+	for (file.number in 1:length(metadata$station_file))
 	{
 	  print(paste0("Processing file ",file.number))
 		func(file.number, batch_files)
 
 	  if(!is.null(progress)) progress$inc(prog_int)
 	}
+
+
+    curwd <- getwd()
+    setwd(outputFolder)
+
+    file.rename(batch_files$datapath, row.names(batch_files))
+
+    files2zip <- dir(outputFolder)
+    zipfilename <-paste0(strip.file.extension(metadata_file$name),"-results.zip")	
+    zip(zipfile = zipfilename, files = files2zip)
+    setwd(curwd)
 
 	print("",quote=FALSE)
 	print("",quote=FALSE)
@@ -166,13 +189,16 @@ batch <- function(file.list.metadata,batch_files,base.start,base.end) {
 	print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.",quote=FALSE)
 	print("",quote=FALSE)
 	error.files <- suppressWarnings(list.files(path=outputFolder,pattern=paste("*error.txt",sep="")))
-	if(length(error.files)==0) { print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) }
+	if(length(error.files)==0) { 
+		print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) 
+	}
 	else {
 		for (i in 1:length(error.files)) { #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
 			print(error.files[i],quote=FALSE)
 			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
 		}
 	}
+	return (paste0(outputFolder,.Platform$file.sep,zipfilename))
 }
 
 # set up variables and call main function if this is from the command line

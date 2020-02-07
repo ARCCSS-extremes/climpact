@@ -40,7 +40,7 @@ tabPanel(title="Process multiple stations",
                 h4("4. Calculate"),
                 wellPanel(
                   actionButton("calculateBatchIndices", "Calculate indices"),
-                  textOutput("ncPrintBatch")
+                  htmlOutput("ncPrintBatch") #JMC was textOutput
                 )
               )
             )

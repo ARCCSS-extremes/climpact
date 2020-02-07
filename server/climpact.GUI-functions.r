@@ -487,12 +487,13 @@ pplotts <- function(var = "prcp", type = "h", tit = NULL,cio,metadata)
 # Creates an array of strings, each string containing a folder in the path to the user's file.
 # Globally assigns two variables: the array of strings and the final string (i.e. the file name)
 # This should be improved in the future (global variables should not be relied on)
-get.file.path <- function(user.file) {
+get.file.path <- function(user.file, ofilename) {
         outdirtmp<-strsplit(user.file,"/|\\\\")[[1]]
         file.name=outdirtmp[length(outdirtmp)]
         e=strsplit(file.name,"\\.")[[1]]
-        ofilename=substr(file.name,start=1,stop=nchar(file.name)-nchar(e[length(e)])-1)
-
+		if (ofilename == "") {
+        	ofilename=substr(file.name,start=1,stop=nchar(file.name)-nchar(e[length(e)])-1)
+		}
         outdirtmp<-outdirtmp[-length(outdirtmp)]
         outdirtmp = paste(outdirtmp,sep="/",collapse="/")
         outdirtmp = paste(outdirtmp,ofilename,sep="/")
@@ -742,7 +743,7 @@ draw.step1.interface <- function(progress, user.data, user.file, latitude, longi
     assign("base.year.end",base.year.end,envir=.GlobalEnv)
 
     user.data <- check.and.create.dates(user.data)
-    create.dir(user.file)
+    create.dir(user.file, outdirtmp)
     metadata <- create.metadata(latitude,longitude,base.year.start,base.year.end,user.data$dates,ofilename)
     assign("metadata",metadata,envir=.GlobalEnv)
 
@@ -789,9 +790,8 @@ read.user.file <- function(user.file) {
 # Create directories for output. Requires get.file.path to be called beforehand. That functionality was moved to a separate function
 # so that the directory could be modified by the user in the ClimPACT GUI.
 # Undesirably these are currently kept as global variables.
-create.dir <- function(user.file) {
-    outdir<<-outdirtmp
-
+create.dir <- function(user.file, outdir) {
+    
     outinddir<-paste(outdir,"indices",sep="/")
     outlogdir<-paste(outdir,"qc",sep="/")
     outjpgdir<-paste(outdir,"plots",sep="/")

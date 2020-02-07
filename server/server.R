@@ -175,7 +175,7 @@ climpact.server <- function(input, output, session) {
         #            threshDirLink, " OR ", zipFileLink, sep=""))
 
         HTML("All output has been created in the following server directory: ",
-             paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdir,"</b>"),
+             paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>"),
 		    "<br><br>or can be downloaded ",zipFileLink," if you are accessing ClimPACT remotely",
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
@@ -601,10 +601,21 @@ climpact.server <- function(input, output, session) {
           batchMode <<- FALSE #JMC was TRUE
 		      #JMC cl <<- makeCluster(nCoresBatch)
 
-          batch(file.list.metadata=file.list.metadata.global,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
+          batchZipFilePath <- batch(metadata_file=input$batchMeta,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
           enable("calculateBatchIndices")
-
-          paste0("Done. Output created in ",outputFolder,". Results for each station are stored in separate directories. See *error.txt files for stations that had problems.")
+          
+          batchZipFileLink <- paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>")
+        
+        HTML("All output has been created in the following server directory: ",
+             paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>"),
+		    "<br><br>or can be downloaded ",batchZipFileLink," if you are accessing ClimPACT remotely",
+                    "<br>Results for each station are stored in separate directories. See *error.txt files for stations that had problems.",
+                    "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
+                    "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
+                    "<br>The <i>trends</i> subdirectory contains a .csv file containing linear trend information for each index.",
+                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."
+        )
+          
       })
 
       output$sliders <- renderUI({
