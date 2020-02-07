@@ -863,8 +863,12 @@ draw.step2.interface <- function(progress, plot.title, wsdi_ud, csdi_ud, rx_ud, 
     curwd <- getwd()
     setwd(paste(outdirtmp, '..', sep="/"))
     files2zip <- dir(basename(outdirtmp), full.names = TRUE)
+
     #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
-    zip(zipfile = basename(outdirtmp), files = files2zip)
+    zipfilename <- basename(outdirtmp)
+	zip(zipfile = zipfilename, files = files2zip)
+#	outputzipfilepath <- paste0(curwd, .Platform$file.sep,"www", .Platform$file.sep,"output",.Platform$file.sep, zipfilename)
+#	file.copy(zipfilename, outputzipfilepath)
     setwd(curwd)
 
 } # end of draw.step2.interface

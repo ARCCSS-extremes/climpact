@@ -170,7 +170,7 @@ climpact.server <- function(input, output, session) {
         # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
         # trendsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.trends.dir()), ">trends</a>", sep="")
         # threshDirLink <- paste("<a target=\"_blank\" href=",fileServerUrl(),gsub(" ","%20",get.thresh.dir()), ">thresholds</a>", sep="")
-        zipFileLink <- paste("<a target=\"_blank\" href=", gsub(" ","%20",get.output.zipfile()), ">here</a>", sep="")
+        zipFileLink <- paste("<a target=\"_blank\" href=", paste0("output/",gsub(" ","%20",basename(outdirtmp)),".zip"), ">here</a>", sep="")
         # HTML(paste("View ", indicesDirLink, ", ", plotsDirLink, ", ", trendsDirLink, ", ",
         #            threshDirLink, " OR ", zipFileLink, sep=""))
 

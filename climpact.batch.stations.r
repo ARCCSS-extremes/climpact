@@ -171,6 +171,8 @@ batch <- function(metadata_file,batch_files,base.start,base.end) {
     files2zip <- dir(outputFolder)
     zipfilename <-paste0(strip.file.extension(metadata_file$name),"-results.zip")	
     zip(zipfile = zipfilename, files = files2zip)
+	outputzipfilepath <- paste0(curwd,"/www/output/", zipfilename)
+	file.copy(zipfilename, outputzipfilepath)
     setwd(curwd)
 
 	print("",quote=FALSE)
@@ -198,7 +200,9 @@ batch <- function(metadata_file,batch_files,base.start,base.end) {
 			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
 		}
 	}
-	return (paste0(outputFolder,.Platform$file.sep,zipfilename))
+	#return (paste0(outputFolder,.Platform$file.sep,zipfilename))
+
+	return(paste0("output/", zipfilename))
 }
 
 # set up variables and call main function if this is from the command line
