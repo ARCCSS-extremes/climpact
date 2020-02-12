@@ -1,7 +1,7 @@
-source("../climpact.GUI-functions.r", chdir = TRUE)
-library(testthat)
+# source("../climpact.GUI-functions.r", chdir = TRUE)
+# library(testthat)
 
-test_that("globals load", {
-  expect_that(global.vars(), 0)
-})
+# test_that("globals load", {
+#   expect_that(global.vars(), 0)
+# })
 

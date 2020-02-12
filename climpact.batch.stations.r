@@ -43,31 +43,46 @@ strip.file.extension <- function(file.name)
 	print (paste0("input: ", file.name, " output: ", stripped))
 	return(stripped)
 }
+
+testvariablesThere <<- function (funcpath, funcstartYearBatch, funcendYearBatch) {
+	
+	cat(file=stderr(), "There funcpath: ", funcpath, "\n")
+	cat(file=stderr(), "There funcstartYearBatch: ", funcstartYearBatch, "\n")
+	cat(file=stderr(), "There funcendYearBatch: ", funcendYearBatch, "\n")
+
+	cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
+	cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
+
+	return("Done testvariablesThere")
+}
+
 # call QC and index calculation functionality for each file specified in metadata.txt
-batch <- function(metadata_file,batch_files,base.start,base.end) {
-	batchMode <<- FALSE #JMC was TRUE
-
-	#cat(file=stderr(), "in batch, file.list.metadata:", file.list.metadata, "\n")
-
-	metadata <- read.file.list.metadata(metadata_file$datapath)
-
+batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base.end) {
+	
+	cat(file=stderr(), "in batch, metadatafilepath:", metadatafilepath, "\n")
+	cat(file=stderr(), "in batch, metadatafilename:", metadatafilename, "\n")
+	cat(file=stderr(), "in batch, base.start:", base.start, "\n")
+	cat(file=stderr(), "in batch, base.end:", base.end, "\n")
+	
+	metadata <- read.file.list.metadata(metadatafilepath)
+	
 	if(exists("progress") && !is.null(progress)) {
-		prog_int <- 1/length(metadata$station)
+		prog_int <- 1/length(metadata$station_file)
 	}
-
 	progressSNOW <- function(n) {
 		if(interactive()) { progress$inc(prog_int) }
 	}
 	opts <- list(progress = progressSNOW)
-#	registerDoSNOW(cl)
+	registerDoSNOW(cl)
 
 	# foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
-	func = function(file.number, batch_files) {
+	func = function(file.number, batchfiles) {
+		
 		file.name = metadata$station_file[file.number]
-	
+		cat(file=stderr(), "in func, working on :", file.name, "\n")
 		print(file.name)
 
-		file <- batch_files[file.name,'datapath']
+		file <- batchfiles[file.name,'datapath']
 		print(file)
 		user.data <- read.user.file(file)
 		user.data <- check.and.create.dates(user.data)
@@ -145,19 +160,19 @@ batch <- function(metadata_file,batch_files,base.start,base.end) {
 	}
 
 
-	# batch_files %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
-	# batch_files <- data.frame(batch_files[,-1], row.names=batch_files[,1])
+	# batchfiles %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
+	# batchfiles <- data.frame(batchfiles[,-1], row.names=batchfiles[,1])
 	# set each row name in batch file to station name for indexing
-	row.names(batch_files) <- batch_files$name
-	batch_files[1] <- NULL
+	row.names(batchfiles) <- batchfiles$name
+	batchfiles[1] <- NULL
 
-	assign('outputFolder',dirname(batch_files[1,'datapath']),envir=.GlobalEnv)
+	assign('outputFolder',dirname(batchfiles[1,'datapath']),envir=.GlobalEnv)
 	cat(file=stderr(), "outputFolder global:", outputFolder, "\n")
 
 	for (file.number in 1:length(metadata$station_file))
 	{
 	  print(paste0("Processing file ",file.number))
-		func(file.number, batch_files)
+		func(file.number, batchfiles)
 
 	  if(!is.null(progress)) progress$inc(prog_int)
 	}
@@ -166,10 +181,10 @@ batch <- function(metadata_file,batch_files,base.start,base.end) {
     curwd <- getwd()
     setwd(outputFolder)
 
-    file.rename(batch_files$datapath, row.names(batch_files))
+    file.rename(batchfiles$datapath, row.names(batchfiles))
 
     files2zip <- dir(outputFolder)
-    zipfilename <-paste0(strip.file.extension(metadata_file$name),"-results.zip")	
+    zipfilename <-paste0(strip.file.extension(metadatafilename),"-results.zip")	
     zip(zipfile = zipfilename, files = files2zip)
 	outputzipfilepath <- paste0(curwd,"/www/output/", zipfilename)
 	file.copy(zipfilename, outputzipfilepath)
@@ -205,25 +220,26 @@ batch <- function(metadata_file,batch_files,base.start,base.end) {
 	return(paste0("output/", zipfilename))
 }
 
+# JMC - runs on shinyapps.io 
 # set up variables and call main function if this is from the command line
-if(!interactive()) {
-  # Enable reading of command line arguments
-  args<-commandArgs(TRUE)
+# if(!interactive()) {
+#   # Enable reading of command line arguments
+#   args<-commandArgs(TRUE)
 
-  # where one or more station files are kept
-  input.directory = toString(args[1])
+#   # where one or more station files are kept
+#   input.directory = toString(args[1])
 
-  # metadata text file
-  file.list.metadata = toString(args[2])
+#   # metadata text file
+#   file.list.metadata = toString(args[2])
 
-  # begin base period
-  base.start = as.numeric(args[3])
+#   # begin base period
+#   base.start = as.numeric(args[3])
 
-  # end base period
-  base.end = as.numeric(args[4])
+#   # end base period
+#   base.end = as.numeric(args[4])
 
-  # establish multiple cores
-  registerDoParallel(cores=as.numeric(args[5]))
+#   # establish multiple cores
+#   registerDoParallel(cores=as.numeric(args[5]))
 
-  batch(input.directory,file.list.metadata,base.start,base.end)
-}
+#   batch(input.directory,file.list.metadata,base.start,base.end)
+# }

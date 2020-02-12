@@ -524,21 +524,21 @@ climpact.server <- function(input, output, session) {
         enable("calculateGriddedThresholds")
       })
 
-      startYearBatch <- reactive({
+      startYearBatch <<- reactive({
         validate(
           need(input$startYearBatch,message="Please specify start year of base period.")
         )
         input$startYearBatch
       })
 
-      endYearBatch <- reactive({
+      endYearBatch <<- reactive({
         validate(
           need(input$endYearBatch,message="Please specify end year of base period.")
         )
         input$endYearBatch
       })
 
-      nCoresBatch <- reactive({
+      nCoresBatch <<- reactive({
         validate(
           need(input$nCoresBatch>0,message="You require a minimum of 1 core to perform this operation."),
           need(input$nCoresBatch<=detectCores(),message=paste0("You cannot select more than ",detectCores()," on this computer."))
@@ -546,14 +546,14 @@ climpact.server <- function(input, output, session) {
         input$nCoresBatch
       })
 
-      batchMeta <- reactive({
+      batchMeta <<- reactive({
         validate(
           need(input$batchMeta,message="Please specify the name of metadata text file (Step 1).")
         )
         input$batchMeta
       })
 
-      batchCsvs <- reactive({
+      batchCsvs <<- reactive({
         validate(
           need(input$batchCsvs,message="Please upload files to process (Step 2).")
         )
@@ -562,52 +562,86 @@ climpact.server <- function(input, output, session) {
 
       # handle calculateBatchIndices click
       output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
+
         # ------------------------------------------------------------------ #
         # Validate inputs
         # ------------------------------------------------------------------ #
-          startYearBatch <- startYearBatch()
-          endYearBatch <- endYearBatch()
-          batchCsvs <- batchCsvs()
-          batchMeta <- batchMeta()
-          nCoresBatch <- nCoresBatch()
+        startYearBatch <- startYearBatch()
+        endYearBatch <- endYearBatch()
+        batchCsvs <- batchCsvs()
+        batchMeta <- batchMeta()
+        nCoresBatch <- nCoresBatch()
 
-          tmp = read.table(input$batchMeta$datapath,header=TRUE)
-          cat(file=stderr(), "input$batchMeta$datapath", input$batchMeta$datapath, "\n")
-          # Display notification before processing
-          showModal(modalDialog(
-            title = "Important message",
-            "Your indices are being calculated. Doing this for multiple stations can take time. On a typical computer each station takes ~1 minute to process per core.",
-            br(),
-            br(),
-            paste0("You appear to have ",nrow(tmp)," stations and have requested ",nCoresBatch," cores and so this process should take ~",nrow(tmp)/nCoresBatch," minutes to complete."),
-            br(),
-            br(),
-            "You will see a message printed at the bottom of the screen when processing is complete.",
-            # paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
-            footer = modalButton("OK, thanks.")
-          ))
-
-          disable("calculateBatchIndices")
-          progress <<- shiny::Progress$new()
-          on.exit(progress$close())
-          progress$set(message="Processing data", value=0)
-
-          #JMC batch(input.directory=batchInDir,file.list.metadata=input$batchMeta$datapath,base.start=input$startYearBatch,base.end=input$endYearBatch)
-          cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
-          assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
-          cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
-
-          source("climpact.batch.stations.r")
-          batchMode <<- FALSE #JMC was TRUE
-		      #JMC cl <<- makeCluster(nCoresBatch)
-
-          batchZipFilePath <- batch(metadata_file=input$batchMeta,batch_files=input$batchCsvs,base.start=input$startYearBatch,base.end=input$endYearBatch)
-          enable("calculateBatchIndices")
+        testvariablesHere <<- function (funcpath, funcstartYearBatch, funcendYearBatch) {
           
-          batchZipFileLink <- paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>")
+          cat(file=stderr(), "Here funcpath:", funcpath, "\n")
+          cat(file=stderr(), "Here funcstartYearBatch:", funcstartYearBatch, "\n")
+          cat(file=stderr(), "Here funcendYearBatch:", funcendYearBatch, "\n")
+
+          cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
+          cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
+          
+          return("Done testvariablesHere")
+        }
+
+        tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
         
+        # Display notification before processing
+        showModal(modalDialog(
+          title = "Important message",
+          "Your indices are being calculated. Doing this for multiple stations can take time. On a typical computer each station takes ~1 minute to process per core.",
+          br(),
+          br(),
+          paste0("You appear to have ",nrow(tmp)," stations and have requested ",nCoresBatch," cores and so this process should take ~",nrow(tmp)/nCoresBatch," minutes to complete."),
+          br(),
+          br(),
+          "You will see a message printed at the bottom of the screen when processing is complete.",
+          # paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
+          footer = modalButton("OK, thanks.")
+        ))
+
+        disable("calculateBatchIndices")
+        progress <<- shiny::Progress$new()
+        on.exit(progress$close())
+        progress$set(message="Processing data", value=0)
+
+        # cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
+        assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
+        # cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
+        
+        batchMode <<- FALSE #JMC was TRUE
+        cl <<- makeCluster(nCoresBatch)
+
+        cat(file=stderr(), "about to call testvariables___ functions.", "\n")
+        # Assign value with <<- operator as we are calling out of a reactive function
+        metadatafilepath <<- input$batchMeta$datapath
+        metadatafilename <<- input$batchMeta$name
+        batchfiles <<- input$batchCsvs
+
+        assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
+        assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
+        assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
+        # cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
+        # cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
+                
+        source("climpact.batch.stations.r")
+        
+        here <- testvariablesHere(metadatafilepath, input$startYearBatch, input$endYearBatch)
+        cat(file=stderr(), "Status here: ", here, "\n")
+        there <- testvariablesThere(metadatafilepath, input$startYearBatch, input$endYearBatch)
+        cat(file=stderr(), "Status there: ", there, "\n")
+        
+        # batchZipFilePath <<- "nada"
+        # batchZipFileLink <<- "zilch"
+        batchZipFilePath <- batch(metadatafilepath,metadatafilename,batchfiles,input$startYearBatch,input$endYearBatch)
+        cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
+
+        enable("calculateBatchIndices")
+        
+        batchZipFileLink <- paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>")
+      
         HTML("All output has been created in the following server directory: ",
-             paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>"),
+             paste0("<br /><br /><b>",paste0(getwd(),"/www/",batchZipFilePath),"</b>"),
 		    "<br><br>or can be downloaded ",batchZipFileLink," if you are accessing ClimPACT remotely",
                     "<br>Results for each station are stored in separate directories. See *error.txt files for stations that had problems.",
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
