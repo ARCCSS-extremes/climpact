@@ -44,18 +44,6 @@ strip.file.extension <- function(file.name)
 	return(stripped)
 }
 
-testvariablesThere <<- function (funcpath, funcstartYearBatch, funcendYearBatch) {
-	
-	cat(file=stderr(), "There funcpath: ", funcpath, "\n")
-	cat(file=stderr(), "There funcstartYearBatch: ", funcstartYearBatch, "\n")
-	cat(file=stderr(), "There funcendYearBatch: ", funcendYearBatch, "\n")
-
-	cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
-	cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
-
-	return("Done testvariablesThere")
-}
-
 # call QC and index calculation functionality for each file specified in metadata.txt
 batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base.end) {
 	

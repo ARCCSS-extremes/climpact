@@ -572,18 +572,8 @@ climpact.server <- function(input, output, session) {
         batchMeta <- batchMeta()
         nCoresBatch <- nCoresBatch()
 
-        testvariablesHere <<- function (funcpath, funcstartYearBatch, funcendYearBatch) {
-          
-          cat(file=stderr(), "Here funcpath:", funcpath, "\n")
-          cat(file=stderr(), "Here funcstartYearBatch:", funcstartYearBatch, "\n")
-          cat(file=stderr(), "Here funcendYearBatch:", funcendYearBatch, "\n")
-
-          cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
-          cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
-          
-          return("Done testvariablesHere")
-        }
-
+        source("climpact.batch.stations.r")
+        
         tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
         
         # Display notification before processing
@@ -621,18 +611,7 @@ climpact.server <- function(input, output, session) {
         assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
         assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
         assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
-        # cat(file=stderr(), "metadatafilepath.global", metadatafilepath.global, "\n")
-        # cat(file=stderr(), "metadatafilename.global", metadatafilename.global, "\n")
-                
-        source("climpact.batch.stations.r")
         
-        here <- testvariablesHere(metadatafilepath, input$startYearBatch, input$endYearBatch)
-        cat(file=stderr(), "Status here: ", here, "\n")
-        there <- testvariablesThere(metadatafilepath, input$startYearBatch, input$endYearBatch)
-        cat(file=stderr(), "Status there: ", there, "\n")
-        
-        # batchZipFilePath <<- "nada"
-        # batchZipFileLink <<- "zilch"
         batchZipFilePath <- batch(metadatafilepath,metadatafilename,batchfiles,input$startYearBatch,input$endYearBatch)
         cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
 
