@@ -72,6 +72,9 @@ ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
 ui <- tagList(
+    tags$head(
+      tags$link(rel="stylesheet", type="text/css", href="styles.css")
+    ),
     useShinyjs(),
     navbarPage(title=paste0("v.",software_id),id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
       source(file.path("ui", "front_page_tab.R"), local=TRUE)$value,
@@ -84,6 +87,20 @@ ui <- tagList(
             source(file.path("ui", "gridded_data_thresholds.R"),local=TRUE)$value,
             menuName="advmenu")
   #    source(file.path("ui", "close_tab.R"), local=TRUE)$value
+  ),
+  tags$footer(
+    div(id="footer-content",
+      div(id="sitemap", 
+        h4("Climpact 2.0.0"),
+        p("Copyright © 2012–2020 Climpact. All Rights Reserved.")
+      ),
+      div(id="logos",
+        HTML("<a href=\"https://www.unsw.edu.au\"><img src=\"assets/logo-unsw-small.png\" alt=\"UNSW Sydney\"></a>"),
+        HTML("<a href=\"https://www.climateextremes.org.au/\"><img src=\"assets/logo-clex-small.png\" alt=\"ARC Centre of Excellence for Climate Extremes\"></a>"),
+        HTML("<a href=\"https://public.wmo.int/\"><img src=\"assets/logo-wmo.png\" alt=\"World Meteorological Organization\"></a>"),
+        HTML("<a href=\"https://www.greenclimate.fund\"><img src=\"assets/logo-gcf.png\" alt=\"Green Climate Fund\"></a>")
+      )
+    )
   )
 )
 

@@ -46,12 +46,7 @@ strip.file.extension <- function(file.name)
 
 # call QC and index calculation functionality for each file specified in metadata.txt
 batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base.end) {
-	
-	cat(file=stderr(), "in batch, metadatafilepath:", metadatafilepath, "\n")
-	cat(file=stderr(), "in batch, metadatafilename:", metadatafilename, "\n")
-	cat(file=stderr(), "in batch, base.start:", base.start, "\n")
-	cat(file=stderr(), "in batch, base.end:", base.end, "\n")
-	
+
 	metadata <- read.file.list.metadata(metadatafilepath)
 	
 	if(exists("progress") && !is.null(progress)) {
