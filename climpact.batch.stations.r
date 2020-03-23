@@ -161,16 +161,16 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 	}
 
 
-    curwd <- getwd()
-    setwd(outputFolder)
-
     file.rename(batchfiles$datapath, row.names(batchfiles))
-
-    files2zip <- dir(outputFolder)
-    zipfilename <-paste0(strip.file.extension(metadatafilename),"-results.zip")	
-    zip(zipfile = zipfilename, files = files2zip)
+	zipfilename <-paste0(strip.file.extension(metadatafilename),"-results.zip")	
+	workingDir <- outputFolder #JMC variable assignment unnecessary here if method below not extracted
+	destinationFolder <- "/www/output/"
 	# JMC extract method to create zip file at path
-	outputzipfilepath <- paste0(curwd,"/www/output/", zipfilename)
+    curwd <- getwd()
+    setwd(workingDir)
+    files2zip <- dir(workingDir)
+    zip(zipfile = zipfilename, files = files2zip)
+	outputzipfilepath <- paste0(curwd,destinationFolder, zipfilename)
 	file.copy(zipfilename, outputzipfilepath)
     setwd(curwd)
 

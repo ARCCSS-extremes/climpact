@@ -160,25 +160,37 @@ climpact.server <- function(input, output, session) {
         appendixCLink <- paste("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>", sep="")
         
         #JMC alternate output depending on running locally or online
-        HTML(paste("Please view the quality control output in the directory below and carefully evaluate before continuing. Refer to ",
-                   appendixCLink, " of the ", userGuildLink(), " for help.", sep=""),
-             paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")
-            )
+        zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/qc.zip")
+        workingFolder <- paste0(getwd(),.Platform$file.sep,qcDir)
+        zipFiles(workingFolder, zipfilepath)
+        qcZipLink <- getLinkFromPath(paste0("output/", ofilename, "/qc.zip"))
+
+        localLink <- paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")
+        remoteLink <- paste0("<br />Quality control files: ",qcZipLink)
+        
+        HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing. Refer to ",
+                   appendixCLink, " of the ", userGuildLink(), " for help.", localOrRemoteLink(localLink, remoteLink)))
     })
 
     output$indicesLink <- renderText({
         indiceChanges()
+        indicesDir <- get.indices.dir()
         # indicesDirLink <- paste("<a target=\"_blank\" href=",gsub(" ","%20",get.indices.dir()), ">indices</a>", sep="")
         # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
         # trendsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.trends.dir()), ">trends</a>", sep="")
         # threshDirLink <- paste("<a target=\"_blank\" href=",fileServerUrl(),gsub(" ","%20",get.thresh.dir()), ">thresholds</a>", sep="")
-        zipFileLink <- paste("<a target=\"_blank\" href=", paste0("output/",gsub(" ","%20",basename(outdirtmp)),".zip"), ">here</a>", sep="")
+        # zipFileLink <- paste0("<a target=\"_blank\" href=\"output/\"",gsub(" ","%20",basename(outdirtmp)),".zip>here</a>")
         # HTML(paste("View ", indicesDirLink, ", ", plotsDirLink, ", ", trendsDirLink, ", ",
         #            threshDirLink, " OR ", zipFileLink, sep=""))
 
-        HTML("All output has been created in the following server directory: ",
-             paste0("<br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>"),
-		    "<br><br>or can be downloaded ",zipFileLink," if you are accessing ClimPACT remotely",
+        zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/indices.zip")
+        workingFolder <- paste0(getwd(),.Platform$file.sep,indicesDir)
+        zipFiles(workingFolder, zipfilepath)
+        indicesZipLink <- getLinkFromPath(paste0("output/", ofilename, "/indices.zip"))
+
+        localLink <- paste0(" in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
+        remoteLink <- paste0(" ", indicesZipLink)
+        HTML("Please view the output", localOrRemoteLink(localLink, remoteLink),
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
                     "<br>The <i>trends</i> subdirectory contains a .csv file containing linear trend information for each index.",
@@ -188,10 +200,17 @@ climpact.server <- function(input, output, session) {
 
     output$sectorCorrelationLink <- renderText({
       sectorCorrelationChanges()
-      HTML("Correlation output has been created in the following directory: ",
-           "<br><br>",
-           paste0("<b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
-      )
+
+      zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/corr.zip")
+      workingFolder <- paste0(getwd(),.Platform$file.sep,get.corr.dir())
+      zipFiles(workingFolder, zipfilepath)
+      corrZipLink <- getLinkFromPath(paste0("output/", ofilename, "/corr.zip"))
+
+      localLink <- paste0(" in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
+      remoteLink <- paste0(" ", corrZipLink)
+
+      HTML("Correlation output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink))
+      # JMC original HTML("Correlation output has been created in the following directory: <br><br>", paste0("<b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>"))
     })
 
 
@@ -619,11 +638,11 @@ climpact.server <- function(input, output, session) {
 
         enable("calculateBatchIndices")
         
-        batchZipFileLink <- paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>")
+        batchZipFileLink <- getLinkFromPath(batchZipFilePath)
       
-        HTML("All output has been created in the following server directory: ",
-             paste0("<br /><br /><b>",paste0(getwd(),"/www/",batchZipFilePath),"</b>"),
-		    "<br><br>or can be downloaded ",batchZipFileLink," if you are accessing ClimPACT remotely",
+        localLink <- paste0("<br /><br /><b>",paste0(getwd(),"/www/",batchZipFilePath),"</b>")
+        remoteLink <- paste0(" ", batchZipFileLink)
+        HTML("Batch output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink),
                     "<br>Results for each station are stored in separate directories. See *error.txt files for stations that had problems.",
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
@@ -756,4 +775,31 @@ climpact.server <- function(input, output, session) {
     # Sector correlation
     observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 
+    getLinkFromPath <- function (batchZipFilePath) {
+      return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>"))
+    }
+
+    zipFiles <- function (workingFolder, zipfilepath) {
+      	# JMC extract method to create zip file at path
+      curwd <- getwd()
+      setwd(workingFolder)
+      files2zip <- dir(workingFolder)
+      zip(zipfile = zipfilepath, files = files2zip)
+      #outputzipfilepath <- paste0(curwd,destinationFolder, zipfilename)
+      #file.copy(zipfilename, outputzipfilepath)
+      setwd(curwd)
+      #return (outputzipfilepath)
+    }
+
+    localOrRemoteLink <- function (localLink, remoteLink) {
+      result <- ""
+      if (Sys.getenv('SHINY_PORT') == "") {
+        result <- localLink
+      } 
+      else {
+        result <- remoteLink
+      }
+      return (result)
+    }
+    
 }

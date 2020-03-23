@@ -30,7 +30,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   temp_per_year <-  climate.data %>% group_by(year) %>% summarise(avg_tmax = mean(tmax, na.rm = TRUE), avg_tmin = mean(tmin, na.rm = TRUE), avg_t = mean(c(tmax,tmin), na.rm = TRUE), above30 = sum(tmax > 30, na.rm = TRUE))
   common_years <- intersect(temp_per_year$year, sector.data$Year)
   #JMC need at least 10 common years
-  if (length(common_years) > 10){
+  if (length(common_years) < 10){
     return("Error: not able to make a correlation, since there is no data in common!")
   }
 
