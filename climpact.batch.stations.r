@@ -169,6 +169,7 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
     files2zip <- dir(outputFolder)
     zipfilename <-paste0(strip.file.extension(metadatafilename),"-results.zip")	
     zip(zipfile = zipfilename, files = files2zip)
+	# JMC extract method to create zip file at path
 	outputzipfilepath <- paste0(curwd,"/www/output/", zipfilename)
 	file.copy(zipfilename, outputzipfilepath)
     setwd(curwd)

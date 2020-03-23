@@ -29,7 +29,8 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   # match on common data, if not throw error!
   temp_per_year <-  climate.data %>% group_by(year) %>% summarise(avg_tmax = mean(tmax, na.rm = TRUE), avg_tmin = mean(tmin, na.rm = TRUE), avg_t = mean(c(tmax,tmin), na.rm = TRUE), above30 = sum(tmax > 30, na.rm = TRUE))
   common_years <- intersect(temp_per_year$year, sector.data$Year)
-  if (length(common_years) == 0){
+  #JMC need at least 10 common years
+  if (length(common_years) > 10){
     return("Error: not able to make a correlation, since there is no data in common!")
   }
 
@@ -66,6 +67,11 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   create_save_scatter_plot(paste0(ofilename, "_corr_above30_",sectorColumnFilePart), temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", wheat_plot_y_label)
   progress$inc(0.2)
 
+
+  #JMC add scatter plot for each index
+
+#JMC two overview bar plots, one with precip and one with temp related indices
+
   # create barplot of indice value (not normalized) vs sector data
   indices <- c("wsdi", "wsdi1", "fd", "tnlt2", "rx1day", "rx3day", "cdd", "sdii")
   filenames <- file.path(curwd, outinddir, paste0(stationName, "_", indices, "_ANN.csv"))
@@ -89,6 +95,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
       sector.common <- sector.data %>% filter(Year %in% common_years)
       indice.data <- indice.data %>% filter(year %in% common_years)
       sector_indices <- cbind(sector.common, indice.data$value, indice.data$value.norm)
+      #JMC use Spearman in preference to Pearson
       correlation <- round(cor(sector_indices[,-1]),2) # skip year and round correlation value by 2 decimals
 
       # add data

@@ -158,6 +158,8 @@ climpact.server <- function(input, output, session) {
         print(strsplit(qcDir,"/|\\\\"))
         print(file.path(strsplit(qcDir,"/|\\\\")))
         appendixCLink <- paste("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>", sep="")
+        
+        #JMC alternate output depending on running locally or online
         HTML(paste("Please view the quality control output in the directory below and carefully evaluate before continuing. Refer to ",
                    appendixCLink, " of the ", userGuildLink(), " for help.", sep=""),
              paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")

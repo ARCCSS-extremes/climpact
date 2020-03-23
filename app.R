@@ -76,7 +76,7 @@ ui <- tagList(
       tags$link(rel="stylesheet", type="text/css", href="styles.css")
     ),
     useShinyjs(),
-    navbarPage(title=paste0("v.",software_id),id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
+    navbarPage(title="",id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
       source(file.path("ui", "front_page_tab.R"), local=TRUE)$value,
       source(file.path("ui", "load_and_check.R"), local=TRUE)$value,
       source(file.path("ui", "calculate_indices.R"),local=TRUE)$value,
