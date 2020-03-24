@@ -685,10 +685,10 @@ climpact.server <- function(input, output, session) {
       # Validate inputs
       # ------------------------------------------------------------------ #
       validate(
-        need(input$wsdin<=10,message="WSDId requires d to be between 0 and 10"),
-        need(input$wsdin>0,message="WSDId requires d to be between 0 and 10"),
-        need(input$csdin<=10,message="CSDId requires d to be between 0 and 10"),
-        need(input$csdin>0,message="CSDId requires d to be between 0 and 10"),
+        need(input$wsdin<=10,message="WSDId requires d to be between 1 and 10"),
+        need(input$wsdin>0,message="WSDId requires d to be between 1 and 10"),
+        need(input$csdin<=10,message="CSDId requires d to be between 1 and 10"),
+        need(input$csdin>0,message="CSDId requires d to be between 1 and 10"),
         need(input$rxnday>=1,message="RXnDAY requires n to be a positive number"),
         need(input$txtn>=1,message="TXdTNd and TXbdTNbd requires d to be a positive number"),
         need(input$rnnmm>=0,message="Rnnmm requires nn to be greater than or equal to zero"),
