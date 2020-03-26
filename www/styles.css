@@ -1,13 +1,19 @@
 *, *::before, *::after {
     box-sizing: border-box;
 }
-  
-body {
-    display: block;
-}
+
+/* For disabled tabPanel */
+.nav li a.disabled {
+    background-color: #aaa !important;
+    color: #333 !important;
+    cursor: not-allowed !important;
+    border-color: #aaa !important;
+  }
+
 footer {
     padding: 3rem !important;
-    background-color: #231f20 !important;
+    background-color: #222d32;
+    /* background-color: #231f20; */
     width: 100%;
     display: block;
 }
@@ -17,10 +23,10 @@ footer #logos img {
 
 #footer-content, footer #logos {
     display: flex;
-    background-color: #231f20;
     align-items: center;
 }
 footer #sitemap {
+    color: #fff;
     width: 100%;
     max-width: 400px;
     padding: 3rem !important;

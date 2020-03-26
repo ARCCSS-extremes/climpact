@@ -1,10 +1,11 @@
 tabPanel(title="ClimPACT",value="frontPage",
   fluidPage(
-    fluidRow(
-      column(12, HTML('<a href="https://github.com/ARCCSS-extremes/climpact" target="_blank"><img src="user_guide/images/ClimPACT_logo_50pc.png"></a>'),align="center")
+    div(class = "jumbotron",
+      div(class="container",
+        h1(class="display-4", "ClimPACT"),
+        p(class="lead", "An R software package that calculates ET-SCI indices.")
+      )
     ),
-    br(),br(),br(),
-    includeMarkdown(file.path("ui", "getting_started.md")),
-    br(),br(),br(),br(),br(),br()
+    includeMarkdown(file.path("ui", "getting_started.md"))
   )
 )

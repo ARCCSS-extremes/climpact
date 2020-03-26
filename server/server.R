@@ -1,12 +1,18 @@
 climpact.server <- function(input, output, session) {
-
-    if (Sys.getenv('SHINY_PORT') != "") {
-      hideTab(inputId = "mainNavbar", target = "advmenu")
-    }
+    output$griddedMenuItem <- renderMenu({
+      if (Sys.getenv('SHINY_PORT') == "") {
+        menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
+          menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
+          menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
+        )
+        # hideTab(inputId = "sidebar-menu", target = "gridded")
+      }
+    })
 
     master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
     master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
     batch.script <<- paste0("climpact.batch.stations.r")
+    disable("btn_next_process_single_station_step_2")
 
     # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
     options(shiny.maxRequestSize=1000000*1024^2)
@@ -46,12 +52,27 @@ climpact.server <- function(input, output, session) {
         input$dataFile
     })
 
+    output$dataFileLoadedWarning <- renderUI({
+        dataFileLoadedText <- ""
+        if (is.null(input$dataFile)) {
+          dataFileLoadedText <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
+        } 
+        else {
+          dataFileLoadedText <- ""
+        }
+        return (dataFileLoadedText)
+    })
+
     # Validate sector dataset
     sectorDataFile <- reactive({
         validate(
             need(!is.null(input$sectorDataFile), message="Please load a dataset")
         )
         input$sectorDataFile
+    })
+
+    output$dataFileLoaded <- reactive({
+        !is.null(input$dataFile)
     })
 
     output$qualityControlError <- eventReactive(input$doQualityControl, {
@@ -61,7 +82,7 @@ climpact.server <- function(input, output, session) {
     output$qualityControlError <- eventReactive(input$calculateIndices, {
         dataFile()
     })
-
+    
     # Validate the plot title.
     plotTitleMissing <- reactive({
         validate(
@@ -215,16 +236,16 @@ climpact.server <- function(input, output, session) {
 
 
     # switch to calculateIndices tab
-	  observeEvent(input$calculateIndicesTabLink, {
-        updateTabsetPanel(session, "mainNavbar",
-                          selected="calculateIndices")
-  	})
+	  # observeEvent(input$calculateIndicesTabLink, {
+    #     updateTabsetPanel(session, "mainNavbar",
+    #                       selected="calculateIndices")
+  	# })
 
     # Switch to getting started tab
-    observeEvent(input$doGetStarted, {
-        updateTabsetPanel(session, "mainNavbar",
-                          selected="gettingStarted")
-    })
+    # observeEvent(input$doGetStarted, {
+    #     updateTabsetPanel(session, "mainNavbar",
+    #                       selected="gettingStarted")
+    # })
 
     # Fill in default values for station name and plot title based on the name
     # of datafile.
@@ -274,7 +295,7 @@ climpact.server <- function(input, output, session) {
           print(paste0("returning err: ",error))
             return(error)
         }
-
+        enable("btn_next_process_single_station_step_2")
         return("")
     })
 
@@ -761,19 +782,29 @@ climpact.server <- function(input, output, session) {
 
       ifelse(error=="",return(""),return(error))
     })
-
+    
+    outputOptions(output, "dataFileLoaded", suspendWhenHidden=FALSE)
     outputOptions(output, "indiceCalculationError", suspendWhenHidden=FALSE)
     outputOptions(output, "qualityControlError", suspendWhenHidden=FALSE)
     outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
 
     # toggle state of buttons depending on certain criteria
     # Single station
+    observe(toggleState('btn_next_process_single_station_step_1', !is.null(input$dataFile)))
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
+    
     # Batch
     observe(toggleState('calculateBatchIndices', !is.null(input$batchMeta) && !is.null(input$batchCsvs)))
     # Sector correlation
     observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
+
+    observeEvent(input$btn_next_process_single_station_step_1, {
+      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_2")
+    })
+    observeEvent(input$btn_next_process_single_station_step_2, {
+      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_3")
+    })
 
     getLinkFromPath <- function (batchZipFilePath) {
       return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>"))

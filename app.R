@@ -59,6 +59,8 @@ library(dplyr)
 library(corrplot)
 library(ggplot2)
 
+library(shinydashboard)
+
 # If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. Base functions do not provide a dialog box in Unix environments.
 if(.Platform$OS.type == "windows") {
   fchoose <<- get("choose.files", mode="function")
@@ -71,28 +73,91 @@ if(.Platform$OS.type == "windows") {
 ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
+# jscode <- "
+# shinyjs.disableTab = function(name) {
+#   var tab = $('.nav li a[data-value=' + name + ']');
+#   tab.bind('click.tab', function(e) {
+#     e.preventDefault();
+#     return false;
+#   });
+#   tab.addClass('disabled');
+# }
+
+# shinyjs.enableTab = function(name) {
+#   var tab = $('.nav li a[data-value=' + name + ']');
+#   tab.unbind('click.tab');
+#   tab.removeClass('disabled');
+# }
+# "
+
+
+    # # disable tab2 on page load
+    # js$disableTab("single-station-step-2")
+
+    # observeEvent(input$btn, {
+    #   # enable tab2 when clicking the button
+    #   js$enableTab("single-station-step-2")
+    #   # switch to tab2
+    #   updateTabsetPanel(session, "process-single-station", "single-station-step-2")
+    # })
+
+
 ui <- tagList(
     tags$head(
       tags$link(rel="stylesheet", type="text/css", href="styles.css")
     ),
     useShinyjs(),
-    navbarPage(title="",id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
-      source(file.path("ui", "front_page_tab.R"), local=TRUE)$value,
-      source(file.path("ui", "load_and_check.R"), local=TRUE)$value,
-      source(file.path("ui", "calculate_indices.R"),local=TRUE)$value,
-      source(file.path("ui", "sector_data_correlation.R"),local=TRUE)$value,
-      source(file.path("ui", "batch_processing.R"), local = TRUE)$value,
-      navbarMenu("Gridded Data",
-            source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value,
-            source(file.path("ui", "gridded_data_thresholds.R"),local=TRUE)$value,
-            menuName="advmenu")
-  #    source(file.path("ui", "close_tab.R"), local=TRUE)$value
-  ),
+    dashboardPage(
+      header = dashboardHeader(title = "ClimPACT"),
+      sidebar = dashboardSidebar(
+        sidebarMenu(
+          menuItem("Home", tabName = "home", icon = icon("sun")),
+          menuItem("Process single station", tabName = "single", icon = icon("table")),
+          menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
+          menuItemOutput("griddedMenuItem"),
+          menuItem("Documentation", icon = icon("book"), href = "user_guide/ClimPACT_user_guide.htm")
+        )
+      ),
+      body = dashboardBody(
+        tabItems(
+          tabItem(tabName = "home",
+            source(file.path("ui", "front_page_tab.R"), local=TRUE)$value
+          ),
+          tabItem(tabName = "single",
+            source(file.path("ui", "load_and_check.R"), local=TRUE)$value
+          ),
+          tabItem(tabName = "batch",
+            source(file.path("ui", "batch_processing.R"), local = TRUE)$value
+          ),
+          tabItem(tabName = "gridded-indices",
+            source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value
+          ),
+          tabItem(tabName = "gridded-thresholds",
+            source(file.path("ui", "gridded_data_thresholds.R"), local=TRUE)$value
+          )
+      )
+    )
+  )
+  #   navbarPage(title="",id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
+  #     source(file.path("ui", "front_page_tab.R"), local=TRUE)$value,
+  #     source(file.path("ui", "load_and_check.R"), local=TRUE)$value,
+  #     source(file.path("ui", "calculate_indices.R"),local=TRUE)$value,
+  #     source(file.path("ui", "sector_data_correlation.R"),local=TRUE)$value,
+  #     source(file.path("ui", "batch_processing.R"), local = TRUE)$value,
+  #     navbarMenu("Gridded Data",
+  #           source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value,
+  #           source(file.path("ui", "gridded_data_thresholds.R"),local=TRUE)$value,
+  #           menuName="advmenu")
+  # #    source(file.path("ui", "close_tab.R"), local=TRUE)$value
+  #)
+  ,
   tags$footer(
     div(id="footer-content",
       div(id="sitemap", 
         h4("Climpact 2.0.0"),
-        p("Copyright © 2012–2020 Climpact. All Rights Reserved.")
+        p("Copyright © 2012–2020"),
+        p("Climpact."),
+        p("All Rights Reserved.")
       ),
       div(id="logos",
         HTML("<a href=\"https://www.unsw.edu.au\"><img src=\"assets/logo-unsw-small.png\" alt=\"UNSW Sydney\"></a>"),
