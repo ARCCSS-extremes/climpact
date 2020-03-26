@@ -104,7 +104,19 @@ gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchO
 
 ui <- tagList(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="styles.css")
+      tags$link(rel="stylesheet", type="text/css", href="styles.css"),
+      tags$style(
+        HTML(".shiny-notification {
+            height: 100%;
+            width: 100%;
+            position:fixed;
+            top: 0;
+            left: 0;
+            font-size: 250%;
+            # text-align: center;
+            }"
+        )
+      )
     ),
     useShinyjs(),
     dashboardPage(
@@ -137,20 +149,7 @@ ui <- tagList(
           )
       )
     )
-  )
-  #   navbarPage(title="",id="mainNavbar", theme = shinytheme("cerulean"),selected="frontPage",
-  #     source(file.path("ui", "front_page_tab.R"), local=TRUE)$value,
-  #     source(file.path("ui", "load_and_check.R"), local=TRUE)$value,
-  #     source(file.path("ui", "calculate_indices.R"),local=TRUE)$value,
-  #     source(file.path("ui", "sector_data_correlation.R"),local=TRUE)$value,
-  #     source(file.path("ui", "batch_processing.R"), local = TRUE)$value,
-  #     navbarMenu("Gridded Data",
-  #           source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value,
-  #           source(file.path("ui", "gridded_data_thresholds.R"),local=TRUE)$value,
-  #           menuName="advmenu")
-  # #    source(file.path("ui", "close_tab.R"), local=TRUE)$value
-  #)
-  ,
+  ),
   tags$footer(
     div(id="footer-content",
       div(id="sitemap", 

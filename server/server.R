@@ -165,9 +165,9 @@ climpact.server <- function(input, output, session) {
 
     output$batchFolderText <- renderText({
       batchFormatLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
-      HTML(paste("Select the ClimPACT formatted station text files that you would like to process. These must be formatted according to ",batchFormatLink," of the user guide.",sep=""),
-           "<br> "
-           )
+      HTML("Select all the ClimPACT formatted station text files that you would like to process from the dialog window that opens when you click Browse... below.<br />",
+        paste0("These must be formatted according to ",batchFormatLink," of the user guide.<br />")
+      )
     })
 
     # Create some html text to be displayed to the client.
@@ -285,7 +285,7 @@ climpact.server <- function(input, output, session) {
         # be found.
         progress <- shiny::Progress$new()
         on.exit(progress$close())
-        progress$set(message="Processing data", value=0)
+        progress$set(message="Quality Control checks", value=0, detail = "Starting...")
 
         # Call into ClimPACT to do the quality control.
         error <- load.data.qc(progress, file$datapath, outputDir, latitude,

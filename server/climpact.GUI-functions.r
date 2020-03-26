@@ -8,50 +8,44 @@ allqc <- function (progress, master, output, outrange = 4)
 {
 	output <- paste(output, "/", ofilename, sep = "")
 
+    if(!is.null(progress)) progress$inc(0.05, detail = "Plotting outliers...")
 	# fourboxes will produce boxplots for non-zero precip, tx, tn, dtr using the IQR entered previously
 	# the plot will go to series.name_boxes.pdf
 	# outliers will be also listed on a file (series.name_outliers.txt)
 	fourboxes(master, output, save = 1, outrange)
 
-    if(!is.null(progress)) progress$inc(0.05)
-
+	if(!is.null(progress)) progress$inc(0.1, detail = "Plotting rounding problems...")
 	# Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
 	# The plot will go to series.name_rounding.pdf. Needs some formal arrangements (title, nice axis, etc)
 	roundcheck(master, output, save = 1)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax <= tmin...")
 	# will list when tmax <= tmin. Output goes to series.name_tmaxmin.txt
 	tmaxmin(master, output)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting excessively large values...")
 	# will list values exceeding 200 mm or temperatures with absolute values over 50. Output goes to
 	# series.name_toolarge.txt
 	humongous(master, output)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting annual time series...")
 	# 'Annual Time series' constructed with boxplots. Helps to identify years with very bad values
 	# Output goes to series.name_boxseries.pdf
 	boxseries(master, output, save = 1)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
+	if(!is.null(progress)) progress$inc(0.05, detail = "Finding duplicate dates...")
 	# Lists duplicate dates. Output goes to series.name_duplicates.txt
 	duplivals(master, output)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
-	# The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya) identify consecutive tx and tn values with diferences larger than 20
+	if(!is.null(progress)) progress$inc(0.05, detail = "Finding large jumps...")
+	# The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya) identify consecutive tx and tn values with differences larger than 20
 	# Output goes to series.name_tx_jumps.txt and series.name_tn_jumps.txt. The first date is listed.
 	jumps_tx(master, output)
 	jumps_tn(master, output)
 
-	if(!is.null(progress)) progress$inc(0.05)
-
-	# The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya)identify
-	# series of 3 or more consecutive identical values. The first date is listed.
+	if(!is.null(progress)) progress$inc(0.05, detail = "Finding flat lines...")
+	# The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya)	
+	# identify series of 3 or more consecutive identical values. The first date is listed.
 	# Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
 	flatline_tx(master, output)
 	flatline_tn(master, output)
@@ -505,21 +499,18 @@ get.file.path <- function(user.file, ofilename) {
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
 load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, station.entry, base.year.start,base.year.end)
 {
+	if(!is.null(progress)) progress$inc(0.05, detail = "Reading data file...")
     outdirtmp <- outputDir
     ofilename <- station.entry
-	  assign('outdirtmp',outdirtmp,envir=.GlobalEnv)
-	  assign('ofilename',ofilename,envir=.GlobalEnv)
+	assign('outdirtmp',outdirtmp,envir=.GlobalEnv)
+	assign('ofilename',ofilename,envir=.GlobalEnv)
 
-	  user.data <- tryCatch(read.user.file(user.file),
-	                   error= function(c) {
-	                     print(paste0("level 1 err: ",c$message))
-	                     return(c$message)
-	                   })
-
-    # Increment progress bar.
-	  if(!is.null(progress)) progress$inc(0.1)
-
-	  error <- draw.step1.interface(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
+	user.data <- tryCatch(read.user.file(user.file),
+				error= function(c) {
+					print(paste0("level 1 err: ",c$message))
+					return(c$message)
+				})
+	error <- draw.step1.interface(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
     return(error)
 }
 
@@ -555,33 +546,35 @@ create.climdex.input <- function(user.data,metadata) {
 # Error checking on inputs has already been complete by the GUI.
 QC.wrapper <- function(progress, metadata, user.data, user.file) {
 
-	# Check base period is valid when no thresholds loaded
+	if(!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
+	
+	# Check base period is valid when no thresholds loaded	
 	if(is.null(quantiles)) {
         if(metadata$base.start < format(metadata$dates[1],format="%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)],format="%Y") | metadata$base.start > metadata$base.end) {
             return(paste("Base period must be between ", format(metadata$dates[1],format="%Y")," and ",format(metadata$dates[length(metadata$dates)],format="%Y"),". Please correct."))
         }
 	}
 
-        # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
-        # is longer than the length of the user's data.
-        length.of.user.data=length(user.data$year)
-        first.date=as.Date(paste(user.data$year[1],user.data$month[1],user.data$day[1],sep="-"),"%Y-%m-%d")
-        last.date=as.Date(paste(user.data$year[length.of.user.data],user.data$month[length.of.user.data],user.data$day[length.of.user.data],sep="-"),"%Y-%m-%d")
-        date.series=seq(first.date,last.date,"day")
-        user.date.series=as.Date(paste(user.data$year,user.data$month,user.data$day,sep="-"))
-        missing.dates = date.series[!date.series %in% user.date.series]
-        # Write out the missing.dates to a text file. Report the filename to the user.
-        missing.dates.file = paste0(basename(user.file),".missing_dates")
-        if(file_test("-f",missing.dates.file)) { file.remove(missing.dates.file) }
-        if(length(date.series[!date.series %in% user.date.series]) > 0) {
-                write.table(date.series[!date.series %in% user.date.series], sep=",", file = paste0(outdirtmp,missing.dates.file), append = FALSE, row.names=FALSE,col.names = FALSE)
-                #JMC need link to missing dates file to vary if local?
-				error.msg = HTML(paste0("You seem to have missing dates. See <a href=output/",missing.dates.file,"> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control."))
-                skip <<- TRUE
-		
-		stop(error.msg)
-                return()
-        }
+	# Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
+	# is longer than the length of the user's data.
+	length.of.user.data=length(user.data$year)
+	first.date=as.Date(paste(user.data$year[1],user.data$month[1],user.data$day[1],sep="-"),"%Y-%m-%d")
+	last.date=as.Date(paste(user.data$year[length.of.user.data],user.data$month[length.of.user.data],user.data$day[length.of.user.data],sep="-"),"%Y-%m-%d")
+	date.series=seq(first.date,last.date,"day")
+	user.date.series=as.Date(paste(user.data$year,user.data$month,user.data$day,sep="-"))
+	missing.dates = date.series[!date.series %in% user.date.series]
+	# Write out the missing.dates to a text file. Report the filename to the user.
+	missing.dates.file = paste0(basename(user.file),".missing_dates")
+	if(file_test("-f",missing.dates.file)) { file.remove(missing.dates.file) }
+	if(length(date.series[!date.series %in% user.date.series]) > 0) {
+			write.table(date.series[!date.series %in% user.date.series], sep=",", file = paste0(outdirtmp,missing.dates.file), append = FALSE, row.names=FALSE,col.names = FALSE)
+			#JMC need link to missing dates file to vary if local?
+			error.msg = HTML(paste0("You seem to have missing dates. See <a href=output/",missing.dates.file,"> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control."))
+			skip <<- TRUE
+	
+	stop(error.msg)
+			return()
+	}
 
 	# Check for ascending order of years
 	if(!all(user.data$year == cummax(user.data$year))) {
@@ -595,10 +588,12 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	assign("latitude",  metadata$lat, envir = .GlobalEnv)
 	assign("longitude", metadata$lon, envir = .GlobalEnv)
 
+	if(!is.null(progress)) progress$inc(0.05, detail = "Creating Climdex object...")
 	cio <<- create.climdex.input(user.data,metadata)
 	print("climdex input object created.",quote=FALSE)
 
     ##############################
+	if(!is.null(progress)) progress$inc(0.05, detail = "Calculating thresholds...")
 	# Calculate and write out thresholds
 	tavgqtiles <- get.outofbase.quantiles(cio@data$tavg,cio@data$tmin,tmax.dates=cio@dates,tmin.dates=cio@dates,base.range=c(metadata$base.start,metadata$base.end),temp.qtiles=temp.quantiles,prec.qtiles=NULL)
 	cio@quantiles$tavg$outbase <<- tavgqtiles$tmax$outbase	# while this says tmax it is actually tavg, refer to above line.
@@ -619,7 +614,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	write.table(as.data.frame(thres), file = nam1, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c(paste("tmax",names(cio@quantiles$tmax$outbase),sep="_"),paste("tmin",names(cio@quantiles$tmin$outbase),sep="_"),
 	paste("tavg",names(cio@quantiles$tavg$outbase),sep="_"),paste("prec",names(cio@quantiles$prec),sep="_"),"HW_TN90","HW_TX90","HW_TAVG90"),row.names=FALSE)
 
-    if(!is.null(progress)) progress$inc(0.1)
+    if(!is.null(progress)) progress$inc(0.05)
 
     # write raw tmin, tmax and prec data for future SPEI/SPI calcs
 	yeardate2 <- format(cio@dates,format="%Y")
@@ -629,8 +624,6 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	prec=cio@data$prec[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)])
 	nam2 <- paste(outthresdir, paste(ofilename, "_thres_spei.csv", sep = ""),sep="/")
     write.table(as.data.frame(thres2), file = nam2, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c("Base_period_dates","Base_period_tmin","Base_period_tmax","Base_period_prec"),row.names=FALSE)
-
-    if(!is.null(progress)) progress$inc(0.1)
 
     ##############################
 	# Set some text options
@@ -642,13 +635,11 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	assign("title.station", title.station, envir = .GlobalEnv)
 
 	##############################
-
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting precipitation...")
 	nam1 <- paste(outlogdir, paste(ofilename, "_prcpPLOT.pdf", sep = ""), sep = "/")
 	check_open(nam1)
 	pdf(file = nam1)
-
 	prcp <- cio@data$prec[cio@data$prec >= 1 & !is.na(cio@data$prec)]
-
 	if(length(prcp) > 30)
 	{
 		hist(prcp, main = paste("Histogram for Station:", ofilename, " of PRCP>=1mm", sep = ""),breaks = c(seq(0, 40, 2),max(prcp)), xlab = "", col = "green" , freq = FALSE)
@@ -656,28 +647,28 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	}
 	pplotts(var = "prcp", tit = ofilename,cio=cio,metadata=metadata)
 	dev.off()
+
+	##############################
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax...")
 	nam1 <- paste(outlogdir, paste(ofilename, "_tmaxPLOT.pdf", sep = ""), sep = "/")
 	check_open(nam1)
 	pdf(file = nam1)
-
-	if(!is.null(progress)) progress$inc(0.1)
-
 	pplotts(var = "tmax", type = "l", tit = ofilename,cio=cio,metadata=metadata)
 	dev.off()
+
+	##############################
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting tmin...")
 	nam1 <- paste(outlogdir, paste(ofilename, "_tminPLOT.pdf", sep = ""), sep = "/")
 	check_open(nam1)
 	pdf(file = nam1)
-
-	if(!is.null(progress)) progress$inc(0.1)
-
 	pplotts(var = "tmin", type = "l", tit = ofilename,cio=cio,metadata=metadata)
 	dev.off()
+
+	##############################
+	if(!is.null(progress)) progress$inc(0.05, detail = "Plotting dtr...")
 	nam1 <- paste(outlogdir, paste(ofilename, "_dtrPLOT.pdf", sep = ""), sep = "/")
 	check_open(nam1)
 	pdf(file = nam1)
-
-	if(!is.null(progress)) progress$inc(0.1)
-
 	pplotts(var = "dtr", type = "l", tit = ofilename,cio=cio,metadata=metadata)
 	dev.off()
 
@@ -685,8 +676,8 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	# Call the ExtraQC functions.
 	print("TESTING DATA, PLEASE WAIT...",quote=FALSE)
 
-  temp.file <- paste(user.file,".temporary",sep="") #"test.tmp"#tempfile()
-  file.copy(user.file, temp.file)
+	temp.file <- paste(user.file,".temporary",sep="") #"test.tmp"#tempfile()
+	file.copy(user.file, temp.file)
 
 	error <- allqc(progress, master = temp.file, output = outqcdir, outrange = 3) #stddev.crit)
 
@@ -743,13 +734,13 @@ draw.step1.interface <- function(progress, user.data, user.file, latitude, longi
 
     assign("base.year.start",base.year.start,envir=.GlobalEnv)
     assign("base.year.end",base.year.end,envir=.GlobalEnv)
-
+	
+	if(!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
     user.data <- check.and.create.dates(user.data)
     create.dir(user.file, outdirtmp)
     metadata <- create.metadata(latitude,longitude,base.year.start,base.year.end,user.data$dates,ofilename)
     assign("metadata",metadata,envir=.GlobalEnv)
 
-    if(!is.null(progress)) progress$inc(0.1)
     error <- QC.wrapper(progress, metadata,user.data, user.file)
     return(error)
 }
@@ -1116,7 +1107,7 @@ index.calc<-function(progress, metadata) {
 		print(paste("calculating",index.list$Short.name[i]),quote=FALSE)
 		tmp.index.name = as.character(index.list$Short.name[i])
 
-		if (!is.null(progress)) progress$inc(0.01)
+		if (!is.null(progress)) progress$inc(0.01, detail = paste("Calculating",index.list$Short.name[i],"..."))
 		tmp.index.def = as.character(index.list$Definition[i])
 		# Set frequency if relevant to current index
 		if(is.na(index.list$Annual.flag[i])) frequency = NA
