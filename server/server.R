@@ -12,7 +12,6 @@ climpact.server <- function(input, output, session) {
     master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
     master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
     batch.script <<- paste0("climpact.batch.stations.r")
-    disable("btn_next_process_single_station_step_2")
 
     # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
     options(shiny.maxRequestSize=1000000*1024^2)
@@ -74,7 +73,14 @@ climpact.server <- function(input, output, session) {
     output$dataFileLoaded <- reactive({
         !is.null(input$dataFile)
     })
+    
+    isDataFileLoaded <- reactive({
+        !is.null(input$dataFile)
+    })
 
+    output$qualityControlChecked <- reactive({
+
+    })
     output$qualityControlError <- eventReactive(input$doQualityControl, {
         stationName()
     })
@@ -172,7 +178,7 @@ climpact.server <- function(input, output, session) {
 
     # Create some html text to be displayed to the client.
     output$qcLink <- renderText({
-        datasetChanges()
+        datasetChanges() # respond to quality control initiation
         qcDir <- get.qc.dir()
         print("qcDir")
         print(qcDir)
@@ -194,7 +200,7 @@ climpact.server <- function(input, output, session) {
     })
 
     output$indicesLink <- renderText({
-        indiceChanges()
+        indiceChanges() # respond to index calculation
         indicesDir <- get.indices.dir()
         # indicesDirLink <- paste("<a target=\"_blank\" href=",gsub(" ","%20",get.indices.dir()), ">indices</a>", sep="")
         # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
@@ -220,7 +226,7 @@ climpact.server <- function(input, output, session) {
     })
 
     output$sectorCorrelationLink <- renderText({
-      sectorCorrelationChanges()
+      sectorCorrelationChanges()  # respond to sector correlation calculation
 
       zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/corr.zip")
       workingFolder <- paste0(getwd(),.Platform$file.sep,get.corr.dir())
@@ -231,21 +237,7 @@ climpact.server <- function(input, output, session) {
       remoteLink <- paste0(" ", corrZipLink)
 
       HTML("Correlation output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink))
-      # JMC original HTML("Correlation output has been created in the following directory: <br><br>", paste0("<b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>"))
     })
-
-
-    # switch to calculateIndices tab
-	  # observeEvent(input$calculateIndicesTabLink, {
-    #     updateTabsetPanel(session, "mainNavbar",
-    #                       selected="calculateIndices")
-  	# })
-
-    # Switch to getting started tab
-    # observeEvent(input$doGetStarted, {
-    #     updateTabsetPanel(session, "mainNavbar",
-    #                       selected="gettingStarted")
-    # })
 
     # Fill in default values for station name and plot title based on the name
     # of datafile.
@@ -256,7 +248,9 @@ climpact.server <- function(input, output, session) {
     })
 
     # Quality control processing has been requested by the user.
-    output$qualityControlError <- eventReactive(input$doQualityControl, {
+    output$qualityControlError <- renderText ({ qualityControlErrorText() })
+    
+    qualityControlErrorText <- eventReactive(input$doQualityControl, {
         source("server/climpact.etsci-functions.r")
         batchMode <<- FALSE
 
@@ -293,9 +287,8 @@ climpact.server <- function(input, output, session) {
                               base.year.start, base.year.end)
         if (error !=  "") {
           print(paste0("returning err: ",error))
-            return(error)
+          return(error)
         }
-        enable("btn_next_process_single_station_step_2")
         return("")
     })
 
@@ -602,40 +595,31 @@ climpact.server <- function(input, output, session) {
         input$batchCsvs
       })
 
-      # handle calculateBatchIndices click
-      output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
-
-        # ------------------------------------------------------------------ #
-        # Validate inputs
-        # ------------------------------------------------------------------ #
-        startYearBatch <- startYearBatch()
-        endYearBatch <- endYearBatch()
-        batchCsvs <- batchCsvs()
-        batchMeta <- batchMeta()
-        nCoresBatch <- nCoresBatch()
-
-        source("climpact.batch.stations.r")
-        
-        tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
-        
-        # Display notification before processing
-        showModal(modalDialog(
+      batchProcessingModal <- function(msg) {
+        modalDialog(
           title = "Important message",
-          "Your indices are being calculated. Doing this for multiple stations can take time. On a typical computer each station takes ~1 minute to process per core.",
+          "Your indices will be calculated after closing this window. Doing this for multiple stations can take time. On a typical computer each station takes ~1 minute to process per core.",
           br(),
           br(),
-          paste0("You appear to have ",nrow(tmp)," stations and have requested ",nCoresBatch," cores and so this process should take ~",nrow(tmp)/nCoresBatch," minutes to complete."),
+          msg,
           br(),
           br(),
           "You will see a message printed at the bottom of the screen when processing is complete.",
           # paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
-          footer = modalButton("OK, thanks.")
-        ))
+          footer = tagList(modalButton("Cancel"), actionButton("ok", "OK"))
+        )
+      }
 
+      observeEvent(input$ok, {
+        removeModal()
         disable("calculateBatchIndices")
+
         progress <<- shiny::Progress$new()
         on.exit(progress$close())
-        progress$set(message="Processing data", value=0)
+        progress$set(message="Processing data", value=0.01)
+
+        nCoresBatch <- nCoresBatch()
+        source("climpact.batch.stations.r")
 
         # cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
         assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
@@ -654,6 +638,7 @@ climpact.server <- function(input, output, session) {
         assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
         assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
         
+        # This function is where the work is done
         batchZipFilePath <- batch(metadatafilepath,metadatafilename,batchfiles,input$startYearBatch,input$endYearBatch)
         cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
 
@@ -671,6 +656,25 @@ climpact.server <- function(input, output, session) {
                     "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."
         )
           
+      })
+      # handle calculateBatchIndices click
+      output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
+
+        # ------------------------------------------------------------------ #
+        # Validate inputs
+        # ------------------------------------------------------------------ #
+        startYearBatch <- startYearBatch()
+        endYearBatch <- endYearBatch()
+        batchCsvs <- batchCsvs()
+        batchMeta <- batchMeta()
+        nCoresBatch <- nCoresBatch()                
+        tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
+        
+        modalMessage <- paste0("You appear to have ", nrow(tmp)," stations and have requested ",nCoresBatch," cores and so this process should take ~",nrow(tmp)/nCoresBatch," minutes to complete.")
+        # Display notification before processing
+        showModal(batchProcessingModal(modalMessage))
+
+
       })
 
       output$sliders <- renderUI({
@@ -791,6 +795,9 @@ climpact.server <- function(input, output, session) {
     # toggle state of buttons depending on certain criteria
     # Single station
     observe(toggleState('btn_next_process_single_station_step_1', !is.null(input$dataFile)))
+    observe(toggleState('btn_next_process_single_station_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
+    observe(toggleState('btn_next_process_single_station_step_3', !is.null(input$dataFile)))
+
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
     
@@ -804,6 +811,9 @@ climpact.server <- function(input, output, session) {
     })
     observeEvent(input$btn_next_process_single_station_step_2, {
       updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_3")
+    })
+    observeEvent(input$btn_next_process_single_station_step_3, {
+      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_4")
     })
 
     getLinkFromPath <- function (batchZipFilePath) {

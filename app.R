@@ -133,10 +133,10 @@ ui <- tagList(
       body = dashboardBody(
         tabItems(
           tabItem(tabName = "home",
-            source(file.path("ui", "front_page_tab.R"), local=TRUE)$value
+            source(file.path("ui", "landing_page.R"), local=TRUE)$value
           ),
           tabItem(tabName = "single",
-            source(file.path("ui", "load_and_check.R"), local=TRUE)$value
+            source(file.path("ui", "single_station.R"), local=TRUE)$value
           ),
           tabItem(tabName = "batch",
             source(file.path("ui", "batch_processing.R"), local = TRUE)$value

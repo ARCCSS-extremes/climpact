@@ -23,13 +23,10 @@ library(climdex.pcic)
 library(doParallel)
 library(zoo)
 library(zyp)
-source("server/climpact.GUI-functions.r")
-source("server/climpact.etsci-functions.r")
 
 # return a nice list of station metadata
 read.file.list.metadata <- function(file.list.metadata)
 {
-
 	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station_file","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
 					colClasses=c("character","real","real","integer","integer","real","real","integer","real","real","integer"))
 
@@ -50,7 +47,7 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 	metadata <- read.file.list.metadata(metadatafilepath)
 	
 	if(exists("progress") && !is.null(progress)) {
-		prog_int <- 1/length(metadata$station_file)
+		prog_int <- 0.9/length(metadata$station_file)
 	}
 	progressSNOW <- function(n) {
 		if(interactive()) { progress$inc(prog_int) }
@@ -152,9 +149,12 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 	assign('outputFolder',dirname(batchfiles[1,'datapath']),envir=.GlobalEnv)
 	cat(file=stderr(), "outputFolder global:", outputFolder, "\n")
 
-	for (file.number in 1:length(metadata$station_file))
+	numfiles <- length(metadata$station_file)
+	for (file.number in 1:numfiles)
 	{
-	  print(paste0("Processing file ",file.number))
+		msg <- paste("File", file.number, "of", numfiles, ":", metadata$station_file[file.number])
+	  	print(msg)
+		progress$inc(detail = msg)
 		func(file.number, batchfiles)
 
 	  if(!is.null(progress)) progress$inc(prog_int)
@@ -204,7 +204,7 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 	return(paste0("output/", zipfilename))
 }
 
-# JMC - runs on shinyapps.io 
+# JMC - following non-interactive code runs on shinyapps.io and breaks app
 # set up variables and call main function if this is from the command line
 # if(!interactive()) {
 #   # Enable reading of command line arguments

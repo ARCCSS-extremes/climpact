@@ -572,7 +572,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 			error.msg = HTML(paste0("You seem to have missing dates. See <a href=output/",missing.dates.file,"> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control."))
 			skip <<- TRUE
 	
-	stop(error.msg)
+			stop(error.msg)
 			return()
 	}
 
