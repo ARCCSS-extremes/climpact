@@ -73,7 +73,7 @@ climpact.server <- function(input, output, session) {
     output$dataFileLoaded <- reactive({
         !is.null(input$dataFile)
     })
-
+    
     output$qualityControlError <- eventReactive(input$doQualityControl, {
         stationName()
     })
@@ -242,6 +242,7 @@ climpact.server <- function(input, output, session) {
         val <- strsplit(input$dataFile$name, "[_\\.]")[[1]][1]
         updateTextInput(session, "stationName", value=val)
         updateTextInput(session, "plotTitle", value=val)
+        session$sendCustomMessage("enableTab", "process_single_station_step_2")
     })
 
     # Quality control processing has been requested by the user.
@@ -825,6 +826,15 @@ climpact.server <- function(input, output, session) {
       tabName <- "process_single_station_step_4"
       session$sendCustomMessage("enableTab", tabName)
       updateTabsetPanel(session, "process_single_station", selected = tabName)
+    })
+
+    observeEvent(qualityControlErrorText(), {
+      session$sendCustomMessage("enableTab", "process_single_station_step_3")      
+    })
+    observeEvent(indexCalculationStatus(), {
+      if (indexCalculationStatus()=='Done') {
+        session$sendCustomMessage("enableTab", "process_single_station_step_4")
+      }      
     })
 
     getLinkFromPath <- function (batchZipFilePath) {

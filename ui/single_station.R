@@ -43,85 +43,83 @@ box(title = "Process Single Station", status = "primary", width = 12,
         tabPanel(title = "3. Calculate Climate Indices",
             id = "process_single_station_step_3",
             value = "process_single_station_step_3",
-            wellPanel(
-                conditionalPanel(
-                    condition = "output.qualityControlError != ''",
-                    wellPanel("Please check data quality.")
-                ),
-                conditionalPanel(
-                    condition = "output.qualityControlError == ''",
-                    wellPanel(
-                        h4("Provide User Parameters"),
-                        fluidRow(
-                            column(6,
-                                textInput("plotTitle", "Plot title:")
-                            )
-                        ),
-                        fluidRow(
-                            column(12, uiOutput("loadParamHelpText"))
-                        ),
-                        wellPanel(
-                            fluidRow(
-                                column(4,
-                                    numericInput("wsdin", "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
-                                    numericInput("csdin", "d for CSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
-                                    numericInput("rxnday", "d for Rxdday Days (d >= 1):", 3, min = 1),
-                                    numericInput("txtn", "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1)
-                                ),
-                                column(4,
-                                    numericInput("hdd", "Base temperature for HDDHeat (°C):", 18),
-                                    numericInput("cdd", "Base temperature for CDDHeat (°C):", 18),
-                                    numericInput("gdd", "Base temperature for GDDgrow (°C):", 10),
-                                    numericInput("rnnmm", "Number of days precip >= nn (Rnnmm; nn >= 0):", 30, min = 0),
-                                    numericInput("spei", "SPEI/SPI custom monthly time scale (must be a positive number):", 24, min = 1)
-                                ),
-                                column(4,
-                                    wellPanel(
-                                        h4("Specify custom thresholds"),
-                                        strong("Custom index counting days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
-                                        br(),
-                                        selectInput("custVariable", label = "Variable:",
-                                            choices = list("TN", "TX", "TM", "PR", "DTR"),
-                                            selected = "TN"
-                                        ),
-                                        selectInput("custOperation", label = "Operation:",
-                                            choices = list(">", ">=", "<", "<="),
-                                            selected = ">"
-                                        ),
-                                        numericInput("custThreshold", "Threshold:", 0)
-                                    )
-                                )
-                            )
+            conditionalPanel(
+                condition = "output.qualityControlError != ''",
+                wellPanel("Please check data quality.")
+            ),
+            conditionalPanel(
+                condition = "output.qualityControlError == ''",
+                wellPanel(
+                    h4("Provide User Parameters"),
+                    fluidRow(
+                        column(6,
+                            textInput("plotTitle", "Plot title:")
                         )
+                    ),
+                    fluidRow(
+                        column(12, uiOutput("loadParamHelpText"))
                     ),
                     wellPanel(
                         fluidRow(
-                            column(6,
-                                conditionalPanel(
-                                    condition = "output.qualityControlError == ''",
-                                    actionButton("calculateIndices", "Calculate Indices"),
-                                    textOutput("indiceCalculationError")
-                                ),
-                                conditionalPanel(
-                                    condition = "output.qualityControlError != ''",
-                                    wellPanel("Please load data and perform Quality Control check.")
-                                )
-                            )
-                        ),
-                        fluidRow(
-                            column(6,
-                                conditionalPanel(
-                                    condition = "output.indiceCalculationError == ''",
-                                    h4("View Indices"),
-                                    uiOutput("indicesLink")
+                            column(4,
+                                numericInput("wsdin", "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+                                numericInput("csdin", "d for CSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+                                numericInput("rxnday", "d for Rxdday Days (d >= 1):", 3, min = 1),
+                                numericInput("txtn", "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1)
+                            ),
+                            column(4,
+                                numericInput("hdd", "Base temperature for HDDHeat (°C):", 18),
+                                numericInput("cdd", "Base temperature for CDDHeat (°C):", 18),
+                                numericInput("gdd", "Base temperature for GDDgrow (°C):", 10),
+                                numericInput("rnnmm", "Number of days precip >= nn (Rnnmm; nn >= 0):", 30, min = 0),
+                                numericInput("spei", "SPEI/SPI custom monthly time scale (must be a positive number):", 24, min = 1)
+                            ),
+                            column(4,
+                                wellPanel(
+                                    h4("Specify custom thresholds"),
+                                    strong("Custom index counting days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
+                                    br(),
+                                    selectInput("custVariable", label = "Variable:",
+                                        choices = list("TN", "TX", "TM", "PR", "DTR"),
+                                        selected = "TN"
+                                    ),
+                                    selectInput("custOperation", label = "Operation:",
+                                        choices = list(">", ">=", "<", "<="),
+                                        selected = ">"
+                                    ),
+                                    numericInput("custThreshold", "Threshold:", 0)
                                 )
                             )
                         )
                     )
                 ),
-                br(),
-                actionButton("btn_next_process_single_station_step_3", label = "Next", icon = icon("chevron-circle-right"))
-            )
+                wellPanel(
+                    fluidRow(
+                        column(6,
+                            conditionalPanel(
+                                condition = "output.qualityControlError == ''",
+                                actionButton("calculateIndices", "Calculate Indices"),
+                                textOutput("indiceCalculationError")
+                            ),
+                            conditionalPanel(
+                                condition = "output.qualityControlError != ''",
+                                wellPanel("Please load data and perform Quality Control check.")
+                            )
+                        )
+                    ),
+                    fluidRow(
+                        column(6,
+                            conditionalPanel(
+                                condition = "output.indiceCalculationError == ''",
+                                h4("View Indices"),
+                                uiOutput("indicesLink")
+                            )
+                        )
+                    )
+                )
+            ),
+            br(),
+            actionButton("btn_next_process_single_station_step_3", label = "Next", icon = icon("chevron-circle-right"))            
         ),
         tabPanel(title = "4. Sector Correlation",
             id = "process_single_station_step_4",
