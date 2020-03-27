@@ -4,7 +4,7 @@
 
 /* For disabled tabPanel */
 .nav li a.disabled {
-    background-color: #aaa !important;
+    background-color: #ccc !important;
     color: #333 !important;
     cursor: not-allowed !important;
     border-color: #aaa !important;

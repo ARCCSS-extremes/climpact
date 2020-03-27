@@ -73,14 +73,7 @@ climpact.server <- function(input, output, session) {
     output$dataFileLoaded <- reactive({
         !is.null(input$dataFile)
     })
-    
-    isDataFileLoaded <- reactive({
-        !is.null(input$dataFile)
-    })
 
-    output$qualityControlChecked <- reactive({
-
-    })
     output$qualityControlError <- eventReactive(input$doQualityControl, {
         stationName()
     })
@@ -128,7 +121,7 @@ climpact.server <- function(input, output, session) {
             session$clientData$url_hostname, ":", 4199, "/", sep="")
     })
 
-    userGuildLink <- reactive({
+    userGuideLink <- reactive({
       paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>", sep="")
     })
 
@@ -140,7 +133,7 @@ climpact.server <- function(input, output, session) {
     output$loadDatasetText <- renderText({
       sydneySampleLink <- paste("<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>", sep="")
       HTML(paste("The dataset <strong>must</strong> use the format described in ",
-                  appendixBLink(), " of the ", userGuildLink(),".",
+                  appendixBLink(), " of the ", userGuideLink(),".",
                   "<br>", "<br>",
                   "For a sample dataset look at ", sydneySampleLink, sep="")
            )
@@ -150,7 +143,7 @@ climpact.server <- function(input, output, session) {
     output$loadSectorDataText <- renderText({
       wheatSampleLink <- paste("<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>", sep="")
       HTML(paste("The dataset <strong>must</strong> use the format described in ",
-                  appendixBLink(), " of the ", userGuildLink(),
+                  appendixBLink(), " of the ", userGuideLink(),
                   "<br>", "<br>",
                   "To view a sample dataset see here ", wheatSampleLink, sep="")
            )
@@ -159,7 +152,7 @@ climpact.server <- function(input, output, session) {
     output$loadParamHelpText <- renderText({
         indexParamLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>", sep="")
         HTML(paste("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                    in these indices. See ", indexParamLink, " of the ", userGuildLink(), " for guidance.", sep=""))
+                    in these indices. See ", indexParamLink, " of the ", userGuideLink(), " for guidance.", sep=""))
     })
 
     output$batchIntroText <- renderText({
@@ -196,7 +189,7 @@ climpact.server <- function(input, output, session) {
         remoteLink <- paste0("<br />Quality control files: ",qcZipLink)
         
         HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing. Refer to ",
-                   appendixCLink, " of the ", userGuildLink(), " for help.", localOrRemoteLink(localLink, remoteLink)))
+                   appendixCLink, " of the ", userGuideLink(), " for help.", localOrRemoteLink(localLink, remoteLink)))
     })
 
     output$indicesLink <- renderText({
@@ -217,14 +210,18 @@ climpact.server <- function(input, output, session) {
 
         localLink <- paste0(" in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
         remoteLink <- paste0(" ", indicesZipLink)
+        indexCalculationStatus("Done")
         HTML("Please view the output", localOrRemoteLink(localLink, remoteLink),
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
-                    "<br>The <i>trends</i> subdirectory contains a .csv file containing linear trend information for each index.",
-                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."
+                    "<br>The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.",
+                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.",
+                    "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
+                    "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
         )
+        
     })
-
+        
     output$sectorCorrelationLink <- renderText({
       sectorCorrelationChanges()  # respond to sector correlation calculation
 
@@ -652,8 +649,10 @@ climpact.server <- function(input, output, session) {
                     "<br>Results for each station are stored in separate directories. See *error.txt files for stations that had problems.",
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
-                    "<br>The <i>trends</i> subdirectory contains a .csv file containing linear trend information for each index.",
-                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."
+                    "<br>The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.",
+                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.",
+                    "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
+                    "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
         )
           
       })
@@ -704,6 +703,8 @@ climpact.server <- function(input, output, session) {
         results
       }
 
+    indexCalculationStatus <- reactiveVal("Not Started")
+
     # Index calculation has been requested by the user.
     output$indiceCalculationError <- eventReactive(input$calculateIndices, {
       # ------------------------------------------------------------------ #
@@ -719,34 +720,38 @@ climpact.server <- function(input, output, session) {
         need(input$rnnmm>=0,message="Rnnmm requires nn to be greater than or equal to zero"),
         need(input$spei>=1,message="Custom SPEI/SPI time scale must be a positive number")
       )
-        plotTitleMissing()
+      plotTitleMissing()
 
-        # Get inputs.
-        plot.title <- input$plotTitle
-        wsdi_ud <- input$wsdin
-        csdi_ud <- input$csdin
-        rx_ui <- input$rxnday
-        txtn_ud <- input$txtn
-        Tb_HDD <- input$hdd
-        Tb_CDD <- input$cdd
-        Tb_GDD <- input$cdd
-        rnnmm_ud <- input$rnnmm
-        custom_SPEI <- input$spei
-        var.choice <- input$custVariable
-        op.choice <- input$custOperation
-        constant.choice <- input$custThreshold
+      # Get inputs.
+      plot.title <- input$plotTitle
+      wsdi_ud <- input$wsdin
+      csdi_ud <- input$csdin
+      rx_ui <- input$rxnday
+      txtn_ud <- input$txtn
+      Tb_HDD <- input$hdd
+      Tb_CDD <- input$cdd
+      Tb_GDD <- input$cdd
+      rnnmm_ud <- input$rnnmm
+      custom_SPEI <- input$spei
+      var.choice <- input$custVariable
+      op.choice <- input$custOperation
+      constant.choice <- input$custThreshold
 
-        progress <- shiny::Progress$new()
-        on.exit(progress$close())
-        progress$set(message="Calculating indices", value=0)
-
-        # Call into ClimPACT to calculate indices.
-        error <- draw.step2.interface(progress, plot.title, wsdi_ud, csdi_ud,
-                                      rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
-                                      Tb_GDD, custom_SPEI, var.choice, op.choice,
-                                      constant.choice)
-        return("")
-    })
+      progress <- shiny::Progress$new()
+      on.exit(progress$close())
+      progress$set(message="Calculating indices", value=0)
+      
+      indexCalculationStatus("In Progress")
+      
+      # Call into ClimPACT to calculate indices.
+      error <- draw.step2.interface(progress, plot.title, wsdi_ud, csdi_ud,
+                                    rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
+                                    Tb_GDD, custom_SPEI, var.choice, op.choice,
+                                    constant.choice)
+      
+      return("")
+    }
+    )
 
     ## Correlation functionality
 
@@ -796,7 +801,7 @@ climpact.server <- function(input, output, session) {
     # Single station
     observe(toggleState('btn_next_process_single_station_step_1', !is.null(input$dataFile)))
     observe(toggleState('btn_next_process_single_station_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
-    observe(toggleState('btn_next_process_single_station_step_3', !is.null(input$dataFile)))
+    observe(toggleState('btn_next_process_single_station_step_3', indexCalculationStatus()=='Done'))
 
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
@@ -807,13 +812,19 @@ climpact.server <- function(input, output, session) {
     observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 
     observeEvent(input$btn_next_process_single_station_step_1, {
-      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_2")
+      tabName <- "process_single_station_step_2"
+      session$sendCustomMessage("enableTab", tabName)      
+      updateTabsetPanel(session, "process_single_station", selected = tabName)
     })
     observeEvent(input$btn_next_process_single_station_step_2, {
-      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_3")
+      tabName <- "process_single_station_step_3"
+      session$sendCustomMessage("enableTab", tabName)
+      updateTabsetPanel(session, "process_single_station", selected = tabName)
     })
     observeEvent(input$btn_next_process_single_station_step_3, {
-      updateTabsetPanel(session, "process_single_station", selected = "process_single_station_step_4")
+      tabName <- "process_single_station_step_4"
+      session$sendCustomMessage("enableTab", tabName)
+      updateTabsetPanel(session, "process_single_station", selected = tabName)
     })
 
     getLinkFromPath <- function (batchZipFilePath) {

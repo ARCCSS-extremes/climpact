@@ -1,6 +1,6 @@
 box(title = "Process Single Station", status = "primary", width = 12,
     solidHeader = TRUE,
-    tabBox(id = "process_single_station", width = 12,
+    tabBox(id = "process_single_station", width = 12,        
         tabPanel(title = "1. Load Dataset",
             id = "process_single_station_step_1",
             value = "process_single_station_step_1",
@@ -12,13 +12,13 @@ box(title = "Process Single Station", status = "primary", width = 12,
             wellPanel(
                 h4("Provide metadata"),
                 textInput("stationName", "Station name (used in output file names):"),
-                numericInput("stationLat", "Latitude:", 0, min = -90, max = 90),
-                numericInput("stationLon", "Longitude:", 0, min = -180, max = 180),
+                numericInput("stationLat", "Latitude (decimal degrees eg -40.992):", 0, min = -90, max = 90),
+                numericInput("stationLon", "Longitude (decimal degrees eg 148.346):", 0, min = -180, max = 180),
                 numericInput("startYear", "Base Period Start year:", 1971, min = 0),
                 numericInput("endYear", "Base Period End year:", 2000, min = 0)
             ),
             br(),
-            actionButton("btn_next_process_single_station_step_1", label = "Next >")
+            actionButton("btn_next_process_single_station_step_1", label = "Next", icon = icon("chevron-circle-right"))
         ),
         tabPanel(title = "2. Quality Control",
             id = "process_single_station_step_2",
@@ -38,7 +38,7 @@ box(title = "Process Single Station", status = "primary", width = 12,
                     )
                 ),
                 br(),
-                actionButton("btn_next_process_single_station_step_2", label = "Next >")
+                actionButton("btn_next_process_single_station_step_2", label = "Next", icon = icon("chevron-circle-right"))
         ),
         tabPanel(title = "3. Calculate Climate Indices",
             id = "process_single_station_step_3",
@@ -69,9 +69,9 @@ box(title = "Process Single Station", status = "primary", width = 12,
                                     numericInput("txtn", "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1)
                                 ),
                                 column(4,
-                                    numericInput("hdd", "Base temperature for HDDHeat:", 18),
-                                    numericInput("cdd", "Base temperature for CDDHeat:", 18),
-                                    numericInput("gdd", "Base temperature for GDDgrow:", 10),
+                                    numericInput("hdd", "Base temperature for HDDHeat (°C):", 18),
+                                    numericInput("cdd", "Base temperature for CDDHeat (°C):", 18),
+                                    numericInput("gdd", "Base temperature for GDDgrow (°C):", 10),
                                     numericInput("rnnmm", "Number of days precip >= nn (Rnnmm; nn >= 0):", 30, min = 0),
                                     numericInput("spei", "SPEI/SPI custom monthly time scale (must be a positive number):", 24, min = 1)
                                 ),
@@ -118,10 +118,10 @@ box(title = "Process Single Station", status = "primary", width = 12,
                             )
                         )
                     )
-                )
-            ),
-            br(),
-            actionButton("btn_next_process_single_station_step_3", label = "Next >")
+                ),
+                br(),
+                actionButton("btn_next_process_single_station_step_3", label = "Next", icon = icon("chevron-circle-right"))
+            )
         ),
         tabPanel(title = "4. Sector Correlation",
             id = "process_single_station_step_4",

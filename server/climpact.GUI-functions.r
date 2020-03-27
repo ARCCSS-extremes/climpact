@@ -588,7 +588,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	assign("latitude",  metadata$lat, envir = .GlobalEnv)
 	assign("longitude", metadata$lon, envir = .GlobalEnv)
 
-	if(!is.null(progress)) progress$inc(0.05, detail = "Creating Climdex object...")
+	if(!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
 	cio <<- create.climdex.input(user.data,metadata)
 	print("climdex input object created.",quote=FALSE)
 

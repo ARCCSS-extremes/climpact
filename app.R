@@ -74,7 +74,7 @@ ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
 jscode <- "
-shinyjs.disableTab = function(name) {
+disableTab = function(name) {
   var tab = $('.nav li a[data-value=' + name + ']');
   tab.bind('click.tab', function(e) {
     e.preventDefault();
@@ -83,28 +83,18 @@ shinyjs.disableTab = function(name) {
   tab.addClass('disabled');
 }
 
-shinyjs.enableTab = function(name) {
-  var tab = $('.nav li a[data-value=' + name + ']');
-  tab.unbind('click.tab');
-  tab.removeClass('disabled');
-}
+Shiny.addCustomMessageHandler('enableTab', function(name) {
+    var tab = $('.nav li a[data-value=' + name + ']');
+    tab.unbind('click.tab');
+    tab.removeClass('disabled');
+  }
+);
 "
-
-
-    # # disable tab2 on page load
-    # js$disableTab("single-station-step-2")
-
-    # observeEvent(input$btn, {
-    #   # enable tab2 when clicking the button
-    #   js$enableTab("single-station-step-2")
-    #   # switch to tab2
-    #   updateTabsetPanel(session, "process-single-station", "single-station-step-2")
-    # })
-
 
 ui <- tagList(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="styles.css")
+      tags$link(rel="stylesheet", type="text/css", href="styles.css"),
+      tags$script(HTML(jscode))
     ),
     useShinyjs(),
     #inlineCSS(css),
@@ -154,7 +144,10 @@ ui <- tagList(
         HTML("<a href=\"https://www.greenclimate.fund\"><img src=\"assets/logo-gcf.png\" alt=\"Green Climate Fund\"></a>")
       )
     )
-  )
+  ),
+  tags$script(HTML("disableTab('process_single_station_step_2')")),
+  tags$script(HTML("disableTab('process_single_station_step_3')")),
+  tags$script(HTML("disableTab('process_single_station_step_4')"))
 )
 
 shinyApp(ui, climpact.server)
