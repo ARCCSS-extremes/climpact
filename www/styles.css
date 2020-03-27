@@ -10,6 +10,16 @@
     border-color: #aaa !important;
   }
 
+.shiny-notification {
+    height: 100%;
+    width: 100%;
+    position:fixed;
+    top: 0;
+    left: 0;
+    font-size: 250%;
+    /* text-align: center; */
+}
+
 footer {
     padding: 3rem !important;
     background-color: #222d32;

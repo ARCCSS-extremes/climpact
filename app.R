@@ -73,22 +73,22 @@ if(.Platform$OS.type == "windows") {
 ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
-# jscode <- "
-# shinyjs.disableTab = function(name) {
-#   var tab = $('.nav li a[data-value=' + name + ']');
-#   tab.bind('click.tab', function(e) {
-#     e.preventDefault();
-#     return false;
-#   });
-#   tab.addClass('disabled');
-# }
+jscode <- "
+shinyjs.disableTab = function(name) {
+  var tab = $('.nav li a[data-value=' + name + ']');
+  tab.bind('click.tab', function(e) {
+    e.preventDefault();
+    return false;
+  });
+  tab.addClass('disabled');
+}
 
-# shinyjs.enableTab = function(name) {
-#   var tab = $('.nav li a[data-value=' + name + ']');
-#   tab.unbind('click.tab');
-#   tab.removeClass('disabled');
-# }
-# "
+shinyjs.enableTab = function(name) {
+  var tab = $('.nav li a[data-value=' + name + ']');
+  tab.unbind('click.tab');
+  tab.removeClass('disabled');
+}
+"
 
 
     # # disable tab2 on page load
@@ -104,21 +104,10 @@ gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchO
 
 ui <- tagList(
     tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="styles.css"),
-      tags$style(
-        HTML(".shiny-notification {
-            height: 100%;
-            width: 100%;
-            position:fixed;
-            top: 0;
-            left: 0;
-            font-size: 250%;
-            # text-align: center;
-            }"
-        )
-      )
+      tags$link(rel="stylesheet", type="text/css", href="styles.css")
     ),
     useShinyjs(),
+    #inlineCSS(css),
     dashboardPage(
       header = dashboardHeader(title = "ClimPACT"),
       sidebar = dashboardSidebar(
