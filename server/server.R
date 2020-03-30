@@ -286,14 +286,29 @@ climpact.server <- function(input, output, session) {
         progress$set(message="Quality Control checks", value=0, detail = "Starting...")
 
         # Call into ClimPACT to do the quality control.
-        error <- load.data.qc(progress, file$datapath, outputDir, latitude,
+        out <- tryCatch(
+          {
+              qc.errors <- load.data.qc(progress, file$datapath, outputDir, latitude,
                               longitude, station,
                               base.year.start, base.year.end)
-        if (error !=  "") {
-          print(paste0("returning err: ",error))
-          return(error)
-        }
-        return("")
+              browser()
+              return (qc.errors)
+          },
+          # mySubclassedError = function(cond) {
+          #   browser()
+          # },
+          myerror = function(cond) {
+            browser()
+          },
+          error = function(cond) {
+              browser()
+              return(paste("Error:", cond$message))
+          },
+          warning = function(cond) {
+            return(paste("Warning:", cond$message))
+          }
+        )
+        return(out)
     })
 
       observeEvent(input$selectNcFiles,{

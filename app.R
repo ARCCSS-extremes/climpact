@@ -61,6 +61,40 @@ library(ggplot2)
 
 library(shinydashboard)
 
+# Custom errors
+stop_custom <- function(.subclass, message, call = NULL, ...) {
+  err <- structure(
+    list(
+      message = message,
+      call = call,
+      ...
+    ),
+    class = c(.subclass, "error", "condition")
+  )
+  stop(err)
+}
+
+myerror <<- function(msg, call = NULL, ...) {stop_custom("myerror", msg, call, ...)}
+
+# mySubclassedError <<- function(.subclass, message, call = NULL, ...) {
+#   err <- structure(
+#     list(
+#       message = message,
+#       call = call,
+#       ...
+#     ),
+#     class = c(.subclass, "myerror", "condition")
+#   )
+#   stop(err)
+# }
+
+# Usage
+# err <- catch_cnd(
+#   stop_custom("error_new", "This is a custom error", x = 10)
+# )
+# class(err)
+# err$x
+
 # If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. Base functions do not provide a dialog box in Unix environments.
 if(.Platform$OS.type == "windows") {
   fchoose <<- get("choose.files", mode="function")
