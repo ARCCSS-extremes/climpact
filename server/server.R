@@ -246,7 +246,13 @@ climpact.server <- function(input, output, session) {
     })
 
     # Quality control processing has been requested by the user.
-    output$qualityControlError <- renderText ({ qualityControlErrorText() })
+    output$qualityControlError <- reactive ({ 
+      errorHTML <- ""
+      if (qualityControlErrorText() != "") {
+        errorHTML <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlErrorText(), "</div>")
+      }
+      return (errorHTML)
+    })
     
     qualityControlErrorText <- eventReactive(input$doQualityControl, {
         source("server/climpact.etsci-functions.r")

@@ -28,7 +28,7 @@ box(title = "Process Single Station", status = "primary", width = 12,
                     condition = 'output.dataFileLoaded',
                     wellPanel(
                         actionButton("doQualityControl", "Check Quality"),
-                        textOutput("qualityControlError")
+                        htmlOutput("qualityControlError")
                     ),
                     conditionalPanel(
                         condition = "output.qualityControlError == ''",

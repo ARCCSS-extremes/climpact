@@ -43,7 +43,7 @@ allqc <- function (progress, master, output, outrange = 4)
 	jumps_tx(master, output)
 	jumps_tn(master, output)
 
-	if(!is.null(progress)) progress$inc(0.05, detail = "Finding flat lines...")
+	if(!is.null(progress)) progress$inc(0.05, detail = "Finding repeated values...")
 	# The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya)	
 	# identify series of 3 or more consecutive identical values. The first date is listed.
 	# Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
@@ -564,16 +564,17 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	user.date.series=as.Date(paste(user.data$year,user.data$month,user.data$day,sep="-"))
 	missing.dates = date.series[!date.series %in% user.date.series]
 	# Write out the missing.dates to a text file. Report the filename to the user.
-	missing.dates.file = paste0(basename(user.file),".missing_dates")
-	if(file_test("-f",missing.dates.file)) { file.remove(missing.dates.file) }
+	missingDatesFileName <- paste0(metadata$ofile,".missing_dates.txt")
+	missingDatesFilePath <- paste0(outdirtmp,.Platform$file.sep,"qc",.Platform$file.sep,missingDatesFileName)
+
+	if(file_test("-f",missingDatesFilePath)) { file.remove(missingDatesFilePath) }
 	if(length(date.series[!date.series %in% user.date.series]) > 0) {
-			write.table(date.series[!date.series %in% user.date.series], sep=",", file = paste0(outdirtmp,missing.dates.file), append = FALSE, row.names=FALSE,col.names = FALSE)
-			#JMC need link to missing dates file to vary if local?
-			error.msg = HTML(paste0("You seem to have missing dates. See <a href=output/",missing.dates.file,"> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control."))
+			write.table(date.series[!date.series %in% user.date.series], sep=",", file = missingDatesFilePath, append = FALSE, row.names=FALSE,col.names = FALSE)
+			error.msg = paste0("You seem to have missing dates. See <a href='output/", metadata$ofile, "/qc/",missingDatesFileName,"'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
 			skip <<- TRUE
 	
-			stop(error.msg)
-			return()
+			#stop(error.msg)
+			return(error.msg)
 	}
 
 	# Check for ascending order of years
