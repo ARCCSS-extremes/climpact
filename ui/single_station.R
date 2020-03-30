@@ -45,7 +45,7 @@ box(title = "Process Single Station", status = "primary", width = 12,
             value = "process_single_station_step_3",
             conditionalPanel(
                 condition = "output.qualityControlError != ''",
-                wellPanel("Please check data quality.")
+                wellPanel(HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span> Please check data quality</div>"))
             ),
             conditionalPanel(
                 condition = "output.qualityControlError == ''",
@@ -143,7 +143,7 @@ box(title = "Process Single Station", status = "primary", width = 12,
                     h4('Make correlation plots'),
                     conditionalPanel(
                         condition = "output.indiceCalculationError != ''",
-                        wellPanel("Please complete previous step - 3. Calculate Climate Indices.")
+                        wellPanel(HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span> Please complete previous step - 3. Calculate Climate Indices.</div>"))
                     ),
                     conditionalPanel(
                         condition = "output.indiceCalculationError == ''",
@@ -162,7 +162,7 @@ box(title = "Process Single Station", status = "primary", width = 12,
                     conditionalPanel(
                         condition = "output.sectorCorrelationError != ''",
                         wellPanel(
-                            "Click Calculate correlations button above. Correlation plots available here after calculations completed."
+                            "Correlation plots available here after calculations completed."
                         )
                     )
                 )

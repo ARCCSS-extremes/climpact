@@ -145,9 +145,9 @@ ui <- tagList(
       )
     )
   ),
-  tags$script(HTML("disableTab('process_single_station_step_2')")),
-  tags$script(HTML("disableTab('process_single_station_step_3')")),
-  tags$script(HTML("disableTab('process_single_station_step_4')"))
+  # tags$script(HTML("disableTab('process_single_station_step_2')")),
+  # tags$script(HTML("disableTab('process_single_station_step_3')")),
+  # tags$script(HTML("disableTab('process_single_station_step_4')"))
 )
 
 shinyApp(ui, climpact.server)

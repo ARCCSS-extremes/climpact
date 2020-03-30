@@ -570,7 +570,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
 	if(file_test("-f",missingDatesFilePath)) { file.remove(missingDatesFilePath) }
 	if(length(date.series[!date.series %in% user.date.series]) > 0) {
 			write.table(date.series[!date.series %in% user.date.series], sep=",", file = missingDatesFilePath, append = FALSE, row.names=FALSE,col.names = FALSE)
-			error.msg = paste0("You seem to have missing dates. See <a href='output/", metadata$ofile, "/qc/",missingDatesFileName,"'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
+			error.msg = paste0("You seem to have missing dates. See <a href='output/", metadata$ofile, "/qc/",missingDatesFileName,"' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
 			skip <<- TRUE
 	
 			#stop(error.msg)

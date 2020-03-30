@@ -51,10 +51,10 @@ climpact.server <- function(input, output, session) {
         input$dataFile
     })
 
-    output$dataFileLoadedWarning <- renderUI({
+    output$dataFileLoadedWarning <- reactive({ 
         dataFileLoadedText <- ""
         if (is.null(input$dataFile)) {
-          dataFileLoadedText <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
+          dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
         } 
         else {
           dataFileLoadedText <- ""
@@ -848,15 +848,11 @@ climpact.server <- function(input, output, session) {
     }
 
     zipFiles <- function (workingFolder, zipfilepath) {
-      	# JMC extract method to create zip file at path
       curwd <- getwd()
       setwd(workingFolder)
       files2zip <- dir(workingFolder)
       zip(zipfile = zipfilepath, files = files2zip)
-      #outputzipfilepath <- paste0(curwd,destinationFolder, zipfilename)
-      #file.copy(zipfilename, outputzipfilepath)
       setwd(curwd)
-      #return (outputzipfilepath)
     }
 
     localOrRemoteLink <- function (localLink, remoteLink) {
