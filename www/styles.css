@@ -63,9 +63,9 @@ footer #logos img {
     }
   }
   
-  /*.content-wrapper, .jumbotron {*/
-    /* background-image: url("assets/dominik-schroder-FIKD9t5_5zQ-unsplash.jpg");
+  .content-wrapper, .jumbotron {
+    background-image: url("assets/dominik-schroder-FIKD9t5_5zQ-unsplash.jpg");
     background-size: cover;
-    height: 100%; */
+    height: 100%; 
     /* Photo by Dominik Schröder on Unsplash */
-  /*}*/
+  }
