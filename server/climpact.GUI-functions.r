@@ -465,9 +465,7 @@ load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, st
 	assign('outdirtmp', outdirtmp, envir = .GlobalEnv)
 	assign('ofilename', ofilename, envir = .GlobalEnv)
 
-  user.data <- read.user.file(user.file)
-  browser()
-  myerror("error betweeen reading userfile and qc check")
+  user.data <- read.user.file(user.file)  
   qc.errors <- read.and.qc.check(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
   return(qc.errors)
 }
@@ -683,7 +681,7 @@ check.and.create.dates <- function(user.data) {
 
   user.data.ts <- data.frame(year = year, month = month, day = day, precp = prcp, tmax = tmax, tmin = tmin)
   user.data.ts$dates <- user.dates[!is.na(user.dates)]
-  stop(checkandcreatedateserror)
+  
   return(user.data.ts)
 }
 
@@ -696,23 +694,28 @@ read.and.qc.check <- function(progress, user.data, user.file, latitude, longitud
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
   user.data.ts <- check.and.create.dates(user.data)
-  browser()
+  
   create.dir(user.file, outdirtmp)
   metadata <- create.metadata(latitude, longitude, base.year.start, base.year.end, user.data.ts$dates, ofilename)
   assign("metadata", metadata, envir = .GlobalEnv)
-  stop(readandqccheckerror)
+  
   qc.errors <- QC.wrapper(progress, metadata, user.data.ts, user.file)
   return(qc.errors)
 }
 
 # Given a user's RClimdex text file path, read in, convert -99.9 to NA and
 # return contents as array of 6 columns.
-read.user.file <- function(user.file) {
+read.user.file <- function(user.file.path) {
   temp.filename = tempfile()
-  raw.table = readLines(user.file)
-  newtext = gsub(",", "\t", raw.table)
-  cat(newtext, file = temp.filename, sep = "\n")
-  
+  sub <- tryCatch({      
+    raw.table = readLines(user.file.path)
+    newtext = gsub(",", "\t", raw.table)
+    cat(newtext, file = temp.filename, sep = "\n")    
+  },
+  error = function(cond) {
+    readUserFileError(paste("Error creating temporary file",cond$message), cond)
+  })
+
   out <- tryCatch({
     data <- read.table(temp.filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6))
     # Replace -99.9 data with NA
@@ -725,7 +728,7 @@ read.user.file <- function(user.file) {
     return(data)
   },
   error = function(cond) {
-    myerror(paste0("errrk ",cond$message), cond$call)
+    readUserFileError(paste("Error reading table data in file",cond$message), cond)
   })
   return(out)
 }

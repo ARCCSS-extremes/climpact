@@ -291,21 +291,13 @@ climpact.server <- function(input, output, session) {
               qc.errors <- load.data.qc(progress, file$datapath, outputDir, latitude,
                               longitude, station,
                               base.year.start, base.year.end)
-              browser()
               return (qc.errors)
           },
-          # mySubclassedError = function(cond) {
-          #   browser()
-          # },
-          myerror = function(cond) {
-            browser()
+          readUserFileError = function(cond) {
+            return(paste("Error:", cond$message))
           },
-          error = function(cond) {
-              browser()
+          error = function(cond) {            
               return(paste("Error:", cond$message))
-          },
-          warning = function(cond) {
-            return(paste("Warning:", cond$message))
           }
         )
         return(out)
