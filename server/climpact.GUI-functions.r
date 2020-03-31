@@ -466,7 +466,7 @@ load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, st
 	assign('ofilename', ofilename, envir = .GlobalEnv)
 
   user.data <- read.user.file(user.file)  
-  qc.errors <- read.and.qc.check(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
+  qc.errors <- read_and_qc_check(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
   return(qc.errors)
 }
 
@@ -685,8 +685,7 @@ check.and.create.dates <- function(user.data) {
   return(user.data.ts)
 }
 
-# This function draws the "Step 1" interface that lets user enter station metadata and run QC on their file.
-read.and.qc.check <- function(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end) {
+read_and_qc_check <- function(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end) {
   ofilename <<- station.entry
 
   assign("base.year.start", base.year.start, envir = .GlobalEnv)

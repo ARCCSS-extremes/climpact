@@ -347,7 +347,7 @@ climpact.server <- function(input, output, session) {
             need(input$txName,message="Please specify the name of the maximum temperature variable as it is recorded in its netCDF file."),
             need(!is.null(gridOutDir),message="Please specify output directory."),
             need(input$fileConvention,message="Please specify an output filename convention."),
-            need(input$instituteID,input$instituteName,message="Please specify institute name and acronym."),
+            need(input$instituteID,input$instituteName,message="Please specify institute name and ID."),
             need(input$baseBegin,input$BaseEnd,message="Please specify start and end year of base period (e.g. 1990)"),
             need(input$nCores,message="Please specify number of cores to use."),
             need(input$maxVals,message="Please specify max values.")
@@ -418,7 +418,7 @@ climpact.server <- function(input, output, session) {
         disable("calculateGriddedIndices")
         removeModal()
 
-		error <- FALSE
+		    error <- FALSE
 
         data <- tryCatch(system(paste("Rscript ",user_wrapper_file,sep=""),intern=TRUE),
                          error= function(c) {
