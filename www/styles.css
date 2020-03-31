@@ -20,6 +20,10 @@
     /* text-align: center; */
 }
 
+.content {
+  display: inline-block; /* expand beyond content inside */
+}
+
 footer {
     padding: 3rem !important;
     background-color: #222d32;
