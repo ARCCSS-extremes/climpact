@@ -185,11 +185,12 @@ climpact.server <- function(input, output, session) {
         zipFiles(workingFolder, zipfilepath)
         qcZipLink <- getLinkFromPath(paste0("output/", ofilename, "/qc.zip"))
 
-        localLink <- paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")
-        remoteLink <- paste0("<br />Quality control files: ",qcZipLink)
+        localLink <- paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")        
+        remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
+                              " Quality control files ", qcZipLink,"</div>")
         
-        HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing. Refer to ",
-                   appendixCLink, " of the ", userGuideLink(), " for help.", localOrRemoteLink(localLink, remoteLink)))
+        HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
+                    "<br />Refer to ", appendixCLink, " of the ", userGuideLink(), " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
     })
 
     output$indicesLink <- renderText({
@@ -208,10 +209,11 @@ climpact.server <- function(input, output, session) {
         zipFiles(workingFolder, zipfilepath)
         indicesZipLink <- getLinkFromPath(paste0("output/", ofilename, "/indices.zip"))
 
-        localLink <- paste0(" in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
-        remoteLink <- paste0(" ", indicesZipLink)
+        localLink <- paste0("Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
+        remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
+                            " Calculated Indices available ", indicesZipLink, "</div>")
         indexCalculationStatus("Done")
-        HTML("Please view the output", localOrRemoteLink(localLink, remoteLink),
+        HTML(localOrRemoteLink(localLink, remoteLink),
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
                     "<br>The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.",
@@ -230,10 +232,10 @@ climpact.server <- function(input, output, session) {
       zipFiles(workingFolder, zipfilepath)
       corrZipLink <- getLinkFromPath(paste0("output/", ofilename, "/corr.zip"))
 
-      localLink <- paste0(" in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
-      remoteLink <- paste0(" ", corrZipLink)
-
-      HTML("Correlation output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink))
+      localLink <- paste0("Correlation output has been created. Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
+      remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
+                            " Correlation output available ", corrZipLink, "</div>")
+      HTML(localOrRemoteLink(localLink, remoteLink))
     })
 
     # Fill in default values for station name and plot title based on the name
