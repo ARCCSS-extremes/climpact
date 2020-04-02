@@ -5,52 +5,15 @@ climpact.server <- function(input, output, session) {
           menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
           menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
         )
-        # hideTab(inputId = "sidebar-menu", target = "gridded")
       }
     })
-
-    master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
-    master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
-    batch.script <<- paste0("climpact.batch.stations.r")
 
     # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
     options(shiny.maxRequestSize=1000000*1024^2)
 
-    # These element validate and return user input values.
-    # Validate latitude
-    stationLat <- reactive({
-        validate(
-            need(input$stationLat >= -90 && input$stationLat <= 90,
-                 'Latitude must be between -90 and 90.')
-        )
-        input$stationLat
-    })
+    source("server/validate_user_input.R")
 
-    # Validate longitude
-    stationLon <- reactive({
-        validate(
-            need(input$stationLon >= -180 && input$stationLon <= 180,
-                 'Longitude must be between -180 and 180')
-        )
-        input$stationLon
-    })
-
-    # Validate station name
-    stationName <- reactive({
-        validate(
-            need(input$stationName != "", message="Please enter a station name")
-        )
-        input$stationName
-    })
-
-    # Validate climate dataset
-    dataFile <- reactive({
-        validate(
-            need(!is.null(input$dataFile), message="Please load a dataset")
-        )
-        input$dataFile
-    })
-
+    
     output$dataFileLoadedWarning <- reactive({ 
         dataFileLoadedText <- ""
         if (is.null(input$dataFile)) {
@@ -60,14 +23,6 @@ climpact.server <- function(input, output, session) {
           dataFileLoadedText <- ""
         }
         return (dataFileLoadedText)
-    })
-
-    # Validate sector dataset
-    sectorDataFile <- reactive({
-        validate(
-            need(!is.null(input$sectorDataFile), message="Please load a dataset")
-        )
-        input$sectorDataFile
     })
 
     output$dataFileLoaded <- reactive({
@@ -81,28 +36,15 @@ climpact.server <- function(input, output, session) {
     output$qualityControlError <- eventReactive(input$calculateIndices, {
         dataFile()
     })
-    
-    # Validate the plot title.
-    plotTitleMissing <- reactive({
-        validate(
-            need(input$plotTitle != "", message="Please enter a plotting title")
-        )
-        ""
-    })
+
     output$indiceCalculationError <- eventReactive(input$calculateIndices, {
         plotTitleMissing()
     })
-
-    # Validate sector plot title.
-    sectorPlotTitleMissing <- reactive({
-      validate(
-        need(input$sectorPlotName != "", message="Please enter a plotting title")
-      )
-      ""
-    })
+    
     output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
       sectorPlotTitleMissing()
     })
+
 
     datasetChanges <- reactive({
         input$doQualityControl
@@ -116,43 +58,29 @@ climpact.server <- function(input, output, session) {
       input$calculateSectorCorrelation
     })
 
-    fileServerUrl <- reactive({
-      paste(session$clientData$url_protocol, "//",
-            session$clientData$url_hostname, ":", 4199, "/", sep="")
-    })
+    userGuideLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>"
+    appendixBLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>"
+    sampleText <- paste0("The dataset <strong>must</strong> use the format described in ",
+                  appendixBLink, " of the ", userGuideLink,".",
+                  "<br />", "<br />",
+                  "For a sample dataset look at ")
 
-    userGuideLink <- reactive({
-      paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>", sep="")
-    })
-
-    appendixBLink <- reactive({
-      paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>", sep="")
-    })
-
-    # Create some html text to be displayed to the client.
     output$loadDatasetText <- renderText({
-      sydneySampleLink <- paste("<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>", sep="")
-      HTML(paste("The dataset <strong>must</strong> use the format described in ",
-                  appendixBLink(), " of the ", userGuideLink(),".",
-                  "<br>", "<br>",
-                  "For a sample dataset look at ", sydneySampleLink, sep="")
-           )
+      HTML(sampleText, 
+        "<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>"
+      )
     })
 
-    # Create some html text to be displayed to the client.
-    output$loadSectorDataText <- renderText({
-      wheatSampleLink <- paste("<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>", sep="")
-      HTML(paste("The dataset <strong>must</strong> use the format described in ",
-                  appendixBLink(), " of the ", userGuideLink(),
-                  "<br>", "<br>",
-                  "To view a sample dataset see here ", wheatSampleLink, sep="")
-           )
+    output$loadSectorDataText <- renderText({      
+      HTML(sampleText, 
+        "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>"
+      )
     })
 
     output$loadParamHelpText <- renderText({
-        indexParamLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>", sep="")
-        HTML(paste("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                    in these indices. See ", indexParamLink, " of the ", userGuideLink(), " for guidance.", sep=""))
+        indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
+        HTML(paste0("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
+                    in these indices. See ", indexParamLink, " of the ", userGuideLink, " for guidance."))
     })
 
     output$batchIntroText <- renderText({
@@ -169,46 +97,26 @@ climpact.server <- function(input, output, session) {
       )
     })
 
-    # Create some html text to be displayed to the client.
+    # Display text in quality control panel
     output$qcLink <- renderText({
         datasetChanges() # respond to quality control initiation
-        qcDir <- get.qc.dir()
-        print("qcDir")
-        print(qcDir)
-        print(strsplit(qcDir,"/|\\\\"))
-        print(file.path(strsplit(qcDir,"/|\\\\")))
-        appendixCLink <- paste("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>", sep="")
         
-        #JMC alternate output depending on running locally or online
-        zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/qc.zip")
-        workingFolder <- paste0(getwd(),.Platform$file.sep,qcDir)
-        zipFiles(workingFolder, zipfilepath)
-        qcZipLink <- getLinkFromPath(paste0("output/", ofilename, "/qc.zip"))
-
+        # zip files and get link
+        qcZipLink <- zipFiles(get.qc.dir(), "qc")     
         localLink <- paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")        
         remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                               " Quality control files ", qcZipLink,"</div>")
         
+        appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
         HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
-                    "<br />Refer to ", appendixCLink, " of the ", userGuideLink(), " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
+                    "<br />Refer to ", appendixCLink, " of the ", userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
     })
 
     output$indicesLink <- renderText({
         indiceChanges() # respond to index calculation
-        indicesDir <- get.indices.dir()
-        # indicesDirLink <- paste("<a target=\"_blank\" href=",gsub(" ","%20",get.indices.dir()), ">indices</a>", sep="")
-        # plotsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.plots.dir()), ">plots</a>", sep="")
-        # trendsDirLink <- paste("<a target=\"_blank\" href=", fileServerUrl(),gsub(" ","%20",get.trends.dir()), ">trends</a>", sep="")
-        # threshDirLink <- paste("<a target=\"_blank\" href=",fileServerUrl(),gsub(" ","%20",get.thresh.dir()), ">thresholds</a>", sep="")
-        # zipFileLink <- paste0("<a target=\"_blank\" href=\"output/\"",gsub(" ","%20",basename(outdirtmp)),".zip>here</a>")
-        # HTML(paste("View ", indicesDirLink, ", ", plotsDirLink, ", ", trendsDirLink, ", ",
-        #            threshDirLink, " OR ", zipFileLink, sep=""))
-
-        zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/indices.zip")
-        workingFolder <- paste0(getwd(),.Platform$file.sep,indicesDir)
-        zipFiles(workingFolder, zipfilepath)
-        indicesZipLink <- getLinkFromPath(paste0("output/", ofilename, "/indices.zip"))
-
+        
+        # zip files and get link
+        indicesZipLink <- zipFiles(get.indices.dir(), "indices")
         localLink <- paste0("Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
         remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Calculated Indices available ", indicesZipLink, "</div>")
@@ -227,11 +135,8 @@ climpact.server <- function(input, output, session) {
     output$sectorCorrelationLink <- renderText({
       sectorCorrelationChanges()  # respond to sector correlation calculation
 
-      zipfilepath <- paste0(getwd(), .Platform$file.sep, outdirtmp, "/corr.zip")
-      workingFolder <- paste0(getwd(),.Platform$file.sep,get.corr.dir())
-      zipFiles(workingFolder, zipfilepath)
-      corrZipLink <- getLinkFromPath(paste0("output/", ofilename, "/corr.zip"))
-
+      # zip files and get link
+      corrZipLink <- zipFiles(get.corr.dir(), "corr")
       localLink <- paste0("Correlation output has been created. Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
       remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Correlation output available ", corrZipLink, "</div>")
@@ -253,7 +158,7 @@ climpact.server <- function(input, output, session) {
       if (qualityControlErrorText() != "") {
         errorHTML <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlErrorText(), "</div>")
       }
-      return (errorHTML)
+      return(errorHTML)
     })
     
     qualityControlErrorText <- eventReactive(input$doQualityControl, {
@@ -359,7 +264,8 @@ climpact.server <- function(input, output, session) {
           # Make and edit wrapper file with user preferences
           # ------------------------------------------------------------------ #
           user_wrapper_file <<- paste("climpact.ncdf.",input$instituteID,".wrapper.r",sep="")
-          file.copy(master.ncdf.gridded.wrapper.file,user_wrapper_file,overwrite=TRUE)
+          master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r")
+          file.copy(master.ncdf.gridded.wrapper.file <<- paste0("climpact.ncdf.wrapper.r"),user_wrapper_file,overwrite=TRUE)
 
           wraptext <- readLines(user_wrapper_file)
           fileText = ""
@@ -481,6 +387,7 @@ climpact.server <- function(input, output, session) {
           # Make and edit wrapper file with user preferences
           # ------------------------------------------------------------------ #
           user_wrapper_thresh_file <<- paste("climpact.ncdf.",input$instituteIDThresh,".thresholds.wrapper.r",sep="")
+          master.ncdf.threshold.wrapper.file <<- paste0("climpact.ncdf.thresholds.wrapper.r")
           file.copy(master.ncdf.threshold.wrapper.file,user_wrapper_thresh_file,overwrite=TRUE)
           wraptext <- readLines(user_wrapper_thresh_file)
           fileText = ""
@@ -856,12 +763,18 @@ climpact.server <- function(input, output, session) {
       return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>"))
     }
 
-    zipFiles <- function (workingFolder, zipfilepath) {
+    zipFiles <- function (folder, filename) {      
+      zipfilename <- paste0(folder, ".zip")
+      zipfilepath <- paste(getwd(), outdirtmp, zipfilename, .Platform$file.sep)
+      workingFolder <- paste(getwd(),folder, .Platform$file.sep)
+
       curwd <- getwd()
       setwd(workingFolder)
       files2zip <- dir(workingFolder)
       zip(zipfile = zipfilepath, files = files2zip)
       setwd(curwd)
+
+      return(getLinkFromPath(paste0("output/", ofilename, "/", filename, ".zip")))
     }
 
     localOrRemoteLink <- function (localLink, remoteLink) {

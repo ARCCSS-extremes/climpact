@@ -99,7 +99,6 @@ ui <- tagList(
       tags$script(HTML(jscode))
     ),
     useShinyjs(),
-    #inlineCSS(css),
     dashboardPage(
       header = dashboardHeader(title = "ClimPACT"),
       sidebar = dashboardSidebar(
