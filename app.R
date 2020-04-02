@@ -85,21 +85,6 @@ if (isLocal) {
   gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- NULL
 }
 
-tabsList <- list(
-  tabItem(
-          tabName = "home",
-          source(file.path("ui", "landing_page.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "single",
-          source(file.path("ui", "single_station.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "batch",
-          source(file.path("ui", "batch_processing.R"), local = TRUE)$value
-        )        
-)
-
 ui <- tagList(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
