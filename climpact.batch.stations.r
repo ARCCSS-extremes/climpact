@@ -198,8 +198,6 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
 		}
 	}
-	#return (paste0(outputFolder,.Platform$file.sep,zipfilename))
-
 	return(paste0("output/", zipfilename))
 }
 

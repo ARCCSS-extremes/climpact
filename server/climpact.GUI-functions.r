@@ -521,7 +521,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
   missing.dates = date.series[!date.series %in% user.date.series]
   # Write out the missing.dates to a text file. Report the filename to the user.
   missingDatesFileName <- paste0(metadata$ofile, ".missing_dates.txt")
-  missingDatesFilePath <- paste0(outdirtmp, .Platform$file.sep, "qc", .Platform$file.sep, missingDatesFileName)
+  missingDatesFilePath <- file.path(outdirtmp, "qc", missingDatesFileName)
 
   if (file_test("-f", missingDatesFilePath)) { file.remove(missingDatesFilePath) }
   if (length(date.series[!date.series %in% user.date.series]) > 0) {
@@ -808,16 +808,13 @@ draw.step2.interface <- function(progress, plot.title, wsdi_ud, csdi_ud, rx_ud, 
 
   index.calc(progress, metadata)
 
+  # TODO - refactor to use common zipFiles function that is currently in server.R
   # Create a zip file containing all of the results.
   curwd <- getwd()
   setwd(paste(outdirtmp, '..', sep = "/"))
-  files2zip <- dir(basename(outdirtmp), full.names = TRUE)
-
-  #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
+  filesToZip <- dir(basename(outdirtmp), full.names = TRUE)
   zipfilename <- basename(outdirtmp)
-  zip(zipfile = zipfilename, files = files2zip)
-  #	outputzipfilepath <- paste0(curwd, .Platform$file.sep,"www", .Platform$file.sep,"output",.Platform$file.sep, zipfilename)
-  #	file.copy(zipfilename, outputzipfilepath)
+  zip(zipfile = zipfilename, files = filesToZip)
   setwd(curwd)
 
 }

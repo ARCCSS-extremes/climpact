@@ -3,8 +3,8 @@
 # University of New South Wales
 # This package is available on github https://github.com/ARCCSS-extremes/climpact2.
 # ------------------------------------------------
-#    
-# This file constitutes the main user entry point into ClimPACT. 
+#
+# This file constitutes the main user entry point into ClimPACT.
 #
 # BUGS
 #   - Currently SPEI/SPI are calculated via the old ClimPACT code. This is because the CRAN package for SPEI/SPI does not
@@ -12,13 +12,13 @@
 #     should occur.
 #
 # TECHNICAL NOTES
-#   - See server/ClimPACT_developer_documentation.md for a technical document describing the major parts of this code. Refer 
-#	  to this for insight when making changes such as adding indices.
+#   - See server/ClimPACT_developer_documentation.md for a technical document describing the major parts of this code. Refer
+# 	  to this for insight when making changes such as adding indices.
 #
 # HISTORY
 #   The ClimPACT code has evolved very heavily since it's original incarnation in the form of the single source file climpact.r.
 #   The significant changes that have taken place include;
-#   - the calculation of the indices is almost entirely taken care of by climdex.pcic (with several exceptions such as the 
+#   - the calculation of the indices is almost entirely taken care of by climdex.pcic (with several exceptions such as the
 #     heatwave indices and SPEI/SPI).
 #   - the user interface has been re-written with R Shiny
 #   - the indices can now be calculated on netCDF files.
@@ -64,18 +64,18 @@ library(shinydashboard)
 library(shinyBS)
 
 # If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. Base functions do not provide a dialog box in Unix environments.
-if(.Platform$OS.type == "windows") {
-  fchoose <<- get("choose.files", mode="function")
-  dchoose <<- get("choose.dir", mode="function")
-} else if(.Platform$OS.type == "unix") {
-  fchoose <<- get("tk_choose.files", mode="function")
-  dchoose <<- get("tk_choose.dir", mode="function")
+if (.Platform$OS.type == "windows") {
+  fchoose <<- get("choose.files", mode = "function")
+  dchoose <<- get("choose.dir", mode = "function")
+} else if (.Platform$OS.type == "unix") {
+  fchoose <<- get("tk_choose.files", mode = "function")
+  dchoose <<- get("tk_choose.dir", mode = "function")
 }
 
 # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
-options(shiny.maxRequestSize=1000000*1024^2)
+options(shiny.maxRequestSize = 1000000 * 1024^2)
 
-ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
+ncFilter <<- matrix(c("NetCDF", "*.nc"), 1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
 jscode <- "
@@ -97,51 +97,59 @@ Shiny.addCustomMessageHandler('enableTab', function(name) {
 "
 
 ui <- tagList(
-    tags$head(
-      tags$link(rel="stylesheet", type="text/css", href="styles.css"),
-      tags$script(HTML(jscode))
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+    tags$script(HTML(jscode))
+  ),
+  useShinyjs(),
+  dashboardPage(
+    header = dashboardHeader(title = "ClimPACT"),
+    sidebar = dashboardSidebar(
+      sidebarMenu(
+        menuItem("Home", tabName = "home", icon = icon("sun")),
+        menuItem("Process single station", tabName = "single", icon = icon("table")),
+        menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
+        menuItemOutput("griddedMenuItem"),
+        menuItem("Documentation", icon = icon("book"), href = "user_guide/ClimPACT_user_guide.htm")
+      )
     ),
-    useShinyjs(),
-    dashboardPage(
-      header = dashboardHeader(title = "ClimPACT"),
-      sidebar = dashboardSidebar(
-        sidebarMenu(
-          menuItem("Home", tabName = "home", icon = icon("sun")),
-          menuItem("Process single station", tabName = "single", icon = icon("table")),
-          menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
-          menuItemOutput("griddedMenuItem"),
-          menuItem("Documentation", icon = icon("book"), href = "user_guide/ClimPACT_user_guide.htm")
+    body = dashboardBody(
+      tabItems(
+        tabItem(
+          tabName = "home",
+          source(file.path("ui", "landing_page.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "single",
+          source(file.path("ui", "single_station.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "batch",
+          source(file.path("ui", "batch_processing.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "gridded-indices",
+          source(file.path("ui", "gridded_data_calculate.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "gridded-thresholds",
+          source(file.path("ui", "gridded_data_thresholds.R"), local = TRUE)$value
         )
-      ),
-      body = dashboardBody(
-        tabItems(
-          tabItem(tabName = "home",
-            source(file.path("ui", "landing_page.R"), local=TRUE)$value
-          ),
-          tabItem(tabName = "single",
-            source(file.path("ui", "single_station.R"), local=TRUE)$value
-          ),
-          tabItem(tabName = "batch",
-            source(file.path("ui", "batch_processing.R"), local = TRUE)$value
-          ),
-          tabItem(tabName = "gridded-indices",
-            source(file.path("ui", "gridded_data_calculate.R"), local=TRUE)$value
-          ),
-          tabItem(tabName = "gridded-thresholds",
-            source(file.path("ui", "gridded_data_thresholds.R"), local=TRUE)$value
-          )
       )
     )
   ),
   tags$footer(
-    div(id="footer-content",
-      div(id="sitemap", 
+    div(
+      id = "footer-content",
+      div(
+        id = "sitemap",
         h4("Climpact 2.0.0"),
         p("Copyright © 2012–2020"),
         p("Climpact."),
         p("All Rights Reserved.")
       ),
-      div(id="logos",
+      div(
+        id = "logos",
         HTML("<a href=\"https://www.unsw.edu.au\"><img src=\"assets/logo-unsw-small.png\" alt=\"UNSW Sydney\"></a>"),
         HTML("<a href=\"https://www.climateextremes.org.au/\"><img src=\"assets/logo-clex-small.png\" alt=\"ARC Centre of Excellence for Climate Extremes\"></a>"),
         HTML("<a href=\"https://public.wmo.int/\"><img src=\"assets/logo-wmo.png\" alt=\"World Meteorological Organization\"></a>"),
@@ -155,4 +163,3 @@ ui <- tagList(
 )
 
 shinyApp(ui, climpact.server)
-

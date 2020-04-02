@@ -30,13 +30,13 @@ climpact.server <- function(input, output, session) {
                   "For a sample dataset look at ")
 
     output$loadDatasetText <- renderText({
-      HTML(sampleText, 
+      HTML(sampleText,
         "<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>"
       )
     })
 
-    output$loadSectorDataText <- renderText({      
-      HTML(sampleText, 
+    output$loadSectorDataText <- renderText({
+      HTML(sampleText,
         "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>"
       )
     })
@@ -64,13 +64,13 @@ climpact.server <- function(input, output, session) {
     # Display text in quality control panel
     output$qcLink <- renderText({
         datasetChanges() # respond to quality control initiation
-        
+
         # zip files and get link
-        qcZipLink <- zipFiles(get.qc.dir(), "qc")     
-        localLink <- paste0("<br /><br /><b>Quality control directory: ",getwd(),.Platform$file.sep,qcDir,"</b>")        
+        folderToZip <- file.path(getwd(), get.qc.dir())
+        qcZipLink <- zipFiles(folderToZip)
+        localLink <- paste0("<br /><br /><b>Quality control directory: ", folderToZip,"</b>")
         remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                               " Quality control files ", qcZipLink,"</div>")
-        
         appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
         HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
                     "<br />Refer to ", appendixCLink, " of the ", userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
@@ -78,10 +78,11 @@ climpact.server <- function(input, output, session) {
 
     output$indicesLink <- renderText({
         indiceChanges() # respond to index calculation
-        
+
         # zip files and get link
-        indicesZipLink <- zipFiles(get.indices.dir(), "indices")
-        localLink <- paste0("Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,outdirtmp,"</b>")
+        folderToZip <- file.path(getwd(), get.indices.dir())
+        indicesZipLink <- zipFiles(folderToZip)
+        localLink <- paste0("Please view the output in the following directory: <br /><br /><b>", folderToZip, "</b>")
         remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Calculated Indices available ", indicesZipLink, "</div>")
         indexCalculationStatus("Done")
@@ -93,15 +94,16 @@ climpact.server <- function(input, output, session) {
                     "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
                     "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
         )
-        
+
     })
-        
+
     output$sectorCorrelationLink <- renderText({
       sectorCorrelationChanges()  # respond to sector correlation calculation
 
       # zip files and get link
-      corrZipLink <- zipFiles(get.corr.dir(), "corr")
-      localLink <- paste0("Correlation output has been created. Please view the output in the following directory: <br /><br /><b>",getwd(),.Platform$file.sep,get.corr.dir(),"</b>")
+      folderToZip <- file.path(getwd(), get.corr.dir())
+      corrZipLink <- zipFiles(folderToZip)
+      localLink <- paste0("Correlation output has been created. Please view the output in the following directory: <br /><br /><b>", folderToZip, "</b>")
       remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Correlation output available ", corrZipLink, "</div>")
       HTML(localOrRemoteLink(localLink, remoteLink))
@@ -117,14 +119,14 @@ climpact.server <- function(input, output, session) {
     })
 
     # Quality control processing has been requested by the user.
-    output$qualityControlError <- reactive ({ 
+    output$qualityControlError <- reactive ({
       errorHTML <- ""
       if (qualityControlErrorText() != "") {
         errorHTML <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlErrorText(), "</div>")
       }
       return(errorHTML)
     })
-    
+
     qualityControlErrorText <- eventReactive(input$doQualityControl, {
         source("server/climpact.etsci-functions.r")
         batchMode <<- FALSE
@@ -167,7 +169,7 @@ climpact.server <- function(input, output, session) {
           readUserFileError = function(cond) {
             return(paste("Error:", cond$message))
           },
-          error = function(cond) {            
+          error = function(cond) {
               return(paste("Error:", cond$message))
           }
         )
@@ -436,10 +438,11 @@ climpact.server <- function(input, output, session) {
                            invisible(file.remove(user_wrapper_thresh_file))
                          })
 
-		print(data)
-
-        if(is.character(data) && !error) output$ncGriddedThreshDone <- renderText({ HTML(paste0("Done. Threshold file stored here: ",gridOutDirThresh,.Platform$file.sep,input$outFileThresh)) })
-
+		    print(data)
+        if(is.character(data) && !error) output$ncGriddedThreshDone <- renderText({
+          filePath <- file.path(gridOutDirThresh, input$outFileThresh)
+          HTML("Done. Threshold file stored here: ", filePath)
+        })
         enable("calculateGriddedThresholds")
       })
 
@@ -508,7 +511,7 @@ climpact.server <- function(input, output, session) {
         # cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
         assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
         # cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
-        
+
         batchMode <<- FALSE #JMC was TRUE
         cl <<- makeCluster(nCoresBatch)
 
@@ -521,15 +524,15 @@ climpact.server <- function(input, output, session) {
         assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
         assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
         assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
-        
+
         # This function is where the work is done
         batchZipFilePath <- batch(metadatafilepath,metadatafilename,batchfiles,input$startYearBatch,input$endYearBatch)
         cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
 
         enable("calculateBatchIndices")
-        
-        batchZipFileLink <- getLinkFromPath(batchZipFilePath)
-      
+
+        batchZipFileLink <- getLinkFromPath(batchZipFilePath, "here")
+
         localLink <- paste0("<br /><br /><b>",paste0(getwd(),"/www/",batchZipFilePath),"</b>")
         remoteLink <- paste0(" ", batchZipFileLink)
         HTML("Batch output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink),
@@ -541,7 +544,7 @@ climpact.server <- function(input, output, session) {
                     "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
                     "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
         )
-          
+
       })
       # handle calculateBatchIndices click
       output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
@@ -553,9 +556,9 @@ climpact.server <- function(input, output, session) {
         endYearBatch <- endYearBatch()
         batchCsvs <- batchCsvs()
         batchMeta <- batchMeta()
-        nCoresBatch <- nCoresBatch()                
+        nCoresBatch <- nCoresBatch()
         tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
-        
+
         modalMessage <- paste0("You appear to have ", nrow(tmp)," stations and have requested ",nCoresBatch," cores and so this process should take ~",nrow(tmp)/nCoresBatch," minutes to complete.")
         # Display notification before processing
         showModal(batchProcessingModal(modalMessage))
@@ -627,15 +630,15 @@ climpact.server <- function(input, output, session) {
       progress <- shiny::Progress$new()
       on.exit(progress$close())
       progress$set(message="Calculating indices", value=0)
-      
+
       indexCalculationStatus("In Progress")
-      
+
       # Call into ClimPACT to calculate indices.
       error <- draw.step2.interface(progress, plot.title, wsdi_ud, csdi_ud,
                                     rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
                                     Tb_GDD, custom_SPEI, var.choice, op.choice,
                                     constant.choice)
-      
+
       return("")
     }
     )
@@ -678,7 +681,7 @@ climpact.server <- function(input, output, session) {
 
       ifelse(error=="",return(""),return(error))
     })
-    
+
     outputOptions(output, "dataFileLoaded", suspendWhenHidden=FALSE)
     outputOptions(output, "indiceCalculationError", suspendWhenHidden=FALSE)
     outputOptions(output, "qualityControlError", suspendWhenHidden=FALSE)
@@ -692,7 +695,7 @@ climpact.server <- function(input, output, session) {
 
     observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     observe(toggleState('calculateIndices', !is.null(input$dataFile)))
-    
+
     # Batch
     observe(toggleState('calculateBatchIndices', !is.null(input$batchMeta) && !is.null(input$batchCsvs)))
     # Sector correlation
@@ -700,7 +703,7 @@ climpact.server <- function(input, output, session) {
 
     observeEvent(input$btn_next_process_single_station_step_1, {
       tabName <- "process_single_station_step_2"
-      session$sendCustomMessage("enableTab", tabName)      
+      session$sendCustomMessage("enableTab", tabName)
       updateTabsetPanel(session, "process_single_station", selected = tabName)
     })
     observeEvent(input$btn_next_process_single_station_step_2, {
@@ -715,41 +718,40 @@ climpact.server <- function(input, output, session) {
     })
 
     observeEvent(qualityControlErrorText(), {
-      session$sendCustomMessage("enableTab", "process_single_station_step_3")      
+      session$sendCustomMessage("enableTab", "process_single_station_step_3")
     })
     observeEvent(indexCalculationStatus(), {
       if (indexCalculationStatus()=='Done') {
         session$sendCustomMessage("enableTab", "process_single_station_step_4")
-      }      
+      }
     })
 
-    getLinkFromPath <- function (batchZipFilePath) {
-      return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">here</a>"))
+    getLinkFromPath <- function (batchZipFilePath, linkText) {
+      return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">", linkText, "</a>"))
     }
 
-    zipFiles <- function (folder, filename) {      
-      zipfilename <- paste0(folder, ".zip")
-      zipfilepath <- paste(getwd(), outdirtmp, zipfilename, .Platform$file.sep)
-      workingFolder <- paste(getwd(),folder, .Platform$file.sep)
-
-      curwd <- getwd()
-      setwd(workingFolder)
-      files2zip <- dir(workingFolder)
-      zip(zipfile = zipfilepath, files = files2zip)
-      setwd(curwd)
-
-      return(getLinkFromPath(paste0("output/", ofilename, "/", filename, ".zip")))
+    zipFiles <- function (folderToZip) {
+      fileName <- paste0(basename(folderToZip), ".zip")
+      folderName <- dirname(folderToZip)
+      zipFilePath <- file.path(folderName, fileName)
+      filesToZip <- dir(folderToZip)
+      originalwd <- getwd()
+      setwd(folderToZip)
+      zip(zipfile = zipFilePath, files = filesToZip)
+      setwd(originalwd)
+      stationName = basename(folderName)
+      return(getLinkFromPath(paste0("output/", stationName, "/", fileName), "here"))
     }
 
     localOrRemoteLink <- function (localLink, remoteLink) {
       result <- ""
       if (Sys.getenv('SHINY_PORT') == "") {
         result <- localLink
-      } 
+      }
       else {
         result <- remoteLink
       }
       return (result)
     }
-    
+
 }
