@@ -64,7 +64,7 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 
 		file <- batchfiles[file.name,'datapath']
 		print(file)
-		user.data <- read.user.file(file)
+		user.data <- read_user_file(file)
 		user.data <- check.and.create.dates(user.data)
 		station.name <- strip.file.extension(file.name)
 

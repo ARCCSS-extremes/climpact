@@ -1,8 +1,5 @@
 ## Correlation between climate and sector data
 
-# define in environment
-assign("wheat_plot_y_label", "Wheat Yield (t/ha)", envir=.GlobalEnv)
-
 # draw the correlation between temperature and industry data
 draw.correlation <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck){
 
@@ -19,7 +16,7 @@ draw.correlation <- function(progress, user.file, sector.file, stationName, plot
 # create the correlation plots and save them to disk
 create.correlation.plots <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck, curwd){
 
-  climate.data <- read.user.file(user.file)
+  climate.data <- read_user_file(user.file)
   # assume the sector data is a csv file for now
   sector.data <- read.csv(sector.file)
 
@@ -29,7 +26,8 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   # match on common data, if not throw error!
   temp_per_year <-  climate.data %>% group_by(year) %>% summarise(avg_tmax = mean(tmax, na.rm = TRUE), avg_tmin = mean(tmin, na.rm = TRUE), avg_t = mean(c(tmax,tmin), na.rm = TRUE), above30 = sum(tmax > 30, na.rm = TRUE))
   common_years <- intersect(temp_per_year$year, sector.data$Year)
-  #JMC need at least 10 common years
+  
+  # need at least 10 common years
   if (length(common_years) < 10){
     return("Error: not able to make a correlation, since there is no data in common!")
   }
@@ -51,6 +49,9 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   sectorCol <- ifelse(detrendCheck, getDetrendedColumnName(sectorColumnName), sectorColumnName)
   sectorColumnFilePart <- sectorColumnToFileName(sectorCol, sector.data.fileparts)
 
+  # JMC when do we overwrite this with user's sector specific label?
+  wheat_plot_y_label <- "Wheat Yield (t/ha)"
+
   # plot tmin vs wheat
   create_save_scatter_plot(paste0(ofilename, "_corr_tmin_",sectorColumnFilePart), temp_per_year_sector, "avg_tmin", sectorCol, plot.title, "Average min temperature", wheat_plot_y_label)
   progress$inc(0.2)
@@ -67,10 +68,8 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   create_save_scatter_plot(paste0(ofilename, "_corr_above30_",sectorColumnFilePart), temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", wheat_plot_y_label)
   progress$inc(0.2)
 
-
   #JMC add scatter plot for each index
-
-#JMC two overview bar plots, one with precip and one with temp related indices
+  #JMC two overview bar plots, one with precip and one with temp related indices
 
   # create barplot of indice value (not normalized) vs sector data
   indices <- c("wsdi", "wsdi1", "fd", "tnlt2", "rx1day", "rx3day", "cdd", "sdii")

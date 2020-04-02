@@ -61,7 +61,7 @@ write_header <- function(filename, header = "") {
   # No error checking here, file access is guaranteed because ClimPACT has own copy.
   write.table(header, sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
 
-  first_lines = cbind(c("Station: ", "Latitude: ", "Longitude: ", "ClimPACT2_version: ", "Date_of_calculation: "), c(ofilename, latitude, longitude, version.climpact, toString(Sys.Date())))
+  first_lines = cbind(c("Station: ", "Latitude: ", "Longitude: ", "ClimPACT_version: ", "Date_of_calculation: "), c(ofilename, latitude, longitude, version.climpact, toString(Sys.Date())))
   write.table(first_lines, sep = ",", file = filename, append = TRUE, row.names = FALSE, col.names = FALSE)
 
 }
@@ -465,7 +465,7 @@ load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, st
 	assign('outdirtmp', outdirtmp, envir = .GlobalEnv)
 	assign('ofilename', ofilename, envir = .GlobalEnv)
 
-  user.data <- read.user.file(user.file)  
+  user.data <- read_user_file(user.file)  
   qc.errors <- read_and_qc_check(progress, user.data, user.file, latitude, longitude, station.entry, base.year.start, base.year.end)
   return(qc.errors)
 }
@@ -704,7 +704,7 @@ read_and_qc_check <- function(progress, user.data, user.file, latitude, longitud
 
 # Given a user's RClimdex text file path, read in, convert -99.9 to NA and
 # return contents as array of 6 columns.
-read.user.file <- function(user.file.path) {
+read_user_file <- function(user.file.path) {
   temp.filename = tempfile()
   sub <- tryCatch({      
     raw.table = readLines(user.file.path)
