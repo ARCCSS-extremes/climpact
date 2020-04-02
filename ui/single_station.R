@@ -147,7 +147,7 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
             )
         ),
         fluidRow(
-            column(6,
+            column(12,
                 h4('Make correlation plots'),
                 conditionalPanel(
                     condition = "output.indiceCalculationError != ''",
