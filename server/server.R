@@ -1,4 +1,6 @@
 climpact.server <- function(input, output, session) {
+    source("server/validate_user_input.R", local = TRUE)
+
     output$griddedMenuItem <- renderMenu({
       if (Sys.getenv('SHINY_PORT') == "") {
         menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
@@ -7,44 +9,6 @@ climpact.server <- function(input, output, session) {
         )
       }
     })
-
-    # Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
-    options(shiny.maxRequestSize=1000000*1024^2)
-
-    source("server/validate_user_input.R")
-
-    
-    output$dataFileLoadedWarning <- reactive({ 
-        dataFileLoadedText <- ""
-        if (is.null(input$dataFile)) {
-          dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
-        } 
-        else {
-          dataFileLoadedText <- ""
-        }
-        return (dataFileLoadedText)
-    })
-
-    output$dataFileLoaded <- reactive({
-        !is.null(input$dataFile)
-    })
-    
-    output$qualityControlError <- eventReactive(input$doQualityControl, {
-        stationName()
-    })
-
-    output$qualityControlError <- eventReactive(input$calculateIndices, {
-        dataFile()
-    })
-
-    output$indiceCalculationError <- eventReactive(input$calculateIndices, {
-        plotTitleMissing()
-    })
-    
-    output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
-      sectorPlotTitleMissing()
-    })
-
 
     datasetChanges <- reactive({
         input$doQualityControl

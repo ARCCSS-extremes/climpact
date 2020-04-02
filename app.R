@@ -72,6 +72,9 @@ if(.Platform$OS.type == "windows") {
   dchoose <<- get("tk_choose.dir", mode="function")
 }
 
+# Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
+options(shiny.maxRequestSize=1000000*1024^2)
+
 ncFilter <<- matrix(c("NetCDF", "*.nc"),1, 2, byrow = TRUE)
 gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
 
