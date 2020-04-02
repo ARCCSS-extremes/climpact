@@ -88,7 +88,7 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 		station.metadata <- create.metadata(lat,lon,base.start,base.end,user.data$dates,"ofile_filler")
 		assign("metadata",station.metadata,envir=.GlobalEnv)
 		version.climpact <<- software_id
-		quantiles <<- NULL
+		quantiles <<- batchOutDir <<- NULL
 		if(lat<0) lat_text = "°S" else lat_text = "°N"
 		if(lon<0) lon_text = "°W" else lon_text = "°E"
 		Encoding(lon_text) <- "UTF-8"   # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)

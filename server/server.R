@@ -1,8 +1,8 @@
-climpact.server <- function(input, output, session) {
+server <- function(input, output, session) {
     source("server/validate_user_input.R", local = TRUE)
 
     output$griddedMenuItem <- renderMenu({
-      if (Sys.getenv('SHINY_PORT') == "") {
+      if (isLocal) {
         menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
           menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
           menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))

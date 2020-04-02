@@ -1,7 +1,7 @@
 # ------------------------------------------------
 # ClimPACT
 # University of New South Wales
-# This package is available on github https://github.com/ARCCSS-extremes/climpact2.
+# This package is available on github https://github.com/ARCCSS-extremes/climpact
 # ------------------------------------------------
 #
 # This file constitutes the main user entry point into ClimPACT.
@@ -42,8 +42,8 @@
 #   overhaul 2015-2017, Nicholas Herold and Nicholas Hannah (PCIC R package implementation, R Shiny interface, gridded indices, new indices).
 
 # Source files and load libraries. Note, other libraries are sourced at different points in the program depending on what functions the user interacts with.
-source("server/climpact.GUI-functions.r")
 source("server/server.R")
+source("server/climpact.GUI-functions.r")
 source("server/sector_correlation.R")
 source("server/climpact.etsci-functions.r")
 source("custom_errors.r")
@@ -72,34 +72,38 @@ if (.Platform$OS.type == "windows") {
   dchoose <<- get("tk_choose.dir", mode = "function")
 }
 
-# Increase file upload limit to something extreme to account for large files. Is this necessary anymore since files aren't loaded into the GUI? nherold.
-options(shiny.maxRequestSize = 1000000 * 1024^2)
-
-ncFilter <<- matrix(c("NetCDF", "*.nc"), 1, 2, byrow = TRUE)
-gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- batchOutDir <<- NULL
-
-jscode <- "
-disableTab = function(name) {
-  var tab = $('.nav li a[data-value=' + name + ']');
-  tab.bind('click.tab', function(e) {
-    e.preventDefault();
-    return false;
-  });
-  tab.addClass('disabled');
+isLocal <<- FALSE
+if (Sys.getenv('SHINY_PORT') == "") {
+  isLocal <<- TRUE
 }
 
-Shiny.addCustomMessageHandler('enableTab', function(name) {
-    var tab = $('.nav li a[data-value=' + name + ']');
-    tab.unbind('click.tab');
-    tab.removeClass('disabled');
-  }
-);
-"
+if (isLocal) {
+    # When running locally, support NetCDF file uploads and gridded data calculations
+  # Increase file upload limit to something extreme to account for large files. 
+  options(shiny.maxRequestSize = 1000000 * 1024^2)
+  ncFilter <<- matrix(c("NetCDF", "*.nc"), 1, 2, byrow = TRUE)
+  gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- NULL
+}
+
+tabsList <- list(
+  tabItem(
+          tabName = "home",
+          source(file.path("ui", "landing_page.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "single",
+          source(file.path("ui", "single_station.R"), local = TRUE)$value
+        ),
+        tabItem(
+          tabName = "batch",
+          source(file.path("ui", "batch_processing.R"), local = TRUE)$value
+        )        
+)
 
 ui <- tagList(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
-    tags$script(HTML(jscode))
+    tags$script(src = "climpact-ui.js")
   ),
   useShinyjs(),
   dashboardPage(
@@ -115,7 +119,7 @@ ui <- tagList(
     ),
     body = dashboardBody(
       tabItems(
-        tabItem(
+          tabItem(
           tabName = "home",
           source(file.path("ui", "landing_page.R"), local = TRUE)$value
         ),
@@ -156,10 +160,10 @@ ui <- tagList(
         HTML("<a href=\"https://www.greenclimate.fund\"><img src=\"assets/logo-gcf.png\" alt=\"Green Climate Fund\"></a>")
       )
     )
-  ),
+  )# ,
   # tags$script(HTML("disableTab('process_single_station_step_2')")),
   # tags$script(HTML("disableTab('process_single_station_step_3')")),
   # tags$script(HTML("disableTab('process_single_station_step_4')"))
 )
 
-shinyApp(ui, climpact.server)
+shinyApp(ui, server)
