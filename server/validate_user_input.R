@@ -24,14 +24,6 @@
         input$stationName
     })
 
-    # Validate climate dataset
-    dataFile <- reactive({
-        validate(
-            need(!is.null(input$dataFile), message="Please load a dataset")
-        )
-        input$dataFile
-    })
-
     # Validate sector dataset
     sectorDataFile <- reactive({
         validate(
@@ -58,7 +50,7 @@
     # Update UI with validation text
     output$dataFileLoadedWarning <- reactive({ 
         dataFileLoadedText <- ""
-        if (is.null(input$dataFile)) {
+        if (is.null(step1$dataFile)) {
           dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
         } 
         else {
@@ -75,6 +67,7 @@
         stationName()
     })
 
+    dataFile <- function () { "" }
     output$qualityControlError <- eventReactive(input$calculateIndices, {
         dataFile()
     })

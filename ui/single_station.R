@@ -1,25 +1,11 @@
 box(title = "Process Single Station", status = "primary", width = 12, solidHeader = TRUE,
   tabBox(id = "process_single_station", width = 12,        
-    tabPanel(title = "1. Load Dataset",
+    tabPanel(title = "1. Load",
         id = "process_single_station_step_1",
         value = "process_single_station_step_1",
-        wellPanel(
-            h4("Load station data"),
-            fileInput('dataFile', NULL, accept = c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
-            uiOutput("loadDatasetText")
-        ),
-        wellPanel(
-            h4("Provide metadata"),
-            textInput("stationName", "Station name (used in output file names):"),
-            numericInput("stationLat", "Latitude (decimal degrees eg -40.992):", 0, min = -90, max = 90),
-            numericInput("stationLon", "Longitude (decimal degrees eg 148.346):", 0, min = -180, max = 180),
-            numericInput("startYear", "Base Period Start year:", 1971, min = 0),
-            numericInput("endYear", "Base Period End year:", 2000, min = 0)
-        ),
-        br(),
-        actionButton("btn_next_process_single_station_step_1", label = "Next", icon = icon("chevron-circle-right"))
+        singleStationStep1UI("ui")        
     ),
-    tabPanel(title = "2. Quality Control",
+    tabPanel(title = "2. Check",
         id = "process_single_station_step_2",
         value = "process_single_station_step_2",
             htmlOutput("dataFileLoadedWarning"),
@@ -39,7 +25,7 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
             br(),
             actionButton("btn_next_process_single_station_step_2", label = "Next", icon = icon("chevron-circle-right"))
     ),
-    tabPanel(title = "3. Calculate Climate Indices",
+    tabPanel(title = "3. Calculate",
         id = "process_single_station_step_3",
         value = "process_single_station_step_3",
         conditionalPanel(
@@ -129,7 +115,7 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
         br(),
         actionButton("btn_next_process_single_station_step_3", label = "Next", icon = icon("chevron-circle-right"))            
     ),
-    tabPanel(title = "4. Sector Correlation",
+    tabPanel(title = "4. Correlate",
         id = "process_single_station_step_4",
         value = "process_single_station_step_4",
         fluidRow(

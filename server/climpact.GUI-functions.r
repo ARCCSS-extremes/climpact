@@ -442,7 +442,7 @@ pplotts <- function(var = "prcp", type = "h", tit = NULL, cio, metadata) {
 # Creates an array of strings, each string containing a folder in the path to the user's file.
 # Globally assigns two variables: the array of strings and the final string (i.e. the file name)
 # This should be improved in the future (global variables should not be relied on)
-get.file.path <- function(user.file, ofilename) {
+get_file_path <- function(user.file, ofilename) {
   outdirtmp <- strsplit(user.file, "/|\\\\")[[1]]
   file.name = outdirtmp[length(outdirtmp)]
   e = strsplit(file.name, "\\.")[[1]]
@@ -458,7 +458,7 @@ get.file.path <- function(user.file, ofilename) {
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, station.entry, base.year.start, base.year.end) {
+load_data_qc <- function(progress, user.file, outputDir, latitude, longitude, station.entry, base.year.start, base.year.end) {
 	if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...")
 	outdirtmp <- outputDir
 	ofilename <- station.entry
@@ -471,7 +471,7 @@ load.data.qc <- function(progress, user.file, outputDir, latitude, longitude, st
 }
 
 # Preps data and creates the climdex.input object based on the R package climdex.pcic
-create.climdex.input <- function(user.data, metadata) {
+create_climdex_input <- function(user.data, metadata) {
   date.seq <- data.frame(list(time = seq(metadata$dates[1], metadata$dates[length(metadata$dates)], by = "day")))
   data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user.data[, 4], tmax = user.data[, 5], tmin = user.data[, 6]))
   merge_data = merge(data_raw, date.seq, all = TRUE)
@@ -546,7 +546,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file) {
   assign("longitude", metadata$lon, envir = .GlobalEnv)
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
-  cio <<- create.climdex.input(user.data, metadata)
+  cio <<- create_climdex_input(user.data, metadata)
   print("climdex input object created.", quote = FALSE)
 
   ##############################
@@ -694,7 +694,7 @@ read_and_qc_check <- function(progress, user.data, user.file, latitude, longitud
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
   user.data.ts <- check.and.create.dates(user.data)
   
-  create.dir(user.file, outdirtmp)
+  create_dirs(user.file, outdirtmp)
   metadata <- create.metadata(latitude, longitude, base.year.start, base.year.end, user.data.ts$dates, ofilename)
   assign("metadata", metadata, envir = .GlobalEnv)
   
@@ -732,10 +732,10 @@ read_user_file <- function(user.file.path) {
   return(out)
 }
 
-# Create directories for output. Requires get.file.path to be called beforehand. That functionality was moved to a separate function
+# Create directories for output. Requires get_file_path to be called beforehand. That functionality was moved to a separate function
 # so that the directory could be modified by the user in the ClimPACT GUI.
 # Undesirably these are currently kept as global variables.
-create.dir <- function(user.file, outdir) {
+create_dirs <- function(user.file, outdir) {
 
   outinddir <- paste(outdir, "indices", sep = "/")
   outlogdir <- paste(outdir, "qc", sep = "/")

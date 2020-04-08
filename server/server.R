@@ -1,5 +1,6 @@
 server <- function(input, output, session) {
     source("server/validate_user_input.R", local = TRUE)
+    step1 <- callModule(singleStationStep1, "ui")
 
     output$griddedMenuItem <- renderMenu({
       if (isLocal) {
@@ -9,7 +10,7 @@ server <- function(input, output, session) {
         )
       }
     })
-
+   
     datasetChanges <- reactive({
         input$doQualityControl
     })
@@ -28,12 +29,6 @@ server <- function(input, output, session) {
                   appendixBLink, " of the ", userGuideLink,".",
                   "<br />", "<br />",
                   "For a sample dataset look at ")
-
-    output$loadDatasetText <- renderText({
-      HTML(sampleText,
-        "<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a>"
-      )
-    })
 
     output$loadSectorDataText <- renderText({
       HTML(sampleText,
@@ -109,15 +104,6 @@ server <- function(input, output, session) {
       HTML(localOrRemoteLink(localLink, remoteLink))
     })
 
-    # Fill in default values for station name and plot title based on the name
-    # of datafile.
-    observeEvent(input$dataFile, {
-        val <- strsplit(input$dataFile$name, "[_\\.]")[[1]][1]
-        updateTextInput(session, "stationName", value=val)
-        updateTextInput(session, "plotTitle", value=val)
-        session$sendCustomMessage("enableTab", "process_single_station_step_2")
-    })
-
     # Quality control processing has been requested by the user.
     output$qualityControlError <- reactive ({
       errorHTML <- ""
@@ -161,7 +147,7 @@ server <- function(input, output, session) {
         # Call into ClimPACT to do the quality control.
         out <- tryCatch(
           {
-              qc.errors <- load.data.qc(progress, file$datapath, outputDir, latitude,
+              qc.errors <- load_data_qc(progress, file$datapath, outputDir, latitude,
                               longitude, station,
                               base.year.start, base.year.end)
               return (qc.errors)
@@ -689,17 +675,17 @@ server <- function(input, output, session) {
 
     # toggle state of buttons depending on certain criteria
     # Single station
-    observe(toggleState('btn_next_process_single_station_step_1', !is.null(input$dataFile)))
-    observe(toggleState('btn_next_process_single_station_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
-    observe(toggleState('btn_next_process_single_station_step_3', indexCalculationStatus()=='Done'))
+    # observe(toggleState('btn_next_process_single_station_step_1', !is.null(input$dataFile)))
+    # observe(toggleState('btn_next_process_single_station_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
+    # observe(toggleState('btn_next_process_single_station_step_3', indexCalculationStatus()=='Done'))
 
-    observe(toggleState('doQualityControl', !is.null(input$dataFile)))
-    observe(toggleState('calculateIndices', !is.null(input$dataFile)))
+    # observe(toggleState('doQualityControl', !is.null(input$dataFile)))
+    # observe(toggleState('calculateIndices', !is.null(input$dataFile)))
 
     # Batch
     observe(toggleState('calculateBatchIndices', !is.null(input$batchMeta) && !is.null(input$batchCsvs)))
     # Sector correlation
-    observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
+    # observe(toggleState('calculateSectorCorrelation', !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 
     observeEvent(input$btn_next_process_single_station_step_1, {
       tabName <- "process_single_station_step_2"

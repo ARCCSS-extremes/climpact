@@ -68,8 +68,8 @@ batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base
 		user.data <- check.and.create.dates(user.data)
 		station.name <- strip.file.extension(file.name)
 
-		get.file.path(file, station.name)
-		create.dir(file, outdirtmp)
+		get_file_path(file, station.name)
+		create_dirs(file, outdirtmp)
 
 		# define variables for indices
 		lat <- as.numeric(metadata$latitude[file.number])
