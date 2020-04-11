@@ -8,22 +8,7 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
     tabPanel(title = "2. Check",
         id = "process_single_station_step_2",
         value = "process_single_station_step_2",
-            htmlOutput("dataFileLoadedWarning"),
-            conditionalPanel(
-                condition = 'output.dataFileLoaded',
-                wellPanel(
-                    actionButton("doQualityControl", "Check Quality"),
-                    htmlOutput("qualityControlError")
-                ),
-                conditionalPanel(
-                    condition = "output.qualityControlError == ''",
-                    wellPanel(h4("Evaluate Quality Control output"),
-                        uiOutput("qcLink")
-                    )
-                )
-            ),
-            br(),
-            actionButton("btn_next_process_single_station_step_2", label = "Next", icon = icon("chevron-circle-right"))
+        singleStationStep2UI("ui")
     ),
     tabPanel(title = "3. Calculate",
         id = "process_single_station_step_3",
@@ -123,7 +108,8 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
                 h4('Load sector data'),
                 wellPanel(
                     fileInput('sectorDataFile', NULL, accept = c('text/csv', 'text/comma-separated-values,text/plain', '.csv')),
-                    uiOutput("loadSectorDataText")
+                    uiOutput("loadSectorDataText"),
+                    "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>"
                 ),
                 h4('Specify chart title'),
                 wellPanel(

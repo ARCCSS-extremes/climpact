@@ -25,180 +25,182 @@ library(zoo)
 library(zyp)
 
 # return a nice list of station metadata
-read.file.list.metadata <- function(file.list.metadata)
-{
-	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station_file","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
-					colClasses=c("character","real","real","integer","integer","real","real","integer","real","real","integer"))
+read.file.list.metadata <- function(file.list.metadata) {
+  file.list.metadata <- read.table(file.list.metadata, header = T, col.names = c("station_file", "latitude", "longitude", "wsdin", "csdin", "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday", "rnnmm", "txtn", "SPEI"),
+          colClasses = c("character", "real", "real", "integer", "integer", "real", "real", "integer", "real", "real", "integer"))
 
-	return(file.list.metadata)
+  return(file.list.metadata)
 }
 
-strip.file.extension <- function(file.name)
-{
-	file_parts <- strsplit(file.name,"\\.")[[1]]
-	stripped <- substr(file.name,start=1,stop=nchar(file.name)-nchar(file_parts[length(file_parts)])-1)
-	print (paste0("input: ", file.name, " output: ", stripped))
-	return(stripped)
+strip.file.extension <- function(file.name) {
+  file_parts <- strsplit(file.name, "\\.")[[1]]
+  stripped <- substr(file.name, start = 1, stop = nchar(file.name) - nchar(file_parts[length(file_parts)]) - 1)
+  print(paste0("input: ", file.name, " output: ", stripped))
+  return(stripped)
 }
 
 # call QC and index calculation functionality for each file specified in metadata.txt
-batch <<- function(metadatafilepath, metadatafilename,batchfiles,base.start,base.end) {
+batch <<- function(metadatafilepath, metadatafilename, batchfiles, base.start, base.end) {
 
-	metadata <- read.file.list.metadata(metadatafilepath)
-	
-	if(exists("progress") && !is.null(progress)) {
-		prog_int <- 0.9/length(metadata$station_file)
-	}
-	progressSNOW <- function(n) {
-		if(interactive()) { progress$inc(prog_int) }
-	}
-	opts <- list(progress = progressSNOW)
-	registerDoSNOW(cl)
+  metadata <- read.file.list.metadata(metadatafilepath)
 
-	# foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
-	func = function(file.number, batchfiles) {
-		
-		file.name = metadata$station_file[file.number]
-		cat(file=stderr(), "in func, working on :", file.name, "\n")
-		print(file.name)
+  if (exists("progress") && !is.null(progress)) {
+    prog_int <- 0.9 / length(metadata$station_file)
+  }
+  progressSNOW <- function(n) {
+    if (interactive()) { progress$inc(prog_int) }
+  }
+  opts <- list(progress = progressSNOW)
+  registerDoSNOW(cl)
 
-		file <- batchfiles[file.name,'datapath']
-		print(file)
-		user.data <- read_user_file(file)
-		user.data <- check.and.create.dates(user.data)
-		station.name <- strip.file.extension(file.name)
+  # foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
+  func = function(file.number, batchfiles) {
 
-		get_file_path(file, station.name)
-		create_dirs(file, outdirtmp)
+    file.name = metadata$station_file[file.number]
+    cat(file = stderr(), "in func, working on :", file.name, "\n")
+    print(file.name)
 
-		# define variables for indices
-		lat <- as.numeric(metadata$latitude[file.number])
-		lon <- as.numeric(metadata$longitude[file.number])
-		wsdi_ud <<- metadata$wsdin[file.number]
-		csdi_ud <<- metadata$csdin[file.number]
-		Tb_HDD <<- metadata$Tb_HDD[file.number]
-		Tb_CDD <<- metadata$Tb_CDD[file.number]
-		Tb_GDD <<- metadata$Tb_GDD[file.number]
-		rx_ud <<- metadata$rxnday[file.number]
-		rnnmm_ud <<- metadata$rnnmm[file.number]
-		txtn_ud <<- metadata$txtn[file.number]
-		custom_SPEI <<- metadata$SPEI[file.number]
+    file <- batchfiles[file.name, 'datapath']
+    print(file)
+    user.data <- read_user_file(file)
+    user.data.ts <- check.and.create.dates(user.data)
+    station.name <- strip.file.extension(file.name)
 
-		# global variables needed for calling climpact2.GUI.r functionality
-		station.metadata <- create.metadata(lat,lon,base.start,base.end,user.data$dates,"ofile_filler")
-		assign("metadata",station.metadata,envir=.GlobalEnv)
-		version.climpact <<- software_id
-		quantiles <<- batchOutDir <<- NULL
-		if(lat<0) lat_text = "°S" else lat_text = "°N"
-		if(lon<0) lon_text = "°W" else lon_text = "°E"
-		Encoding(lon_text) <- "UTF-8"   # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
-		Encoding(lat_text) <- "UTF-8"
-		title.station <- paste(ofilename, " [", lat,lat_text, ", ", lon,lon_text, "]", sep = "")
-		assign("title.station", title.station, envir = .GlobalEnv)
-		plot.title<-gsub('\\#',title.station,"Station: #"); assign('plot.title',plot.title,envir=.GlobalEnv)
-		barplot_flag <<- TRUE
-		min_trend <<- 10
-		temp.quantiles <<- c(0.05,0.1,0.5,0.9,0.95)
-		prec.quantiles <<- c(0.05,0.1,0.5,0.9,0.95,0.99)
-		op.choice <<- NULL
-		skip <<- FALSE
+    
+		outputFolders <- outputFolders(dirname(file), station.name)
+    
+browser()
+    # define variables for indices
+    lat <- as.numeric(metadata$latitude[file.number])
+    lon <- as.numeric(metadata$longitude[file.number])
+    wsdi_ud <<- metadata$wsdin[file.number]
+    csdi_ud <<- metadata$csdin[file.number]
+    Tb_HDD <<- metadata$Tb_HDD[file.number]
+    Tb_CDD <<- metadata$Tb_CDD[file.number]
+    Tb_GDD <<- metadata$Tb_GDD[file.number]
+    rx_ud <<- metadata$rxnday[file.number]
+    rnnmm_ud <<- metadata$rnnmm[file.number]
+    txtn_ud <<- metadata$txtn[file.number]
+    custom_SPEI <<- metadata$SPEI[file.number]
 
-		if(file_test("-f",paste(file,".error.txt",sep=""))) { file.remove(paste(file,".error.txt",sep="")) }
-		# run quality control and create climdex input object
-		catch1 <- tryCatch(QC.wrapper(NULL,station.metadata,user.data,file),
-				error=function(msg) {
-					fileConn<-file(paste(file,".error.txt",sep=""))
-					writeLines(toString(msg), fileConn)
-					close(fileConn)
-					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
-				})
-		if(skip) { return(NA) }
+# TODO JMC ensure variables below are local and not global
+    # global variables needed for calling climpact2.GUI.r functionality
+    station.metadata <- create.metadata(lat, lon, base.start, base.end, user.data.ts$dates, station.name)
 
-		# calculate indices
-		catch2 <- tryCatch(index.calc(NULL,station.metadata),
-				error=function(msg) {
-					fileConn<-file(paste(file,".error.txt",sep=""))
-					writeLines(toString(msg), fileConn)
-					close(fileConn)
-					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
-				})
-		if(skip) { return(NA) }
+		version.climpact <- software_id
+    # End check vars are not global
 
-		# Create a zip file containing all of the results.
-		# in format '{station_name}.zip'
-		# curwd <- getwd()
-		# setwd(paste(outdirtmp, '..', sep="/"))
-		# files2zip <- dir(basename(outdirtmp), full.names = TRUE)
-		# #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
-		# zip(zipfile = basename(outdirtmp), files = files2zip)
-		# setwd(curwd)
+		if (lat < 0) lat_text = "°S" else lat_text = "°N"
+    if (lon < 0) lon_text = "°W" else lon_text = "°E"
+    Encoding(lon_text) <- "UTF-8" # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
+    Encoding(lat_text) <- "UTF-8"
+    title.station <- paste(station.name, " [", lat, lat_text, ", ", lon, lon_text, "]", sep = "")
+    plot.title <- gsub('\\#', title.station, "Station: #");
+    barplot_flag <- TRUE
+    min_trend <- 10
+    temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
+    prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
+    op.choice <- NULL
+    skip <- FALSE
 
-		# RJHD - NH addition for pdf error 2-aug-17
-		graphics.off()
-		print(paste(file," done",sep=""))
-	}
+    if (file_test("-f", paste(file, ".error.txt", sep = ""))) { file.remove(paste(file, ".error.txt", sep = "")) }
+    # run quality control and create climdex input object
+    catch1 <- tryCatch({
+								QC.wrapper(NULL, station.metadata, user.data.ts, file, outputFolders, quantiles)
+							},
+							error = function(msg) {
+								fileConn <- file(paste(file, ".error.txt", sep = ""))
+								writeLines(toString(msg), fileConn)
+								close(fileConn)
+								if (file_test("-f", paste0(file, ".temporary"))) { file.remove(paste0(file, ".temporary")) }
+							})
+    if (skip) { return(NA) }
 
+    # calculate indices
+    catch2 <- tryCatch(index.calc(NULL, station.metadata, outputFolders),
+        error = function(msg) {
+          fileConn <- file(paste(file, ".error.txt", sep = ""))
+          writeLines(toString(msg), fileConn)
+          close(fileConn)
+          if (file_test("-f", paste0(file, ".temporary"))) { file.remove(paste0(file, ".temporary")) }
+        })
+    if (skip) { return(NA) }
 
-	# batchfiles %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
-	# batchfiles <- data.frame(batchfiles[,-1], row.names=batchfiles[,1])
-	# set each row name in batch file to station name for indexing
-	row.names(batchfiles) <- batchfiles$name
-	batchfiles[1] <- NULL
+    # Create a zip file containing all of the results.
+    # in format '{station_name}.zip'
+    # curwd <- getwd()
+    # setwd(paste(outdirtmp, '..', sep="/"))
+    # files2zip <- dir(basename(outdirtmp), full.names = TRUE)
+    # #files2zip <- dir(c(get.thresh.dir(),get.trends.dir(),get.plots.dir(),get.indices.dir()), full.names = TRUE)
+    # zip(zipfile = basename(outdirtmp), files = files2zip)
+    # setwd(curwd)
 
-	assign('outputFolder',dirname(batchfiles[1,'datapath']),envir=.GlobalEnv)
-	cat(file=stderr(), "outputFolder global:", outputFolder, "\n")
-
-	numfiles <- length(metadata$station_file)
-	for (file.number in 1:numfiles)
-	{
-		msg <- paste("File", file.number, "of", numfiles, ":", metadata$station_file[file.number])
-	  	print(msg)
-		progress$inc(detail = msg)
-		func(file.number, batchfiles)
-
-	  if(!is.null(progress)) progress$inc(prog_int)
-	}
+    # RJHD - NH addition for pdf error 2-aug-17
+    graphics.off()
+    print(paste(file, " done", sep = ""))
+  }
 
 
-    file.rename(batchfiles$datapath, row.names(batchfiles))
-	zipfilename <-paste0(strip.file.extension(metadatafilename),"-results.zip")	
-	workingDir <- outputFolder #JMC variable assignment unnecessary here if method below not extracted
-	destinationFolder <- "/www/output/"
-	# JMC extract method to create zip file at path
-    curwd <- getwd()
-    setwd(workingDir)
-    files2zip <- dir(workingDir)
-    zip(zipfile = zipfilename, files = files2zip)
-	outputzipfilepath <- paste0(curwd,destinationFolder, zipfilename)
-	file.copy(zipfilename, outputzipfilepath)
-    setwd(curwd)
+  # batchfiles %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
+  # batchfiles <- data.frame(batchfiles[,-1], row.names=batchfiles[,1])
+  # set each row name in batch file to station name for indexing
+  row.names(batchfiles) <- batchfiles$name
+  batchfiles[1] <- NULL
 
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("*********************************************************************************************",quote=FALSE)
-	print("*********************************************************************************************",quote=FALSE)
-	print("*********************************************************************************************",quote=FALSE)
-	print("PROCESSING COMPLETE.",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("",quote=FALSE)
-	print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.",quote=FALSE)
-	print("",quote=FALSE)
-	error.files <- suppressWarnings(list.files(path=outputFolder,pattern=paste("*error.txt",sep="")))
-	if(length(error.files)==0) { 
-		print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) 
-	}
-	else {
-		for (i in 1:length(error.files)) { #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
-			print(error.files[i],quote=FALSE)
-			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
-		}
-	}
-	return(paste0("output/", zipfilename))
+  # assign('outputFolder', dirname(batchfiles[1, 'datapath']), envir = .GlobalEnv)
+  # cat(file = stderr(), "outputFolder global:", outputFolder, "\n")
+
+  numfiles <- length(metadata$station_file)
+  for (file.number in 1:numfiles) {
+    msg <- paste("File", file.number, "of", numfiles, ":", metadata$station_file[file.number])
+    print(msg)
+    progress$inc(detail = msg)
+    func(file.number, batchfiles)
+
+    if (!is.null(progress)) progress$inc(prog_int)
+  }
+
+
+  file.rename(batchfiles$datapath, row.names(batchfiles))
+  zipfilename <- paste0(strip.file.extension(metadatafilename), "-results.zip")
+  workingDir <- outputFolder #JMC variable assignment unnecessary here if method below not extracted
+  destinationFolder <- "/www/output/"
+  # JMC extract method to create zip file at path
+  curwd <- getwd()
+  setwd(workingDir)
+  files2zip <- dir(workingDir)
+  zip(zipfile = zipfilename, files = files2zip)
+  outputzipfilepath <- paste0(curwd, destinationFolder, zipfilename)
+  file.copy(zipfilename, outputzipfilepath)
+  setwd(curwd)
+
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("*********************************************************************************************", quote = FALSE)
+  print("*********************************************************************************************", quote = FALSE)
+  print("*********************************************************************************************", quote = FALSE)
+  print("PROCESSING COMPLETE.", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("", quote = FALSE)
+  print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.", quote = FALSE)
+  print("", quote = FALSE)
+  error.files <- suppressWarnings(list.files(path = outputFolder, pattern = paste("*error.txt", sep = "")))
+  if (length(error.files) == 0) {
+    print("... no errors detected in processing your files. That doesn't mean there aren't any!", quote = FALSE)
+  }
+  else {
+    for (i in 1:length(error.files)) {
+      #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
+      print(error.files[i], quote = FALSE)
+      #system(paste("cat ",input.directory,"/",error.files[i],sep=""))
+    }
+  }
+  return(paste0("output/", zipfilename))
 }
 
 # JMC - following non-interactive code runs on shinyapps.io and breaks app

@@ -1,51 +1,40 @@
 server <- function(input, output, session) {
-    source("server/validate_user_input.R", local = TRUE)
-    step1 <- callModule(singleStationStep1, "ui")
+  # Everything within this function is instantiated separately for each session.
+  # REF: https://shiny.rstudio.com/articles/scoping.html
 
-    output$griddedMenuItem <- renderMenu({
-      if (isLocal) {
-        menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
-          menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
-          menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
-        )
-      }
-    })
-   
-    datasetChanges <- reactive({
-        input$doQualityControl
-    })
+  source("server/session_vars.R", local = TRUE)
+  source("server/validate_user_input.R", local = TRUE)
+  # source("server/quality_control_checks.R", local = TRUE)
+  
+  # modules called with second parameter being namespace id for corresponding UI
+  step1 <- callModule(singleStationStep1, uiHelper$ns)
+  step2 <- callModule(singleStationStep2, uiHelper$ns, step1, uiHelper)
 
-    indiceChanges <- reactive({
-        input$calculateIndices
-    })
-
-    sectorCorrelationChanges <- reactive({
-      input$calculateSectorCorrelation
-    })
-
-    userGuideLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>"
-    appendixBLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>"
-    sampleText <- paste0("The dataset <strong>must</strong> use the format described in ",
-                  appendixBLink, " of the ", userGuideLink,".",
-                  "<br />", "<br />",
-                  "For a sample dataset look at ")
-
-    output$loadSectorDataText <- renderText({
-      HTML(sampleText,
-        "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>  wheat_yield_nsw_1922-1999.csv</a>"
+  output$griddedMenuItem <- renderMenu({
+    if (isLocal) {
+      menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
+        menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
+        menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
       )
-    })
+    }
+  })
+
+    # sectorCorrelationChanges <- reactive({
+    #   input$calculateSectorCorrelation
+    # })
+
+    output$loadSectorDataText <- renderText({ HTML(uiHelper$sampleText) })
 
     output$loadParamHelpText <- renderText({
         indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
         HTML(paste0("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                    in these indices. See ", indexParamLink, " of the ", userGuideLink, " for guidance."))
+                    in these indices. See ", indexParamLink, " of the ", uiHelper$userGuideLink, " for guidance."))
     })
 
     output$batchIntroText <- renderText({
       guideBatchLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>", sep="")
       sampleBatchLink <- paste("<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",sep="")
-      HTML(paste("A text file must be created with information for each station. Refer to ",guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
+      HTML(paste("A text file must be created with information for each station. Refer to ",uiHelper$guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
                          Once done supply ClimPACT with the file below."))
     })
 
@@ -56,31 +45,16 @@ server <- function(input, output, session) {
       )
     })
 
-    # Display text in quality control panel
-    output$qcLink <- renderText({
-        datasetChanges() # respond to quality control initiation
-
-        # zip files and get link
-        folderToZip <- file.path(getwd(), get.qc.dir())
-        qcZipLink <- zipFiles(folderToZip)
-        localLink <- paste0("<br /><br /><b>Quality control directory: ", folderToZip,"</b>")
-        remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                              " Quality control files ", qcZipLink,"</div>")
-        appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
-        HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
-                    "<br />Refer to ", appendixCLink, " of the ", userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
-    })
-
     output$indicesLink <- renderText({
-        indiceChanges() # respond to index calculation
+      if(indexCalculationStatus() == "Done") {
 
         # zip files and get link
-        folderToZip <- file.path(getwd(), get.indices.dir())
+        folderToZip <- file.path(getwd(),outinddir)
         indicesZipLink <- zipFiles(folderToZip)
         localLink <- paste0("Please view the output in the following directory: <br /><br /><b>", folderToZip, "</b>")
         remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Calculated Indices available ", indicesZipLink, "</div>")
-        indexCalculationStatus("Done")
+        
         HTML(localOrRemoteLink(localLink, remoteLink),
                     "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
                     "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
@@ -89,7 +63,7 @@ server <- function(input, output, session) {
                     "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
                     "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
         )
-
+      }
     })
 
     output$sectorCorrelationLink <- renderText({
@@ -102,64 +76,6 @@ server <- function(input, output, session) {
       remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Correlation output available ", corrZipLink, "</div>")
       HTML(localOrRemoteLink(localLink, remoteLink))
-    })
-
-    # Quality control processing has been requested by the user.
-    output$qualityControlError <- reactive ({
-      errorHTML <- ""
-      if (qualityControlErrorText() != "") {
-        errorHTML <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlErrorText(), "</div>")
-      }
-      return(errorHTML)
-    })
-
-    qualityControlErrorText <- eventReactive(input$doQualityControl, {
-        source("server/climpact.etsci-functions.r")
-        batchMode <<- FALSE
-
-        # Set up globals in ClimPACT
-        global.vars()
-
-        # Check input file.
-        file <- dataFile()
-        if (is.null(file)) {
-            return("Bad data file")
-        }
-
-        # Validate inputs. Are these 3 lines not already called through reactive statements elsewhere in this script?
-        latitude <- stationLat()
-        longitude <- stationLon()
-        station <- stationName()
-
-        base.year.start <- input$startYear
-        base.year.end <- input$endYear
-        outputDir <- paste("www/output/",station,sep="")
-
-        # input$dataFile will be NULL initially. After the user selects
-        # and uploads a file, it will be a data frame with 'name',
-        # 'size', 'type', and 'datapath' columns. The 'datapath'
-        # column will contain the local filenames where the data can
-        # be found.
-        progress <- shiny::Progress$new()
-        on.exit(progress$close())
-        progress$set(message="Quality Control checks", value=0, detail = "Starting...")
-
-        # Call into ClimPACT to do the quality control.
-        out <- tryCatch(
-          {
-              qc.errors <- load_data_qc(progress, file$datapath, outputDir, latitude,
-                              longitude, station,
-                              base.year.start, base.year.end)
-              return (qc.errors)
-          },
-          readUserFileError = function(cond) {
-            return(paste("Error:", cond$message))
-          },
-          error = function(cond) {
-              return(paste("Error:", cond$message))
-          }
-        )
-        return(out)
     })
 
       observeEvent(input$selectNcFiles,{
@@ -619,12 +535,12 @@ server <- function(input, output, session) {
 
       indexCalculationStatus("In Progress")
 
-      # Call into ClimPACT to calculate indices.
+      # Call into ClimPACT to calculate indices.      
       error <- draw.step2.interface(progress, plot.title, wsdi_ud, csdi_ud,
                                     rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
                                     Tb_GDD, custom_SPEI, var.choice, op.choice,
-                                    constant.choice)
-
+                                    constant.choice, outputFolders)
+      indexCalculationStatus("Done")
       return("")
     }
     )
@@ -668,9 +584,8 @@ server <- function(input, output, session) {
       ifelse(error=="",return(""),return(error))
     })
 
-    outputOptions(output, "dataFileLoaded", suspendWhenHidden=FALSE)
     outputOptions(output, "indiceCalculationError", suspendWhenHidden=FALSE)
-    outputOptions(output, "qualityControlError", suspendWhenHidden=FALSE)
+    # outputOptions(output, "qualityControlError", suspendWhenHidden=FALSE)
     outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
 
     # toggle state of buttons depending on certain criteria
@@ -703,41 +618,12 @@ server <- function(input, output, session) {
       updateTabsetPanel(session, "process_single_station", selected = tabName)
     })
 
-    observeEvent(qualityControlErrorText(), {
-      session$sendCustomMessage("enableTab", "process_single_station_step_3")
-    })
+    # observeEvent(qualityControlErrorText(), {
+    #   session$sendCustomMessage("enableTab", "process_single_station_step_3")
+    # })
     observeEvent(indexCalculationStatus(), {
-      if (indexCalculationStatus()=='Done') {
+      if (indexCalculationStatus()=="Done") {
         session$sendCustomMessage("enableTab", "process_single_station_step_4")
       }
     })
-
-    getLinkFromPath <- function (batchZipFilePath, linkText) {
-      return (paste0("<a target=\"_blank\" href=", gsub(" ","%20",batchZipFilePath), ">", linkText, "</a>"))
-    }
-
-    zipFiles <- function (folderToZip) {
-      fileName <- paste0(basename(folderToZip), ".zip")
-      folderName <- dirname(folderToZip)
-      zipFilePath <- file.path(folderName, fileName)
-      filesToZip <- dir(folderToZip)
-      originalwd <- getwd()
-      setwd(folderToZip)
-      zip(zipfile = zipFilePath, files = filesToZip)
-      setwd(originalwd)
-      stationName = basename(folderName)
-      return(getLinkFromPath(paste0("output/", stationName, "/", fileName), "here"))
-    }
-
-    localOrRemoteLink <- function (localLink, remoteLink) {
-      result <- ""
-      if (Sys.getenv('SHINY_PORT') == "") {
-        result <- localLink
-      }
-      else {
-        result <- remoteLink
-      }
-      return (result)
-    }
-
 }

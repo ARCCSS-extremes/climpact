@@ -42,13 +42,21 @@
 #   overhaul 2015-2017, Nicholas Herold and Nicholas Hannah (PCIC R package implementation, R Shiny interface, gridded indices, new indices).
 
 # Source files and load libraries. Note, other libraries are sourced at different points in the program depending on what functions the user interacts with.
-source("server/server.R")
 source("server/climpact.GUI-functions.r")
 source("server/sector_correlation.R")
 source("server/climpact.etsci-functions.r")
 source("custom_errors.r")
-source("ui/singleStationStep1UI.R")
-source("ui/singleStationStep1.R")
+source("models/weatherObservationsRequest.R")
+source("models/weatherStation.R")
+source("modules/singleStationStep1.R")
+source("modules/singleStationStep1UI.R")
+source("modules/singleStationStep2.R")
+source("modules/singleStationStep2UI.R")
+# source("modules/singleStationStep3.R")
+# source("modules/singleStationStep3UI.R")
+# source("modules/singleStationStep4.R")
+# source("modules/singleStationStep4UI.R")
+source("services/zipper.R")
 package.check()
 library(zoo)
 library(zyp)
@@ -64,7 +72,8 @@ library(ggplot2)
 library(shinydashboard)
 library(shinyBS)
 
-# If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. Base functions do not provide a dialog box in Unix environments.
+# If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. 
+# Base functions do not provide a dialog box in Unix environments.
 if (.Platform$OS.type == "windows") {
   fchoose <<- get("choose.files", mode = "function")
   dchoose <<- get("choose.dir", mode = "function")
@@ -72,6 +81,14 @@ if (.Platform$OS.type == "windows") {
   fchoose <<- get("tk_choose.files", mode = "function")
   dchoose <<- get("tk_choose.dir", mode = "function")
 }
+
+# Global variables 
+version.climpact <<- software_id
+running.zero.allowed.in.temperature <<- 4
+temp.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95)
+prec.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
+barplot_flag <<- TRUE
+min_trend <<- 10 
 
 isLocal <<- FALSE
 if (Sys.getenv('SHINY_PORT') == "") {
@@ -86,70 +103,8 @@ if (isLocal) {
   gridNcFiles <<- gridOutDir <<- gridNcFilesThresh <<- gridOutDirThresh <<- NULL
 }
 
-ui <- tagList(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
-    tags$script(src = "climpact-ui.js")
-  ),
-  useShinyjs(),
-  dashboardPage(
-    header = dashboardHeader(title = "ClimPACT"),
-    sidebar = dashboardSidebar(
-      sidebarMenu(
-        menuItem("Home", tabName = "home", icon = icon("sun")),
-        menuItem("Process single station", tabName = "single", icon = icon("table")),
-        menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
-        menuItemOutput("griddedMenuItem"),
-        menuItem("Documentation", icon = icon("book"), href = "user_guide/ClimPACT_user_guide.htm")
-      )
-    ),
-    body = dashboardBody(
-      tabItems(
-          tabItem(
-          tabName = "home",
-          source(file.path("ui", "landing_page.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "single",
-          source(file.path("ui", "single_station.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "batch",
-          source(file.path("ui", "batch_processing.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "gridded-indices",
-          source(file.path("ui", "gridded_data_calculate.R"), local = TRUE)$value
-        ),
-        tabItem(
-          tabName = "gridded-thresholds",
-          source(file.path("ui", "gridded_data_thresholds.R"), local = TRUE)$value
-        )
-      )
-    )
-  ),
-  tags$footer(
-    div(
-      id = "footer-content",
-      div(
-        id = "sitemap",
-        h4("Climpact 2.0.0"),
-        p("Copyright © 2012–2020"),
-        p("Climpact."),
-        p("All Rights Reserved.")
-      ),
-      div(
-        id = "logos",
-        HTML("<a href=\"https://www.unsw.edu.au\"><img src=\"assets/logo-unsw-small.png\" alt=\"UNSW Sydney\"></a>"),
-        HTML("<a href=\"https://www.climateextremes.org.au/\"><img src=\"assets/logo-clex-small.png\" alt=\"ARC Centre of Excellence for Climate Extremes\"></a>"),
-        HTML("<a href=\"https://public.wmo.int/\"><img src=\"assets/logo-wmo.png\" alt=\"World Meteorological Organization\"></a>"),
-        HTML("<a href=\"https://www.greenclimate.fund\"><img src=\"assets/logo-gcf.png\" alt=\"Green Climate Fund\"></a>")
-      )
-    )
-  )# ,
-  # tags$script(HTML("disableTab('process_single_station_step_2')")),
-  # tags$script(HTML("disableTab('process_single_station_step_3')")),
-  # tags$script(HTML("disableTab('process_single_station_step_4')"))
-)
+source("ui_support.R")
+source("ui/ui.R")
+source("server/server.R")
 
 shinyApp(ui, server)
