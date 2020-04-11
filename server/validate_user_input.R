@@ -28,9 +28,9 @@
     #     dataFile()
     # })
 
-    output$indiceCalculationError <- eventReactive(input$calculateIndices, {
-        plotTitleMissing()
-    })
+    # output$indiceCalculationError <- eventReactive(input$calculateIndices, {
+    #     plotTitleMissing()
+    # })
     
     output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
       sectorPlotTitleMissing()

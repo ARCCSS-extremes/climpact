@@ -14,7 +14,7 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
   })
 
   folderToZip <- ""
-  qcZipLink <- ""
+  qcZipLink <- reactiveVal("")
   isQCOutputReady <- reactiveVal(FALSE)
 
   output$qcLink <- renderText({
@@ -22,7 +22,7 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
       # zip files and get link
       localLink <- paste0("Quality control directory: ", folderToZip)
       remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                            " Quality control files ", qcZipLink,"</div>")
+                            " Quality control files ", qcZipLink(),"</div>")
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
       HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
                   "<br />Refer to ", appendixCLink, " of the ", uiHelper$userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
@@ -68,7 +68,8 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
       },
       finally = {
         pathToZipFile <- zipFiles(outputFolders$outqcdir)
-        qcZipLink <- getLinkFromPath(pathToZipFile, "here")
+        link <- getLinkFromPath(pathToZipFile, "here")
+        qcZipLink(link)
         isQCOutputReady(TRUE)
       }
     )
