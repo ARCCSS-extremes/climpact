@@ -19,7 +19,11 @@
       )
       ""
     })
- 
+     
+    output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
+      sectorPlotTitleMissing()
+    })
+    
     # output$qualityControlError <- eventReactive(input$doQualityControl, {
     #     stationName()
     # })
@@ -31,7 +35,3 @@
     # output$indiceCalculationError <- eventReactive(input$calculateIndices, {
     #     plotTitleMissing()
     # })
-    
-    output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
-      sectorPlotTitleMissing()
-    })

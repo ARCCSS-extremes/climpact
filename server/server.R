@@ -2,13 +2,23 @@ server <- function(input, output, session) {
   # Everything within this function is instantiated separately for each session.
   # REF: https://shiny.rstudio.com/articles/scoping.html
 
-  source("server/session_vars.R", local = TRUE)
-  source("server/validate_user_input.R", local = TRUE)
-  # source("server/quality_control_checks.R", local = TRUE)
-  
+  source("server/session_vars.R", local = TRUE) # local req'd to use input, output, session
+  source("server/validate_user_input.R", local = TRUE) 
+  source("models/stationWizardState.R", local = TRUE)
+  singleStationState <- stationWizardState()
+
+  # these were originally sourced in singleStationStep2.R
+  # seeing if it works with them sourced here
+  source("server/climpact.GUI-functions.r")
+  source("server/quality_control_checks.r")
+  source("server/quality_control/quality_control.r")
+  source("models/outputFolders.R")
+
   # modules called with second parameter being namespace id for corresponding UI
-  step1 <- callModule(singleStationStep1, uiHelper$ns)
-  step2 <- callModule(singleStationStep2, uiHelper$ns, step1, uiHelper)
+  # climpactUI from ui_support.R, sourced in app.R
+  step1 <- callModule(singleStationStep1, climpactUI$ns, singleStationState)
+  step2 <- callModule(singleStationStep2, climpactUI$ns, climpactUI, step1$singleStationState)
+  step3 <- callModule(singleStationStep3, climpactUI$ns, climpactUI, step2$singleStationState)
 
   output$griddedMenuItem <- renderMenu({
     if (isLocal) {
@@ -23,18 +33,18 @@ server <- function(input, output, session) {
     #   input$calculateSectorCorrelation
     # })
 
-    output$loadSectorDataText <- renderText({ HTML(uiHelper$sampleText) })
+    output$loadSectorDataText <- renderText({ HTML(climpactUI$sampleText) })
 
     output$loadParamHelpText <- renderText({
         indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
         HTML(paste0("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                    in these indices. See ", indexParamLink, " of the ", uiHelper$userGuideLink, " for guidance."))
+                    in these indices. See ", indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance."))
     })
 
     output$batchIntroText <- renderText({
       guideBatchLink <- paste("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>", sep="")
       sampleBatchLink <- paste("<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",sep="")
-      HTML(paste("A text file must be created with information for each station. Refer to ",uiHelper$guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
+      HTML(paste("A text file must be created with information for each station. Refer to ",climpactUI$guideBatchLink," of the user guide and use ",sampleBatchLink," as a template.
                          Once done supply ClimPACT with the file below."))
     })
 
@@ -47,10 +57,11 @@ server <- function(input, output, session) {
 
     output$indicesLink <- renderText({
       if(indexCalculationStatus() == "Done") {
-
+browser()
         # zip files and get link
         folderToZip <- file.path(getwd(),outinddir)
-        indicesZipLink <- zipFiles(folderToZip)
+        pathToZipFile <- zipFiles(folderToZip)
+        indicesZipLink <- getLinkFromPath(pathToZipFile, "here")
         localLink <- paste0("Please view the output in the following directory: <br /><br /><b>", folderToZip, "</b>")
         remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                             " Calculated Indices available ", indicesZipLink, "</div>")
@@ -585,7 +596,6 @@ server <- function(input, output, session) {
     })
 
     outputOptions(output, "indiceCalculationError", suspendWhenHidden=FALSE)
-    # outputOptions(output, "qualityControlError", suspendWhenHidden=FALSE)
     outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
 
     # toggle state of buttons depending on certain criteria

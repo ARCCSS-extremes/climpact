@@ -1,8 +1,8 @@
-singleStationStep1 <- function (input, output, session) {
-  stationName <- reactive({strsplit(input$dataFile$name, "[_\\.]")[[1]][1]})
-
+singleStationStep1 <- function (input, output, session, singleStationState) {
+  stationName <- reactive({ strsplit(input$dataFile$name, "[_\\.]")[[1]][1] })
+  
   observeEvent(input$dataFile, {
-    updateTextInput(session, "stationName", value = stationName())         
+    updateTextInput(session, "stationName", value = stationName())
   })
   
   # Validation, if expression works then can reuse validation logic, otherwise duplicate...
@@ -28,18 +28,16 @@ singleStationStep1 <- function (input, output, session) {
       input$stationName
   })
 
-  # must use = below and not <- to get named values in list()
-  return(
-    list(
-      dataFile = reactive({input$dataFile}),
-      stationName = stationName,
-      latitude = reactive({input$stationLat}),
-      longitude = reactive({input$stationLon}),
-      startYear = reactive({input$startYear}),
-      endYear = reactive({input$endYear})
-    )
-  )
-
+  singleStationState$dataFile = reactive({ input$dataFile })
+  singleStationState$stationName = reactive({ input$stationName })
+  singleStationState$latitude = reactive({ input$stationLat })
+  singleStationState$longitude = reactive({ input$stationLon })
+  singleStationState$startYear = reactive({ input$startYear })
+  singleStationState$endYear = reactive({ input$endYear })
+  
+  # must use = not <- to get named values in list()
+  return(list(singleStationState = singleStationState))
+  
   # TODO respond in other modules to event in this module 
   # updateTextInput(session, "plotTitle", value=val)        
   # session$sendCustomMessage("enableTab", "process_single_station_step_2")

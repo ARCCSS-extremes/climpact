@@ -24,6 +24,7 @@ singleStationStep1UI <- function (id) {
                   numericInput(ns("endYear"), "Base Period End year:", 2000, min = 0)
               ),
               br(),
+              uiOutput(ns("fileUploaded")),
               actionButton(ns("btn_next_process_single_station_step_1"), label = "Next", icon = icon("chevron-circle-right"))
             )
           )

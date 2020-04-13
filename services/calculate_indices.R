@@ -1,6 +1,6 @@
 # This function loops through all indices and calls the appropriate functions to calculate them.
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
-index.calc <- function(progress, metadata, outputFolders) {
+index.calc <- function(progress, metadata, cio, outputFolders) {
   calculate.custom.index <- function(outputFolders) {
     print("calculating custom index", quote = FALSE)
     for (frequency in c("annual", "monthly")) {
@@ -51,7 +51,7 @@ index.calc <- function(progress, metadata, outputFolders) {
 
   }
 
-  calculate.spei <- function(metadata) {
+  calculate.spei <- function(metadata, cio) {
     if (all(is.na(cio@data$tmin)) | all(is.na(cio@data$tmax)) | all(is.na(cio@data$prec))) { print("NO DATA FOR SPEI.", quote = FALSE); return() } else {
       # If SPEI/SPI thresholds have been read in by user then use these in SPEI/SPI calculations.
       if (exists("speiprec")) { tnraw <- speitmin; txraw <- speitmax; praw <- speiprec; btime <- speidates } else {
@@ -147,7 +147,7 @@ index.calc <- function(progress, metadata, outputFolders) {
     }
   }
 
-  calculate.spi <- function(metadata) {
+  calculate.spi <- function(metadata, cio) {
     if (all(is.na(cio@data$prec))) { print("NO DATA FOR SPI.", quote = FALSE); return() } else {
       if (exists("speiprec")) { tnraw <- speitmin; txraw <- speitmax; praw <- speiprec; btime <- speidates } else {
         tnraw <- txraw <- praw <- btime <- NULL
@@ -263,8 +263,8 @@ index.calc <- function(progress, metadata, outputFolders) {
     else index.parameter = paste("cio", sep = "")
 
     if (index.list$Short.name[i] == "hw") { calculate.hw(); next }
-    else if (index.list$Short.name[i] == "spei") { calculate.spei(metadata); next }
-    else if (index.list$Short.name[i] == "spi") { calculate.spi(metadata); next }
+    else if (index.list$Short.name[i] == "spei") { calculate.spei(metadata, cio); next }
+    else if (index.list$Short.name[i] == "spi") { calculate.spi(metadata, cio); next }
     else if (index.list$Short.name[i] == "rnnmm") {
       tmp.index.name = paste("r", rnnmm_ud, "mm", sep = "")
       index.parameter = paste(index.parameter, rnnmm_ud, sep = ",")

@@ -102,11 +102,11 @@ browser()
     prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
     op.choice <- NULL
     skip <- FALSE
-
+    qcResult <- NULL
     if (file_test("-f", paste(file, ".error.txt", sep = ""))) { file.remove(paste(file, ".error.txt", sep = "")) }
     # run quality control and create climdex input object
     catch1 <- tryCatch({
-								QC.wrapper(NULL, station.metadata, user.data.ts, file, outputFolders, quantiles)
+								qcResult <- QC.wrapper(NULL, station.metadata, user.data.ts, file, outputFolders, quantiles)
 							},
 							error = function(msg) {
 								fileConn <- file(paste(file, ".error.txt", sep = ""))
@@ -117,7 +117,7 @@ browser()
     if (skip) { return(NA) }
 
     # calculate indices
-    catch2 <- tryCatch(index.calc(NULL, station.metadata, outputFolders),
+    catch2 <- tryCatch(index.calc(NULL, station.metadata, qcResult$cio, outputFolders),
         error = function(msg) {
           fileConn <- file(paste(file, ".error.txt", sep = ""))
           writeLines(toString(msg), fileConn)

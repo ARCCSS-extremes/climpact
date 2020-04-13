@@ -3,8 +3,8 @@
 load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
 	if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...") 
   user.data <- read_user_file(user.file)  
-  qc.errors <- read_and_qc_check(progress, user.data, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders)
-  return(qc.errors)
+  qcResult <- read_and_qc_check(progress, user.data, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders)
+  return(qcResult)
 }
 
 # extraQC code, taken from the "rclimdex_extraqc.r" package,

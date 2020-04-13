@@ -1,35 +1,29 @@
-singleStationStep2 <- function (input, output, session, step1, uiHelper) {
-  qcZipFileLink <- reactiveVal("")
+singleStationStep2 <- function (input, output, session, climpactUI, singleStationState) {
 
   # Update UI with validation text
-  output$dataFileLoadedWarning <- reactive({
-      dataFileLoadedText <- ""
-      if (is.null(step1$dataFile())) {
-        dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>")
-      }
-      else {
+  output$loadDataError <- reactive({
+      dataFileLoadedText <- "<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>"
+      if (!is.null(input$dataFile)) {
         dataFileLoadedText <- ""
       }
       return (dataFileLoadedText)
   })
 
-  folderToZip <- ""
+  folderToZip <- reactiveVal("")
   qcZipLink <- reactiveVal("")
   isQCOutputReady <- reactiveVal(FALSE)
 
   output$qcLink <- renderText({
-      if (!is.null(step1$dataFile()) && isQCOutputReady()) {
+    if (isQCOutputReady()) {
       # zip files and get link
-      localLink <- paste0("Quality control directory: ", folderToZip)
+      localLink <- paste0("Quality control directory: ", folderToZip())
       remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                            " Quality control files ", qcZipLink(),"</div>")
+                            " Quality control files: ", qcZipLink(),"</div>")
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
       HTML(paste0("Please view the quality control output described below and carefully evaluate before continuing.",
-                  "<br />Refer to ", appendixCLink, " of the ", uiHelper$userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
-      }
+                  "<br />Refer to ", appendixCLink, " of the ", climpactUI$userGuideLink, " for help.<br />", localOrRemoteLink(localLink, remoteLink)))
+    }
   })
-
-  outputFolders <- ""
 
   observeEvent(input$doQualityControl, {
 
@@ -43,21 +37,17 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
     progress$set(message="Quality Control checks", value=0, detail = "Starting...")
     isQCOutputReady(FALSE)
 
-
-    source("server/climpact.GUI-functions.r")
-    source("server/quality_control_checks.r")
-    source("server/quality_control/quality_control.r")
-    source("models/outputFolders.R", local = TRUE)
-
     # Call into ClimPACT to do the quality control.
     out <- tryCatch({
+        # create output folders to hold files for quality control and index output and plots
         baseFolder <- file.path(getwd(), "www", "output")
-        outputFolders <- outputFolders(baseFolder, step1$stationName())
-        qc.errors <- load_data_qc(progress, step1$dataFile()$datapath,
-                                  step1$latitude(), step1$longitude(),
-                                  step1$stationName(), step1$startYear(),
-                                  step1$endYear(), outputFolders)
-        return (qc.errors)
+        singleStationState$outputFolders <- outputFolders(baseFolder, singleStationState$stationName())
+        # apply quality control checks
+        qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
+                                  singleStationState$latitude(), singleStationState$longitude(),
+                                  singleStationState$stationName(), singleStationState$startYear(),
+                                  singleStationState$endYear(), singleStationState$outputFolders)
+        return (qcResult$qcErrors)
       },
       readUserFileError = function(cond) {
         return(paste("Error:", cond$message))
@@ -67,9 +57,15 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
           return(paste("Error:", cond$message))
       },
       finally = {
-        pathToZipFile <- zipFiles(outputFolders$outqcdir)
-        link <- getLinkFromPath(pathToZipFile, "here")
-        qcZipLink(link)
+        # capture any errors
+        singleStationState$qualityControlErrors = qcResult$errors
+        qualityControlCheckResult(qcResult$errors)
+        # capture climdex input object created
+        if (qcResult$errors == "") { singleStationState$climdexInput = qcResult$cio }
+
+        folderToZip(singleStationState$outputFolders$outqcdir)
+        pathToZipFile <- zipFiles(folderToZip())
+        qcZipLink(getLinkFromPath(pathToZipFile, "here"))
         isQCOutputReady(TRUE)
       }
     )
@@ -79,15 +75,17 @@ singleStationStep2 <- function (input, output, session, step1, uiHelper) {
 
   qualityControlCheckResult <- reactiveVal("")
     # Quality control processing has been requested by the user.
-    output$qualityControlError <- reactive ({
-      errorHTML <- ""
-      if (qualityControlCheckResult() != "") {
-        errorHTML <- HTML("<div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlCheckResult(), "</div>")
-      }
-      return(errorHTML)
-    })
+  output$qualityControlError <- reactive ({
+    errorHTML <- ""
+    if (qualityControlCheckResult() != "") {
+      errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlCheckResult(), "</div>")
+    }
+    return(errorHTML)
+  })
 
-  return(list(outputFolders = outputFolders))
+  outputOptions(output, "qcLink", suspendWhenHidden=FALSE)
+
+  return(list(singleStationState = singleStationState))
 
 
   # TODO respond in other modules to event in this module

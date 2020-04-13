@@ -47,38 +47,38 @@ write.NA.statistics <- function(cio, outputFolders, metadata) {
 }
 
 # returns a date time-series from user data, removes any non-gregorian dates and corresponding data in the process
-check.and.create.dates <- function(user.data) {
-  yyymmdd <- paste(user.data[, 1], user.data[, 2], user.data[, 3], sep = "-")
+check.and.create.dates <- function(user_data) {
+  yyymmdd <- paste(user_data[, 1], user_data[, 2], user_data[, 3], sep = "-")
   user.dates <- as.Date(yyymmdd, format = "%Y-%m-%d")
 
-  year <- user.data$year[!is.na(user.dates)]
-  month <- user.data$month[!is.na(user.dates)]
-  day <- user.data$day[!is.na(user.dates)]
-  prcp <- user.data$prcp[!is.na(user.dates)]
-  tmax <- user.data$tmax[!is.na(user.dates)]
-  tmin <- user.data$tmin[!is.na(user.dates)]
+  year <- user_data$year[!is.na(user.dates)]
+  month <- user_data$month[!is.na(user.dates)]
+  day <- user_data$day[!is.na(user.dates)]
+  prcp <- user_data$prcp[!is.na(user.dates)]
+  tmax <- user_data$tmax[!is.na(user.dates)]
+  tmin <- user_data$tmin[!is.na(user.dates)]
 
-  user.data.ts <- data.frame(year = year, month = month, day = day, precp = prcp, tmax = tmax, tmin = tmin)
-  user.data.ts$dates <- user.dates[!is.na(user.dates)]
+  user_data_ts <- data.frame(year = year, month = month, day = day, precp = prcp, tmax = tmax, tmin = tmin)
+  user_data_ts$dates <- user.dates[!is.na(user.dates)]
   
-  return(user.data.ts)
+  return(user_data_ts)
 }
 
 # Given a user's RClimdex text file path, read in, convert -99.9 to NA and
 # return contents as array of 6 columns.
-read_user_file <- function(user.file.path) {
-  temp.filename = tempfile()
+read_user_file <- function(user_file_path) {
+  temp_filename = tempfile()
   sub <- tryCatch({      
-    raw.table = readLines(user.file.path)
+    raw.table = readLines(user_file_path)
     newtext = gsub(",", "\t", raw.table)
-    cat(newtext, file = temp.filename, sep = "\n")    
+    cat(newtext, file = temp_filename, sep = "\n")    
   },
   error = function(cond) {
     readUserFileError(paste("Error creating temporary file",cond$message), cond)
   })
 
   out <- tryCatch({
-    data <- read.table(temp.filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6))
+    data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6))
     # Replace -99.9 data with NA
     if (!is.null(data)) {
       print(str(data))
@@ -109,7 +109,7 @@ leapyear <- function(year) {
 
 # This function houses the beginning screen for "Step 2" in the GUI (i.e. calculating the indices). It reads in user preferences for the indices
 # and calls the index functions for calculation and plotting.
-draw.step2.interface <- function(progress, plot.title, wsdi_ud, csdi_ud, rx_ud, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD, Tb_GDD, custom_SPEI, var.choice, op.choice, constant.choice, outputFolders) {
+draw.step2.interface <- function(progress, cio, plot.title, wsdi_ud, csdi_ud, rx_ud, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD, Tb_GDD, custom_SPEI, var.choice, op.choice, constant.choice, outputFolders) {
 # TODO remove globalvars
   # assign('plot.title', plot.title, envir = .GlobalEnv)
 
@@ -127,7 +127,7 @@ draw.step2.interface <- function(progress, plot.title, wsdi_ud, csdi_ud, rx_ud, 
   # assign("op.choice", op.choice, envir = .GlobalEnv)
   # assign("constant.choice", constant.choice, envir = .GlobalEnv)
 
-  index.calc(progress, metadata, outputFolders)
+  index.calc(progress, metadata, cio, outputFolders)
 
   # TODO - refactor to use common zipFiles function that is currently in server.R
   # Create a zip file containing all of the results.

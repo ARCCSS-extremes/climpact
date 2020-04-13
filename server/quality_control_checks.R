@@ -59,11 +59,11 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   if (file_test("-f", missingDatesFilePath)) { file.remove(missingDatesFilePath) }
   if (length(date.series[!date.series %in% user.date.series]) > 0) {
     write.table(date.series[!date.series %in% user.date.series], sep = ",", file = missingDatesFilePath, append = FALSE, row.names = FALSE, col.names = FALSE)
-    error.msg = paste0("You seem to have missing dates. See <a href='output/", metadata$stationName, "/qc/", missingDatesFileName, "' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
+    error_msg = paste0("You seem to have missing dates. See <a href='output/", metadata$stationName, "/qc/", missingDatesFileName, "' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
     skip <<- TRUE
 
-    warning(error.msg)
-    return(error.msg)
+    warning(error_msg)
+    return(error_msg)
   }
 
   # Check for ascending order of years
@@ -77,7 +77,6 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   # which still references the INPUT to the climdex.input function.
   if (!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
 
-#TODO JMC confirm cio local var is used appropriately and global var no longer used.
   cio <- create_climdex_input(user.data, metadata)
   print("climdex input object created.", quote = FALSE)
 
@@ -166,7 +165,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   temp.file <- paste0(user.file, ".temporary") #"test.tmp"#tempfile()
   file.copy(user.file, temp.file)
 
-  error <- allqc(progress, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
+  errors <- allqc(progress, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
   ##############################
   # Write out NA statistics.
@@ -176,7 +175,8 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   # Remove temporary file
   file.remove(temp.file)
 
-  return(error)
+  qcWrapperResult <- list(errors = errors, cio = cio)
+  return(qcWrapperResult)
 
 }
 # end of QC.wrapper()
@@ -185,8 +185,8 @@ read_and_qc_check <- function(progress, user.data, user.file, latitude, longitud
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
   user.data.ts <- check.and.create.dates(user.data)
   metadata <- create.metadata(latitude, longitude, base.year.start, base.year.end, user.data.ts$dates, stationName)
-  qc.errors <- QC.wrapper(progress, metadata, user.data.ts, user.file, outputFolders, NULL)
-  return(qc.errors)
+  qcResult <- QC.wrapper(progress, metadata, user.data.ts, user.file, outputFolders, NULL)
+  return(qcResult)
 }
 
 # creates a list of metadata

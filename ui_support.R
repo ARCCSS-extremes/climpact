@@ -1,6 +1,7 @@
 # Global property bag
 source("models/climpactUI.R")
-uiHelper <- climpactUI("ui")
+climpactUI <- climpactUI("ui")
+
 
 # Global functions
 
