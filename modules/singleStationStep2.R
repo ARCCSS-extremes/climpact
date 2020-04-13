@@ -1,8 +1,7 @@
 singleStationStep2 <- function (input, output, session, climpactUI, singleStationState) {
-
   # Update UI with validation text
   output$loadDataError <- reactive({
-      dataFileLoadedText <- "<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load a dataset</div>"
+      dataFileLoadedText <- "<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span> Please load station data.</div>"
       if (!is.null(input$dataFile)) {
         dataFileLoadedText <- ""
       }
@@ -11,10 +10,24 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
 
   folderToZip <- reactiveVal("")
   qcZipLink <- reactiveVal("")
-  isQCOutputReady <- reactiveVal(FALSE)
+
+  output$qualityControlError <- reactive ({
+    errorHTML <- ""
+    if (!singleStationState$isQCCompleted())
+    { 
+      # alert warning template
+      errorHTML <- HTML("<br /><div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Warning:</span> Please run quality control checks.</div>")
+    } else {
+      if (singleStationState$qualityControlErrors() != "") {
+        # alert error template
+        errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", singleStationState$qualityControlErrors(), "</div>")
+      }
+    }
+    return(errorHTML)
+  })
 
   output$qcLink <- renderText({
-    if (isQCOutputReady()) {
+    if (singleStationState$isQCCompleted()) {
       # zip files and get link
       localLink <- paste0("Quality control directory: ", folderToZip())
       remoteLink <- paste0("<div class= 'alert alert-info' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
@@ -26,7 +39,6 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
   })
 
   observeEvent(input$doQualityControl, {
-
     # input$dataFile will be NULL initially. After the user selects
     # and uploads a file, it will be a data frame with 'name',
     # 'size', 'type', and 'datapath' columns. The 'datapath'
@@ -35,7 +47,7 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
     progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(message="Quality Control checks", value=0, detail = "Starting...")
-    isQCOutputReady(FALSE)
+    singleStationState$isQCCompleted(FALSE)
 
     # Call into ClimPACT to do the quality control.
     out <- tryCatch({
@@ -47,7 +59,16 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
                                   singleStationState$latitude(), singleStationState$longitude(),
                                   singleStationState$stationName(), singleStationState$startYear(),
                                   singleStationState$endYear(), singleStationState$outputFolders)
-        return (qcResult$qcErrors)
+
+        # capture any errors
+        singleStationState$qualityControlErrors(qcResult$errors)
+        # qualityControlCheckResult(qcResult$errors)
+        # capture climdex input object created
+        if (qcResult$errors == "") { 
+          singleStationState$climdexInput(qcResult$cio)
+        }
+
+        return (qcResult$errors)
       },
       readUserFileError = function(cond) {
         return(paste("Error:", cond$message))
@@ -57,32 +78,16 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
           return(paste("Error:", cond$message))
       },
       finally = {
-        # capture any errors
-        singleStationState$qualityControlErrors = qcResult$errors
-        qualityControlCheckResult(qcResult$errors)
-        # capture climdex input object created
-        if (qcResult$errors == "") { singleStationState$climdexInput = qcResult$cio }
-
         folderToZip(singleStationState$outputFolders$outqcdir)
         pathToZipFile <- zipFiles(folderToZip())
         qcZipLink(getLinkFromPath(pathToZipFile, "here"))
-        isQCOutputReady(TRUE)
+        singleStationState$isQCCompleted(TRUE)
       }
     )
-    browser()
     return(out)
   })
 
-  qualityControlCheckResult <- reactiveVal("")
-    # Quality control processing has been requested by the user.
-  output$qualityControlError <- reactive ({
-    errorHTML <- ""
-    if (qualityControlCheckResult() != "") {
-      errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span>", qualityControlCheckResult(), "</div>")
-    }
-    return(errorHTML)
-  })
-
+  # ensure client-side javascript will inspect qcLink element
   outputOptions(output, "qcLink", suspendWhenHidden=FALSE)
 
   return(list(singleStationState = singleStationState))

@@ -9,7 +9,8 @@ new_stationWizardState <- function(stationName = character(),
                                       dataFile = NULL,
                                       startYear = integer(),
                                       endYear = integer(),
-                                      qualityCheckErrors = character(),
+                                      isQCCompleted = FALSE,
+                                      qualityControlErrors = "",
                                       climdexInput = NULL) {
   # basic type validation
   stopifnot(is.character(stationName))
@@ -17,15 +18,18 @@ new_stationWizardState <- function(stationName = character(),
   stopifnot(is.double(longitude))
   stopifnot(is.integer(startYear))
   stopifnot(is.integer(endYear))
+  stopifnot(is.logical(isQCCompleted))
+  stopifnot(is.character(qualityControlErrors))
 
-  value <- structure(list(stationName = stationName,
-                          latitude = latitude,
-                          longitude = longitude,
-                          dataFile = dataFile,
-                          startYear = startYear,
-                          endYear = endYear,
-                          qualityCheckErrors = character(),
-                          climdexInput = NULL,
+  value <- structure(list(stationName = reactiveVal(stationName),
+                          latitude = reactiveVal(latitude),
+                          longitude = reactiveVal(longitude),
+                          dataFile = reactiveVal(dataFile),
+                          startYear = reactiveVal(startYear),
+                          endYear = reactiveVal(endYear),
+                          isQCCompleted = reactiveVal(isQCCompleted),
+                          qualityControlErrors = reactiveVal(qualityControlErrors),
+                          climdexInput = reactiveVal(climdexInput),
                           outputFolders = list()
                       ),
                       validate = validate_stationWizardState,
@@ -55,8 +59,6 @@ validate_stationWizardState <- function(r) {
     stop("Longitude must be between -180 and 180", call. = FALSE)
   }
   return(r)
-
-
 }
 
 
@@ -64,15 +66,15 @@ validate_stationWizardState <- function(r) {
 #' 
 #' Creates a new stationWizardState and validates all attributes are valid.
 #' 
-#' @param   stationName         character Station name
-#' @param   latitude            double    Station latitude in decimal degrees
-#' @param   longitude           double    Station longitude in decimal degrees
-#' @param   dataFile            dataframe Describes (via name, size, type, datapath) the file containing weather observations provided by the user @seealso [shiny::fileInput()]
-#' @param   startYear           integer   First year to use in calculations. Must be equal or greater than first year in file.
-#' @param   endYear             integer   Last year to use in calculations. Must be equal or lesser than last year in file.
-#' @param   qualityCheckErrors  character All errors obtained performing quality checks on dataFile
-#' @param   climdexInput        object    Climdex input object created from dataFile using climdex.pcic package
-#'
+#' @param   stationName           character Station name
+#' @param   latitude              double    Station latitude in decimal degrees
+#' @param   longitude             double    Station longitude in decimal degrees
+#' @param   dataFile              dataframe Describes (via name, size, type, datapath) the file containing weather observations provided by the user @seealso [shiny::fileInput()]
+#' @param   startYear             integer   First year to use in calculations. Must be equal or greater than first year in file.
+#' @param   endYear               integer   Last year to use in calculations. Must be equal or lesser than last year in file.
+#' @param   isQCCompleted         logical   Has data been quality control checked
+#' @param   qualityControlErrors  character All errors obtained performing quality checks on dataFile
+#' @param   climdexInput          object    Climdex input object created from dataFile using climdex.pcic package
 #' @return  A stationWizardState object if all attributes are valid or otherwise, executes error action.
 stationWizardState <- function(stationName = character(),
                                 latitude = double(),
@@ -80,14 +82,18 @@ stationWizardState <- function(stationName = character(),
                                 dataFile = NULL,
                                 startYear = integer(),
                                 endYear = integer(),
-                                qualityCheckErrors = character(),
+                                isQCCompleted = FALSE,
+                                qualityControlErrors = "",
                                 climdexInput = NULL) {
   latitude <- as.double(latitude)
   longitude <- as.double(longitude)
   startYear <- as.integer(startYear)
   endYear <- as.integer(endYear)
-  
+  isQCCompleted <- as.logical(isQCCompleted)
+
+
   r <- new_stationWizardState(stationName, latitude, longitude, dataFile, 
-                              startYear, endYear, qualityCheckErrors, climdexInput)
+                              startYear, endYear, isQCCompleted, 
+                              qualityControlErrors, climdexInput)
   # don't call validate_stationWizardState(r) now
 }

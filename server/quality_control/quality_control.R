@@ -54,6 +54,6 @@ allqc <- function(progress, master, output, metadata, outrange = 4) {
   # Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
   flatline_tx(master, output, metadata)
   flatline_tn(master, output, metadata)
-
+  
   return("")
 }

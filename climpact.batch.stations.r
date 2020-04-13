@@ -32,7 +32,7 @@ read.file.list.metadata <- function(file.list.metadata) {
   return(file.list.metadata)
 }
 
-strip.file.extension <- function(file.name) {
+strip_file_extension <- function(file.name) {
   file_parts <- strsplit(file.name, "\\.")[[1]]
   stripped <- substr(file.name, start = 1, stop = nchar(file.name) - nchar(file_parts[length(file_parts)]) - 1)
   print(paste0("input: ", file.name, " output: ", stripped))
@@ -63,8 +63,8 @@ batch <<- function(metadatafilepath, metadatafilename, batchfiles, base.start, b
     file <- batchfiles[file.name, 'datapath']
     print(file)
     user.data <- read_user_file(file)
-    user.data.ts <- check.and.create.dates(user.data)
-    station.name <- strip.file.extension(file.name)
+    user.data.ts <- check_and_create_dates(user.data)
+    station.name <- strip_file_extension(file.name)
 
     
 		outputFolders <- outputFolders(dirname(file), station.name)
@@ -85,17 +85,12 @@ browser()
 
 # TODO JMC ensure variables below are local and not global
     # global variables needed for calling climpact2.GUI.r functionality
-    station.metadata <- create.metadata(lat, lon, base.start, base.end, user.data.ts$dates, station.name)
+    station.metadata <- create_metadata(lat, lon, base.start, base.end, user.data.ts$dates, station.name)
 
-		version.climpact <- software_id
+		# version.climpact <- software_id
     # End check vars are not global
 
-		if (lat < 0) lat_text = "°S" else lat_text = "°N"
-    if (lon < 0) lon_text = "°W" else lon_text = "°E"
-    Encoding(lon_text) <- "UTF-8" # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
-    Encoding(lat_text) <- "UTF-8"
-    title.station <- paste(station.name, " [", lat, lat_text, ", ", lon, lon_text, "]", sep = "")
-    plot.title <- gsub('\\#', title.station, "Station: #");
+    title.station <- station.metadata$stationTitle
     barplot_flag <- TRUE
     min_trend <- 10
     temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
@@ -162,7 +157,7 @@ browser()
 
 
   file.rename(batchfiles$datapath, row.names(batchfiles))
-  zipfilename <- paste0(strip.file.extension(metadatafilename), "-results.zip")
+  zipfilename <- paste0(strip_file_extension(metadatafilename), "-results.zip")
   workingDir <- outputFolder #JMC variable assignment unnecessary here if method below not extracted
   destinationFolder <- "/www/output/"
   # JMC extract method to create zip file at path

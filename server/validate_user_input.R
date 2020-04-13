@@ -1,17 +1,11 @@
     # Validate sector dataset
     sectorDataFile <- reactive({
         validate(
-            need(!is.null(input$sectorDataFile), message="Please load a dataset")
+            need(!is.null(input$sectorDataFile), message="Please load station data")
         )
         input$sectorDataFile
     })
 
-    plotTitleMissing <- reactive({
-        validate(
-            need(input$plotTitle != "", message="Please enter a plot title")
-        )
-        ""
-    })
 
     sectorPlotTitleMissing <- reactive({
       validate(

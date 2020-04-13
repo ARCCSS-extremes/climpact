@@ -1,35 +1,16 @@
-# Preps data and creates the climdex.input object based on the R package climdex.pcic
-create_climdex_input <- function(user.data, metadata) {
+source("server/create_climdex_input.R", local = TRUE)
+
+merge_data <- function(user_data) {
   date.seq <- data.frame(list(time = seq(metadata$dates[1], metadata$dates[length(metadata$dates)], by = "day")))
-  data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user.data[, 4], tmax = user.data[, 5], tmin = user.data[, 6]))
-  merge_data = merge(data_raw, date.seq, all = TRUE)
-
-  days <- as.Date(as.character(merge_data[, 1], format = "%Y-%m-%d")) - as.Date("1850-01-01")
-  seconds <- as.numeric(days * 24 * 60 * 60)
-  ts.origin = "1850-01-01" # arbitarily chosen origin to create time-series object with. This needs to be made global
-  pcict.dates <- as.PCICt(seconds, cal = "gregorian", origin = as.character(ts.origin))
-
-  # unused date.months <- unique(format(as.character((merge_data[, 1]), format = "%Y-%m")))
-  metadata$date.years <- unique(format(as.character((merge_data[, 1]), format = "%Y")))
-
-  # create a climdex input object
-  # The only quantiles object is the global var. Which is never assigned a value, so will be NULL.
-  cio <- climdexInput.raw(tmin = merge_data[, 4], tmax = merge_data[, 3], prec = merge_data[, 2], 
-                          tmin.dates = pcict.dates, tmax.dates = pcict.dates, prec.dates = pcict.dates, 
-                          base.range = c(metadata$base.start, metadata$base.end), prec.qtiles = prec.quantiles,
-                          temp.qtiles = temp.quantiles, quantiles = NULL)
-
-  # add diurnal temperature range
-  cio@data$dtr = cio@data$tmax - cio@data$tmin
-
-  return(cio)
+  data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user_data[, 4], tmax = user_data[, 5], tmin = user_data[, 6]))
+  return(merge(data_raw, date.seq, all = TRUE))
 }
 
 # This function runs QC functionality on the user specified input data. It requres as input;
-#    - metadata: output of create.metadata()
-#    - data: output of convert.user.file
+#    - metadata: output of create_metadata()
+#    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, quantiles) {
+QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles) {
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
 
@@ -46,11 +27,11 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
 
   # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
   # is longer than the length of the user's data.
-  length.of.user.data = length(user.data$year)
-  first.date = as.Date(paste(user.data$year[1], user.data$month[1], user.data$day[1], sep = "-"), "%Y-%m-%d")
-  last.date = as.Date(paste(user.data$year[length.of.user.data], user.data$month[length.of.user.data], user.data$day[length.of.user.data], sep = "-"), "%Y-%m-%d")
+  user_data_length = length(user_data$year)
+  first.date = as.Date(paste(user_data$year[1], user_data$month[1], user_data$day[1], sep = "-"), "%Y-%m-%d")
+  last.date = as.Date(paste(user_data$year[user_data_length], user_data$month[user_data_length], user_data$day[user_data_length], sep = "-"), "%Y-%m-%d")
   date.series = seq(first.date, last.date, "day")
-  user.date.series = as.Date(paste(user.data$year, user.data$month, user.data$day, sep = "-"))
+  user.date.series = as.Date(paste(user_data$year, user_data$month, user_data$day, sep = "-"))
   missing.dates = date.series[!date.series %in% user.date.series]
   # Write out the missing.dates to a text file. Report the filename to the user.
   missingDatesFileName <- paste0(metadata$stationName, ".missing_dates.txt")
@@ -67,7 +48,7 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   }
 
   # Check for ascending order of years
-  if (!all(user.data$year == cummax(user.data$year))) {
+  if (!all(user_data$year == cummax(user_data$year))) {
     return("Years are not in ascending order, please check your input file.")
   }
 
@@ -77,7 +58,10 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   # which still references the INPUT to the climdex.input function.
   if (!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
 
-  cio <- create_climdex_input(user.data, metadata)
+  merge_data <- merge_data()
+  # unused date.months <- unique(format(as.character((merge_data[, 1]), format = "%Y-%m")))
+  metadata$date.years <- unique(format(as.character((merge_data[, 1]), format = "%Y")))
+  cio <- create_climdex_input(merge_data, metadata)
   print("climdex input object created.", quote = FALSE)
 
   ##############################
@@ -162,8 +146,8 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   # Call the ExtraQC functions.
   print("TESTING DATA, PLEASE WAIT...", quote = FALSE)
 
-  temp.file <- paste0(user.file, ".temporary") #"test.tmp"#tempfile()
-  file.copy(user.file, temp.file)
+  temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
+  file.copy(user_file, temp.file)
 
   errors <- allqc(progress, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
@@ -175,21 +159,36 @@ QC.wrapper <- function(progress, metadata, user.data, user.file, outputFolders, 
   # Remove temporary file
   file.remove(temp.file)
 
-  qcWrapperResult <- list(errors = errors, cio = cio)
-  return(qcWrapperResult)
-
+  return(list(errors = errors, cio = cio))
 }
 # end of QC.wrapper()
 
-read_and_qc_check <- function(progress, user.data, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
+read_and_qc_check <- function(progress, user_data, user_file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
-  user.data.ts <- check.and.create.dates(user.data)
-  metadata <- create.metadata(latitude, longitude, base.year.start, base.year.end, user.data.ts$dates, stationName)
-  qcResult <- QC.wrapper(progress, metadata, user.data.ts, user.file, outputFolders, NULL)
+  user_data_ts <- check_and_create_dates(user_data)
+  metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
+  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
   return(qcResult)
 }
 
 # creates a list of metadata
-create.metadata <- function(latitude, longitude, base.year.start, base.year.end, dates, stationName, date.years = NULL, title.station = NULL) {
-  return(list(lat = latitude, lon = longitude, base.start = base.year.start, base.end = base.year.end, year.start = as.numeric(format(dates[1], format = "%Y")), year.end = as.numeric(format(dates[length(dates)], format = "%Y")), dates = dates, stationName = stationName, date.years = date.years, title.station = title.station))
+create_metadata <- function(latitude, longitude, base.year.start, base.year.end, dates, stationName) {
+  if (latitude < 0) lat_text = "°S" else lat_text = "°N"
+  if (longitude < 0) lon_text = "°W" else lon_text = "°E"
+  Encoding(lon_text) <- "UTF-8" # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
+  Encoding(lat_text) <- "UTF-8"
+  title.station <- paste0("Station: ", stationName, " [", latitude, lat_text, ", ", longitude, lon_text, "]")
+  # date.years is set when creating climdex input object
+  # no it's not, there are no reference behaviours here...
+  # I need to add date.years to cio object returned from create_climdex_input function.
+  return(list(lat = latitude, lon = longitude, 
+              base.start = base.year.start, 
+              base.end = base.year.end, 
+              year.start = as.numeric(format(dates[1], format = "%Y")), 
+              year.end = as.numeric(format(dates[length(dates)], format = "%Y")), 
+              dates = dates, 
+              stationName = stationName, 
+              date.years = NULL, 
+              title.station = title.station
+              ))
 }

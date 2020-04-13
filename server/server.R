@@ -13,7 +13,7 @@ server <- function(input, output, session) {
   source("server/quality_control_checks.r")
   source("server/quality_control/quality_control.r")
   source("models/outputFolders.R")
-
+  source("services/calculate_indices.R")
   # modules called with second parameter being namespace id for corresponding UI
   # climpactUI from ui_support.R, sourced in app.R
   step1 <- callModule(singleStationStep1, climpactUI$ns, singleStationState)
@@ -53,28 +53,6 @@ server <- function(input, output, session) {
       HTML("Select all the ClimPACT formatted station text files that you would like to process from the dialog window that opens when you click Browse... below.<br />",
         paste0("These must be formatted according to ",batchFormatLink," of the user guide.<br />")
       )
-    })
-
-    output$indicesLink <- renderText({
-      if(indexCalculationStatus() == "Done") {
-browser()
-        # zip files and get link
-        folderToZip <- file.path(getwd(),outinddir)
-        pathToZipFile <- zipFiles(folderToZip)
-        indicesZipLink <- getLinkFromPath(pathToZipFile, "here")
-        localLink <- paste0("Please view the output in the following directory: <br /><br /><b>", folderToZip, "</b>")
-        remoteLink <- paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                            " Calculated Indices available ", indicesZipLink, "</div>")
-        
-        HTML(localOrRemoteLink(localLink, remoteLink),
-                    "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
-                    "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
-                    "<br>The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.",
-                    "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.",
-                    "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
-                    "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
-        )
-      }
     })
 
     output$sectorCorrelationLink <- renderText({
@@ -506,55 +484,6 @@ browser()
         results
       }
 
-    indexCalculationStatus <- reactiveVal("Not Started")
-
-    # Index calculation has been requested by the user.
-    output$indiceCalculationError <- eventReactive(input$calculateIndices, {
-      # ------------------------------------------------------------------ #
-      # Validate inputs
-      # ------------------------------------------------------------------ #
-      validate(
-        need(input$wsdin<=10,message="WSDId requires d to be between 1 and 10"),
-        need(input$wsdin>0,message="WSDId requires d to be between 1 and 10"),
-        need(input$csdin<=10,message="CSDId requires d to be between 1 and 10"),
-        need(input$csdin>0,message="CSDId requires d to be between 1 and 10"),
-        need(input$rxnday>=1,message="RXnDAY requires n to be a positive number"),
-        need(input$txtn>=1,message="TXdTNd and TXbdTNbd requires d to be a positive number"),
-        need(input$rnnmm>=0,message="Rnnmm requires nn to be greater than or equal to zero"),
-        need(input$spei>=1,message="Custom SPEI/SPI time scale must be a positive number")
-      )
-      plotTitleMissing()
-
-      # Get inputs.
-      plot.title <- input$plotTitle
-      wsdi_ud <- input$wsdin
-      csdi_ud <- input$csdin
-      rx_ui <- input$rxnday
-      txtn_ud <- input$txtn
-      Tb_HDD <- input$hdd
-      Tb_CDD <- input$cdd
-      Tb_GDD <- input$cdd
-      rnnmm_ud <- input$rnnmm
-      custom_SPEI <- input$spei
-      var.choice <- input$custVariable
-      op.choice <- input$custOperation
-      constant.choice <- input$custThreshold
-
-      progress <- shiny::Progress$new()
-      on.exit(progress$close())
-      progress$set(message="Calculating indices", value=0)
-
-      indexCalculationStatus("In Progress")
-
-      # Call into ClimPACT to calculate indices.      
-      error <- draw.step2.interface(progress, plot.title, wsdi_ud, csdi_ud,
-                                    rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
-                                    Tb_GDD, custom_SPEI, var.choice, op.choice,
-                                    constant.choice, outputFolders)
-      indexCalculationStatus("Done")
-      return("")
-    }
-    )
 
     ## Correlation functionality
 
@@ -595,7 +524,6 @@ browser()
       ifelse(error=="",return(""),return(error))
     })
 
-    outputOptions(output, "indiceCalculationError", suspendWhenHidden=FALSE)
     outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
 
     # toggle state of buttons depending on certain criteria
@@ -631,9 +559,5 @@ browser()
     # observeEvent(qualityControlErrorText(), {
     #   session$sendCustomMessage("enableTab", "process_single_station_step_3")
     # })
-    observeEvent(indexCalculationStatus(), {
-      if (indexCalculationStatus()=="Done") {
-        session$sendCustomMessage("enableTab", "process_single_station_step_4")
-      }
-    })
+
 }

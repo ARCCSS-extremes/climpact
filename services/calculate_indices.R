@@ -1,6 +1,14 @@
+source("services/custom_cspei.R", local = TRUE)
+source("services/custom_cspi.R", local = TRUE)
+source("services/plot_indices.R", local = TRUE)
+source("services/plot_prec_index.R", local = TRUE)
+source("services/write_indices.R", local = TRUE)
+source("services/write_prec_index.R", local = TRUE)
+  
 # This function loops through all indices and calls the appropriate functions to calculate them.
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
 index.calc <- function(progress, metadata, cio, outputFolders) {
+  browser()
   calculate.custom.index <- function(outputFolders) {
     print("calculating custom index", quote = FALSE)
     for (frequency in c("annual", "monthly")) {
@@ -43,7 +51,8 @@ index.calc <- function(progress, metadata, cio, outputFolders) {
     # If heatwave previous percentiles have been read in by user then use these in heatwave calculations, otherwise let climdex.hw calculate percentiles using currently loaded data.
     # #{ tx90p <- hwlist$HW.TX90 ; tn90p <- hwlist$HW.TN90 ; tavg90p <- hwlist$HW.TAVG90 } else {
     tx90p <<- tn90p <<- tavg90p <<- tavg05p <<- tavg95p <<- NULL #}
-
+    browser()
+    # TODO test for cio values here to ensure it's not NULL
     index.stored <- climdex.hw(cio) #,tavg90p=tavg90p,tn90p=tn90p,tx90p=tx90p)
 
     write.hw.csv(index.stored, index.name = as.character(index.list$Short.name[i]), header = "Heatwave definitions and aspects", metadata, outputFolders)
