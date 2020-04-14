@@ -63,26 +63,28 @@ batch <<- function(metadatafilepath, metadatafilename, batchfiles, base.start, b
     file <- batchfiles[file.name, 'datapath']
     print(file)
     user.data <- read_user_file(file)
-    user.data.ts <- check_and_create_dates(user.data)
+    user.data.ts <- create_user_data_ts(user.data)
     station.name <- strip_file_extension(file.name)
 
     
 		outputFolders <- outputFolders(dirname(file), station.name)
     
-browser()
     # define variables for indices
     lat <- as.numeric(metadata$latitude[file.number])
     lon <- as.numeric(metadata$longitude[file.number])
-    wsdi_ud <<- metadata$wsdin[file.number]
-    csdi_ud <<- metadata$csdin[file.number]
-    Tb_HDD <<- metadata$Tb_HDD[file.number]
-    Tb_CDD <<- metadata$Tb_CDD[file.number]
-    Tb_GDD <<- metadata$Tb_GDD[file.number]
-    rx_ud <<- metadata$rxnday[file.number]
-    rnnmm_ud <<- metadata$rnnmm[file.number]
-    txtn_ud <<- metadata$txtn[file.number]
-    custom_SPEI <<- metadata$SPEI[file.number]
-
+    params <- climdexInputParams(wsdi_ud <- metadata$wsdin[file.number],
+                                              csdi_ud <- metadata$csdin[file.number],
+                                              rx_ud <- metadata$rxnday[file.number],
+                                              txtn_ud <- metadata$txtn[file.number],
+                                              Tb_HDD <- metadata$Tb_HDD[file.number],
+                                              Tb_CDD <- metadata$Tb_CDD[file.number],
+                                              Tb_GDD <- metadata$Tb_GDD[file.number],
+                                              rnnmm_ud <- metadata$rnnmm[file.number],
+                                              custom_SPEI <- metadata$SPEI[file.number]
+                                              # var.choice <- input$custVariable,
+                                              # op.choice <- input$custOperation,
+                                              # constant.choice <- input$custThreshold
+                                            )
 # TODO JMC ensure variables below are local and not global
     # global variables needed for calling climpact2.GUI.r functionality
     station.metadata <- create_metadata(lat, lon, base.start, base.end, user.data.ts$dates, station.name)
@@ -112,7 +114,7 @@ browser()
     if (skip) { return(NA) }
 
     # calculate indices
-    catch2 <- tryCatch(index.calc(NULL, station.metadata, qcResult$cio, outputFolders),
+    catch2 <- tryCatch(index.calc(NULL, station.metadata, qcResult$cio, outputFolders, params),
         error = function(msg) {
           fileConn <- file(paste(file, ".error.txt", sep = ""))
           writeLines(toString(msg), fileConn)

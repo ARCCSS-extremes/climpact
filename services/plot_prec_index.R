@@ -1,14 +1,16 @@
 # plot.precindex
 # not sure how generic this process can be
-plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, spifactor = NULL, sub = "", times = "", metadata) {
+plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, spifactor = NULL, sub = "", times = "", metadata, outputFolders, pdf.dev, trend_file) {
   if (is.null(index)) stop("Need precip data to plot.")
   Encoding(sub) <- "UTF-8"
-
+  
+  plot.title <- paste0("Station: ", metadata$title.station)
+  
   for (time in 1:4) {
     if (all(is.na(index[time, ]))) { warning(paste("All NA values detected, not plotting ", times[time], " month ", index.name, ".", sep = "")); next }
 
     subtmp = paste("Index: ", index.name, " ", times[time], " month. ", sub, sep = "")
-    namp <- paste(outjpgdir, paste(ofilename, "_", times[time], "month_", index.name, "_MON.jpg", sep = ""), sep = "/")
+    namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.jpg", sep = ""), sep = "/")
     jpeg(file = namp, width = 1024, height = 768)
 
     #mktrend <<- autotrend(index[time,],icor=1)

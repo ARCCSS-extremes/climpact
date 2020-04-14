@@ -1,6 +1,6 @@
 source("server/create_climdex_input.R", local = TRUE)
 
-merge_data <- function(user_data) {
+merge_data <- function(user_data, metadata) {
   date.seq <- data.frame(list(time = seq(metadata$dates[1], metadata$dates[length(metadata$dates)], by = "day")))
   data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user_data[, 4], tmax = user_data[, 5], tmin = user_data[, 6]))
   return(merge(data_raw, date.seq, all = TRUE))
@@ -58,7 +58,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   # which still references the INPUT to the climdex.input function.
   if (!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
 
-  merge_data <- merge_data()
+  merge_data <- merge_data(user_data, metadata)
   # unused date.months <- unique(format(as.character((merge_data[, 1]), format = "%Y-%m")))
   metadata$date.years <- unique(format(as.character((merge_data[, 1]), format = "%Y")))
   cio <- create_climdex_input(merge_data, metadata)
@@ -159,13 +159,13 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   # Remove temporary file
   file.remove(temp.file)
 
-  return(list(errors = errors, cio = cio))
+  return(list(errors = errors, cio = cio, metadata = metadata))
 }
 # end of QC.wrapper()
 
 read_and_qc_check <- function(progress, user_data, user_file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
-  user_data_ts <- check_and_create_dates(user_data)
+  user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
   qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
   return(qcResult)
@@ -181,7 +181,11 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
   # date.years is set when creating climdex input object
   # no it's not, there are no reference behaviours here...
   # I need to add date.years to cio object returned from create_climdex_input function.
-  return(list(lat = latitude, lon = longitude, 
+  
+  # base.___ is the requested (start/end) year
+  # year.___ is the actual (start/end) year in the data provided
+  return(list(lat = latitude, 
+              lon = longitude, 
               base.start = base.year.start, 
               base.end = base.year.end, 
               year.start = as.numeric(format(dates[1], format = "%Y")), 

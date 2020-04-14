@@ -2,7 +2,7 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
 
   indexCalculationStatus <- reactiveVal("Not Started")
 
-  output$qualityControlErrorStep3 <- reactive ({
+  output$qualityControlErrorStep3 <- reactive({
     errorHTML <- ""
     if (singleStationState$qualityControlErrors() != "") {
       errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span></div>")
@@ -12,7 +12,7 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
 
   plotTitleMissing <- reactive({
     validate(
-      need(input$plotTitle != "", message="Please enter a plot title")
+      need(input$plotTitle != "", message = "Please enter a plot title")
     )
     ""
   })
@@ -36,18 +36,20 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
 
     # Get inputs.
     plot.title <- input$plotTitle
-    wsdi_ud <- input$wsdin
-    csdi_ud <- input$csdin
-    rx_ui <- input$rxnday
-    txtn_ud <- input$txtn
-    Tb_HDD <- input$hdd
-    Tb_CDD <- input$cdd
-    Tb_GDD <- input$cdd
-    rnnmm_ud <- input$rnnmm
-    custom_SPEI <- input$spei
-    var.choice <- input$custVariable
-    op.choice <- input$custOperation
-    constant.choice <- input$custThreshold
+    params <- climdexInputParams(wsdi_ud <- input$wsdin,
+                                  csdi_ud <- input$csdin,
+                                  rx_ud <- input$rxnday,
+                                  txtn_ud <- input$txtn,
+                                  Tb_HDD <- input$hdd,
+                                  Tb_CDD <- input$cdd,
+                                  Tb_GDD <- input$gdd,
+                                  rnnmm_ud <- input$rnnmm,
+                                  custom_SPEI <- input$spei,
+                                  var.choice <- input$custVariable,
+                                  op.choice <- input$custOperation,
+                                  constant.choice <- input$custThreshold
+                                )
+    singleStationState$climdexInputParams(params)
 
     progress <- shiny::Progress$new()
     on.exit(progress$close())
@@ -55,46 +57,26 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
 
     indexCalculationStatus("In Progress")
 
-    error <- draw.step2.interface(progress, singleStationState$climdexInput(), 
-                                  plot.title, wsdi_ud, csdi_ud,
-                                  rx_ui, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD,
-                                  Tb_GDD, custom_SPEI, var.choice, op.choice,
-                                  constant.choice, singleStationState$outputFolders)
-    
+    error <- draw.step2.interface(progress, singleStationState, plot.title)
+
     indexCalculationStatus("Done")
     return("")
   })
 
-    # and calls the index functions for calculation and plotting.
-    # This function houses the beginning screen for "Step 2" in the GUI (i.e. calculating the indices). It reads in user preferences for the indices
-  draw.step2.interface <- function(progress, singleStationState, plot.title, wsdi_ud, csdi_ud, rx_ud, txtn_ud, rnnmm_ud, Tb_HDD, Tb_CDD, Tb_GDD, custom_SPEI, var.choice, op.choice, constant.choice) {
+  # and calls the index functions for calculation and plotting.
+  # This function houses the beginning screen for "Step 2" in the GUI (i.e. calculating the indices). It reads in user preferences for the indices
+  draw.step2.interface <- function(progress, singleStationState, plot.title) {
     # TODO remove globalvars
     # assign('plot.title', plot.title, envir = .GlobalEnv)
 
-    # assign("wsdi_ud", as.double(wsdi_ud), envir = .GlobalEnv) # wsdi wsdi_ud
-    # assign("csdi_ud", as.double(csdi_ud), envir = .GlobalEnv) #  csdi_ud
-    # assign("rx_ud", as.double(rx_ud), envir = .GlobalEnv) # 14 rx_ud
-    # assign("txtn_ud", as.double(txtn_ud), envir = .GlobalEnv) # txtn_ud
-    # assign("rnnmm_ud", as.double(rnnmm_ud), envir = .GlobalEnv) # txtn_ud
-    # assign("Tb_HDD", as.double(Tb_HDD), envir = .GlobalEnv) # Tb for HDDheat
-    # assign("Tb_CDD", as.double(Tb_CDD), envir = .GlobalEnv) # Tb for HDDcold
-    # assign("Tb_GDD", as.double(Tb_GDD), envir = .GlobalEnv) # Tb for HDDgrow
-    # assign("custom_SPEI", as.double(custom_SPEI), envir = .GlobalEnv) # custom SPEI/SPI time period
-
-    # assign("var.choice", var.choice, envir = .GlobalEnv)
-    # assign("op.choice", op.choice, envir = .GlobalEnv)
-    # assign("constant.choice", constant.choice, envir = .GlobalEnv)
-
-    metadata <- create_metadata(singleStationState$latitude, singleStationState$longitude, singleStationState$startYear, singleStationState$endYear, user.data.ts$dates, singleStationState$stationName)
-
-    index.calc(progress, metadata, singleStationState$cio, singleStationState$outputFolders)
+    index.calc(progress, singleStationState$metadata(), singleStationState$climdexInput(), singleStationState$outputFolders(), singleStationState$climdexInputParams())
 
     # TODO - refactor to use common zipFiles function that is currently in server.R
     # Create a zip file containing all of the results.
     curwd <- getwd()
-    setwd(outputFolders$baseFolder)
-    filesToZip <- dir(basename(outputFolders$outdirtmp), full.names = TRUE)
-    zipfilename <- basename(outputFolders$outdirtmp)
+    setwd(singleStationState$outputFolders()$baseFolder)
+    filesToZip <- dir(basename(singleStationState$outputFolders()$outdirtmp), full.names = TRUE)
+    zipfilename <- basename(singleStationState$outputFolders()$outdirtmp)
     zip(zipfile = zipfilename, files = filesToZip)
     setwd(curwd)
   }

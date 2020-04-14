@@ -47,7 +47,7 @@ write.NA.statistics <- function(cio, outputFolders, metadata) {
 }
 
 # returns a date time-series from user data, removes any non-gregorian dates and corresponding data in the process
-check_and_create_dates <- function(user_data) {
+create_user_data_ts <- function(user_data) {
   yyymmdd <- paste(user_data[, 1], user_data[, 2], user_data[, 3], sep = "-")
   user.dates <- as.Date(yyymmdd, format = "%Y-%m-%d")
 

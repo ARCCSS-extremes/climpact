@@ -53,19 +53,19 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   wheat_plot_y_label <- "Wheat Yield (t/ha)"
 
   # plot tmin vs wheat
-  create_save_scatter_plot(paste0(ofilename, "_corr_tmin_",sectorColumnFilePart), temp_per_year_sector, "avg_tmin", sectorCol, plot.title, "Average min temperature", wheat_plot_y_label)
+  create_save_scatter_plot(paste0(stationName, "_corr_tmin_",sectorColumnFilePart), temp_per_year_sector, "avg_tmin", sectorCol, plot.title, "Average min temperature", wheat_plot_y_label)
   progress$inc(0.2)
 
   # plot tmax vs wheat
-  create_save_scatter_plot(paste0(ofilename, "_corr_tmax_",sectorColumnFilePart), temp_per_year_sector, "avg_tmax", sectorCol, plot.title, "Average max temperature", wheat_plot_y_label)
+  create_save_scatter_plot(paste0(stationName, "_corr_tmax_",sectorColumnFilePart), temp_per_year_sector, "avg_tmax", sectorCol, plot.title, "Average max temperature", wheat_plot_y_label)
   progress$inc(0.2)
 
   # plot t vs wheat
-  create_save_scatter_plot(paste0(ofilename, "_corr_t_",sectorColumnFilePart), temp_per_year_sector, "avg_t", sectorCol, plot.title, "Average temperature", wheat_plot_y_label)
+  create_save_scatter_plot(paste0(stationName, "_corr_t_",sectorColumnFilePart), temp_per_year_sector, "avg_t", sectorCol, plot.title, "Average temperature", wheat_plot_y_label)
   progress$inc(0.2)
 
   # plot above30 vs wheat
-  create_save_scatter_plot(paste0(ofilename, "_corr_above30_",sectorColumnFilePart), temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", wheat_plot_y_label)
+  create_save_scatter_plot(paste0(stationName, "_corr_above30_",sectorColumnFilePart), temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", wheat_plot_y_label)
   progress$inc(0.2)
 
   #JMC add scatter plot for each index
@@ -108,7 +108,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   }
   df <- df[df$indice != "",]
   df$indice <- factor(df$indice, levels = found.indices)
-  create_bar_plot(paste0(ofilename, "_indice_",sectorColumnFilePart), df, "indice", "cor", "category", plot.title, "", "")
+  create_bar_plot(paste0(stationName, "_indice_",sectorColumnFilePart), df, "indice", "cor", "category", plot.title, "", "")
 
   progress$inc(0.1)
   # all ok

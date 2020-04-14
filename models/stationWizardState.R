@@ -7,17 +7,20 @@ new_stationWizardState <- function(stationName = character(),
                                       latitude = double(),
                                       longitude = double(),
                                       dataFile = NULL,
-                                      startYear = integer(),
-                                      endYear = integer(),
+                                      baseStart = integer(),
+                                      baseEnd = integer(),
                                       isQCCompleted = FALSE,
                                       qualityControlErrors = "",
-                                      climdexInput = NULL) {
+                                      climdexInput = NULL,
+                                      metadata = NULL,
+                                      outputFolders = NULL,
+                                      climdexInputParams = NULL) {
   # basic type validation
   stopifnot(is.character(stationName))
   stopifnot(is.double(latitude))
   stopifnot(is.double(longitude))
-  stopifnot(is.integer(startYear))
-  stopifnot(is.integer(endYear))
+  stopifnot(is.integer(baseStart))
+  stopifnot(is.integer(baseEnd))
   stopifnot(is.logical(isQCCompleted))
   stopifnot(is.character(qualityControlErrors))
 
@@ -25,12 +28,14 @@ new_stationWizardState <- function(stationName = character(),
                           latitude = reactiveVal(latitude),
                           longitude = reactiveVal(longitude),
                           dataFile = reactiveVal(dataFile),
-                          startYear = reactiveVal(startYear),
-                          endYear = reactiveVal(endYear),
+                          baseStart = reactiveVal(baseStart),
+                          baseEnd = reactiveVal(baseEnd),
                           isQCCompleted = reactiveVal(isQCCompleted),
                           qualityControlErrors = reactiveVal(qualityControlErrors),
                           climdexInput = reactiveVal(climdexInput),
-                          outputFolders = list()
+                          metadata = reactiveVal(metadata),
+                          outputFolders = reactiveVal(outputFolders),
+                          climdexInputParams = reactiveVal(climdexInputParams)
                       ),
                       validate = validate_stationWizardState,
                       class = "stationWizardState"
@@ -70,30 +75,38 @@ validate_stationWizardState <- function(r) {
 #' @param   latitude              double    Station latitude in decimal degrees
 #' @param   longitude             double    Station longitude in decimal degrees
 #' @param   dataFile              dataframe Describes (via name, size, type, datapath) the file containing weather observations provided by the user @seealso [shiny::fileInput()]
-#' @param   startYear             integer   First year to use in calculations. Must be equal or greater than first year in file.
-#' @param   endYear               integer   Last year to use in calculations. Must be equal or lesser than last year in file.
+#' @param   baseStart             integer   Base period start. First year to use in calculations. Must be equal or greater than first year in file.
+#' @param   baseEnd               integer   Base period end. Last year to use in calculations. Must be equal or lesser than last year in file.
 #' @param   isQCCompleted         logical   Has data been quality control checked
 #' @param   qualityControlErrors  character All errors obtained performing quality checks on dataFile
 #' @param   climdexInput          object    Climdex input object created from dataFile using climdex.pcic package
+#' @param   metadata              object    List of items used in calculations. To be refactored, but maintained for now to simplify refactoring.
+#' @param   outputFolders         object    List of folders to write to.
+#' @param   climdexInputParams    object    climdexInputParams object capturing user supplied parameters for Climdex index calculations
+#' 
 #' @return  A stationWizardState object if all attributes are valid or otherwise, executes error action.
 stationWizardState <- function(stationName = character(),
                                 latitude = double(),
                                 longitude = double(),
                                 dataFile = NULL,
-                                startYear = integer(),
-                                endYear = integer(),
+                                baseStart = integer(),
+                                baseEnd = integer(),
                                 isQCCompleted = FALSE,
                                 qualityControlErrors = "",
-                                climdexInput = NULL) {
+                                climdexInput = NULL,
+                                metadata = NULL,
+                                outputFolders = NULL,
+                                climdexInputParams = NULL) {
   latitude <- as.double(latitude)
   longitude <- as.double(longitude)
-  startYear <- as.integer(startYear)
-  endYear <- as.integer(endYear)
+  baseStart <- as.integer(baseStart)
+  baseEnd <- as.integer(baseEnd)
   isQCCompleted <- as.logical(isQCCompleted)
 
-
-  r <- new_stationWizardState(stationName, latitude, longitude, dataFile, 
-                              startYear, endYear, isQCCompleted, 
-                              qualityControlErrors, climdexInput)
+  r <- new_stationWizardState(stationName, latitude, longitude, 
+                              dataFile, baseStart, baseEnd, 
+                              isQCCompleted, qualityControlErrors, 
+                              climdexInput, metadata, outputFolders,
+                              climdexInputParams)
   # don't call validate_stationWizardState(r) now
 }

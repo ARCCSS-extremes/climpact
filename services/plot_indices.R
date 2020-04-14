@@ -1,5 +1,5 @@
 # plot.hw
-plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, metadata) {
+plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, metadata, outputFolders, pdf.dev) {
   if (is.null(index)) stop("Need heatwave data to plot.")
 
   definitions <- c("Tx90", "Tn90", "EHF", "ECF")
@@ -12,8 +12,8 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       if (all(is.na(index[def, asp, ]))) { warning(paste("All NA values detected, not plotting ", aspects[asp], ", ", definitions[def], ".", sep = "")); next }
 
       plot.title <- paste0("Station: ", metadata$title.station)
-      if (definitions[def] == "ECF") { namp <- paste(outjpgdir, paste(ofilename, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
-      else { namp <- paste(outjpgdir, paste(ofilename, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
+      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
+      else { namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
       jpeg(file = namp, width = 1024, height = 768)
       dev0 = dev.cur()
 
@@ -50,8 +50,8 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       dev.off(dev0)
 
       #JMC bug now climdex.pcic not available: cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
-browser()
-# TODO remove globalvars
+  
+  # TODO remove globalvars
       remove(mktrend, envir = .GlobalEnv)
     }
   }
@@ -176,9 +176,8 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
 }
 # end of plotx
 
-
 # plot.index
-plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", outputFolders) {
+plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL) {
   print(index)
   if (is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
   if (all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT PLOTTING."), quote = FALSE); return() }
@@ -293,6 +292,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   if (index.name == "tx95t") { xdata <- 1:length(index) }
   else xdata <- names(index)
 
+  plot.title <- paste0("Station: ", metadata$title.station)
   plotx(xdata, index, main = gsub('\\*', tmp.name, plot.title),
     ylab = index.units, xlab = x.label, index.name = index.name, sub = sub)
 

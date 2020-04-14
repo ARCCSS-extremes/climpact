@@ -53,15 +53,16 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
     out <- tryCatch({
         # create output folders to hold files for quality control and index output and plots
         baseFolder <- file.path(getwd(), "www", "output")
-        singleStationState$outputFolders <- outputFolders(baseFolder, singleStationState$stationName())
+        singleStationState$outputFolders(outputFolders(baseFolder, singleStationState$stationName()))
         # apply quality control checks
         qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
                                   singleStationState$latitude(), singleStationState$longitude(),
                                   singleStationState$stationName(), singleStationState$startYear(),
-                                  singleStationState$endYear(), singleStationState$outputFolders)
+                                  singleStationState$endYear(), singleStationState$outputFolders())
 
         # capture any errors
         singleStationState$qualityControlErrors(qcResult$errors)
+        singleStationState$metadata(qcResult$metadata)
         # qualityControlCheckResult(qcResult$errors)
         # capture climdex input object created
         if (qcResult$errors == "") { 
@@ -78,7 +79,7 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
           return(paste("Error:", cond$message))
       },
       finally = {
-        folderToZip(singleStationState$outputFolders$outqcdir)
+        folderToZip(singleStationState$outputFolders()$outqcdir)
         pathToZipFile <- zipFiles(folderToZip())
         qcZipLink(getLinkFromPath(pathToZipFile, "here"))
         singleStationState$isQCCompleted(TRUE)

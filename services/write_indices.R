@@ -1,6 +1,12 @@
 # write.index.csv
 # takes a time series of a given index and writes to file
-write.index.csv <- function(index = NULL, index.name = NULL, freq = "annual", header = "", metadata) {
+write.index.csv <- function(index = NULL, 
+                            index.name = NULL, 
+                            freq = "annual", 
+                            header = "", 
+                            metadata,
+                            climdexInputParams,
+                            outputFolders) {
   if (is.null(index) | all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT WRITING .csv FILE."), quote = FALSE); return() }
 
   if (index.name == "tx95t") { freq = "DAY" }
@@ -8,15 +14,15 @@ write.index.csv <- function(index = NULL, index.name = NULL, freq = "annual", he
     if (freq == "monthly") { freq = "MON" }
     else if (freq == "annual") { freq = "ANN" }
   }
-
-  if (index.name == "wsdin") { tmp.name = paste("wsdi", wsdi_ud, sep = "") }
-  else if (index.name == "csdid") { tmp.name = paste("csdi", csdi_ud, sep = "") }
-  else if (index.name == "rxdday") { tmp.name = paste("rx", rx_ud, "day", sep = "") }
-  else if (index.name == "rnnmm") { tmp.name = paste("r", rnnmm_ud, "mm", sep = "") }
-  else if (index.name == "txdtnd") { tmp.name = paste("tx", txtn_ud, "tn", txtn_ud, sep = "") }
-  else if (index.name == "txbdtnbd") { tmp.name = paste("txb", txtn_ud, "tnb", txtn_ud, sep = "") }
+  if (index.name == "wsdin") { tmp.name = paste("wsdi", climdexInputParams$wsdi_ud, sep = "") }
+  else if (index.name == "csdid") { tmp.name = paste("csdi", climdexInputParams$csdi_ud, sep = "") }
+  else if (index.name == "rxdday") { tmp.name = paste("rx", climdexInputParams$rx_ud, "day", sep = "") }
+  else if (index.name == "rnnmm") { tmp.name = paste("r", climdexInputParams$rnnmm_ud, "mm", sep = "") }
+  else if (index.name == "txdtnd") { tmp.name = paste("tx", climdexInputParams$txtn_ud, "tn", climdexInputParams$txtn_ud, sep = "") }
+  else if (index.name == "txbdtnbd") { tmp.name = paste("txb", climdexInputParams$txtn_ud, "tnb", climdexInputParams$txtn_ud, sep = "") }
   else { tmp.name = index.name }
-  nam1 <- paste(outinddir, paste(ofilename, "_", tmp.name, "_", freq, ".csv", sep = ""), sep = "/")
+  nam1 <- paste(outputFolders$outinddir, paste(metadata$stationName, "_", tmp.name, "_", freq, ".csv", sep = ""), sep = "/")
+  
   write_header(nam1, header, metadata)
   index = c(tmp.name, index)
   names(index)[1] = "time"
