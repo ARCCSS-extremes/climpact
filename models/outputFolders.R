@@ -3,15 +3,16 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
   # basic type validation
   stopifnot(is.character(baseFolder))
   stopifnot(is.character(stationName))
-
-  outinddir <- file.path(baseFolder, stationName, "indices")
-  outlogdir <- file.path(baseFolder, stationName, "qc")
-  outjpgdir <- file.path(baseFolder, stationName, "plots")
-  outtrddir <- file.path(baseFolder, stationName, "trend")
-  outqcdir <- file.path(baseFolder, stationName, "qc") # save results from extraqc
-  outthresdir <- file.path(baseFolder, stationName, "thres") # to save *_thres.csv files
-  zipfile <- file.path(baseFolder, stationName, ".zip")
-  corrdir <- file.path(baseFolder, stationName, "corr") # save correlation files
+  
+  outputdir <- file.path(baseFolder, stationName)
+  outinddir <- file.path(outputdir, "indices")
+  outlogdir <- file.path(outputdir, "qc")
+  outjpgdir <- file.path(outputdir, "plots")
+  outtrddir <- file.path(outputdir, "trend")
+  outqcdir <- file.path(outputdir, "qc") # save results from extraqc
+  outthresdir <- file.path(outputdir, "thres") # to save *_thres.csv files
+  corrdir <- file.path(outputdir, "corr") # save correlation files
+  zipfile <- file.path(outputdir, paste0(stationName, ".zip"))
 
   # create structure
   value <- structure(list(baseFolder  = baseFolder,
@@ -22,9 +23,11 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
                           outtrddir   = outtrddir,
                           outqcdir    = outqcdir,
                           outthresdir = outthresdir,
+                          corrdir     = corrdir,
                           zipfile     = zipfile,
-                          corrdir     = corrdir),
-                          class = "outputFolders"
+                          outputdir   = outputdir
+                        ),
+                        class = "outputFolders"
                     )
   return(value)
 }

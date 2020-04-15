@@ -88,7 +88,13 @@ singleStationStep3UI <- function (id) {
                                     condition = "output.indiceCalculationError == ''",
                                     ns = ns,
                                     h4("View Indices"),
-                                    uiOutput(ns("indicesLink"))
+                                    uiOutput(ns("indicesLink")),
+                                    p("The <i>plots</i> subdirectory contains an image file for each index."),
+                                    p("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index"),
+                                    p("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index."),
+                                    p("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."),
+                                    p("The <i>qc</i> subdirectory contains quality control diagnostic information."),
+                                    p("If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")
                                 )
                             )
                         )
