@@ -1,4 +1,7 @@
-# Preps data and creates the climdex.input object based on the R package climdex.pcic
+#' Prepare data and create the climdex.input object using the R package climdex.pcic
+#' 
+#' @param merge_data  data.frame
+#' @param metadata    list()    
 create_climdex_input <- function(merge_data, metadata) {
   days <- as.Date(as.character(merge_data[, 1], format = "%Y-%m-%d")) - as.Date("1850-01-01")
   seconds <- as.numeric(days * 24 * 60 * 60)

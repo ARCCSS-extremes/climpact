@@ -42,7 +42,6 @@ new_climdexInputParams <- function(wsdi_ud = double(),
                           op.choice = op.choice,
                           constant.choice = constant.choice
                       ),
-                      validate = validate_climdexInputParams,
                       class = "climdexInputParams"
                     )
   return(value)
@@ -59,6 +58,14 @@ new_climdexInputParams <- function(wsdi_ud = double(),
 #' @return If all attributes are valid, the climdexInputParams is returned. 
 #' Otherwise an error is returned describing the problem with validation.
 validate_climdexInputParams <- function(r) {
+  message <- ""
+  if ((p$wsdi_ud <1)  || (p$wsdi_ud > 10)) { message <- "WSDId: d must be between 1 and 10" }
+  if ((p$csdi_ud <1)  || (p$csdi_ud > 10)) { message <- paste(message, "CSDId d must be between 1 and 10", sep = "\n") }
+  if (p$rx_ud < 1) { message <- paste(message, "RXnDAY: n must be a positive number", sep = "\n") }
+  if (p$txtn_ud < 1) { message <- paste(message, "TXdTNd and TXbdTNbd: d must be a positive number", sep = "\n") }
+  if (p$rnnmm_ud < 0) { message <- paste(message, "Rnnmm: nn must be greater than or equal to zero", sep = "\n") }
+  if (p$custom_SPEI < 1) { message <- paste(message, "Custom SPEI/SPI time scale must be a positive number", sep = "\n") }
+  if (message != "") { stop(message) }
   return(r)
 }
 
@@ -103,10 +110,10 @@ climdexInputParams <- function(wsdi_ud = double(),
   Tb_GDD <- as.double(Tb_GDD)
   custom_SPEI <- as.double(custom_SPEI)
 
-  r <- new_climdexInputParams(wsdi_ud, csdi_ud, rx_ud, 
+  p <- new_climdexInputParams(wsdi_ud, csdi_ud, rx_ud, 
                               txtn_ud, rnnmm_ud, 
                               Tb_HDD, Tb_CDD, Tb_GDD, 
                               custom_SPEI, 
                               var.choice, op.choice, constant.choice)
-  # don't call validate_climdexInputParams(r) now
+  validate_climdexInputParams(p) 
 }

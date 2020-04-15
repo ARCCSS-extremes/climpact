@@ -5,7 +5,8 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
   output$qualityControlErrorStep3 <- reactive({
     errorHTML <- ""
     if (singleStationState$qualityControlErrors() != "") {
-      errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span></div>")
+      errorHTML <- HTML("<br /><div class= 'alert alert-danger' role='alert'>
+                        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span></div>")
     }
     return(errorHTML)
   })
@@ -20,13 +21,13 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
     # ------------------------------------------------------------------ #
     validate(
         need(input$plotTitle != "", message = "Please enter a plot title"),
-        need(input$wsdin <= 10, message = "WSDId requires d to be between 1 and 10"),
-        need(input$wsdin > 0, message = "WSDId requires d to be between 1 and 10"),
-        need(input$csdin <= 10, message = "CSDId requires d to be between 1 and 10"),
-        need(input$csdin > 0, message = "CSDId requires d to be between 1 and 10"),
-        need(input$rxnday >= 1, message = "RXnDAY requires n to be a positive number"),
-        need(input$txtn >= 1, message = "TXdTNd and TXbdTNbd requires d to be a positive number"),
-        need(input$rnnmm >= 0, message = "Rnnmm requires nn to be greater than or equal to zero"),
+        need(input$wsdin <= 10, message = "WSDId: d must be between 1 and 10"),
+        need(input$wsdin > 0, message = "WSDId: d must be between 1 and 10"),
+        need(input$csdin <= 10, message = "CSDId: d must be between 1 and 10"),
+        need(input$csdin > 0, message = "CSDId: d must be between 1 and 10"),
+        need(input$rxnday >= 1, message = "RXnDAY: n must be a positive number"),
+        need(input$txtn >= 1, message = "TXdTNd and TXbdTNbd: d must be a positive number"),
+        need(input$rnnmm >= 0, message = "Rnnmm: nn must be greater than or equal to zero"),
         need(input$spei >= 1, message = "Custom SPEI/SPI time scale must be a positive number")
     )
 
@@ -53,7 +54,10 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
 
     indexCalculationStatus("In Progress")
 
-    index.calc(progress, singleStationState$metadata(), singleStationState$climdexInput(), singleStationState$outputFolders(), singleStationState$climdexInputParams())
+    index.calc(progress, singleStationState$metadata(),
+      singleStationState$climdexInput(), singleStationState$outputFolders(),
+      singleStationState$climdexInputParams())
+
     # Create a zip file containing all of the results.
     folderToZip(singleStationState$outputFolders()$outputdir)
     pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip")
@@ -68,8 +72,10 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
       if (isLocal) {
         HTML(paste0("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>"))
       } else {
-        HTML(paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                              " Calculated Indices available ", indicesZipLink(), "</div>"))
+        HTML(paste0("<div class= 'alert alert-success' role='alert'>
+                    <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+                    </span><span class='sr-only'></span>",
+                    " Calculated Indices available ", indicesZipLink(), "</div>"))
       }
     }
   })

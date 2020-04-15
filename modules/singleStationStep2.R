@@ -53,7 +53,10 @@ singleStationStep2 <- function (input, output, session, climpactUI, singleStatio
     out <- tryCatch({
         # create output folders to hold files for quality control and index output and plots
         baseFolder <- file.path(getwd(), "www", "output")
+
+        # assign new outputFolders object to reactive singleStationState$outputFolders attribute
         singleStationState$outputFolders(outputFolders(baseFolder, singleStationState$stationName()))
+
         # apply quality control checks
         qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
                                   singleStationState$latitude(), singleStationState$longitude(),

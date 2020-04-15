@@ -194,5 +194,5 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
               stationName = stationName, 
               date.years = NULL, 
               title.station = title.station
-              ))
+            ))
 }

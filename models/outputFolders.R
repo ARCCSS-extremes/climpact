@@ -3,7 +3,7 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
   # basic type validation
   stopifnot(is.character(baseFolder))
   stopifnot(is.character(stationName))
-  
+
   outputdir <- file.path(baseFolder, stationName)
   outinddir <- file.path(outputdir, "indices")
   outlogdir <- file.path(outputdir, "qc")

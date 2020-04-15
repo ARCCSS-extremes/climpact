@@ -50,6 +50,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   sectorColumnFilePart <- sectorColumnToFileName(sectorCol, sector.data.fileparts)
 
   # JMC when do we overwrite this with user's sector specific label?
+  # Answer: Never... TODO fix this
   wheat_plot_y_label <- "Wheat Yield (t/ha)"
 
   # plot tmin vs wheat

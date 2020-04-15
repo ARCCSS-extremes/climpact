@@ -8,12 +8,22 @@ singleStationStep3UI <- function (id) {
   return(tagList(conditionalPanel(
                     condition = "output.loadDataError != ''",
                     ns = ns,
-                    wellPanel(HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span> Please load station data.</div>"))
+                    wellPanel(
+                        HTML("<div class= 'alert alert-warning' role='alert'>
+                            <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                            <span class='sr-only'></span> Please load station data.</div>"
+                        )
+                    )
                 ),
                 conditionalPanel(
                     condition = "output.loadDataError == '' && output.qualityControlError != ''",
                     ns = ns,
-                    wellPanel(HTML("<div class= 'alert alert-warning' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>Please check data quality.</div>"))
+                    wellPanel(
+                      HTML("<div class= 'alert alert-warning' role='alert'>
+                            <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                            <span class='sr-only'></span>Please check data quality.</div>"
+                      )
+                    )
                 ),
                 conditionalPanel(
                     condition = "output.loadDataError == '' && output.qualityControlError == ''",
@@ -32,7 +42,7 @@ singleStationStep3UI <- function (id) {
                             fluidRow(
                                 column(4,
                                     numericInput(ns("wsdin"), "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
-                                    bsTooltip(id = "wsdin", title = "Number of days contributing to a warm period (where the minimum length is user-specified) - value is the number of consecutive days", placement = "left", trigger = "hover"),
+                                    bsTooltip(id = paste(id, "-", "wsdin"), title = "Number of days contributing to a warm period (where the minimum length is user-specified) - value is the number of consecutive days", placement = "left", trigger = "hover"),
                                     numericInput(ns("csdin"), "d for CSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
                                     bsTooltip(id = "csdin", title = "Number of days contributing to a cold period (where the period has to be at least 6 days long) - value is the number of consecutive days", placement = "left", trigger = "hover"),
                                     numericInput(ns("rxnday"), "d for Rxdday Days (d >= 1):", 3, min = 1),
@@ -89,7 +99,7 @@ singleStationStep3UI <- function (id) {
                                     ns = ns,
                                     h4("View Indices"),
                                     uiOutput(ns("indicesLink")),
-                                    tags$ul(li("The <i>plots</i> subdirectory contains an image file for each index."),
+                                    tags$ul(tags$li("The <i>plots</i> subdirectory contains an image file for each index."),
                                             tags$li("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index"),
                                             tags$li("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index."),
                                             tags$li("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."),

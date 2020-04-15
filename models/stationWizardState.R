@@ -1,8 +1,8 @@
 #' stationWizardState constructor
-#' 
+#'
 #' new_stationWizardState isn't intended for external use.
 #' Instead, use @seealso [stationWizardState()] which will validate arguments.
-#' 
+#'
 new_stationWizardState <- function(stationName = character(),
                                       latitude = double(),
                                       longitude = double(),

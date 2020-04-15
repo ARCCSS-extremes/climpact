@@ -42,10 +42,10 @@ validate_weatherObservationsRequest <- function(r) {
     stop("Station name must not be empty.")
   }
   if (r$latitude > 90 || r$latitude < -90) {
-    stop("Latitude must be between -90 and 90.", call. = FALSE)
+    stop("Latitude must be between -90 and 90.")
   }
   if (r$longitude > 180 || r$longitude < -180) {
-    stop("Longitude must be between -180 and 180", call. = FALSE)
+    stop("Longitude must be between -180 and 180")
   }
   return(r)
 
