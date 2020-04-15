@@ -78,23 +78,24 @@ singleStationStep3UI <- function (id) {
                                     condition = "output.qualityControlError == ''",
                                     ns = ns,
                                     actionButton(ns("calculateIndices"), "Calculate Indices"),
-                                    textOutput(ns("indiceCalculationError"))
+                                    textOutput(ns("indexCalculationError"))
                                 )
                             )
                         ),
                         fluidRow(
                             column(6,
                                 conditionalPanel(
-                                    condition = "output.indiceCalculationError == ''",
+                                    condition = "output.indexCalculationError == ''",
                                     ns = ns,
                                     h4("View Indices"),
                                     uiOutput(ns("indicesLink")),
-                                    p("The <i>plots</i> subdirectory contains an image file for each index."),
-                                    p("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index"),
-                                    p("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index."),
-                                    p("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."),
-                                    p("The <i>qc</i> subdirectory contains quality control diagnostic information."),
-                                    p("If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")
+                                    tags$ul(li("The <i>plots</i> subdirectory contains an image file for each index."),
+                                            tags$li("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index"),
+                                            tags$li("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index."),
+                                            tags$li("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables."),
+                                            tags$li("The <i>qc</i> subdirectory contains quality control diagnostic information."),
+                                            tags$li("If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")
+                                    )
                                 )
                             )
                         )

@@ -14,7 +14,7 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
   indicesZipLink <- reactiveVal("")
 
   # Index calculation has been requested by the user.
-  output$indiceCalculationError <- eventReactive(input$calculateIndices, {
+  output$indexCalculationError <- eventReactive(input$calculateIndices, {
     # ------------------------------------------------------------------ #
     # Validate inputs
     # ------------------------------------------------------------------ #
@@ -66,7 +66,7 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
   output$indicesLink <- renderText({
     if (indexCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML(paste0("Please view the output in the following directory: <br /><br /><b>", folderToZip(), "</b>"))
+        HTML(paste0("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>"))
       } else {
         HTML(paste0("<div class= 'alert alert-success' role='alert'><span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
                               " Calculated Indices available ", indicesZipLink(), "</div>"))
@@ -74,12 +74,12 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
     }
   })
 
-  outputOptions(output, "indiceCalculationError", suspendWhenHidden = FALSE)
-  # observeEvent(indexCalculationStatus(), {
-  #   if (indexCalculationStatus()=="Done") {
-  #     session$sendCustomMessage("enableTab", "process_single_station_step_4")
-  #   }
-  # })
+  outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
+  observeEvent(indexCalculationStatus(), {
+    if (indexCalculationStatus()=="Done") {
+      session$sendCustomMessage("enableTab", "process_single_station_step_4")
+    }
+  })
 
   # must use = not <- to get named values in list()
   return(list(singleStationState = singleStationState))
