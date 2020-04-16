@@ -48,24 +48,38 @@ new_climdexInputParams <- function(wsdi_ud = double(),
 }
 
 #' climdexInputParams validator
-#' 
+#'
 #' This function will be called by @seealso [climdexInputParams()] 
 #' when creating a new climdexInputParams.
-#' 
+#'
 #' Checks that request attributes are valid.
 #' @param r A climdexInputParams to validate
-#' 
-#' @return If all attributes are valid, the climdexInputParams is returned. 
+#'
+#' @return If all attributes are valid, the climdexInputParams is returned.
 #' Otherwise an error is returned describing the problem with validation.
 validate_climdexInputParams <- function(r) {
   message <- ""
-  if ((p$wsdi_ud <1)  || (p$wsdi_ud > 10)) { message <- "WSDId: d must be between 1 and 10" }
-  if ((p$csdi_ud <1)  || (p$csdi_ud > 10)) { message <- paste(message, "CSDId d must be between 1 and 10", sep = "\n") }
-  if (p$rx_ud < 1) { message <- paste(message, "RXnDAY: n must be a positive number", sep = "\n") }
-  if (p$txtn_ud < 1) { message <- paste(message, "TXdTNd and TXbdTNbd: d must be a positive number", sep = "\n") }
-  if (p$rnnmm_ud < 0) { message <- paste(message, "Rnnmm: nn must be greater than or equal to zero", sep = "\n") }
-  if (p$custom_SPEI < 1) { message <- paste(message, "Custom SPEI/SPI time scale must be a positive number", sep = "\n") }
-  if (message != "") { stop(message) }
+  if ((p$wsdi_ud < 1)  || (p$wsdi_ud > 10)) {
+    message <- "WSDId: value must be between 1 and 10"
+  }
+  if ((p$csdi_ud < 1)  || (p$csdi_ud > 10)) {
+    message <- paste(message, "CSDId value must be between 1 and 10", sep = "\n")
+  }
+  if (p$rx_ud < 1) {
+    message <- paste(message, "RXnDAY: value must be a positive number", sep = "\n")
+  }
+  if (p$txtn_ud < 1) {
+    message <- paste(message, "TXdTNd and TXbdTNbd: value must be a positive number", sep = "\n")
+  }
+  if (p$rnnmm_ud < 0) {
+    message <- paste(message, "Rnnmm: value must be greater than or equal to zero", sep = "\n")
+  }
+  if (p$custom_SPEI < 1) {
+    message <- paste(message, "Custom SPEI/SPI time scale value must be a positive number", sep = "\n")
+  }
+  if (message != "") {
+    stop(message)
+  }
   return(r)
 }
 
