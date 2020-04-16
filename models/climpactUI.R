@@ -51,7 +51,7 @@ climpactUI <- function(ns = character(),
   }
   sampleText <- paste0("The dataset <strong>must</strong> use the format described in ",
                 appendixBLink, " of the ", userGuideLink, ".",
-                "<br />", "<br />",
+                "<br />",
                 "For a sample dataset look at ")
 
   s <- new_climpactUI(ns, userGuideLink, appendixBLink, sampleText)

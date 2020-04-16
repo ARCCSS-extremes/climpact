@@ -58,8 +58,7 @@ ui <- tagList(
         HTML("<a href=\"https://www.greenclimate.fund\"><img src=\"assets/logo-gcf.png\" alt=\"Green Climate Fund\"></a>")
       )
     )
-  )# ,
-  # tags$script(HTML("disableTab('process_single_station_step_2')")),
+  )#, tags$script(HTML("disableTab('process_single_station_step_2')")),
   # tags$script(HTML("disableTab('process_single_station_step_3')")),
   # tags$script(HTML("disableTab('process_single_station_step_4')"))
 )

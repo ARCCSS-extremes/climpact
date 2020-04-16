@@ -13,14 +13,16 @@ server <- function(input, output, session) {
   source("server/quality_control/quality_control.r")
   source("models/outputFolders.R")
   source("services/calculate_indices.R")
+  
   # modules called with second parameter being namespace id for corresponding UI
   # climpactUI from ui_support.R, sourced in app.R
-  stationStep1 <- callModule(singleStationStep1, climpactUI$ns, singleStationState)
-  stationStep2 <- callModule(singleStationStep2, climpactUI$ns, climpactUI, stationStep1$singleStationState)
-  stationStep3 <- callModule(singleStationStep3, climpactUI$ns, climpactUI, stationStep2$singleStationState)
+  # passing session here so that modules can update tabSetPanel/tabBox (value = "process_single_station") in this session
+  stationStep1 <- callModule(singleStationStep1, climpactUI$ns, session, singleStationState)
+  stationStep2 <- callModule(singleStationStep2, climpactUI$ns, session, climpactUI, stationStep1$singleStationState)
+  stationStep3 <- callModule(singleStationStep3, climpactUI$ns, session, climpactUI, stationStep2$singleStationState)
   stationStep4 <- callModule(singleStationStep4, climpactUI$ns, climpactUI, stationStep3$singleStationState)
   griddedStep1 <- callModule(griddedStep1, climpactUI$ns)
-  batchStep1 <- callModule(batchStep1, climpactUI$ns)
+  batchStep1   <- callModule(batchStep1, climpactUI$ns)
 
   output$griddedMenuItem <- renderMenu({
     if (isLocal) {
@@ -65,35 +67,11 @@ server <- function(input, output, session) {
   }
 
     # toggle state of buttons depending on certain criteria
-    # Single station
-    # observe(toggleState('btn_next_step_1', !is.null(input$dataFile)))
+    # Single station    
     # observe(toggleState('btn_next_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
     # observe(toggleState('btn_next_step_3', indexCalculationStatus()=='Done'))
 
     # observe(toggleState('doQualityControl', !is.null(input$dataFile)))
     # observe(toggleState('calculateIndices', !is.null(input$dataFile)))
-
-
-    observeEvent(input$btn_next_step_1, {
-      tabName <- "process_single_station_step_2"
-      session$sendCustomMessage("enableTab", tabName)
-      updateTabsetPanel(session, "process_single_station", selected = tabName)
-    })
-
-    observeEvent(input$btn_next_step_2, {
-      tabName <- "process_single_station_step_3"
-      session$sendCustomMessage("enableTab", tabName)
-      updateTabsetPanel(session, "process_single_station", selected = tabName)
-    })
-    
-    observeEvent(input$btn_next_step_3, {
-      tabName <- "process_single_station_step_4"
-      session$sendCustomMessage("enableTab", tabName)
-      updateTabsetPanel(session, "process_single_station", selected = tabName)
-    })
-
-    # observeEvent(qualityControlErrorText(), {
-    #   session$sendCustomMessage("enableTab", "process_single_station_step_3")
-    # })
 
 }

@@ -1,59 +1,30 @@
 singleStationStep4 <- function(input, output, session, climpactUI, singleStationState) {
 
-  # sectorCorrelationChanges <- reactive({
-  #   input$calculateSectorCorrelation
-  # })
-
-  # Validate sector dataset
-  sectorDataFile <- reactive({
-      validate(need(!is.null(input$sectorDataFile), message="Please load station data"))
-      input$sectorDataFile
-  })
-
-  sectorPlotTitleMissing <- reactive({
-    validate(need(input$sectorPlotName != "", message="Please enter a plot title"))
-    ""
-  })
-
-  output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
-    sectorPlotTitleMissing()
-  })
- 
-  output$loadSectorDataText <- renderText({
-    HTML(climpactUI$sampleText,
-        "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>wheat_yield_nsw_1922-1999.csv</a>")
-  })
-
+  correlationCalculationStatus <- reactiveVal("Not Started")
   folderToZip <- reactiveVal("")
   corrZipLink <- reactiveVal("")
-  correlationCalculationStatus <- reactiveVal("")
 
-  output$sectorCorrelationLink <- renderText({
-    if (correlationCalculationStatus() == "Done") {
-      if (isLocal) {
-        HTML(paste0("Correlation output has been created. ",
-                    "Please view the output in the following directory: <br /><br /><b>",
-                    folderToZip, "</b>"))
-      } else {
-        HTML(paste0("<div class= 'alert alert-success' role='alert'>
-                    <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-                    " Correlation output available ", corrZipLink, "</div>"))
-      }
-    }
-  })
-
-  # React to upload
   observeEvent(input$sectorDataFile, {
     val <- strsplit(input$sectorDataFile$name, "[_\\.]")[[1]][1]
-    updateTextInput(session, "sectorPlotName", value=val)
+    updateTextInput(session, "y_axis_label", value = val)
+  })
+
+  # TODO -  prefer this to be one shot update when moving to step 4.
+  observeEvent(singleStationState$stationName(), {
+    updateTextInput(session, "sectorPlotTitle", value = singleStationState$stationName())
   })
 
   # Handle calculation of correlation between climate/sector data
   output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
+    validate(
+      need(!is.null(input$sectorDataFile), message="Please load station data"),
+      need(input$sectorPlotTitle != "", message="Please enter a chart title")
+    )
 
-    if (is.null(singleStationState$dataFile())) { return("Data file not provided.") }
+    if (is.null(singleStationState$dataFile())) { return("Data file not provided at Step 1 Load.") }
 
-    plotTitleMissing()
+    params <- sectorInputParams(input$sectorDataFile, input$sectorPlotTitle, input$detrendCheck, input$y_axis_label)
+    singleStationState$sectorInputParams(params)
 
     progress <- shiny::Progress$new()
     on.exit(progress$close())
@@ -63,10 +34,13 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
 
     error <- draw.correlation(progress,
                               singleStationState$dataFile()$datapath,
-                              sectorDataFile()$datapath,
+                              params$sectorDataFile()$datapath,
                               singleStationState$stationName(),
-                              input$sectorPlotName,
-                              input$detrendCheck)
+                              params$sectorPlotTitle(),
+                              params$detrendData(),
+                              params$y_axis_label(),
+                              singleStationState$outputFolders()$corrdir,
+                              singleStationState$outputFolders()$outinddir)
 
     if (error == "") {
       # zip files and get link
@@ -81,8 +55,21 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     }
   })
 
+  output$sectorCorrelationLink <- renderText({
+    if (correlationCalculationStatus() == "Done") {
+      if (isLocal) {
+        HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
+      } else {
+        HTML("<div class= 'alert alert-success' role='alert'>
+              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
+              " Correlation output available ", corrZipLink, "</div>")
+      }
+    }
+  })
+
   observe(toggleState("calculateSectorCorrelation", !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 
-  outputOptions(output, "sectorCorrelationError", suspendWhenHidden=FALSE)
+  outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
+  outputOptions(output, "sectorCorrelationError", suspendWhenHidden = FALSE)
 
 }

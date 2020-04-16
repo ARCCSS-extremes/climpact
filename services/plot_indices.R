@@ -81,8 +81,7 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   # y.range <- range(y, na.rm = TRUE) #- 0.1 * (max(y, na.rm = TRUE) - min(y, na.rm = TRUE))
   # x.range <- min(x, na.rm = TRUE)      # should be no missing data in the x series
 
-  if (barplot_flag) # if true, we're doing a barplot
-  {
+  if (barplot_flag) {
     if (index.name == "spei" | index.name == "spi") {
       bp <- barplot(y, main = main, cex.main = 2, ylim = range(y, na.rm = TRUE), xlab = NULL, ylab = ylab, cex.lab = 1.5, cex.axis = 1.5, xpd = FALSE, col = ifelse(y > 0, "blue", "red"), border = NA, space = c(0, 0))
       mtext(sub, cex = 1)
@@ -126,7 +125,7 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
       points(1:length(na.x), na.y, pch = 17, col = "blue", cex = 1.5)
       #			xy <- cbind(x, y)
     }
-  } else # if false, we're doing a regular (line) plot
+  } else # if false, we're doing a regular (line) plot, I guess we're always doing a bar plot...
   {
 
   }

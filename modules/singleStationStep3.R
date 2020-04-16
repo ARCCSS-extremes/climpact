@@ -1,6 +1,12 @@
-singleStationStep3 <- function(input, output, session, climpactUI, singleStationState) {
+singleStationStep3 <- function(input, output, session, parentSession, climpactUI, singleStationState) {
 
-  indexCalculationStatus <- reactiveVal("Not Started")
+  singleStationState$indexCalculationStatus <- reactiveVal("Not Started")
+  folderToZip <- reactiveVal("")
+  indicesZipLink <- reactiveVal("")
+
+  observeEvent(singleStationState$metadata(), {
+    updateTextInput(session, "chartTitle", value=singleStationState$metadata()$title.station)   
+  })
 
   output$qualityControlErrorStep3 <- reactive({
     errorHTML <- ""
@@ -11,28 +17,25 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
     return(errorHTML)
   })
 
-  folderToZip <- reactiveVal("")
-  indicesZipLink <- reactiveVal("")
-
   # Index calculation has been requested by the user.
   output$indexCalculationError <- eventReactive(input$calculateIndices, {
     # ------------------------------------------------------------------ #
     # Validate inputs
     # ------------------------------------------------------------------ #
     validate(
-        need(input$plotTitle != "", message = "Please enter a plot title"),
-        need(input$wsdin <= 10, message = "WSDId: d must be between 1 and 10"),
-        need(input$wsdin > 0, message = "WSDId: d must be between 1 and 10"),
-        need(input$csdin <= 10, message = "CSDId: d must be between 1 and 10"),
-        need(input$csdin > 0, message = "CSDId: d must be between 1 and 10"),
-        need(input$rxnday >= 1, message = "RXnDAY: n must be a positive number"),
-        need(input$txtn >= 1, message = "TXdTNd and TXbdTNbd: d must be a positive number"),
-        need(input$rnnmm >= 0, message = "Rnnmm: nn must be greater than or equal to zero"),
-        need(input$spei >= 1, message = "Custom SPEI/SPI time scale must be a positive number")
+        need(input$chartTitle != "", message = "Please enter a chart title"),
+        need(input$wsdin <= 10, message = "WSDId: value must be between 1 and 10"),
+        need(input$wsdin > 0, message = "WSDId: value must be between 1 and 10"),
+        need(input$csdin <= 10, message = "CSDId: value must be between 1 and 10"),
+        need(input$csdin > 0, message = "CSDId: value must be between 1 and 10"),
+        need(input$rxnday >= 1, message = "RXnDAY: value must be a positive number"),
+        need(input$txtn >= 1, message = "TXdTNd and TXbdTNbd: value must be a positive number"),
+        need(input$rnnmm >= 0, message = "Rnnmm: value must be greater than or equal to zero"),
+        need(input$spei >= 1, message = "Custom SPEI/SPI time scale value must be a positive number")
     )
 
-    # Get inputs.
-    plot.title <- input$plotTitle
+    # unused plot.title <- input$chartTitle
+
     params <- climdexInputParams(wsdi_ud <- input$wsdin,
                                   csdi_ud <- input$csdin,
                                   rx_ud <- input$rxnday,
@@ -52,7 +55,7 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
     on.exit(progress$close())
     progress$set(message = "Calculating indices", value = 0)
 
-    indexCalculationStatus("In Progress")
+    singleStationState$indexCalculationStatus("In Progress")
 
     index.calc(progress, singleStationState$metadata(),
       singleStationState$climdexInput(), singleStationState$outputFolders(),
@@ -63,29 +66,36 @@ singleStationStep3 <- function(input, output, session, climpactUI, singleStation
     pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip")
     indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
 
-    indexCalculationStatus("Done")
+    singleStationState$indexCalculationStatus("Done")
     return("")
   })
 
   output$indicesLink <- renderText({
-    if (indexCalculationStatus() == "Done") {
+    if (singleStationState$indexCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML(paste0("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>"))
+        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML(paste0("<div class= 'alert alert-success' role='alert'>
+        HTML("<div class= 'alert alert-success' role='alert'>
                     <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
                     </span><span class='sr-only'></span>",
-                    " Calculated Indices available ", indicesZipLink(), "</div>"))
+                    " Calculated Indices available ", indicesZipLink(), "</div>")
       }
     }
   })
 
-  outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
-  observeEvent(indexCalculationStatus(), {
-    if (indexCalculationStatus()=="Done") {
+  observeEvent(singleStationState$indexCalculationStatus(), {
+    if (singleStationState$indexCalculationStatus() == "Done") {
       session$sendCustomMessage("enableTab", "process_single_station_step_4")
     }
   })
+
+  observeEvent(input$btn_next_step_3, {
+    tabName <- "process_single_station_step_4"
+    session$sendCustomMessage("enableTab", tabName)
+    updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
+  })
+
+  outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
 
   # must use = not <- to get named values in list()
   return(list(singleStationState = singleStationState))

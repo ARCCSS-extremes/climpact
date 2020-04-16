@@ -1,20 +1,20 @@
 ## Correlation between climate and sector data
 
 # draw the correlation between temperature and industry data
-draw.correlation <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck){
+draw.correlation <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck, y_axis_label, corrdir, outinddir){
 
   # Change directory where output should be stored
   curwd <- getwd()
   setwd(corrdir)
 
-  error <- create.correlation.plots(progress, user.file, sector.file, stationName, plot.title, detrendCheck, curwd)
+  error <- create.correlation.plots(progress, user.file, sector.file, stationName, plot.title, detrendCheck, y_axis_label, outinddir)
 
   setwd(curwd)
   return(error)
 }
 
 # create the correlation plots and save them to disk
-create.correlation.plots <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck, curwd){
+create.correlation.plots <- function(progress, user.file, sector.file, stationName, plot.title, detrendCheck, y_axis_label, outinddir){
 
   climate.data <- read_user_file(user.file)
   # assume the sector data is a csv file for now
@@ -49,24 +49,24 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   sectorCol <- ifelse(detrendCheck, getDetrendedColumnName(sectorColumnName), sectorColumnName)
   sectorColumnFilePart <- sectorColumnToFileName(sectorCol, sector.data.fileparts)
 
-  # JMC when do we overwrite this with user's sector specific label?
-  # Answer: Never... TODO fix this
-  wheat_plot_y_label <- "Wheat Yield (t/ha)"
-
-  # plot tmin vs wheat
-  create_save_scatter_plot(paste0(stationName, "_corr_tmin_",sectorColumnFilePart), temp_per_year_sector, "avg_tmin", sectorCol, plot.title, "Average min temperature", wheat_plot_y_label)
+  # plot tmin vs sector
+  create_save_scatter_plot(paste0(stationName, "_corr_tmin_", sectorColumnFilePart),
+    temp_per_year_sector, "avg_tmin", sectorCol, plot.title, "Average min temperature", y_axis_label)
   progress$inc(0.2)
 
-  # plot tmax vs wheat
-  create_save_scatter_plot(paste0(stationName, "_corr_tmax_",sectorColumnFilePart), temp_per_year_sector, "avg_tmax", sectorCol, plot.title, "Average max temperature", wheat_plot_y_label)
+  # plot tmax vs sector
+  create_save_scatter_plot(paste0(stationName, "_corr_tmax_", sectorColumnFilePart),
+    temp_per_year_sector, "avg_tmax", sectorCol, plot.title, "Average max temperature", y_axis_label)
   progress$inc(0.2)
 
-  # plot t vs wheat
-  create_save_scatter_plot(paste0(stationName, "_corr_t_",sectorColumnFilePart), temp_per_year_sector, "avg_t", sectorCol, plot.title, "Average temperature", wheat_plot_y_label)
+  # plot t vs sector
+  create_save_scatter_plot(paste0(stationName, "_corr_t_", sectorColumnFilePart),
+    temp_per_year_sector, "avg_t", sectorCol, plot.title, "Average temperature", y_axis_label)
   progress$inc(0.2)
 
-  # plot above30 vs wheat
-  create_save_scatter_plot(paste0(stationName, "_corr_above30_",sectorColumnFilePart), temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", wheat_plot_y_label)
+  # plot above30 vs sector
+  create_save_scatter_plot(paste0(stationName, "_corr_above30_", sectorColumnFilePart),
+    temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", y_axis_label)
   progress$inc(0.2)
 
   #JMC add scatter plot for each index
@@ -74,7 +74,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
 
   # create barplot of indice value (not normalized) vs sector data
   indices <- c("wsdi", "wsdi1", "fd", "tnlt2", "rx1day", "rx3day", "cdd", "sdii")
-  filenames <- file.path(curwd, outinddir, paste0(stationName, "_", indices, "_ANN.csv"))
+  filenames <- file.path(outinddir, paste0(stationName, "_", indices, "_ANN.csv"))
   indices.count <- length(indices)
   # init dataframe
   df <- data.frame(indice = character(indices.count), cor = double(indices.count), category = character(indices.count), stringsAsFactors = FALSE)
