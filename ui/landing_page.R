@@ -1,4 +1,4 @@
-tabPanel(title="ClimPACT",value="frontPage",
+tabPanel(title="ClimPACT", value="frontPage",
   div(class = "jumbotron",
     div(class="container",
       h1(class="display-4", "ClimPACT"),
@@ -7,6 +7,6 @@ tabPanel(title="ClimPACT",value="frontPage",
   ),
   div(class="landing-content",
     includeMarkdown(file.path("ui", "getting_started.md"))
-  ) 
-  , div(class="photo-credit", "Background photo by Dominik Schröder on Unsplash")
+  ),
+  div(class="photo-credit", "Background photo by Dominik Schröder on Unsplash")
 )

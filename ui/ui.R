@@ -27,15 +27,21 @@ ui <- tagList(
         ),
         tabItem(
           tabName = "batch",
-          source(file.path("ui", "batch_processing.R"), local = TRUE)$value
+          box(title="Process multiple stations", status = "primary", width = 12, solidHeader = TRUE,
+            batchStep1UI("ui")
+          )
         ),
         tabItem(
           tabName = "gridded-indices",
-          source(file.path("ui", "gridded_data_calculate.R"), local = TRUE)$value
+          box(title = "Calculate Gridded Indices", status = "primary", width = 12, solidHeader = TRUE,
+            griddedStep1UI("ui")
+          )
         ),
         tabItem(
           tabName = "gridded-thresholds",
-          source(file.path("ui", "gridded_data_thresholds.R"), local = TRUE)$value
+          box(title = "Calculate Gridded Thresholds", status = "primary", width = 12, solidHeader = TRUE,
+            griddedStep2UI("ui")
+          )
         )
       )
     )
