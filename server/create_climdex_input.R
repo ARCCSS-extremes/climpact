@@ -1,11 +1,11 @@
 #' Prepare data and create the climdex.input object using the R package climdex.pcic
-#' 
+#'
 #' @param merge_data  data.frame
-#' @param metadata    list()    
+#' @param metadata    list()
 create_climdex_input <- function(merge_data, metadata) {
-  days <- as.Date(as.character(merge_data[, 1], format = "%Y-%m-%d")) - as.Date("1850-01-01")
+  ts.origin <- "1850-01-01" # arbitarily chosen origin to create time-series object with.
+  days <- as.Date(as.character(merge_data[, 1], format = "%Y-%m-%d")) - as.Date(ts.origin)
   seconds <- as.numeric(days * 24 * 60 * 60)
-  ts.origin = "1850-01-01" # arbitarily chosen origin to create time-series object with. This needs to be made global
   pcict.dates <- as.PCICt(seconds, cal = "gregorian", origin = as.character(ts.origin))
 
   # create a climdex input object
@@ -16,6 +16,6 @@ create_climdex_input <- function(merge_data, metadata) {
                           temp.qtiles = temp.quantiles, quantiles = NULL)
 
   # add diurnal temperature range
-  cio@data$dtr = cio@data$tmax - cio@data$tmin  
+  cio@data$dtr <- cio@data$tmax - cio@data$tmin
   return(cio)
 }

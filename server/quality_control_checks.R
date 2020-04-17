@@ -21,7 +21,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
       return(paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct."))
     }
   } else {
-    browser()  
+    browser()
     # just testing that this is never called
   }
 
@@ -40,8 +40,8 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   if (file_test("-f", missingDatesFilePath)) { file.remove(missingDatesFilePath) }
   if (length(date.series[!date.series %in% user.date.series]) > 0) {
     write.table(date.series[!date.series %in% user.date.series], sep = ",", file = missingDatesFilePath, append = FALSE, row.names = FALSE, col.names = FALSE)
-    error_msg = paste0("You seem to have missing dates. See <a href='output/", metadata$stationName, "/qc/", missingDatesFileName, "' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
-    skip <<- TRUE
+    error_msg <- paste0("You seem to have missing dates. See <a href='output/", metadata$stationName, "/qc/", missingDatesFileName, "' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
+    skip <- TRUE
 
     warning(error_msg)
     return(error_msg)

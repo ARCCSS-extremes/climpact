@@ -48,7 +48,9 @@ batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, ba
     prog_int <- 0.9 / length(batch_metadata$station_file)
   }
   progressSNOW <- function(n) {
-    if (interactive()) { progress$inc(prog_int) }
+    if (interactive()) { 
+      progress$inc(prog_int)
+    }
   }
   opts <- list(progress = progressSNOW)
   registerDoSNOW(cl)
@@ -59,8 +61,8 @@ batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, ba
   row.names(batchfiles) <- batchfiles$name
   batchfiles[1] <- NULL
 
-  # assign('outputFolder', dirname(batchfiles[1, 'datapath']), envir = .GlobalEnv)
-  # cat(file = stderr(), "outputFolder global:", outputFolder, "\n")
+  folderName <- strip_file_extension(metadatafilename)
+  baseFolder <- file.path(getwd(), "www", "output", folderName)
 
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
@@ -69,42 +71,24 @@ batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, ba
     progress$inc(detail = msg)
     #file.name = batch_metadata$station_file[file.number]
     #file <- batchfiles[file.name, 'datapath']
-    file <- batchfiles[file.number, 'datapath']
-    browser()
-    qc_and_calculateIndices(batch_metadata, file.number, file)
+    file <- batchfiles[file.number, "datapath"]
+    qc_and_calculateIndices(batch_metadata, file.number, file, base.start, base.end, baseFolder)
 
     if (!is.null(progress)) progress$inc(prog_int)
   }
-browser()
-# TODO sort out which folder gets zipped and if there are any file/folder patterns to exclude
-  file.rename(batchfiles$datapath, row.names(batchfiles))
-  zipfilename <- paste0(strip_file_extension(metadatafilename), "-results.zip")
-  outputFolder <- dirname(metadatafilename)
-  workingDir <- outputFolder #JMC variable assignment unnecessary here if method below not extracted
-  destinationFolder <- "/www/output/"
-# JMC extract method to create zip file at path, perhaps use zipFiles in services/zipper.R
-  curwd <- getwd()
-  setwd(workingDir)
-  files2zip <- dir(workingDir)
-  zip(zipfile = zipfilename, files = files2zip)
-  outputzipfilepath <- paste0(curwd, destinationFolder, zipfilename)
-  file.copy(zipfilename, outputzipfilepath)
-  setwd(curwd)
-
-  print_results_to_console(outputFolder)
-
-  return(paste0("output/", zipfilename))
+  zipfilename <- zipFiles(baseFolder)
+  return(zipfilename)
 }
 
-qc_and_calculateIndices <- function(batch_metadata, file.number, file) {
-  file.name = batch_metadata$station_file[file.number]
+qc_and_calculateIndices <- function(batch_metadata, file.number, file, base.start, base.end, baseFolder) {
+  file.name <- batch_metadata$station_file[file.number]
   cat(file = stderr(), "qc_and_calculateIndices(), working on :", file.name, "\n")
   print(file.name)
   print(file)
   user.data <- read_user_file(file)
   user.data.ts <- create_user_data_ts(user.data)
-  station.name <- strip_file_extension(file.name) 
-  outputFolders <- outputFolders(dirname(file), station.name)
+  station.name <- strip_file_extension(file.name)
+  outputFolders <- outputFolders(baseFolder, station.name)
   lat <- as.numeric(batch_metadata$latitude[file.number])
   lon <- as.numeric(batch_metadata$longitude[file.number])
   params <- climdexInputParams(wsdi_ud <- batch_metadata$wsdin[file.number],
@@ -122,31 +106,39 @@ qc_and_calculateIndices <- function(batch_metadata, file.number, file) {
   title.station <- station_metadata$title.station
   barplot_flag <- TRUE
   min_trend <- 10
+  quantiles <- NULL #JMC TODO remove / replace with original intent
   temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
   prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
   op.choice <- NULL
   skip <- FALSE
   qcResult <- NULL
-  if (file_test("-f", paste(file, ".error.txt", sep = ""))) { file.remove(paste(file, ".error.txt", sep = "")) }
+  if (file_test("-f", paste(file, ".error.txt", sep = ""))) {
+    file.remove(paste(file, ".error.txt", sep = ""))
+  }
   # run quality control and create climdex input object
   catch1 <- tryCatch({
               qcResult <- QC.wrapper(NULL, station_metadata, user.data.ts, file, outputFolders, quantiles)
             },
-            error = function(msg) {
+            error = function(cond) {
+              browser()
               fileConn <- file(paste(file, ".error.txt", sep = ""))
-              writeLines(toString(msg), fileConn)
+              writeLines(toString(cond$message), fileConn)
               close(fileConn)
-              if (file_test("-f", paste0(file, ".temporary"))) { file.remove(paste0(file, ".temporary")) }
+              if (file_test("-f", paste0(file, ".temporary"))) {
+                file.remove(paste0(file, ".temporary"))
+              }
             })
   if (skip) { return(NA) }
 
   # calculate indices
   catch2 <- tryCatch(index.calc(NULL, station_metadata, qcResult$cio, outputFolders, params),
-                      error = function(msg) {
+                      error = function(cond) {
                         fileConn <- file(paste(file, ".error.txt", sep = ""))
-                        writeLines(toString(msg), fileConn)
+                        writeLines(toString(cond$message), fileConn)
                         close(fileConn)
-                        if (file_test("-f", paste0(file, ".temporary"))) { file.remove(paste0(file, ".temporary")) }
+                        if (file_test("-f", paste0(file, ".temporary"))) {
+                          file.remove(paste0(file, ".temporary"))
+                        }
                       })
   if (skip) { return(NA) }
 
@@ -157,10 +149,8 @@ qc_and_calculateIndices <- function(batch_metadata, file.number, file) {
 
 print_results_to_console <- function(outputFolder) {
   print("", quote = FALSE)
-  print("*********************************************************************************************", quote = FALSE)
+  print("*****************************************************", quote = FALSE)
   print("Processing complete.", quote = FALSE)
-  print("", quote = FALSE)
-  print("", quote = FALSE)
   print("", quote = FALSE)
   print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.", quote = FALSE)
   print("", quote = FALSE)

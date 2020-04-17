@@ -95,6 +95,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
   })
 
+  observe(toggleState("calculateIndices", !is.null(input$dataFile)))
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
 
   # must use = not <- to get named values in list()

@@ -1,6 +1,6 @@
 batchStep1 <- function(input, output, session, climpactUI) {
 
-  # now batchCsvs
+  # now batchData
   # observeEvent(input$selectInDirBatch,{
   #   batchInDir <<- dchoose()
   #   output$inDirPrintBatch <- renderText({print(paste("Input directory: ",batchInDir,sep=""))})
@@ -49,26 +49,29 @@ batchStep1 <- function(input, output, session, climpactUI) {
     input$batchMeta
   })
 
-  batchCsvs <<- reactive({
+  batchData <- reactive({
     validate(
-      need(input$batchCsvs, message = "Please upload files to process (Step 2).")
+      need(input$batchData, message = "Please upload files to process (Step 2).")
     )
-    input$batchCsvs
+    input$batchData
   })
+  
+  batchZipFilePath <- reactiveVal("")
+  batchZipLink <- reactiveVal("")
 
   batchProcessingModal <- function(msg) {
-    modalDialog(
-      title = "Important message",
-      paste0("Your indices will be calculated after closing this window.",
-        " Doing this for multiple stations can take time. On a typical computer each station takes ~1 minute to process per core."),
-      br(),
-      br(),
-      msg,
-      br(),
-      br(),
-      "You will see a message printed at the bottom of the screen when processing is complete.",
+    ns <- session$ns
+    localMessage <- ""
+    if (isLocal) {
+      localMessage <- HTML("<p>Doing this for multiple stations can take some time. ",
+        "On a typical computer each station takes ~1 minute to process per core.</p>", msg)
+    }
+
+    modalDialog(title = "Important message",
+      HTML("<p>Your indices will be calculated after closing this window.</p>", localMessage,
+        "<p>You will see a message displayed on screen when processing is complete.</p>"),
       # paste0("In the meantime, you should start to see your output appear in ",batchInDir,"."),
-      footer = tagList(modalButton("Cancel"), actionButton("ok", "OK"))
+      footer = tagList(modalButton("Cancel"), actionButton(ns("ok"), "OK"))
     )
   }
 
@@ -78,49 +81,53 @@ batchStep1 <- function(input, output, session, climpactUI) {
 
     progress <<- shiny::Progress$new()
     on.exit(progress$close())
-    progress$set(message="Processing data", value=0.01)
+    progress$set(message="Processing data", value = 0.01)
 
     nCoresBatch <- nCoresBatch()
     source("climpact.batch.stations.r")
 
     # cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
-    assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
+    # assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
     # cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
 
     batchMode <- TRUE
-    cl <<- makeCluster(nCoresBatch)
+    cl <- makeCluster(nCoresBatch)
 
-    cat(file=stderr(), "about to call testvariables___ functions.", "\n")
+    cat(file = stderr(), "about to call testvariables___ functions.", "\n")
     # Assign value with <<- operator as we are calling out of a reactive function
-    metadatafilepath <<- input$batchMeta$datapath
-    metadatafilename <<- input$batchMeta$name
-    batchfiles <<- input$batchCsvs
+    metadatafilepath <- input$batchMeta$datapath
+    metadatafilename <- input$batchMeta$name
+    batchfiles <- input$batchData
 
-    assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
-    assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
-    assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
+    # assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
+    # assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
+    # assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
 
     # This function is where the work is done
-    batchZipFilePath <- batch(metadatafilepath, metadatafilename, batchfiles, input$startYearBatch, input$endYearBatch)
-    cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
+    zippath <- batch(metadatafilepath,
+      metadatafilename,
+      batchfiles,
+      input$startYearBatch,
+      input$endYearBatch
+    )
+    batchZipLink(getLinkFromPath(zippath, "here"))
+    batchZipFilePath(zippath)
+    # cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
 
     enable("calculateBatchIndices")
 
-    batchZipFileLink <- getLinkFromPath(batchZipFilePath, "here")
+  })
 
-    localLink <- paste0("<br /><br /><b>",paste0(getwd(),"/www/",batchZipFilePath),"</b>")
-    remoteLink <- paste0(" ", batchZipFileLink)
-    HTML("Batch output has been created. Please view the output", localOrRemoteLink(localLink, remoteLink),
-                "<br>Results for each station are stored in separate directories. See *error.txt files for stations that had problems.",
-                "<br><br>The <i>plots</i> subdirectory contains an image file for each index.",
-                "<br>The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index",
-                "<br>The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.",
-                "<br>The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.",
-                "<br><br>The <i>qc</i> subdirectory contains quality control diagnostic information.",
-                "<br><br>If you have chosen to calculate and plot correlations between annual sector data you supply and the indices ClimPACT has calculated, the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."
-    )
+  output$batchLink <- renderText({
+    localLink <- paste0("Batch files directory: <b>", batchZipFilePath(), "</b>")
+    remoteLink <- paste0("<div class= 'alert alert-info' role='alert'>",
+        "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
+        "Please view the output: ", batchZipFileLink(), "</div>")
+
+    HTML("Batch output has been created. ", localOrRemoteLink(localLink, remoteLink))
 
   })
+
   # handle calculateBatchIndices click
   output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
 
@@ -129,18 +136,18 @@ batchStep1 <- function(input, output, session, climpactUI) {
     # ------------------------------------------------------------------ #
     startYearBatch <- startYearBatch()
     endYearBatch <- endYearBatch()
-    batchCsvs <- batchCsvs()
+    batchData <- batchData()
     batchMeta <- batchMeta()
     nCoresBatch <- nCoresBatch()
-    tmp <<- read.table(input$batchMeta$datapath,header=TRUE)
+    tmp <- read.table(input$batchMeta$datapath, header = TRUE)
 
-    modalMessage <- paste0("You appear to have ", nrow(tmp)," stations and have requested ",
-                            nCoresBatch, " cores and so this process should take ~", nrow(tmp)/nCoresBatch, " minutes to complete.")
+    modalMessage <- HTML("<p>You appear to have ", nrow(tmp), " stations and have requested ",
+                            nCoresBatch, " cores and so this process should take ~", nrow(tmp) / nCoresBatch, " minutes to complete.</p>")
     # Display notification before processing
     showModal(batchProcessingModal(modalMessage))
 
 
   })
 
-  observe(toggleState("calculateBatchIndices", !is.null(input$batchMeta) && !is.null(input$batchCsvs)))
+  observe(toggleState("calculateBatchIndices", !is.null(input$batchMeta) && !is.null(input$batchData)))
 }

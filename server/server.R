@@ -21,8 +21,8 @@ server <- function(input, output, session) {
   stationStep2 <- callModule(singleStationStep2, climpactUI$ns, session, climpactUI, stationStep1$singleStationState)
   stationStep3 <- callModule(singleStationStep3, climpactUI$ns, session, climpactUI, stationStep2$singleStationState)
   stationStep4 <- callModule(singleStationStep4, climpactUI$ns, climpactUI, stationStep3$singleStationState)
-  griddedStep1 <- callModule(griddedStep1, climpactUI$ns)
-  batchStep1   <- callModule(batchStep1, climpactUI$ns)
+  griddedStep1 <- callModule(griddedStep1, climpactUI$ns, climpactUI)
+  batchStep1   <- callModule(batchStep1, climpactUI$ns, climpactUI)
 
   output$griddedMenuItem <- renderMenu({
     if (isLocal) {
@@ -72,6 +72,6 @@ server <- function(input, output, session) {
     # observe(toggleState('btn_next_step_3', indexCalculationStatus()=='Done'))
 
     # observe(toggleState('doQualityControl', !is.null(input$dataFile)))
-    # observe(toggleState('calculateIndices', !is.null(input$dataFile)))
+    
 
 }

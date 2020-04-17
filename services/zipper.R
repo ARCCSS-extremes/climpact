@@ -17,6 +17,6 @@ zipFiles <- function (folderToZip, excludePattern = "") {
     zip(zipfile = zipFilePath, files = filesToZip, extras = paste0("-x ", excludePattern))
   }
   setwd(originalwd)
-  stationName = basename(folderName)
+  stationName <- basename(folderName)
   return(zipFilePath)
 }

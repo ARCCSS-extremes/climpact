@@ -40,7 +40,7 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
     updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
   })
 
-  # observe(toggleState("btn_next_step_1", !is.null(input$dataFile)))
+  observe(toggleState("btn_next_step_1", !is.null(input$dataFile)))
   # session$sendCustomMessage("enableTab", "process_single_station_step_2")
 
   # TODO respond in other modules to event in this module
