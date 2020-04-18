@@ -75,6 +75,28 @@ batchStep1 <- function(input, output, session, climpactUI) {
     )
   }
 
+  # handle calculateBatchIndices click
+  observeEvent(input$calculateBatchIndices, {
+
+    # ------------------------------------------------------------------ #
+    # Validate inputs
+    # ------------------------------------------------------------------ #
+    startYearBatch <- startYearBatch()
+    endYearBatch <- endYearBatch()
+    batchData <- batchData()
+    batchMeta <- batchMeta()
+
+    if (isLocal) {
+      nCoresBatch <- nCoresBatch()
+      tmp <- read.table(input$batchMeta$datapath, header = TRUE)
+      modalMessage <- HTML("<p>You appear to have ", nrow(tmp), " stations and have requested ",
+        nCoresBatch, " cores and so this process should take ~", nrow(tmp) / nCoresBatch, " minutes to complete.</p>")
+    }
+    # Display notification before processing
+    showModal(batchProcessingModal(modalMessage))
+  })
+
+  # handle modal window ok button click
   observeEvent(input$ok, {
     removeModal()
     disable("calculateBatchIndices")
@@ -99,23 +121,12 @@ batchStep1 <- function(input, output, session, climpactUI) {
     metadatafilename <- input$batchMeta$name
     batchfiles <- input$batchData
 
-    # assign("metadatafilepath.global", metadatafilepath, envir=.GlobalEnv)
-    # assign("metadatafilename.global", metadatafilename, envir=.GlobalEnv)
-    # assign("batchfiles.global", batchfiles, envir=.GlobalEnv)
-
     # This function is where the work is done
-    zippath <- batch(metadatafilepath,
-      metadatafilename,
-      batchfiles,
-      input$startYearBatch,
-      input$endYearBatch
-    )
-    batchZipLink(getLinkFromPath(zippath, "here"))
-    batchZipFilePath(zippath)
-    # cat(file=stderr(), "batchZipFilePath", batchZipFilePath, "\n")
+    zipPath <- batch(metadatafilepath, metadatafilename, batchfiles, input$startYearBatch, input$endYearBatch)
+    batchZipLink(getLinkFromPath(zipPath, "here"))
+    batchZipFilePath(zipPath)
 
     enable("calculateBatchIndices")
-
   })
 
   output$batchLink <- renderText({
@@ -125,27 +136,6 @@ batchStep1 <- function(input, output, session, climpactUI) {
         "Please view the output: ", batchZipFileLink(), "</div>")
 
     HTML("Batch output has been created. ", localOrRemoteLink(localLink, remoteLink))
-
-  })
-
-  # handle calculateBatchIndices click
-  output$ncPrintBatch <- eventReactive(input$calculateBatchIndices, {
-
-    # ------------------------------------------------------------------ #
-    # Validate inputs
-    # ------------------------------------------------------------------ #
-    startYearBatch <- startYearBatch()
-    endYearBatch <- endYearBatch()
-    batchData <- batchData()
-    batchMeta <- batchMeta()
-    nCoresBatch <- nCoresBatch()
-    tmp <- read.table(input$batchMeta$datapath, header = TRUE)
-
-    modalMessage <- HTML("<p>You appear to have ", nrow(tmp), " stations and have requested ",
-                            nCoresBatch, " cores and so this process should take ~", nrow(tmp) / nCoresBatch, " minutes to complete.</p>")
-    # Display notification before processing
-    showModal(batchProcessingModal(modalMessage))
-
 
   })
 
