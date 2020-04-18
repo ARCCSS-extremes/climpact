@@ -7,50 +7,52 @@ batchStep1UI <- function(id) {
   ns <- NS(id)
   return(tagList(
     fluidRow(
-      column(12,
-        div("This page allows you to calculate the indices for multiple station text files.",
-            "Any errors will be reported after processing. This process can take a long time (~1 minute per file)."),
-        h4("1. Metadata"),
-        wellPanel(
-          uiOutput(ns("batchIntroText")),
-          br(),
-          fileInput(ns("batchMeta"), NULL, accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"))
-        ),
-        h4("2. Input data"),
-        wellPanel(
-          uiOutput(ns("batchFolderText")),
-          fileInput(ns("batchData"),
-          label="Station data",
-          accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
-          placeholder="Select multiple space delimited ASCII text files",
-          multiple = TRUE)
-        ),
-        h4("3. Base period and compute cores"),
-        wellPanel(
-          numericInput(ns("startYearBatch"), "Base Period Start year:", 1970, min = 0),
-          numericInput(ns("endYearBatch"), "Base Period End year:", 2010, min = 0),
-          conditionalPanel(
-            condition = paste0(tolower(isLocal)),
-            ns = ns,
-            numericInput(ns("nCoresBatch"),
-              paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
-              value = 1, min = 1, max = detectCores())
-          )
-        ),
-        h4("4. Calculate"),
-        wellPanel(
-          actionButton(ns("calculateBatchIndices"), "Calculate Indices"),
-          htmlOutput(ns("batchLink")),
-          conditionalPanel(
-            condition = "output.batchLink != ''",
-            ns = ns,
-              tags$p(HTML("Results for each station are stored in separate directories.<br />See *error.txt files for stations that had problems.")),
-              tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
-                tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
-                tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
-                tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.")),
-                tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")))
-            )
+      column(8,
+        div(HTML("This page allows you to calculate the indices for multiple station text files.<br />",
+            "Any errors will be reported after processing. This process can take a long time (~1 minute per file).")),
+            h4("1. Metadata"),
+            fileInput(ns("batchMeta"), NULL, accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt")),
+            h4("2. Station data"),
+            fileInput(ns("batchData"),
+              NULL,
+              accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
+              placeholder="Select or drop multiple station files",
+              multiple = TRUE),
+            h4("3. Parameters"),
+              numericInput(ns("startYearBatch"), "Base period start year:", 1970, min = 0),
+              numericInput(ns("endYearBatch"), "Base period end year:", 2010, min = 0),
+              conditionalPanel(
+                condition = paste0(tolower(isLocal)),
+                ns = ns,
+                numericInput(ns("nCoresBatch"),
+                  paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
+                  value = 1, min = 1, max = detectCores())
+              ),
+              h4("4. Calculate"),
+              actionButton(ns("calculateBatchIndices"), "Calculate Indices"),
+              htmlOutput(ns("batchLink")),
+              conditionalPanel(
+                condition = "output.batchLink != ''",
+                ns = ns,
+                  tags$p(HTML("Results for each station are stored in separate directories.<br />",
+                              "See *error.txt files for stations that had problems.")),
+                  tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
+                    tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
+                    tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
+                    tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing ",
+                                "threshold data calculated for various variables.")),
+                    tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")))
+                )
+      ),
+        column(4,
+          box(title = "Instructions", width = 12, status = "primary",
+            h4("1. Metadata"),
+            uiOutput(ns("batchIntroText")),
+            HTML("Upload a file with information for each station. Each file of input data uploaded at step 2 must be included in tihs file."),
+            h4("2. Station data"),
+            uiOutput(ns("batchFolderText")),
+            h4("3. Parameters"),
+            HTML("Specify valid values for base period.")
           )
         )
       )

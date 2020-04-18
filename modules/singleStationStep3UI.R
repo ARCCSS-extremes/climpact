@@ -32,7 +32,7 @@ singleStationStep3UI <- function(id) {
       h4("Provide User Parameters"),
       fluidRow(
         column(6,
-          textInput(ns("chartTitle"), "Chart title:")
+          textInput(ns("plotTitle"), "Plot title:")
         )
       ),
       fluidRow(

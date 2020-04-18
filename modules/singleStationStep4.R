@@ -18,7 +18,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
   output$sectorCorrelationError <- eventReactive(input$calculateSectorCorrelation, {
     validate(
       need(!is.null(input$sectorDataFile), message="Please load station data"),
-      need(input$sectorPlotTitle != "", message="Please enter a chart title")
+      need(input$sectorPlotTitle != "", message="Please enter a plot title")
     )
 
     if (is.null(singleStationState$dataFile())) { return("Data file not provided at Step 1 Load.") }
@@ -60,7 +60,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       if (isLocal) {
         HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<p> Correlation output available ", corrZipLink, "</p>")
+        HTML("<p>Correlation output available ", corrZipLink, "</p>")
       }
     }
   })

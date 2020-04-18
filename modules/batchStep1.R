@@ -1,16 +1,16 @@
 batchStep1 <- function(input, output, session, climpactUI) {
 
   output$batchIntroText <- renderText({
-    HTML("A text file must be created with information for each station. Refer to ",
-                "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>",
-                " of the user guide and use ",
-                "<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",
-                " as a template. Once done supply ClimPACT with the file below.")
+    HTML("A text file must be created with information describing each station that you will provide as input data.",
+        "<br> Refer to <a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>",
+        " of the user guide and use ",
+        "<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",
+        " as a template.")
   })
 
   output$batchFolderText <- renderText({
     HTML("Select all the ClimPACT formatted station text files that you would like to process",
-      " from the dialog window that opens when you click Browse... below.<br />",
+      " from the dialog window that opens when you click Browse...<br />",
       "These must be formatted according to ", climpactUI$appendixBLink, " of the user guide.<br />")
   })
 

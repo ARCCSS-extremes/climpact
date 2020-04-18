@@ -12,8 +12,8 @@ singleStationStep4UI <- function(id) {
       fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
       HTML(climpactUI$sampleText,
         "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>wheat_yield_nsw_1922-1999.csv</a>"),    
-      h4("Specify chart attributes"),
-      textInput(ns("sectorPlotTitle"), "Chart title:"),
+      h4("Specify plot attributes"),
+      textInput(ns("sectorPlotTitle"), "Plot title:"),
       textInput(ns("y_axis_label"), "Label for y axis:"),
       checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
     )),

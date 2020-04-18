@@ -5,7 +5,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   indicesZipLink <- reactiveVal("")
 
   observeEvent(singleStationState$metadata(), {
-    updateTextInput(session, "chartTitle", value=singleStationState$metadata()$title.station)   
+    updateTextInput(session, "plotTitle", value=singleStationState$metadata()$title.station)   
   })
 
   output$qualityControlErrorStep3 <- reactive({
@@ -23,7 +23,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     # Validate inputs
     # ------------------------------------------------------------------ #
     validate(
-        need(input$chartTitle != "", message = "Please enter a chart title"),
+        need(input$plotTitle != "", message = "Please enter a plot title"),
         need(input$wsdin <= 10, message = "WSDId: value must be between 1 and 10"),
         need(input$wsdin > 0, message = "WSDId: value must be between 1 and 10"),
         need(input$csdin <= 10, message = "CSDId: value must be between 1 and 10"),
@@ -34,7 +34,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
         need(input$spei >= 1, message = "Custom SPEI/SPI time scale value must be a positive number")
     )
 
-    # unused plot.title <- input$chartTitle
+    # unused plot.title <- input$plotTitle
 
     params <- climdexInputParams(wsdi_ud <- input$wsdin,
                                   csdi_ud <- input$csdin,
