@@ -1,18 +1,15 @@
-source("server/quality_control/boxseries.R", local = TRUE)
-source("server/quality_control/duplivals.R", local = TRUE)
-source("server/quality_control/flatline_tn.R", local = TRUE)
-source("server/quality_control/flatline_tx.R", local = TRUE)
-source("server/quality_control/fourboxes.R", local = TRUE)
-source("server/quality_control/humongous.R", local = TRUE)
-source("server/quality_control/jumps_tn.R", local = TRUE)
-source("server/quality_control/jumps_tx.R", local = TRUE)
-source("server/quality_control/plot_qc.R", local = TRUE)
-source("server/quality_control/roundcheck.R", local = TRUE)
-source("server/quality_control/tmaxmin.R", local = TRUE)
-source("server/quality_control/plot_qc.R", local = TRUE)
-
-# This file contains a lot - if not most - of the functionality needed to calculate the indices on station text files. Namely, quality control functions, manual SPEI/SPI calculations and the creation of
-# of .csv and plots files.
+source("services/quality_control/boxseries.R", local = TRUE)
+source("services/quality_control/duplivals.R", local = TRUE)
+source("services/quality_control/flatline_tn.R", local = TRUE)
+source("services/quality_control/flatline_tx.R", local = TRUE)
+source("services/quality_control/fourboxes.R", local = TRUE)
+source("services/quality_control/humongous.R", local = TRUE)
+source("services/quality_control/jumps_tn.R", local = TRUE)
+source("services/quality_control/jumps_tx.R", local = TRUE)
+source("services/quality_control/plot_qc.R", local = TRUE)
+source("services/quality_control/roundcheck.R", local = TRUE)
+source("services/quality_control/tmaxmin.R", local = TRUE)
+source("services/quality_control/plot_qc.R", local = TRUE)
 
 # A function that should be called before any .csv file is written. It appends some basic information that should be stored in each file for
 # the user's record.
@@ -117,7 +114,7 @@ package.check <- function() {
     print("******************************")
     print(paste("The following packages are not installed...", new.packages, sep = ""))
     print("Running master install script (this only needs to occur once).")
-    # source("server/climpact.master.installer.r")
+    # source("services/climpact.master.installer.r")
     print("Continuing with ClimPACT execution...")
     print("******************************")
   }

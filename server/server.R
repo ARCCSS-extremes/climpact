@@ -1,18 +1,15 @@
 server <- function(input, output, session) {
+
   # Everything within this function is instantiated separately for each session.
   # REF: https://shiny.rstudio.com/articles/scoping.html
+  source("models/outputFolders.R")
+  source("server/climpact.GUI-functions.r")
+  source("services/quality_control_checks.r")
+  source("services/calculate_indices.R")
 
-  source("server/session_vars.R", local = TRUE) # local req'd to use input, output, session
   source("models/stationWizardState.R", local = TRUE)
   singleStationState <- stationWizardState()
 
-  # these were originally sourced in singleStationStep2.R
-  # seeing if it works with them sourced here
-  source("server/climpact.GUI-functions.r")
-  source("server/quality_control_checks.r")
-  source("server/quality_control/quality_control.r")
-  source("models/outputFolders.R")
-  source("services/calculate_indices.R")
   
   # modules called with second parameter being namespace id for corresponding UI
   # climpactUI from ui_support.R, sourced in app.R
@@ -39,21 +36,6 @@ server <- function(input, output, session) {
                   in these indices. See ", indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance."))
   })
 
-  # output$sliders <- renderUI({
-  #   numStations <- as.integer(input$nStations)
-  #   lapply(1:numStations, function(i) {
-  #     fluidRow(
-  #       column(1,
-  #             textInput("stationFile", "Station filename:")
-  #       ),
-  #       column(1,
-  #             textInput("stationLat", "Latitude of station:")
-  #       ),
-  #         uiOutput("sliders")
-  #       )
-  #   })
-  # })
-
   withConsoleRedirect <- function(containerId, expr) {
     # Change type="output" to type="message" to catch stderr
     # (messages, warnings, and errors) instead of stdout.
@@ -65,13 +47,4 @@ server <- function(input, output, session) {
     }
     results
   }
-
-    # toggle state of buttons depending on certain criteria
-    # Single station    
-    # observe(toggleState('btn_next_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
-    # observe(toggleState('btn_next_step_3', indexCalculationStatus()=='Done'))
-
-    # observe(toggleState('doQualityControl', !is.null(input$dataFile)))
-    
-
 }

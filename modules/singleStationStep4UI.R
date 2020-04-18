@@ -38,11 +38,7 @@ singleStationStep4UI <- function(id) {
         condition = "output.sectorCorrelationError== ''",
         ns = ns,
         wellPanel(
-          HTML("<div class= 'alert alert-success show' role='alert'>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-                <span class='sr-only'></span> "),
-          uiOutput(ns("sectorCorrelationLink")),
-          HTML("</div>")
+          uiOutput(ns("sectorCorrelationLink"))
         )
     )
   ))

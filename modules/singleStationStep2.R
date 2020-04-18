@@ -90,8 +90,10 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
           return(paste("Error:", cond$message))
       },
       finally = {
+        if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
+
         folderToZip(singleStationState$outputFolders()$outqcdir)
-        pathToZipFile <- zipFiles(folderToZip())
+        pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
         qcZipLink(getLinkFromPath(pathToZipFile, "here"))
         singleStationState$isQCCompleted(TRUE)
       }

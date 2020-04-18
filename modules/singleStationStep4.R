@@ -45,7 +45,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     if (error == "") {
       # zip files and get link
       folderToZip(singleStationState$outputFolders()$corrdir)
-      pathToZipFile <- zipFiles(folderToZip())
+      pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
       corrZipLink(getLinkFromPath(pathToZipFile, "here"))
       correlationCalculationStatus("Done")
       return("")
@@ -60,9 +60,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       if (isLocal) {
         HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<div class= 'alert alert-success' role='alert'>
-              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-              " Correlation output available ", corrZipLink, "</div>")
+        HTML("<p> Correlation output available ", corrZipLink, "</p>")
       }
     }
   })

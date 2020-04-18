@@ -63,7 +63,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
     # Create a zip file containing all of the results.
     folderToZip(singleStationState$outputFolders()$outputdir)
-    pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip")
+    pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip", destinationFolder = singleStationState$outputFolders()$baseFolder, destinationFileName = singleStationState$stationName())
     indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
 
     singleStationState$indexCalculationStatus("Done")

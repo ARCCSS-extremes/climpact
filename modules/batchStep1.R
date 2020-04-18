@@ -1,11 +1,5 @@
 batchStep1 <- function(input, output, session, climpactUI) {
 
-  # now batchData
-  # observeEvent(input$selectInDirBatch,{
-  #   batchInDir <<- dchoose()
-  #   output$inDirPrintBatch <- renderText({print(paste("Input directory: ",batchInDir,sep=""))})
-  # })
-
   output$batchIntroText <- renderText({
     HTML("A text file must be created with information for each station. Refer to ",
                 "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#batch>section 5</a>",
@@ -55,9 +49,9 @@ batchStep1 <- function(input, output, session, climpactUI) {
     )
     input$batchData
   })
-  
+
   batchZipFilePath <- reactiveVal("")
-  batchZipLink <- reactiveVal("")
+  batchZipFileLink <- reactiveVal("")
 
   batchProcessingModal <- function(msg) {
     ns <- session$ns
@@ -106,11 +100,7 @@ batchStep1 <- function(input, output, session, climpactUI) {
     progress$set(message="Processing data", value = 0.01)
 
     nCoresBatch <- nCoresBatch()
-    source("climpact.batch.stations.r")
-
-    # cat(file=stderr(), "input$batchMeta$datapath:", input$batchMeta$datapath, "\n")
-    # assign("file.list.metadata.global",input$batchMeta$datapath,envir=.GlobalEnv)
-    # cat(file=stderr(), "file.list.metadata.global:", file.list.metadata.global, "\n")
+    source("server/climpact.batch.stations.r")
 
     batchMode <- TRUE
     cl <- makeCluster(nCoresBatch)
@@ -121,22 +111,27 @@ batchStep1 <- function(input, output, session, climpactUI) {
     metadatafilename <- input$batchMeta$name
     batchfiles <- input$batchData
 
+    folderName <- strip_file_extension(metadatafilename)
+    folderToZip(file.path(getwd(), "www", "output", folderName))
+
     # This function is where the work is done
-    zipPath <- batch(metadatafilepath, metadatafilename, batchfiles, input$startYearBatch, input$endYearBatch)
-    batchZipLink(getLinkFromPath(zipPath, "here"))
+    zipPath <- batch(metadatafilepath, batchfiles, input$startYearBatch, input$endYearBatch, folderToZip())
     batchZipFilePath(zipPath)
+    batchZipFileLink(getLinkFromPath(zipPath, "here"))
 
     enable("calculateBatchIndices")
   })
 
+  folderToZip <- reactiveVal("")
+
   output$batchLink <- renderText({
-    localLink <- paste0("Batch files directory: <b>", batchZipFilePath(), "</b>")
-    remoteLink <- paste0("<div class= 'alert alert-info' role='alert'>",
-        "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-        "Please view the output: ", batchZipFileLink(), "</div>")
-
-    HTML("Batch output has been created. ", localOrRemoteLink(localLink, remoteLink))
-
+    if (batchZipFileLink() != "") {
+      if (isLocal) {
+        HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
+      } else {
+        HTML("Batch output available: ", batchZipFileLink())
+      }
+    }
   })
 
   observe(toggleState("calculateBatchIndices", !is.null(input$batchMeta) && !is.null(input$batchData)))

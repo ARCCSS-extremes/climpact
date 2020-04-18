@@ -40,7 +40,7 @@ strip_file_extension <- function(file.name) {
 }
 
 # call QC and index calculation functionality for each file specified in metadata.txt
-batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, base.end) {
+batch <- function(metadatafilepath, batchfiles, base.start, base.end, batchOutputFolder) {
 
   batch_metadata <- read.file.list.metadata(metadatafilepath)
 
@@ -60,10 +60,6 @@ batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, ba
   # set each row name in batch file to station name for indexing
   row.names(batchfiles) <- batchfiles$name
   batchfiles[1] <- NULL
-
-  folderName <- strip_file_extension(metadatafilename)
-  baseFolder <- file.path(getwd(), "www", "output", folderName)
-
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
     msg <- paste("File", file.number, "of", numfiles, ":", batch_metadata$station_file[file.number])
@@ -72,11 +68,11 @@ batch <- function(metadatafilepath, metadatafilename, batchfiles, base.start, ba
     #file.name = batch_metadata$station_file[file.number]
     #file <- batchfiles[file.name, 'datapath']
     file <- batchfiles[file.number, "datapath"]
-    qc_and_calculateIndices(batch_metadata, file.number, file, base.start, base.end, baseFolder)
+    qc_and_calculateIndices(batch_metadata, file.number, file, base.start, base.end, batchOutputFolder)
 
     if (!is.null(progress)) progress$inc(prog_int)
   }
-  zipfilename <- zipFiles(baseFolder)
+  zipfilename <- zipFiles(batchOutputFolder, destinationFileName = paste0(basename(batchOutputFolder), ".zip"))
   return(zipfilename)
 }
 

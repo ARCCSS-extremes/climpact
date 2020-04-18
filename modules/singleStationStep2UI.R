@@ -27,4 +27,5 @@ singleStationStep2UI <- function (id) {
     br(),
     actionButton(ns("btn_next_step_2"), label = "Next", icon = icon("chevron-circle-right"))
   ))
+  observe(toggleState('btn_next_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
 }

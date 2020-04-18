@@ -1,14 +1,13 @@
-source("services/custom_cspei.R", local = TRUE)
-source("services/custom_cspi.R", local = TRUE)
 source("services/plot_indices.R", local = TRUE)
 source("services/plot_prec_index.R", local = TRUE)
 source("services/write_indices.R", local = TRUE)
 source("services/write_prec_index.R", local = TRUE)
-
-source("services/calculate_custom_index.R", local = TRUE)
-source("services/calculate_hw.R", local = TRUE)
-source("services/calculate_spei.R", local = TRUE)
-source("services/calculate_spi.R", local = TRUE)
+source("services/calculate/calculate_hw.R", local = TRUE)
+source("services/calculate/calculate_spei.R", local = TRUE)
+source("services/calculate/calculate_spi.R", local = TRUE)
+source("services/calculate/custom_cspei.R", local = TRUE)
+source("services/calculate/custom_cspi.R", local = TRUE)
+source("services/calculate/calculate_custom_index.R", local = TRUE)
 
 # This function loops through all indices and calls the appropriate functions to calculate them.
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
