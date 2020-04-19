@@ -17,28 +17,35 @@ griddedStep1UI <- function(id) {
             ),
             h4("2. Enter input dataset infomation"),
             wellPanel(
-              textInput(ns("prName"), "Name of precipitation variable:",value="precip"),
-              textInput(ns("txName"), "Name of maximum temperature variable:",value="tmax"),
-              textInput(ns("tnName"), "Name of minimum temperature variable:",value="tmin")
+              textInput(ns("prName"), "Name of precipitation variable:", value = "precip"),
+              textInput(ns("txName"), "Name of maximum temperature variable:", value = "tmax"),
+              textInput(ns("tnName"), "Name of minimum temperature variable:", value = "tmin")
             ),
             h4("3. Enter output parameters"),
             wellPanel(
-              textInput(ns("fileConvention"), "Output filename format (must use CMIP5 filename convention. e.g. 'var_daily_climpact.sample_historical_NA_1991-2010.nc'):",value="var_daily_climpact.sample_historical_NA_1991-2010.nc"),
+              textInput(ns("fileConvention"),
+                "Output filename format (must use CMIP5 filename convention. e.g. 'var_daily_climpact.sample_historical_NA_1991-2010.nc'):",
+                value = "var_daily_climpact.sample_historical_NA_1991-2010.nc"),
               textInput(ns("instituteName"), "Enter your institute's name:"),
               textInput(ns("instituteID"), "Enter your institute's ID:"),
-              numericInput(ns("baseBegin"), "Start year of base period:", value=1991),
-              numericInput(ns("baseEnd"), "End year of base period:", value=2010),
+              numericInput(ns("baseBegin"), "Start year of base period:", value = 1991),
+              numericInput(ns("baseEnd"), "End year of base period:", value = 2010),
               actionButton(ns("selectOutDir"), "Select output directory"),
               textOutput(ns("outDirPrint"))
         ),
             h4("4. Enter other parameters"),
             wellPanel(
-              numericInput(ns("nCores"), paste0("Number of cores to use (your computer has ",detectCores()," cores):"),value=1,min=1,max=detectCores()),
-              textInput(ns("calcIndices"), "Indices to calculate. Leave empty to calculate all indices, otherwise provide a comma-separated list of index names in lower case (e.g. txxm, tn90p)):"),
-              actionButton(ns("selectNcFilesThreshInput"), "Select threshold file (OPTIONAL)"),
+              numericInput(ns("nCores"),
+                paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
+                value = 1, min = 1, max = detectCores()),
+              textInput(ns("calcIndices"), 
+                paste0("Indices to calculate. Leave empty to calculate all indices,",
+                "otherwise provide a comma-separated list of index names in lower case (e.g. txxm, tn90p)):")),
+              actionButton(ns("selectNcFilesThreshInput"), "Select threshold file (optional)"),
               textOutput(ns("ncFilePrintThreshInput")),
-              selectInput(ns("EHFcalc"),label=("Select EHF calculation: "),choices=list("Perkins & Alexander (2013)"="PA13","Nairn & Fawcett (2013)"="NF13"),selected=1),
-              textInput(ns("maxVals"), "Number of data values to process at once (do not change unless you know what you are doing):",value=10)
+              selectInput(ns("EHFcalc"), label = ("Select EHF calculation: "),
+                choices=list("Perkins & Alexander (2013)" = "PA13", "Nairn & Fawcett (2013)" = "NF13"), selected = 1),
+              textInput(ns("maxVals"), "Number of data values to process at once (do not change unless you know what you are doing):", value = 10)
             ),
             h4("5. Calculate"),
             wellPanel(

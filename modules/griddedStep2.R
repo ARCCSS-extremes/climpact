@@ -1,10 +1,5 @@
 griddedStep2 <- function(input, output, session, climpactUI) {
 
-      observeEvent(input$selectNcFilesThreshInput,{
-        gridNcThresh <<- fchoose(filters=ncFilter)
-        output$ncFilePrintThreshInput <- renderText({print(paste0("Threshold file: ",paste0(gridNcThresh,collapse=", ")))})
-      })
-
       observeEvent(input$selectNcFilesThresh,{
         gridNcFilesThresh <<- fchoose(filters=ncFilter)
         output$ncFilePrintThresh <- renderText({print(paste0("Input file(s): ",paste0(gridNcFilesThresh,collapse=", ")))})
@@ -81,7 +76,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
             br(),
             footer = tagList(
               modalButton("Cancel"),
-              actionButton("proceedGriddedThresh", "PROCEED")
+              actionButton("proceedGriddedThresh", "Calculate Thresholds")
             )
           ))
 
