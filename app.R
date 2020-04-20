@@ -40,11 +40,10 @@
 #   Hongang to check Sandra's code and add new indices - from 2012-11-05
 #   modified 2013, James Goldie - overhaul of code
 #   overhaul 2015-2017, Nicholas Herold and Nicholas Hannah (PCIC R package implementation, R Shiny interface, gridded indices, new indices).
-#   modified 2020 by Jonathan McComb  - Shiny code organised into modules.
+
 
 # Load libraries
 # Note, other libraries are sourced at different points in the program depending on what functions the user interacts with.
-package.check()
 library(zoo)
 library(zyp)
 library(tcltk2)
@@ -69,29 +68,16 @@ if (.Platform$OS.type == "windows") {
   dchoose <<- get("tk_choose.dir", mode = "function")
 }
 
-# Global variables
-version.climpact <<- software_id
-temp.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95)
-prec.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
-barplot_flag <<- TRUE
-min_trend <<- 10
-
 isLocal <<- FALSE
 if (Sys.getenv("SHINY_PORT") == "") {
   isLocal <<- TRUE
 }
 
-if (isLocal) {
-    # When running locally, support NetCDF file uploads and gridded data calculations
-  # Increase file upload limit to something extreme to account for large files.
-  options(shiny.maxRequestSize = 1000000 * 1024 ^ 2)
-  ncFilter <<- matrix(c("NetCDF", "*.nc"), 1, 2, byrow = TRUE)
-}
-
 # Source files
 source("server/climpact.GUI-functions.r")
-source("server/sector_correlation.R")
+package.check()
 source("server/climpact.etsci-functions.r")
+source("server/sector_correlation.R")
 source("models/custom_errors.r")
 source("models/climdexInputParams.R")
 source("models/sectorInputParams.R")
@@ -115,5 +101,19 @@ source("server/server.R")
 source("services/zipFiles.R")
 source("ui/uiSupport.R")
 source("ui/ui.R")
+
+# Global variables
+version.climpact <<- software_id
+temp.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95)
+prec.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
+barplot_flag <<- TRUE
+min_trend <<- 10
+
+if (isLocal) {
+    # When running locally, support NetCDF file uploads and gridded data calculations
+  # Increase file upload limit to something extreme to account for large files.
+  options(shiny.maxRequestSize = 1000000 * 1024 ^ 2)
+  ncFilter <<- matrix(c("NetCDF", "*.nc"), 1, 2, byrow = TRUE)
+}
 
 shinyApp(ui, server)
