@@ -89,11 +89,12 @@ griddedStep1 <- function(input, output, session, climpactUI) {
       # ------------------------------------------------------------------ #
       # Make and edit wrapper file with user preferences
       # ------------------------------------------------------------------ #
-      master.ncdf.gridded.wrapper.file <- "climpact.ncdf.wrapper.r"
+      master.ncdf.gridded.wrapper.file <- "services/climpact_ncdf.r"
       user_wrapper_file(paste0("climpact.ncdf.", input$instituteID, ".wrapper.r"))
       file.copy(master.ncdf.gridded.wrapper.file, user_wrapper_file(), overwrite = TRUE)
 
       wraptext <- readLines(user_wrapper_file())
+      browser()
       fileText <- ""
       for (i in 1:length(gridNcFiles())) {
         fileText <- paste0(fileText, "\"", gridNcFiles()[i], "\"")
@@ -101,8 +102,6 @@ griddedStep1 <- function(input, output, session, climpactUI) {
           fileText <- paste0(fileText, ",")
         }
       }
-
-      # Take care of backward slashes (in Windows)
       fileText <- gsub(pattern="\\\\", replace="/", x = fileText)
 
       tmp1 <- gridOutDir()
@@ -113,22 +112,25 @@ griddedStep1 <- function(input, output, session, climpactUI) {
           c(basename(x), split_path(dirname(x)))
         }
       }
-
       tmp2 <- split_path(tmp1)
       tmp3 <- do.call("file.path", as.list(rev(tmp2)))
-      rm(tmp1, tmp2)
+      rm(tmp1, tmp2) 
 
-      wraptext <- gsub(pattern = ".*infiles=.*", replace = paste0("infiles=c(", fileText, ")"), x = wraptext)
+      wraptext <- gsub(pattern = ".*infiles=.*",
+        replace = paste0("infiles=c(", fileText, ")"), x = wraptext)
       wraptext <- gsub(pattern = ".*vars=.*",
         replace = paste0("vars=c(prec=\"", input$prName, "\",tmax=\"", input$txName, "\",tmin=\"", input$tnName, "\")"), x = wraptext)
-      wraptext <- gsub(pattern = ".*outdir=.*", replace = paste0("outdir=\"", tmp3, "\""), x = wraptext)
-      wraptext <- gsub(pattern = ".*file.template=.*", replace = paste0("file.template=\"", input$fileConvention, "\""), x = wraptext)
+      wraptext <- gsub(pattern = ".*outdir=.*",
+        replace = paste0("outdir=\"", tmp3, "\""), x = wraptext)
+      wraptext <- gsub(pattern = ".*file.template=.*",
+        replace = paste0("file.template=\"", input$fileConvention, "\""), x = wraptext)
       wraptext <- gsub(pattern = ".*author.data=list.*",
         replace = paste0("author.data=list(institution=\"", input$instituteName, "\",institution_id=\"", input$instituteID, "\")"), x = wraptext)
       wraptext <- gsub(pattern = ".*base.range=c.*",
         replace = paste0("base.range=c(", input$baseBegin, ",", input$baseEnd, ")"), x = wraptext)
       if (input$nCores > 1) {
-        wraptext <- gsub(pattern = ".*cores=FALSE.*", replace = paste0("cores=", input$nCores), x = wraptext)
+        wraptext <- gsub(pattern = ".*cores=FALSE.*",
+        replace = paste0("cores=", input$nCores), x = wraptext)
       }
       if (!is.null(gridNcThresh())) {
         wraptext <- gsub(pattern = ".*thresholds.files=NULL.*", replace = paste0("thresholds.files=\"", gridNcThresh(), "\""), x = wraptext)
