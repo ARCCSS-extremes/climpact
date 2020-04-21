@@ -17,7 +17,7 @@ griddedStep1UI <- function(id) {
               placeholder="Select or drop one or more NetCDF files",
               multiple = TRUE)
             ),
-            h4("2. Enter input dataset infomation"),
+            h4("2. Enter input dataset information"),
             wellPanel(
               textInput(ns("prName"), "Name of precipitation variable:", value = "precip"),
               textInput(ns("txName"), "Name of maximum temperature variable:", value = "tmax"),
@@ -32,7 +32,7 @@ griddedStep1UI <- function(id) {
               textInput(ns("instituteID"), "Enter your institute's ID:"),
               numericInput(ns("baseStart"), "Start year of base period:", value = 1991),
               numericInput(ns("baseEnd"), "End year of base period:", value = 2010)
-        ),
+            ),
             h4("4. Enter other parameters"),
             wellPanel(
               numericInput(ns("nCores"),

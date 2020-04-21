@@ -10,7 +10,6 @@ server <- function(input, output, session) {
   source("models/stationWizardState.R", local = TRUE)
   singleStationState <- stationWizardState()
 
-  
   # modules called with second parameter being namespace id for corresponding UI
   # climpactUI from ui_support.R, sourced in app.R
   # passing session here so that modules can update tabSetPanel/tabBox (value = "process_single_station") in this session
@@ -19,6 +18,7 @@ server <- function(input, output, session) {
   stationStep3 <- callModule(singleStationStep3, climpactUI$ns, session, climpactUI, stationStep2$singleStationState)
   stationStep4 <- callModule(singleStationStep4, climpactUI$ns, climpactUI, stationStep3$singleStationState)
   griddedStep1 <- callModule(griddedStep1, climpactUI$ns, climpactUI)
+  griddedStep2 <- callModule(griddedStep2, climpactUI$ns, climpactUI)
   batchStep1   <- callModule(batchStep1, climpactUI$ns, climpactUI)
 
   output$griddedMenuItem <- renderMenu({

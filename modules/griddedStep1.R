@@ -1,10 +1,8 @@
 griddedStep1 <- function(input, output, session, climpactUI) {
 
-  infoDialog <- function(msg) {
+  infoDialog <- function() {
     ns <- session$ns
-
-    modalDialog(
-        title = "Important message",
+    modalDialog(title = "Important message",
         tags$p("Calculating gridded indices usually takes many hours, depending on how large your dataset is,",
           " how fast your computer is and how many cores you choose."),
         tags$p("Do not close the ClimPACT browser window until this process is complete. ",
@@ -17,8 +15,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
   }
   warningDialog <- function(msg) {
     ns <- session$ns
-    modalDialog(
-      title = "Warning",
+    modalDialog(title = "Warning",
       HTML("There was a problem processing your gridded data. ",
         "Check your R console for the specific error message generated. It is very likely your data is not formatted correctly."),
       print(paste0("R error message was: ", msg)),
@@ -27,8 +24,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
   }
   errorDialog <- function(msg) {
     ns <- session$ns
-    modalDialog(
-      title = "Error",
+    modalDialog(title = "Error",
       HTML("There was a problem processing your gridded data.",
         " Check your R console for the specific error message generated. It is very likely your data is not formatted correctly.",
         "R error message was: ", msg),
@@ -36,31 +32,24 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     )
   }
 
-  # Create the ncdf wrapper file that will be executed from the Linux command line.
-  # All code needs to be placed inside the renderText() function so that validate() can abort this code if any errors are detected.
   output$ncPrint <- eventReactive(input$calculateGriddedIndices, {
-      # ------------------------------------------------------------------ #
-      # Validate inputs
-      # ------------------------------------------------------------------ #
-      validate(
+    validate(
         need(!is.null(input$dataFiles), message = "Please specify input file(s)."),
         need(input$prName, message = "Please specify the name of the precipitation variable as it is recorded in its netCDF file"),
-        need(input$tnName, message = "Please specify the name of the minimum temperature variable as it is recorded in its netCDF file."),
         need(input$txName, message = "Please specify the name of the maximum temperature variable as it is recorded in its netCDF file."),
+        need(input$tnName, message = "Please specify the name of the minimum temperature variable as it is recorded in its netCDF file."),
         need(input$outputFileNamePattern, message = "Please specify an output filename convention."),
         need(input$instituteID, input$instituteName, message = "Please specify institute name and ID."),
         need(input$baseStart, input$baseEnd, message = "Please specify start and end year of base period (e.g. 1990)"),
         need(input$nCores, message = "Please specify number of cores to use."),
         need(input$maxVals, message = "Please specify max values.")
       )
-
       showModal(infoDialog())
       return("")
   })
 
   ncdfCalculationStatus <- reactiveVal("Not Started")
 
-  error <- FALSE
   observeEvent(input$proceedGridded, {
     disable("calculateGriddedIndices")
     removeModal()
@@ -107,10 +96,17 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     })
 
     output$ncGriddedDone <- renderText({
-      if (!errorOccurred()) {
-        HTML("Done.", paste0("Look in the following directory for your output: ", outputFolder()))
+      if (ncdfCalculationStatus() == "Done") {
+        if (!errorOccurred()) {
+          HTML("Done.", paste0("Look in the following directory for your output: ", outputFolder()))
+        } else {
+          HTML(out)
+        }
+      } else if (ncdfCalculationStatus() == "In Progress") {
+        # would like to put output from create.indices.from.file() here...
+        HTML("Calculating indices...")
       } else {
-        HTML(out)
+        ""
       }
     })
     enable("calculateGriddedIndices")
