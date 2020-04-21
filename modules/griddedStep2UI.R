@@ -25,7 +25,7 @@ griddedStep2UI <- function(id) {
         wellPanel(
           textInput("instituteNameThresh", "Enter your institute's name:"),
           textInput("instituteIDThresh", "Enter your institute's ID:"),
-          numericInput("baseBeginThresh", "Start year of base period:", value = 1991),
+          numericInput("baseStartThresh", "Start year of base period:", value = 1991),
           numericInput("baseEndThresh", "End year of base period:", value = 2010),
           actionButton("selectOutDirThresh", "Select output directory"),
           textOutput("outDirPrintThresh"),

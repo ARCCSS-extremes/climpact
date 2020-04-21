@@ -24,7 +24,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
             need(!is.null(gridOutDirThresh),message="Please specify output directory."),
             need(input$outFileThresh,message="Please specify an output filename."),
             need(input$instituteIDThresh,input$instituteName,message="Please specify institute name and acronym."),
-            need(input$baseBeginThresh,input$BaseEndThresh,message="Please specify start and end year of base period (e.g. 1990 and 2010)"),
+            need(input$baseStartThresh,input$baseEndThresh,message="Please specify start and end year of base period (e.g. 1990 and 2010)"),
             need(input$nCoresThresh>0,message=paste0("Number of cores must be between 1 and ",detectCores())),
             need(input$nCoresThresh<=detectCores(),message=paste0("Number of cores must be between 1 and ",detectCores()))
           )
@@ -58,7 +58,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
           wraptext <- gsub(pattern=".*vars=.*",replace=paste("vars=c(prec=\"",input$prNameThresh,"\",tmax=\"",input$txNameThresh,"\",tmin=\"",input$tnNameThresh,"\")",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*output.file=.*",replace=paste("output.file=\"",tmp3,"\"",sep=""),x=wraptext)
           wraptext <- gsub(pattern=".*author.data=list.*",replace=paste("author.data=list(institution=\"",input$instituteNameThresh,"\",institution_id=\"",input$instituteIDThresh,"\")",sep=""),x=wraptext)
-          wraptext <- gsub(pattern=".*base.range=c.*",replace=paste("base.range=c(",input$baseBeginThresh,",",input$baseEndThresh,")",sep=""),x=wraptext)
+          wraptext <- gsub(pattern=".*base.range=c.*",replace=paste("base.range=c(",input$baseStartThresh,",",input$baseEndThresh,")",sep=""),x=wraptext)
           if(input$nCoresThresh>1) {
             wraptext <- gsub(pattern=".*cores=FALSE.*",replace=paste("cores=",input$nCoresThresh,sep=""),x=wraptext)
           }

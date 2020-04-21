@@ -4,15 +4,15 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
   stopifnot(is.character(baseFolder))
   stopifnot(is.character(stationName))
 
-  outputdir <- file.path(baseFolder, stationName)
-  outinddir <- file.path(outputdir, "indices")
-  outlogdir <- file.path(outputdir, "qc")
-  outjpgdir <- file.path(outputdir, "plots")
-  outtrddir <- file.path(outputdir, "trend")
-  outqcdir <- file.path(outputdir, "qc") # save results from extraqc
+  outputdir   <- file.path(baseFolder, stationName)
+  outinddir   <- file.path(outputdir, "indices")
+  outlogdir   <- file.path(outputdir, "qc")
+  outjpgdir   <- file.path(outputdir, "plots")
+  outtrddir   <- file.path(outputdir, "trend")
+  outqcdir    <- file.path(outputdir, "qc")
   outthresdir <- file.path(outputdir, "thres") # to save *_thres.csv files
-  corrdir <- file.path(outputdir, "corr") # save correlation files
-  zipfile <- file.path(outputdir, paste0(stationName, ".zip"))
+  corrdir     <- file.path(outputdir, "corr") # save correlation files
+  zipfile     <- file.path(outputdir, paste0(stationName, ".zip"))
 
   # create structure
   value <- structure(list(baseFolder  = baseFolder,
