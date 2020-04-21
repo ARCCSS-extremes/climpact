@@ -83,11 +83,13 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     progress$set(message = "Calculating ncdf indices", value = 0)
 
     ncdfCalculationStatus("In Progress")
-    outputFolder <- reactiveVal(file.path(getwd(), "www/output/netcdf"))
+    outputFolder <- reactiveVal(file.path(getwd(), "www/output/ncdf"))
     errorOccurred <- reactiveVal(FALSE)
 
     out <- tryCatch({
+      # Create folder if it doesn't exist, hide warning if it exists already
       dir.create(outputFolder(), showWarnings = FALSE)
+      # Calculate gridded indices
       ncdfCalc(progress, input$dataFiles$datapath, input$thresholdFiles$datapath, outputFolder(), params)
     },
     error = function(cond) {
