@@ -31,11 +31,11 @@ singleStationStep1UI <- function (id) {
         tags$p("Specify the station name.",
           "Climpact will attempt to determine this automatically for you based on the uploaded station data file name.",
           "This must be some text."),
-        tags$p("Specify the station latitude and longitude in decimal degrees<br />eg -40.992 or 148.346.<br />",
+        HTML("<p>Specify the station latitude and longitude in decimal degrees<br />eg -40.992 or 148.346.<br />",
         "Latitude must be between -90 and 90<br />",
-        "Longitude must be between -180 and 180."),
-        tags$p("Specify valid values for the base period start year and end year.<br />",
-        "These values must be within the limits of the dates in the station data provided."),
+        "Longitude must be between -180 and 180.</p>"),
+        HTML("<p>Specify valid values for the base period start year and end year.<br />",
+        "These values must be within the limits of the dates in the station data provided.</p>"),
         h4("Next"),
         HTML("Click the Next button or the tab labelled '2. Check' to proceed to the next step.")
       )

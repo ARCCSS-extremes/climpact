@@ -57,6 +57,7 @@ library(corrplot)
 library(ggplot2)
 library(shinydashboard)
 library(shinyBS)
+library(slickR)
 
 # If Windows then use rbase file and directory chooser, if Unix use tcltk file and directory chooser. 
 # Base functions do not provide a dialog box in Unix environments.

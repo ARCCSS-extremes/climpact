@@ -1,4 +1,15 @@
 singleStationStep2 <- function (input, output, session, parentSession, climpactUI, singleStationState) {
+
+  output$slickr <- renderSlickR({
+    watchPath <- file.path(getwd(), "www", "assets")
+    if (!is.null(singleStationState$outputFolders())) {
+      watchPath <- singleStationState$outputFolders()$outqcdir
+    browser()
+    }
+    imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
+    slickR(imgs)
+  })
+
   # Update UI with validation text
   output$loadDataError <- reactive({
       dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'>",
@@ -37,6 +48,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       remoteLink <- paste0("<div class= 'alert alert-info' role='alert'>",
         "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
         " Quality control files: ", qcZipLink(), "</div>")
+
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
 
       HTML("Please view the quality control output described below and carefully evaluate before continuing.",
@@ -114,6 +126,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
 
   # ensure client-side javascript will inspect qcLink element
   outputOptions(output, "qcLink", suspendWhenHidden=FALSE)
+  outputOptions(output, "slickr", suspendWhenHidden=FALSE)
 
   return(list(singleStationState = singleStationState))
 }

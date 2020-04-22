@@ -115,40 +115,27 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   
   ##############################
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting precipitation...")
-  nam1 <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_prcpPLOT.pdf"))
-  check_open(nam1)
-  pdf(file = nam1)
-  prcp <- cio@data$prec[cio@data$prec >= 1 & !is.na(cio@data$prec)]
-  if (length(prcp) > 30) {
-    hist(prcp, main = paste("Histogram for Station:", metadata$stationName, " of PRCP>=1mm", sep = ""), breaks = c(seq(0, 40, 2), max(prcp)), xlab = "", col = "green", freq = FALSE)
-    lines(density(prcp, bw = 0.2, from = 1), col = "red")
-  }
-  pplotts(var = "prcp", tit = metadata$stationName, cio = cio, metadata = metadata)
-  dev.off()
+  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_prcpPLOT"))
+  plotToFile(plotFileName, "pdf", var = "prcp", type = "h", title = metadata$stationName, cio = cio, metadata = metadata)
+  plotToFile(plotFileName, "png", var = "prcp", type = "h", title = metadata$stationName, cio = cio, metadata = metadata)
 
   ##############################
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax...")
-  nam1 <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tmaxPLOT.pdf"))
-  check_open(nam1)
-  pdf(file = nam1)
-  pplotts(var = "tmax", type = "l", tit = metadata$stationName, cio = cio, metadata = metadata)
-  dev.off()
+  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tmaxPLOT"))
+  plotToFile(plotFileName, "pdf", var = "tmax", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
+  plotToFile(plotFileName, "png", var = "tmax", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
 
   ##############################
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmin...")
-  nam1 <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tminPLOT.pdf"))
-  check_open(nam1)
-  pdf(file = nam1)
-  pplotts(var = "tmin", type = "l", tit = metadata$stationName, cio = cio, metadata = metadata)
-  dev.off()
+  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tminPLOT"))
+  plotToFile(plotFileName, "pdf", var = "tmin", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
+  plotToFile(plotFileName, "png", var = "tmin", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
 
   ##############################
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting dtr...")
-  nam1 <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_dtrPLOT.pdf"))
-  check_open(nam1)
-  pdf(file = nam1)
-  pplotts(var = "dtr", type = "l", tit = metadata$stationName, cio = cio, metadata = metadata)
-  dev.off()
+  plotFileName <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_dtrPLOT"))
+  plotToFile(plotFileName, "pdf", var = "dtr", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
+  plotToFile(plotFileName, "png", var = "dtr", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
 
   ##############################
   # Call the ExtraQC functions.
@@ -170,6 +157,34 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   return(list(errors = errors, cio = cio, metadata = metadata))
 }
 # end of QC.wrapper()
+
+plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata) {
+  plotFileName <- paste0(plotFileName, ".", mediaType)
+  if (mediaType == "pdf") {
+    pdf(file = plotFileName)
+  } else if (mediaType == "png") {
+    png(file = plotFileName)
+  }
+
+  check_open(plotFileName)
+
+  # living with if statement to avoid a separate function just for prcp
+  if (var == "prcp") {
+    prcp <- cio@data$prec[cio@data$prec >= 1 & !is.na(cio@data$prec)]
+    if (length(prcp) > 30) {
+      hist(prcp,
+        main = paste("Histogram for Station:", metadata$stationName, " of PRCP>=1mm", sep = ""),
+        breaks = c(seq(0, 40, 2), max(prcp)),
+        xlab = "",
+        col = "green",
+        freq = FALSE)
+      lines(density(prcp, bw = 0.2, from = 1), col = "red")
+    }
+  }
+
+  pplotts(var = var, type = type, tit = title, cio = cio, metadata = metadata)
+  dev.off()
+}
 
 # creates a list of metadata
 create_metadata <- function(latitude, longitude, base.year.start, base.year.end, dates, stationName) {
