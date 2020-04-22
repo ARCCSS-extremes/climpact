@@ -44,7 +44,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
       need(input$txNameThresh, message = "Please specify the name of the maximum temperature variable as it is recorded in its netCDF file."),
       need(input$tnNameThresh, message = "Please specify the name of the minimum temperature variable as it is recorded in its netCDF file."),
       need(input$outputFileNameThresh, message = "Please specify an output file name."),
-      need(input$instituteIDThresh, input$instituteNameThresh, message = "Please specify institute name and acronym."),
+      need(input$instituteIDThresh, input$instituteNameThresh, message = "Please specify institute name and ID (usually an abbreviation)."),
       need(input$baseStartThresh, input$baseEndThresh, message = "Please specify start and end year of base period (e.g. 1990 and 2010)"),
       need(input$nCoresThresh > 0,
         message = paste0("Number of cores is less than or equal to 0.", " Number of cores must be between 1 and ", detectCores())),
@@ -100,7 +100,6 @@ griddedStep2 <- function(input, output, session, climpactUI) {
     })
 
     output$ncGriddedThreshDone <- renderText({
-      browser()
       if (thresholdCalculationStatus() == "Done") {
         if (!errorOccurred()) {
           HTML("Done. Threshold file stored here: ", outputFilePath())

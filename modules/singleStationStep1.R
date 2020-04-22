@@ -7,19 +7,20 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
     updateTextInput(session, "stationName", value = stationName())
   })
 
-  # Validation, if expression works then can reuse validation logic, otherwise duplicate...
-  latitudeExpr <- function() {
+  # Validation, expression works, so we can reuse these elsewhere in the app
+  latitudeValidation <- function() {
     input$stationLat >= -90 && input$stationLat <= 90
+  }
+  longitudeValidation <- function() {
+    input$stationLon >= -180 && input$stationLon <= 180
   }
 
   stationLatCheck <- reactive({
-      validate(need(latitudeExpr(), "Latitude must be between -90 and 90."))
-      input$stationLat
+      validate(need(latitudeValidation(), "Latitude must be between -90 and 90."))
   })
 
   stationLonCheck <- reactive({
-      validate(need(input$stationLon >= -180 && input$stationLon <= 180, "Longitude must be between -180 and 180"))
-      input$stationLon
+      validate(need(longitudeValidation(), "Longitude must be between -180 and 180"))
   })
 
   stationNameCheck <- reactive({
@@ -40,7 +41,7 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
     updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
   })
 
-  observe(toggleState("btn_next_step_1", !is.null(input$dataFile)))
+  observe(toggleState("btn_next_step_1", (!is.null(input$dataFile) && latitudeValidation() && longitudeValidation())))
   # session$sendCustomMessage("enableTab", "process_single_station_step_2")
 
   # TODO respond in other modules to event in this module

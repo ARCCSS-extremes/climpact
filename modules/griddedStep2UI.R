@@ -7,8 +7,7 @@
 griddedStep2UI <- function(id) {
   ns <- NS(id)
   return(tagList(
-    fluidRow(
-      column(12,
+      column(8,
         div(paste0("This page allows you to calculate thresholds on netCDF files. ",
           "For use in calculating gridded indices where the base period resides in a different file.")),
         h4("1. Select input file(s)"),
@@ -40,10 +39,31 @@ griddedStep2UI <- function(id) {
         ),
         h4("5. Calculate"),
         wellPanel(
-          actionButton(ns("calculateGriddedThresholds"), "Calculate NetCDF thresholds"),
+          actionButton(ns("calculateGriddedThresholds"), "Calculate NetCDF Thresholds"),
           textOutput(ns("ncPrintThresh")),
           textOutput(ns("ncGriddedThreshDone"))
         )
+      ),
+      column(4, class = "instructions",
+      box(title = "Instructions", width = 12,
+        h4("1. Select input file(s)"),
+        tags$p("Select the netCDF file with the daily maximum and minimum temperatures and daily precipitation. "),
+        tags$p("You are not required to include all three variables in this file. ",
+        "ClimPACT will only calculate thresholds for the provided variables and the variables can be stored in separate files.<br />",
+        "To provide separate files, you can select multiple files by holding CTRL and clicking the left-mouse button when the dialog box appears."),
+        h4("2. Enter input dataset information"),
+        tags$p("You will need to provide the names of the three variables as they are stored in the provided input file(s)."),
+        h4("3. Enter output parameters"),
+        tags$p("Institute name and ID are required for metadata."),
+        tags$p("The base period start and end years are required."),
+        h4("4. Enter other parameters"),
+        tags$p("The number of computer cores to use can be modified from the default of 1."),
+        h4("5. Calculate"),
+        tags$p("Click the 'Calculate NetCDF Thresholds' button. ",
+          "If you have provided all the required information as described above, ",
+          "a dialog box will appear reminding you that calcuating gridded thresholds usually takes a long time.<br />",
+          "Once you select 'Calculate Thresholds' processing will commence.<br />",
+          "If you are unsure, click 'Cancel' to return to this screen.")
       )
     )
   ))

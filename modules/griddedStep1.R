@@ -39,7 +39,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
         need(input$txName, message = "Please specify the name of the maximum temperature variable as it is recorded in its netCDF file."),
         need(input$tnName, message = "Please specify the name of the minimum temperature variable as it is recorded in its netCDF file."),
         need(input$outputFileNamePattern, message = "Please specify an output filename convention."),
-        need(input$instituteID, input$instituteName, message = "Please specify institute name and ID."),
+        need(input$instituteID, input$instituteName, message = "Please specify institute name and ID (usually an abbreviation)."),
         need(input$baseStart, input$baseEnd, message = "Please specify start and end year of base period (e.g. 1990)"),
         need(input$nCores, message = "Please specify number of cores to use."),
         need(input$maxVals, message = "Please specify max values.")

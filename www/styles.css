@@ -1,3 +1,7 @@
+.instructions .box {
+  background-color: #EEEEEE;
+}
+
 *, *::before, *::after {
     box-sizing: border-box;
 }
