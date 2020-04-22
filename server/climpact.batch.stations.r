@@ -113,7 +113,7 @@ qc_and_calculateIndices <- function(batch_metadata, file.number, file, base.star
   }
   # run quality control and create climdex input object
   catch1 <- tryCatch({
-              qcResult <- QC.wrapper(NULL, station_metadata, user.data.ts, file, outputFolders, quantiles)
+              qcResult <- QC.wrapper(NULL, station_metadata, user.data.ts, file, outputFolders, quantiles, NULL)
             },
             error = function(cond) {
               browser()

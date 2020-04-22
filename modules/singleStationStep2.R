@@ -1,13 +1,22 @@
 singleStationStep2 <- function (input, output, session, parentSession, climpactUI, singleStationState) {
 
   output$slickr <- renderSlickR({
-    watchPath <- file.path(getwd(), "www", "assets")
+    # watchPath <- file.path(getwd(), "www", "assets")
+    imgs <- list()
     if (!is.null(singleStationState$outputFolders())) {
       watchPath <- singleStationState$outputFolders()$outqcdir
-    browser()
+      imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
-    imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
-    slickR(imgs)
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    slickR(imgs, height = 640) %synch% (slickR(imgs, height = 100) + bottom_opts)
+  })
+
+  qcPlots <- reactiveVal(list())
+
+  qcProgressStatus <- reactiveVal("Not Started")
+
+  output$qcStatus <- reactive({
+    qcProgressStatus()
   })
 
   # Update UI with validation text
@@ -51,9 +60,10 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
 
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
 
-      HTML("Please view the quality control output described below and carefully evaluate before continuing.",
+      HTML("<h4>Evaluate Data Quality</h4>",
+        "<p>Please view the quality control output described below and carefully evaluate before continuing.",
         "<br />Refer to ", appendixCLink, " of the ", climpactUI$userGuideLink, " for help.<br />",
-        localOrRemoteLink(localLink, remoteLink))
+        localOrRemoteLink(localLink, remoteLink), "</p>")
     }
   })
 
@@ -63,6 +73,8 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     # 'name', 'size', 'type', and 'datapath' columns.
     # The 'datapath' column will contain the local filenames
     # where the data can be found.
+
+    qcProgressStatus("In Progress")
 
     progress <- shiny::Progress$new()
     on.exit(progress$close())
@@ -81,7 +93,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
           singleStationState$latitude(), singleStationState$longitude(),
           singleStationState$stationName(), singleStationState$startYear(),
-          singleStationState$endYear(), singleStationState$outputFolders())
+          singleStationState$endYear(), singleStationState$outputFolders(), qcPlots)
 
         # capture any errors
         singleStationState$qualityControlErrors(qcResult$errors)
@@ -103,7 +115,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       },
       finally = {
         if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
-
+        qcProgressStatus("Done")
         folderToZip(singleStationState$outputFolders()$outqcdir)
         pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
         qcZipLink(getLinkFromPath(pathToZipFile, "here"))
@@ -126,6 +138,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
 
   # ensure client-side javascript will inspect qcLink element
   outputOptions(output, "qcLink", suspendWhenHidden=FALSE)
+  outputOptions(output, "qcStatus", suspendWhenHidden=FALSE)
   outputOptions(output, "slickr", suspendWhenHidden=FALSE)
 
   return(list(singleStationState = singleStationState))

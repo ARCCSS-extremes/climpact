@@ -1,8 +1,11 @@
-boxseries <- function(station, output, save = 0) {
+boxseries <- function(station, output, save = 0, mediaType = "pdf") {
   if (save == 1) {
-    nombre <- paste(output, "_boxseries.pdf", sep = "")
-    check_open(nombre)
-    pdf(file = nombre)
+    fileName <- paste0(output, "_boxseries.", mediaType)
+    if (mediaType == "pdf") {
+      pdf(file = fileName)
+    } else if (mediaType == "png") {
+      png(file = fileName, width = 640, height = 640)
+    }
   }
 
   datos <- read.table(station, col.names = c("year", "month", "day", "pc", "tx", "tn"), na.strings = "-99.9")

@@ -16,31 +16,40 @@ source("services/check/plot_qc.R", local = TRUE)
 write_header <- function(filename, header = "", metadata) {
   if (is.null(filename)) { stop("Filename not passed to function 'write_header'") }
 
-  header = cbind("Description: ", header)
+  header <- cbind("Description: ", header)
   # No error checking here, file access is guaranteed because ClimPACT has own copy.
   write.table(header, sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
 
-  first_lines = cbind(c("Station: ", "Latitude: ", "Longitude: ", "ClimPACT_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, version.climpact, toString(Sys.Date())))
+  first_lines <- cbind(c("Station: ", "Latitude: ", "Longitude: ", "ClimPACT_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, version.climpact, toString(Sys.Date())))
   write.table(first_lines, sep = ",", file = filename, append = TRUE, row.names = FALSE, col.names = FALSE)
 
 }
 
-check_open <- function(filename) {
-  # No error checking here, file access is guaranteed because ClimPACT has own copy.
-  write.table("test text", sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
-}
+# this check interferes with generation of image plots as 
+# it writes to file with %d pattern in filename causing it to appear on file system
+# check_open <- function(filename) {
+#   # No error checking here, file access is guaranteed because ClimPACT has own copy.
+#   write.table("test text", sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
+# }
 # End of Prohom and Aguilar code.
 
 write.NA.statistics <- function(cio, outputFolders, metadata) {
-  naprec = array(NA, dim = c(length(unique(cio@date.factors$annual))))
-  naprec = tapply.fast(cio@data$prec, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
-  natx = tapply.fast(cio@data$tmax, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
-  natn = tapply.fast(cio@data$tmin, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
+  naprec <- array(NA, dim = c(length(unique(cio@date.factors$annual))))
+  naprec <- tapply.fast(cio@data$prec, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
+  natx <- tapply.fast(cio@data$tmax, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
+  natn <- tapply.fast(cio@data$tmin, cio@date.factors$annual, function(x) { return(sum(is.na(x))) })
 
   nam1 <- file.path(outputFolders$outqcdir, paste0(outputFolders$stationName, "_nastatistics.csv"))
   write_header(nam1, "", metadata = metadata)
   # Suppress warning about column names in files
-  suppressWarnings(write.table(cbind.data.frame(unique(cio@date.factors$annual), naprec, natx, natn), file = nam1, sep = ",", append = TRUE, quote = FALSE, row.names = FALSE, col.names = c("Year", "Prec", "TX", "TN")))
+  suppressWarnings(write.table(cbind.data.frame(unique(cio@date.factors$annual),
+    naprec, natx, natn),
+    file = nam1,
+    sep = ",",
+    append = TRUE,
+    quote = FALSE,
+    row.names = FALSE,
+    col.names = c("Year", "Prec", "TX", "TN")))
 }
 
 # returns a date time-series from user data, removes any non-gregorian dates and corresponding data in the process
@@ -57,7 +66,7 @@ create_user_data_ts <- function(user_data) {
 
   user_data_ts <- data.frame(year = year, month = month, day = day, precp = prcp, tmax = tmax, tmin = tmin)
   user_data_ts$dates <- user.dates[!is.na(user.dates)]
-  
+
   return(user_data_ts)
 }
 
@@ -93,20 +102,22 @@ read_user_file <- function(user_file_path) {
 
 # return True (T) if leapyear, esle F
 leapyear <- function(year) {
-  remainder400 <- trunc(year - 400 * trunc(year / 400));
-  remainder100 <- trunc(year - 100 * trunc(year / 100));
-  remainder4 <- trunc(year - 4 * trunc(year / 4));
+  remainder400 <- trunc(year - 400 * trunc(year / 400))
+  remainder100 <- trunc(year - 100 * trunc(year / 100))
+  remainder4 <- trunc(year - 4 * trunc(year / 4))
   if (remainder400 == 0) leapyear <- TRUE else {
     if (remainder100 == 0) leapyear <- FALSE else {
-      if (remainder4 == 0) leapyear <- TRUE else leapyear <- FALSE;
+      if (remainder4 == 0) leapyear <- TRUE else leapyear <- FALSE
     }
   }
 }
 
 # Check for required packages and install if necessary
 package.check <- function() {
-  packages <- c("abind", "bitops", "Rcpp", "caTools", "PCICt", "SPEI", "climdex.pcic", "ncdf4", "snow", "udunits2", "functional", "proj4", "foreach", "doParallel", "doSNOW", "zoo", "zyp", "tcltk2",
-                "shiny", "shinythemes", "markdown", "servr", "dplyr", "corrplot", "ggplot2", "shinyjs")
+  packages <- c("abind", "bitops", "Rcpp", "caTools", "PCICt", "SPEI", "climdex.pcic",
+                "ncdf4", "snow", "udunits2", "functional", "proj4", "foreach", "doParallel",
+                "doSNOW", "zoo", "zyp", "tcltk2", "shiny", "shinythemes", "markdown", "servr",
+                "dplyr", "corrplot", "ggplot2", "shinyjs", "slickR")
   new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
   # Install/update packages needed for ClimPACT

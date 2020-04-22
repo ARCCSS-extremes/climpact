@@ -6,11 +6,20 @@ merge_data <- function(user_data, metadata) {
   return(merge(data_raw, date.seq, all = TRUE))
 }
 
-read_and_qc_check <- function(progress, user_data, user_file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
+read_and_qc_check <- function(progress,
+  user_data,
+  user_file,
+  latitude,
+  longitude,
+  stationName,
+  base.year.start,
+  base.year.end,
+  outputFolders,
+  qcPlots) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
-  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
+  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL, qcPlots)
   return(qcResult)
 }
 
@@ -18,7 +27,7 @@ read_and_qc_check <- function(progress, user_data, user_file, latitude, longitud
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles) {
+QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles, qcPlots) {
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
 
@@ -35,22 +44,33 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 
   # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
   # is longer than the length of the user's data.
-  user_data_length = length(user_data$year)
-  first.date = as.Date(paste(user_data$year[1], user_data$month[1], user_data$day[1], sep = "-"), "%Y-%m-%d")
-  last.date = as.Date(paste(user_data$year[user_data_length], user_data$month[user_data_length], user_data$day[user_data_length], sep = "-"), "%Y-%m-%d")
-  date.series = seq(first.date, last.date, "day")
-  user.date.series = as.Date(paste(user_data$year, user_data$month, user_data$day, sep = "-"))
-  missing.dates = date.series[!date.series %in% user.date.series]
+  user_data_length <- length(user_data$year)
+  first.date <- as.Date(paste(user_data$year[1], user_data$month[1], user_data$day[1], sep = "-"), "%Y-%m-%d")
+  last.date <- as.Date(paste(user_data$year[user_data_length], user_data$month[user_data_length], user_data$day[user_data_length], sep = "-"), "%Y-%m-%d")
+  date.series <- seq(first.date, last.date, "day")
+  user.date.series <- as.Date(paste(user_data$year, user_data$month, user_data$day, sep = "-"))
+  missing.dates <- date.series[!date.series %in% user.date.series]
   # Write out the missing.dates to a text file. Report the filename to the user.
   missingDatesFileName <- paste0(metadata$stationName, ".missing_dates.txt")
   missingDatesFilePath <- file.path(outputFolders$outqcdir, missingDatesFileName)
 
   if (file_test("-f", missingDatesFilePath)) { file.remove(missingDatesFilePath) }
   if (length(date.series[!date.series %in% user.date.series]) > 0) {
-    write.table(date.series[!date.series %in% user.date.series], sep = ",", file = missingDatesFilePath, append = FALSE, row.names = FALSE, col.names = FALSE)
-    error_msg <- paste0("You seem to have missing dates. See <a href='output/", metadata$stationName, "/qc/", missingDatesFileName, "' target='_blank'> here </a> for a list of missing dates. Fill these with observations or missing values (-99.9) before continuing with quality control.")
-    skip <- TRUE
+    write.table(date.series[!date.series %in% user.date.series],
+      sep = ",",
+      file = missingDatesFilePath,
+      append = FALSE,
+      row.names = FALSE,
+      col.names = FALSE)
 
+    error_msg <- paste0("You seem to have missing dates. See <a href='output/",
+      metadata$stationName,
+      "/qc/",
+      missingDatesFileName,
+      "' target='_blank'> here </a> for a list of missing dates. ",
+      "Fill these with observations or missing values (-99.9) before continuing with quality control.")
+
+    skip <- TRUE
     warning(error_msg)
     return(error_msg)
   }
@@ -107,35 +127,24 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 
   ##############################
   # Set some text options
-  if (metadata$lat < 0) lat_text = "°S" else lat_text = "°N"
-  if (metadata$lon < 0) lon_text = "°W" else lon_text = "°E"
+  if (metadata$lat < 0) {
+    lat_text <- "°S"
+  } else {
+    lat_text <- "°N"
+  }
+  if (metadata$lon < 0) {
+    lon_text <- "°W"
+   } else {
+     lon_text <- "°E"
+   }
   Encoding(lon_text) <- "UTF-8" # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
   Encoding(lat_text) <- "UTF-8"
   metadata$title.station <- paste0(metadata$stationName, " [", metadata$lat, lat_text, ", ", metadata$lon, lon_text, "]")
-  
-  ##############################
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting precipitation...")
-  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_prcpPLOT"))
-  plotToFile(plotFileName, "pdf", var = "prcp", type = "h", title = metadata$stationName, cio = cio, metadata = metadata)
-  plotToFile(plotFileName, "png", var = "prcp", type = "h", title = metadata$stationName, cio = cio, metadata = metadata)
 
-  ##############################
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax...")
-  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tmaxPLOT"))
-  plotToFile(plotFileName, "pdf", var = "tmax", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
-  plotToFile(plotFileName, "png", var = "tmax", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
-
-  ##############################
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmin...")
-  plotFileName <- file.path(outputFolders$outlogdir, paste0(outputFolders$stationName, "_tminPLOT"))
-  plotToFile(plotFileName, "pdf", var = "tmin", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
-  plotToFile(plotFileName, "png", var = "tmin", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
-
-  ##############################
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting dtr...")
-  plotFileName <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_dtrPLOT"))
-  plotToFile(plotFileName, "pdf", var = "dtr", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
-  plotToFile(plotFileName, "png", var = "dtr", type = "l", title = metadata$stationName, cio = cio, metadata = metadata)
+  createPlots(progress, outputFolders, metadata, "prcp", cio, "h", qcPlots)
+  createPlots(progress, outputFolders, metadata, "tmax", cio, "l", qcPlots)
+  createPlots(progress, outputFolders, metadata, "tmin", cio, "l", qcPlots)
+  createPlots(progress, outputFolders, metadata, "dtr", cio, "l", qcPlots)
 
   ##############################
   # Call the ExtraQC functions.
@@ -158,15 +167,25 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 }
 # end of QC.wrapper()
 
+createPlots <- function(progress, outputFolders, metadata, var, cio, type, qcPlots) {
+  if (!is.null(progress)) progress$inc(0.05, detail = paste0("Plotting ", var, "..."))
+  plotFileName <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_", var, "PLOT"))
+  plotToFile(plotFileName, "png", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
+  plotToFile(plotFileName, "pdf", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
+  qcPlots(append(qcPlots(), paste0(plotFileName, ".png")))
+
+}
+
 plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata) {
-  plotFileName <- paste0(plotFileName, ".", mediaType)
   if (mediaType == "pdf") {
+    plotFileName <- paste0(plotFileName, ".", mediaType)
     pdf(file = plotFileName)
   } else if (mediaType == "png") {
-    png(file = plotFileName)
+    # %d allows all pages to generate a separate file,
+    # otherwise only last page is plotted in image
+    plotFileName <- paste0(plotFileName, "-%d.", mediaType)
+    png(file = plotFileName, width = 640, height = 640)
   }
-
-  check_open(plotFileName)
 
   # living with if statement to avoid a separate function just for prcp
   if (var == "prcp") {
@@ -196,27 +215,36 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
   # date.years is set when creating climdex input object
   # no it's not, there are no reference behaviours here...
   # I need to add date.years to cio object returned from create_climdex_input function.
-  
+
   # base.___ is the requested (start/end) year
   # year.___ is the actual (start/end) year in the data provided
-  return(list(lat = latitude, 
-              lon = longitude, 
-              base.start = base.year.start, 
-              base.end = base.year.end, 
-              year.start = as.numeric(format(dates[1], format = "%Y")), 
-              year.end = as.numeric(format(dates[length(dates)], format = "%Y")), 
-              dates = dates, 
-              stationName = stationName, 
-              date.years = NULL, 
+  return(list(lat = latitude,
+              lon = longitude,
+              base.start = base.year.start,
+              base.end = base.year.end,
+              year.start = as.numeric(format(dates[1], format = "%Y")),
+              year.end = as.numeric(format(dates[length(dates)], format = "%Y")),
+              dates = dates,
+              stationName = stationName,
+              date.years = NULL,
               title.station = title.station
             ))
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
-	if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...") 
-  user.data <- read_user_file(user.file)  
-  qcResult <- read_and_qc_check(progress, user.data, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders)
+load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders, qcPlots) {
+  if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...")
+  user.data <- read_user_file(user.file)
+  qcResult <- read_and_qc_check(progress,
+    user.data,
+    user.file,
+    latitude,
+    longitude,
+    stationName,
+    base.year.start,
+    base.year.end,
+    outputFolders,
+    qcPlots)
   return(qcResult)
 }
 
@@ -230,12 +258,14 @@ allqc <- function(progress, master, output, metadata, outrange = 4) {
   # fourboxes will produce boxplots for non-zero precip, tx, tn, dtr using the IQR entered previously
   # the plot will go to series.name_boxes.pdf
   # outliers will be also listed on a file (series.name_outliers.txt)
-  fourboxes(master, output, save = 1, outrange, metadata)
+  fourboxes(master, output, save = 1, outrange, metadata, "pdf")
+  fourboxes(master, output, save = 1, outrange, metadata, "png")
 
   if (!is.null(progress)) progress$inc(0.1, detail = "Plotting rounding problems...")
   # Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
   # The plot will go to series.name_rounding.pdf. Needs some formal arrangements (title, nice axis, etc)
-  roundcheck(master, output, save = 1)
+  roundcheck(master, output, save = 1, "pdf")
+  roundcheck(master, output, save = 1, "png")
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax <= tmin...")
   # will list when tmax <= tmin. Output goes to series.name_tmaxmin.txt
@@ -249,7 +279,8 @@ allqc <- function(progress, master, output, metadata, outrange = 4) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Plotting annual time series...")
   # 'Annual Time series' constructed with boxplots. Helps to identify years with very bad values
   # Output goes to series.name_boxseries.pdf
-  boxseries(master, output, save = 1)
+  boxseries(master, output, save = 1, "pdf")
+  boxseries(master, output, save = 1, "png")
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Finding duplicate dates...")
   # Lists duplicate dates. Output goes to series.name_duplicates.txt
@@ -267,6 +298,6 @@ allqc <- function(progress, master, output, metadata, outrange = 4) {
   # Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
   flatline_tx(master, output, metadata)
   flatline_tn(master, output, metadata)
-  
+
   return("")
 }

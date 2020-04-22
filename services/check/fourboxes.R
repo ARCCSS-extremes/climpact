@@ -1,10 +1,17 @@
 # Plots boxplots. Needs only station and save
-fourboxes <- function(station, output, save = 0, outrange, metadata) {
-  # add save option
+# TODO JMC refactor so that calling this function twice (once for PNG and once for PDF)
+# will not write to csv files twice.
+# combo of if (file.exists(filena)) and
+# an eg 'overwrite' function parameter -
+# to ensure we can update csv files on subsequent QC checks)
+fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType = "pdf") {
   if (save == 1) {
-    nombre <- paste(output, "_boxes.pdf", sep = "")
-    check_open(nombre)
-    pdf(file = nombre)
+    fileName <- paste0(output, "_boxes.", mediaType)
+    if (mediaType == "pdf") {
+      pdf(file = fileName)
+    } else if (mediaType == "png") {
+      png(file = fileName, width = 640, height = 640)
+    }
   }
 
   datos <- read.table(station, col.names = c("year", "month", "day", "pc", "tx", "tn"), na.strings = "-99.9")
@@ -28,13 +35,17 @@ fourboxes <- function(station, output, save = 0, outrange, metadata) {
 
     # write precip outliers
     write.table("Prec up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
-    for (a in as.numeric(respc$names))
-  #1:12)
-    {
-      ind.of.month = match(respc$names[a], respc$names)
+    for (a in as.numeric(respc$names)) {
+      ind.of.month <- match(respc$names[a], respc$names)
       prov <- subset(datos, datos$month == as.numeric(respc$names[a]) & datos$pc > respc$stats[5, ind.of.month]) #a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
   } else {
     plot.new()
@@ -48,14 +59,26 @@ fourboxes <- function(station, output, save = 0, outrange, metadata) {
     write.table("TX up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tx > restx$stats[5, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
     write.table("TX low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tx < restx$stats[1, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
   } else {
     plot.new()
@@ -69,14 +92,26 @@ fourboxes <- function(station, output, save = 0, outrange, metadata) {
     write.table("TN up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tn > restn$stats[5, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
     write.table("TN low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tn < restn$stats[1, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
   } else {
     plot.new()
@@ -90,14 +125,26 @@ fourboxes <- function(station, output, save = 0, outrange, metadata) {
     write.table("DTR up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tr > restr$stats[5, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
     write.table("DTR low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
       prov <- subset(datos, datos$month == a & datos$tr < restr$stats[1, a])
-      date.tmp = paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
     }
   } else {
     plot.new()
