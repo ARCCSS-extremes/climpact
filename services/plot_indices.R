@@ -12,8 +12,8 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       if (all(is.na(index[def, asp, ]))) { warning(paste("All NA values detected, not plotting ", aspects[asp], ", ", definitions[def], ".", sep = "")); next }
 
       plot.title <- paste0("Station: ", metadata$title.station)
-      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
-      else { namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
+      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
+      else { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
       jpeg(file = namp, width = 1024, height = 768)
       dev0 = dev.cur()
 
@@ -284,7 +284,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     SONtrend$stat[3] <<- unname(ci[2, 2])
   }
 
-  namp <- file.path(outputFolders$outjpgdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".jpg"))
+  namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".jpg"))
   jpeg(file = namp, width = 1024, height = 768)
 
   dev0 = dev.cur()

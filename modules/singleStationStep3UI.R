@@ -5,40 +5,42 @@
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 singleStationStep3UI <- function(id) {
   ns <- NS(id)
-  return(tagList(conditionalPanel(
-  condition = "output.loadDataError != ''",
-  ns = ns,
-  wellPanel(
-    HTML("<div class= 'alert alert-warning' role='alert'>
-      <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-      <span class='sr-only'></span> Please load station data.</div>"
-    )
-    )
-  ),
-  conditionalPanel(
-    condition = "output.loadDataError == '' && output.qualityControlError != ''",
+  return(tagList(
+    fluidRow(column(8,
+    conditionalPanel(
+    condition = "output.loadDataError != ''",
     ns = ns,
     wellPanel(
       HTML("<div class= 'alert alert-warning' role='alert'>
         <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-        <span class='sr-only'></span>Please check data quality.</div>"
+        <span class='sr-only'></span> Please load station data.</div>"
       )
-    )
-  ),
-  conditionalPanel(
-    condition = "output.loadDataError == '' && output.qualityControlError == ''",
-    ns = ns,
-    wellPanel(
-      h4("Provide User Parameters"),
-      fluidRow(
-        column(6,
-          textInput(ns("plotTitle"), "Plot title:")
-        )
-      ),
-      fluidRow(
-        column(12, uiOutput(ns("loadParamHelpText")))
-      ),
+      )
+    ),
+    conditionalPanel(
+      condition = "output.loadDataError == '' && output.qualityControlError != ''",
+      ns = ns,
       wellPanel(
+        HTML("<div class= 'alert alert-warning' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+          <span class='sr-only'></span>Please check data quality.</div>"
+        )
+      )
+    ),
+    # # User specified parameters
+    conditionalPanel(
+      condition = "output.loadDataError == '' && output.qualityControlError == ''",
+      ns = ns,
+        fluidRow(
+          column(12,
+            textInput(ns("plotTitle"), "Plot title:")
+          )
+        ),
+        fluidRow(
+          column(12,
+            h4("User Parameters"),
+            uiOutput(ns("loadParamHelpText")))
+        ),
         fluidRow(
           column(4,
             numericInput(ns("wsdin"), "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
@@ -51,9 +53,9 @@ singleStationStep3UI <- function(id) {
             bsTooltip(id = paste0(id, "-", "txtn"), title = "Total consecutive hot days and hot nights (TXdTNd) or cold days and cold nights (TXbdTNbd) - value is the number of consecutive days", placement = "left", trigger = "hover")
           ),
           column(4,
-            numericInput(ns("hdd"), "Base temperature for HDDHeat (°C):", 18),
-            bsTooltip(id = paste0(id, "-", "hdd"), title = "HDDHeat: Heating Degree Days", placement = "left", trigger = "hover"),
-            numericInput(ns("cdd"), "Base temperature for CDDHeat (°C):", 18),
+            numericInput(ns("hdd"), "Base temperature for HDDheat (°C):", 18),
+            bsTooltip(id = paste0(id, "-", "hdd"), title = "HDDheat: Heating Degree Days", placement = "left", trigger = "hover"),
+            numericInput(ns("cdd"), "Base temperature for CDDheat (°C):", 18),
             bsTooltip(id = paste0(id, "-", "cdd"), title = "CDDcold: Cooling Degree Days", placement = "left", trigger = "hover"),
             numericInput(ns("gdd"), "Base temperature for GDDgrow (°C):", 10),
             bsTooltip(id = paste0(id, "-", "gdd"), title = "GDDgrow: Growing Degree Days", placement = "left", trigger = "hover"),
@@ -79,40 +81,74 @@ singleStationStep3UI <- function(id) {
             )
           )
         )
+      ), # Results below
+      conditionalPanel(
+        condition = "output.indexCalculationError == ''",
+        ns = ns,
+        slickROutput(ns("slickr3"), width="800"),
+        uiOutput(ns("indicesLink")),
+        tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
+          tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
+          tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
+          tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.")),
+          tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")),
+          tags$li(HTML("If you have chosen to calculate and plot correlations ",
+            "between annual sector data you supply and the indices ClimPACT has calculated, ",
+            "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
       )
-    ),
-    wellPanel(
-      fluidRow(
-        column(12,
-          conditionalPanel(
-            condition = "output.qualityControlError == ''",
-            ns = ns,
-            actionButton(ns("calculateIndices"), "Calculate Indices"),
-            textOutput(ns("indexCalculationError"))
-          )
-        )
-      ),
-      fluidRow(
-        column(12,
-          conditionalPanel(
-            condition = "output.indexCalculationError == ''",
-            ns = ns,
-            uiOutput(ns("indicesLink")),
-            tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
-              tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
-              tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
-              tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.")),
-              tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")),
-              tags$li(HTML("If you have chosen to calculate and plot correlations ",
-                "between annual sector data you supply and the indices ClimPACT has calculated, ",
-                "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
-          )
-        )
-      )
+     ), # Right hand column below
+     column(4, class = "instructions",
+      box(title = "Instructions", width = 12,
+        HTML("Enter a plot title. This will be included on all plots generated.<br />",
+          " ClimPACT will generate a title for you automatically ",
+          "based on the station name and coordinates provided when loading data, but you can override this here."),
+        h4("User Parameters"),
+          HTML("You may also change the following default parameters that relate to several indices (see ",
+          "<a href='user_guide/ClimPACT_user_guide.htm#appendixA' target='_blank'>Appendix A</a> for index definitions):"),
+          tags$ul(tags$li(HTML("<b>WSDId Days</b> sets the number of days which need to occur consecutively ",
+            "with a TX > 90th  percentile to be counted in the WSDId index.")),
+            tags$li(HTML("<b>CSDId Days</b> sets the number of days which need to occur consecutively ",
+            "with a TN < 10th  percentile to be counted in the CSDId index.")),
+            tags$li(HTML("<b>RxdDay Days</b> sets the monthly maximum consecutive d-day precipitation to be recorded by the Rxdday index.")),
+            tags$li(HTML("<b>d for TXdTNd and TXbdTNbd</b> sets the number of consecutive days required for the TXdTNd and TXbdTNbd indices.")),
+            tags$li(HTML("<b>Base temperature</b> for <b>HDDheat</b>, <b>CDDcold</b> and <b>GDDgrow</b> ",
+              "set the temperatures to be used in calculating these indices.")),
+            tags$li(HTML("<b>Count the number of days where precipitation >= nn (Rnnmm)</b> allows the user to calculate the number of days with ",
+              "precipitation greater than or equal to a set amount. ",
+              "This index will be called 'rnnmm', where 'nn' is the precipitation set by the user.")),
+           ),
+           HTML("<p><b>Custom index</b> gives the user the option to create their own index ",
+             "based on the number of days crossing a specified threshold for </p>",
+             "<ul><li>daily maximum temperature (TX),</li>",
+             "<li>minimum temperature (TN), </li>",
+             "<li>diurnal temperature range (DTR) or</li>",
+             "<li>precipitation (PR).</li></ul>",
+             "<p>To calculate a custom index, the user must select ",
+             "one of these variables, an operator (<,<=,>,>=) and a constant.</p>",
+             "<p>For example, selecting TX, the '>=' operator and specifying 40 as a constant ",
+             "will calculate an index representing the number of days where TX is greater than or equal to 40C.</p>",
+             "<p>ClimPACT will output this index as TXge40. ",
+             "Operators are abbreviated in text with lt, le, gt and ge for <, <=, > and >=, respectively.</p>"),
+         h4("Calculate Indices"),
+         HTML("<p>Once you have reviewed the above parameters, select the 'Calculate Indices' button.<br />",
+         "A window and progress bar will appear providing an indication of progess as calculations proceed.</p>"),
+         tags$p("Once processing is complete you can view the plots generated",
+         "and you will be provided with a link to all the outputs that ClimPACT has produced."),
+         h4("Next"),
+         tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
+       )
     )
-  ),
-  br(),
-  actionButton(ns("btn_next_step_3"), label = "Next", icon = icon("chevron-circle-right"))
+    ),
+    fluidRow(column(12,
+        wellPanel(
+        conditionalPanel(
+          condition = "output.qualityControlError == ''",
+          ns = ns,
+          actionButton(ns("calculateIndices"), "Calculate Indices"),
+          textOutput(ns("indexCalculationError"))
+        ),
+        actionButton(ns("btn_next_step_3"), label = "Next", icon = icon("chevron-circle-right"))
+      )
+    ))
   ))
-  observe(toggleState("btn_next_step_3", indexCalculationStatus() == "Done"))
 }

@@ -30,12 +30,6 @@ server <- function(input, output, session) {
     }
   })
 
-  output$loadParamHelpText <- renderText({
-      indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
-      HTML(paste0("The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                  in these indices. See ", indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance."))
-  })
-
   withConsoleRedirect <- function(containerId, expr) {
     # Change type="output" to type="message" to catch stderr
     # (messages, warnings, and errors) instead of stdout.

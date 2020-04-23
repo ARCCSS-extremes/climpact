@@ -43,5 +43,4 @@ singleStationStep2UI <- function (id) {
     )
     )
   ))
-  observe(toggleState('btn_next_step_2', !is.null(input$dataFile) && qualityControlErrorText()==''))
 }

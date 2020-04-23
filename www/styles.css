@@ -21,8 +21,8 @@
     top: 0;
     left: 0;
     font-size: 250%;
-    /* text-align: center; */
-}
+ }
+  /* text-align: center; */
 
 .content {
   display: inline-block; /* expand beyond content inside */

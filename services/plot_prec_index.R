@@ -3,39 +3,41 @@
 plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, spifactor = NULL, sub = "", times = "", metadata, outputFolders, pdf.dev, trend_file) {
   if (is.null(index)) stop("Need precip data to plot.")
   Encoding(sub) <- "UTF-8"
-  
-  plot.title <- paste0("Station: ", metadata$title.station)
-  
-  for (time in 1:4) {
-    if (all(is.na(index[time, ]))) { warning(paste("All NA values detected, not plotting ", times[time], " month ", index.name, ".", sep = "")); next }
 
-    subtmp = paste("Index: ", index.name, " ", times[time], " month. ", sub, sep = "")
-    namp <- paste(outputFolders$outjpgdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.jpg", sep = ""), sep = "/")
+  plot.title <- paste0("Station: ", metadata$title.station)
+
+  for (time in 1:4) {
+    if (all(is.na(index[time, ]))) {
+      warning(paste0("All NA values detected, not plotting ", times[time], " month ", index.name, "."))
+      next
+    }
+
+    subtmp <- paste("Index: ", index.name, " ", times[time], " month. ", sub, sep = "")
+    namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.jpg", sep = ""), sep = "/")
     jpeg(file = namp, width = 1024, height = 768)
 
     #mktrend <<- autotrend(index[time,],icor=1)
-    x1 = seq(1, length(index[time,]), 1) #as.numeric(names(index))
-    y1 = unname(index[time,])
-    zsen = zyp.sen(y1 ~ x1)
-    ci = confint(zsen, level = 0.95)
+    x1   <- seq(1, length(index[time, ]), 1) #as.numeric(names(index))
+    y1   <- unname(index[time, ])
+    zsen <- zyp.sen(y1 ~ x1)
+    ci   <- confint(zsen, level = 0.95)
     mktrend <<- list(stat = array(NA, 5))
     mktrend$stat[1] <<- unname(ci[2, 1])
     mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
     mktrend$stat[3] <<- unname(ci[2, 2])
     mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
 
-    dev0 = dev.cur()
+    dev0 <- dev.cur()
     plotx(unique(as.character(spifactor)), index[time,], main = paste(gsub('\\*', index.name, plot.title), sep = ""), ylab = index.units, xlab = x.label, index.name = index.name, sub = subtmp)
 
     dev.set(which = pdf.dev)
-    plotx(unique(as.character(spifactor)), index[time,], main = paste(gsub('\\*', index.name, plot.title), sep = ""), ylab = index.units, xlab = x.label, index.name = index.name, sub = subtmp)
-    #            dev.copy()
+    plotx(unique(as.character(spifactor)), index[time,], main = paste(gsub('\\*', index.name, plot.title), sep = ""), ylab = index.units, xlab = x.label, index.name = index.name, sub = subtmp)    
     dev.off(dev0)
 
     # Seasonal trend code.
-    y = index[time,]
-    df = data.frame(monthsGLOB, yearsGLOB, y)
-    names(df) = c("months", "years", "values")
+    y <- index[time, ]
+    df <- data.frame(monthsGLOB, yearsGLOB, y)
+    names(df) <- c("months", "years", "values")
 
     # if SPI/SPEI 3 month then calculate the trend and write out.
     if (times[time] == 3) {

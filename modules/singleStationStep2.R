@@ -1,7 +1,6 @@
 singleStationStep2 <- function (input, output, session, parentSession, climpactUI, singleStationState) {
 
   output$slickr <- renderSlickR({
-    # watchPath <- file.path(getwd(), "www", "assets")
     imgs <- list()
     if (!is.null(singleStationState$outputFolders())) {
       watchPath <- singleStationState$outputFolders()$outqcdir
@@ -11,23 +10,20 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     slickR(imgs, height = 640) %synch% (slickR(imgs, height = 100) + bottom_opts)
   })
 
-  qcPlots <- reactiveVal(list())
-
   qcProgressStatus <- reactiveVal("Not Started")
-
   output$qcStatus <- reactive({
     qcProgressStatus()
   })
 
   # Update UI with validation text
   output$loadDataError <- reactive({
-      dataFileLoadedText <- HTML("<div class= 'alert alert-warning' role='alert'>",
+      errorDataFileNotLoaded <- HTML("<div class= 'alert alert-warning' role='alert'>",
         "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>",
         "<span class='sr-only'>Error:</span> Please load station data.</div>")
       if (!is.null(input$dataFile)) {
-        dataFileLoadedText <- ""
+        errorDataFileNotLoaded <- ""
       }
-      return(dataFileLoadedText)
+      return(errorDataFileNotLoaded)
   })
 
   folderToZip <- reactiveVal("")
@@ -73,6 +69,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     # 'name', 'size', 'type', and 'datapath' columns.
     # The 'datapath' column will contain the local filenames
     # where the data can be found.
+    disable("doQualityControl")
 
     qcProgressStatus("In Progress")
 
@@ -93,7 +90,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
           singleStationState$latitude(), singleStationState$longitude(),
           singleStationState$stationName(), singleStationState$startYear(),
-          singleStationState$endYear(), singleStationState$outputFolders(), qcPlots)
+          singleStationState$endYear(), singleStationState$outputFolders())
 
         # capture any errors
         singleStationState$qualityControlErrors(qcResult$errors)
@@ -115,6 +112,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       },
       finally = {
         if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
+        enable("doQualityControl")
         qcProgressStatus("Done")
         folderToZip(singleStationState$outputFolders()$outqcdir)
         pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
@@ -140,6 +138,8 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   outputOptions(output, "qcLink", suspendWhenHidden=FALSE)
   outputOptions(output, "qcStatus", suspendWhenHidden=FALSE)
   outputOptions(output, "slickr", suspendWhenHidden=FALSE)
+
+  observe(toggleState("btn_next_step_2", singleStationState$isQCCompleted() && singleStationState$qualityControlErrors() == ""))
 
   return(list(singleStationState = singleStationState))
 }

@@ -7,7 +7,7 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
   outputdir   <- file.path(baseFolder, stationName)
   outinddir   <- file.path(outputdir, "indices")
   outlogdir   <- file.path(outputdir, "qc")
-  outjpgdir   <- file.path(outputdir, "plots")
+  outplotsdir <- file.path(outputdir, "plots")
   outtrddir   <- file.path(outputdir, "trend")
   outqcdir    <- file.path(outputdir, "qc")
   outthresdir <- file.path(outputdir, "thres") # to save *_thres.csv files
@@ -19,7 +19,7 @@ new_outputFolders <- function(baseFolder = character(), stationName = character(
                           stationName = stationName,
                           outinddir   = outinddir,
                           outlogdir   = outlogdir,
-                          outjpgdir   = outjpgdir,
+                          outplotsdir = outplotsdir,
                           outtrddir   = outtrddir,
                           outqcdir    = outqcdir,
                           outthresdir = outthresdir,
@@ -55,7 +55,7 @@ createFolders <- function(outputFolders) {
   # Create subdirectories if non-existent
   if (!file.exists(outputFolders$outinddir)) { dir.create(outputFolders$outinddir, showWarnings = FALSE, recursive = TRUE) }
   if (!file.exists(outputFolders$outlogdir)) { dir.create(outputFolders$outlogdir, showWarnings = FALSE, recursive = TRUE) }
-  if (!file.exists(outputFolders$outjpgdir)) { dir.create(outputFolders$outjpgdir, showWarnings = FALSE, recursive = TRUE) }
+  if (!file.exists(outputFolders$outplotsdir)) { dir.create(outputFolders$outplotsdir, showWarnings = FALSE, recursive = TRUE) }
   if (!file.exists(outputFolders$outtrddir)) { dir.create(outputFolders$outtrddir, showWarnings = FALSE, recursive = TRUE) }
   if (!file.exists(outputFolders$outqcdir)) { dir.create(outputFolders$outqcdir, showWarnings = FALSE, recursive = TRUE) }
   if (!file.exists(outputFolders$outthresdir)) { dir.create(outputFolders$outthresdir, showWarnings = FALSE, recursive = TRUE) }

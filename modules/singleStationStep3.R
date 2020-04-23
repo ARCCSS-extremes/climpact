@@ -1,11 +1,21 @@
 singleStationStep3 <- function(input, output, session, parentSession, climpactUI, singleStationState) {
 
+  output$slickr3 <- renderSlickR({
+    imgs <- list()
+    if (!is.null(singleStationState$outputFolders())) {
+      watchPath <- singleStationState$outputFolders()$outplotsdir
+      imgs <- list.files(watchPath, pattern=".jpg", full.names = TRUE)
+    }
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    slickR(imgs, height = 600) %synch% (slickR(imgs, height = 120) + bottom_opts)
+  })
+
   singleStationState$indexCalculationStatus <- reactiveVal("Not Started")
   folderToZip <- reactiveVal("")
   indicesZipLink <- reactiveVal("")
 
   observeEvent(singleStationState$metadata(), {
-    updateTextInput(session, "plotTitle", value=singleStationState$metadata()$title.station)   
+    updateTextInput(session, "plotTitle", value=singleStationState$metadata()$title.station)
   })
 
   output$qualityControlErrorStep3 <- reactive({
@@ -15,6 +25,12 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
                         <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'>Error:</span></div>")
     }
     return(errorHTML)
+  })
+
+  output$loadParamHelpText <- renderUI({
+      indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
+      HTML(paste0("<p>The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
+                  in these indices. See ", indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
   })
 
   # Index calculation has been requested by the user.
@@ -34,7 +50,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
         need(input$spei >= 1, message = "Custom SPEI/SPI time scale value must be a positive number")
     )
 
-    # unused plot.title <- input$plotTitle
+    disable("calculateIndices")
 
     params <- climdexInputParams(wsdi_ud <- input$wsdin,
                                   csdi_ud <- input$csdin,
@@ -63,9 +79,12 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
     # Create a zip file containing all of the results.
     folderToZip(singleStationState$outputFolders()$outputdir)
-    pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip", destinationFolder = singleStationState$outputFolders()$baseFolder, destinationFileName = singleStationState$stationName())
+    pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip",
+      destinationFolder = singleStationState$outputFolders()$baseFolder,
+      destinationFileName = singleStationState$stationName())
     indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
 
+    enable("calculateIndices")
     singleStationState$indexCalculationStatus("Done")
     return("")
   })
@@ -95,8 +114,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
   })
 
-  observe(toggleState("calculateIndices", !is.null(input$dataFile)))
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
+
+  observe(toggleState("btn_next_step_3", singleStationState$indexCalculationStatus() == "Done"))
 
   # must use = not <- to get named values in list()
   return(list(singleStationState = singleStationState))

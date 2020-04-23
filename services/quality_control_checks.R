@@ -14,12 +14,11 @@ read_and_qc_check <- function(progress,
   stationName,
   base.year.start,
   base.year.end,
-  outputFolders,
-  qcPlots) {
+  outputFolders) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
-  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL, qcPlots)
+  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
   return(qcResult)
 }
 
@@ -27,7 +26,7 @@ read_and_qc_check <- function(progress,
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles, qcPlots) {
+QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles) {
 
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
 
@@ -141,10 +140,10 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   Encoding(lat_text) <- "UTF-8"
   metadata$title.station <- paste0(metadata$stationName, " [", metadata$lat, lat_text, ", ", metadata$lon, lon_text, "]")
 
-  createPlots(progress, outputFolders, metadata, "prcp", cio, "h", qcPlots)
-  createPlots(progress, outputFolders, metadata, "tmax", cio, "l", qcPlots)
-  createPlots(progress, outputFolders, metadata, "tmin", cio, "l", qcPlots)
-  createPlots(progress, outputFolders, metadata, "dtr", cio, "l", qcPlots)
+  createPlots(progress, outputFolders, metadata, "prcp", cio, "h")
+  createPlots(progress, outputFolders, metadata, "tmax", cio, "l")
+  createPlots(progress, outputFolders, metadata, "tmin", cio, "l")
+  createPlots(progress, outputFolders, metadata, "dtr", cio, "l")
 
   ##############################
   # Call the ExtraQC functions.
@@ -167,13 +166,11 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 }
 # end of QC.wrapper()
 
-createPlots <- function(progress, outputFolders, metadata, var, cio, type, qcPlots) {
+createPlots <- function(progress, outputFolders, metadata, var, cio, type) {
   if (!is.null(progress)) progress$inc(0.05, detail = paste0("Plotting ", var, "..."))
   plotFileName <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_", var, "PLOT"))
   plotToFile(plotFileName, "png", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
   plotToFile(plotFileName, "pdf", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
-  qcPlots(append(qcPlots(), paste0(plotFileName, ".png")))
-
 }
 
 plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata) {
@@ -232,7 +229,7 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders, qcPlots) {
+load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
   if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...")
   user.data <- read_user_file(user.file)
   qcResult <- read_and_qc_check(progress,
@@ -243,8 +240,7 @@ load_data_qc <- function(progress, user.file, latitude, longitude, stationName, 
     stationName,
     base.year.start,
     base.year.end,
-    outputFolders,
-    qcPlots)
+    outputFolders)
   return(qcResult)
 }
 

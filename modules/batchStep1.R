@@ -95,7 +95,7 @@ batchStep1 <- function(input, output, session, climpactUI) {
     removeModal()
     disable("calculateBatchIndices")
 
-    progress <<- shiny::Progress$new()
+    progress <- shiny::Progress$new()
     on.exit(progress$close())
     progress$set(message="Processing data", value = 0.01)
 
@@ -105,8 +105,6 @@ batchStep1 <- function(input, output, session, climpactUI) {
     batchMode <- TRUE
     cl <- makeCluster(nCoresBatch)
 
-    cat(file = stderr(), "about to call testvariables___ functions.", "\n")
-    # Assign value with <<- operator as we are calling out of a reactive function
     metadatafilepath <- input$batchMeta$datapath
     metadatafilename <- input$batchMeta$name
     batchfiles <- input$batchData

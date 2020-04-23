@@ -20,7 +20,7 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
   pdfname <- paste0(outputFolders$stationName, "_all_plots.pdf")
 
   # ClimPACT has sole access to this file, should not encounter errors.
-  pdf(file = file.path(outputFolders$outjpgdir, pdfname), height = 8, width = 11.5)
+  pdf(file = file.path(outputFolders$outplotsdir, pdfname), height = 8, width = 11.5)
   pdf.dev <- dev.cur()
 
   # trend file
