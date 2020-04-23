@@ -5,18 +5,20 @@
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 singleStationStep4UI <- function(id) {
   ns <- NS(id)
-  return(tagList(conditionalPanel(
-    condition = "output.indexCalculationError == ''",
-    ns = ns,
-    wellPanel(h4("Load sector data"),
+  return(tagList(
+    fluidRow(column(8,
+    conditionalPanel(
+      condition = "output.indexCalculationError == ''",
+      ns = ns,
+      h4("Sector data"),
       fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
       HTML(climpactUI$sampleText,
         "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>wheat_yield_nsw_1922-1999.csv</a>"),    
-      h4("Specify plot attributes"),
-      textInput(ns("sectorPlotTitle"), "Plot title:"),
+      h4("Plot attributes"),
+      textInput(ns("sectorPlotTitle"), "Title:"),
       textInput(ns("y_axis_label"), "Label for y axis:"),
       checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
-    )),
+    ),
     conditionalPanel(
         condition = "output.indexCalculationError != ''",
         ns = ns,
@@ -27,19 +29,42 @@ singleStationStep4UI <- function(id) {
         )
     ),
     conditionalPanel(
+        condition = "output.sectorCorrelationError== ''",
+        ns = ns,
+        slickROutput(ns("slickRCorr"), width="640px"),
+        uiOutput(ns("sectorCorrelationLink"))
+    ),
+    conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
         wellPanel(
             actionButton(ns("calculateSectorCorrelation"), "Calculate Correlations"),
             textOutput(ns("sectorCorrelationError"))
         )
-    ),
-    conditionalPanel(
-        condition = "output.sectorCorrelationError== ''",
-        ns = ns,
-        wellPanel(
-          uiOutput(ns("sectorCorrelationLink"))
-        )
     )
-  ))
+  ), # Right hand column below
+     column(4, class = "instructions",
+      box(title = "Instructions", width = 12,
+        h4("Sector data"),
+        HTML("<p>ClimPACT can calculate and plot correlations between annual sector data ",
+        "the user has and the indices it has calculated.<br />",
+        "Currently, ClimPACT only calculates correlations for annual sector data.</p>",
+        "<p>Note that the indices must have been calculated in the current session of ClimPACT. ",
+        "So, if you have closed ClimPACT and wish to calculate correlations with sector data, ",
+        "you must repeat the process from the beginning.</p>"),
+        h4("Plot attributes"),
+        HTML("<p>Select sector data file for correlating with indices. See ", climpactUI$appendixBLink, " for guidance on formatting this file.</p>"),
+        HTML("<p>ClimPACT will attempt to automatically determine a title and label for the y axis of the plots from the file name loaded.</p>"),
+        HTML("<p>You can override these values by entering your preferred values in the relevant boxes.</p>"),
+        HTML("<p>Leave the 'Detrend data' checkbox checked if you would like ",
+        "the sector and index data to be detrended prior to calculating the correlations.</p>"),
+         h4("Calculate Correlations"),
+         HTML("<p>Once you have reviewed the above parameters, select the 'Calculate Correlations' button.<br />",
+         "A window and progress bar will appear providing an indication of progess as correlations proceed.</p>"),
+         tags$p("Once processing is complete you can view the plots generated",
+         "and you will be provided with a link to all the correlation outputs that ClimPACT has produced.")
+       )
+    )
+    )
+    ))
 }

@@ -1,5 +1,15 @@
 singleStationStep4 <- function(input, output, session, climpactUI, singleStationState) {
 
+  output$slickRCorr <- renderSlickR({
+    imgs <- list()
+    if (!is.null(singleStationState$outputFolders())) {
+      watchPath <- singleStationState$outputFolders()$corrdir
+      imgs <- list.files(watchPath, pattern=".jpg", full.names = TRUE)
+    }
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    slickR(imgs, slideId = "slickRCorrMain", height = 640) %synch% (slickR(imgs, slideId = "slickRCorrNav", height = 100) + bottom_opts)
+  })
+
   correlationCalculationStatus <- reactiveVal("Not Started")
   folderToZip <- reactiveVal("")
   corrZipLink <- reactiveVal("")
@@ -69,5 +79,6 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
 
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
   outputOptions(output, "sectorCorrelationError", suspendWhenHidden = FALSE)
+  outputOptions(output, "slickRCorr", suspendWhenHidden = FALSE)
 
 }

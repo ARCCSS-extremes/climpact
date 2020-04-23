@@ -85,7 +85,11 @@ singleStationStep3UI <- function(id) {
       conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
-        slickROutput(ns("slickr3"), width="800"),
+         fluidRow(
+          column(12,
+        slickROutput(ns("slickRIndices"), width="640px"))),
+        fluidRow(
+          column(12,
         uiOutput(ns("indicesLink")),
         tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
           tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
@@ -95,6 +99,7 @@ singleStationStep3UI <- function(id) {
           tags$li(HTML("If you have chosen to calculate and plot correlations ",
             "between annual sector data you supply and the indices ClimPACT has calculated, ",
             "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
+          ))
       )
      ), # Right hand column below
      column(4, class = "instructions",
