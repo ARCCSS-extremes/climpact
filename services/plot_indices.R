@@ -12,9 +12,9 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       if (all(is.na(index[def, asp, ]))) { warning(paste("All NA values detected, not plotting ", aspects[asp], ", ", definitions[def], ".", sep = "")); next }
 
       plot.title <- paste0("Station: ", metadata$title.station)
-      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
-      else { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.jpg", sep = ""), sep = "/") }
-      jpeg(file = namp, width = 1024, height = 768)
+      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.png", sep = ""), sep = "/") }
+      else { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.png", sep = ""), sep = "/") }
+      png(file = namp, width = 800, height = 600)
       dev0 = dev.cur()
 
       if (aspects[asp] == "HWM" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Magnitude (mean temperature of all heatwave events)", sep = "") }
@@ -55,12 +55,12 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       remove(mktrend, envir = .GlobalEnv)
     }
   }
-  # close all jpeg graphics devices  - RJHD 2017-12-19
+  
   graphics.off()
 }
 
 # plotx
-# make plots, this is called twice to make jpg and pdf files.
+# make plots, this is called twice to make image and pdf files.
 plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = NULL, sub = "") {
   if (all(is.na(y))) { print("NO DATA TO PLOT", quote = FALSE); return() }
   Encoding(main) <- "UTF-8"
@@ -284,8 +284,8 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     SONtrend$stat[3] <<- unname(ci[2, 2])
   }
 
-  namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".jpg"))
-  jpeg(file = namp, width = 1024, height = 768)
+  namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".png"))
+  png(file = namp, width = 800, height = 600)
 
   dev0 = dev.cur()
   if (index.name == "tx95t") { xdata <- 1:length(index) }

@@ -7,7 +7,8 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
     bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    slickR(imgs, slideId = "slickRQCMain", height = 640) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
+    slickR(imgs, slideId = "slickRQCMain", height = 480, width = 800) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
+    # runjs("alert('hi'); $('#slickRQCMain').slick('slickGoTo', 3);")
   })
 
   qcProgressStatus <- reactiveVal("Not Started")
@@ -137,7 +138,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   # ensure client-side javascript will inspect qcLink element
   outputOptions(output, "qcLink", suspendWhenHidden = FALSE)
   outputOptions(output, "qcStatus", suspendWhenHidden = FALSE)
-  outputOptions(output, "slickRQC", suspendWhenHidden = FALSE)
+  outputOptions(output, "slickRQC", suspendWhenHidden = TRUE)
 
   observe(toggleState("btn_next_step_2", singleStationState$isQCCompleted() && singleStationState$qualityControlErrors() == ""))
 

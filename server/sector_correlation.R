@@ -144,7 +144,7 @@ calculateDeTrendValues <- function(df, yearColumn, sectorColumn){
 # default font size in plots
 FONT_BASE_SIZE <- 12
 
-# create scatter plot with trend line, and save the plot to jpg file
+# create scatter plot with trend line, and save the plot to image file
 create_save_scatter_plot <- function(filename, df, x, y, plot.title, x.label, y.label){
   annotateX <- min(df[,x]) + (max(df[,x]) - min(df[,x])) / 8
   annotateY <- max(df[,y])
@@ -161,7 +161,7 @@ create_save_scatter_plot <- function(filename, df, x, y, plot.title, x.label, y.
     theme_grey(base_size = FONT_BASE_SIZE) +                                       # increase font size
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  # remove the white gridlines
 
-  ggsave(paste0(filename, ".jpg"), plot=p, width = 8, height = 6)
+  ggsave(paste0(filename, ".png"), device = "png", plot=p, width = 8, height = 6)
 
   # save csv file of data
   df_csv <- df[, c("year", x, y)]
@@ -179,7 +179,7 @@ create_bar_plot <- function(filename, df, x, y, z, plot.title, x.label, y.label)
     theme_grey(base_size = FONT_BASE_SIZE) +                                       # increase font size
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())  # remove the white gridlines
 
-  ggsave(paste0(filename, ".jpg"), plot=p, width = 8, height = 6)
+  ggsave(paste0(filename, ".png"), device = "png", plot=p, width = 8, height = 6)
 
   # save csv file of data
   write.csv(df, file = paste0(filename, ".csv"), row.names = FALSE)

@@ -31,7 +31,7 @@ singleStationStep4UI <- function(id) {
     conditionalPanel(
         condition = "output.sectorCorrelationError== ''",
         ns = ns,
-        slickROutput(ns("slickRCorr"), width="640px"),
+        slickROutput(ns("slickRCorr"), width="900px"),
         uiOutput(ns("sectorCorrelationLink"))
     ),
     conditionalPanel(

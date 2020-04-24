@@ -4,10 +4,12 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     imgs <- list()
     if (!is.null(singleStationState$outputFolders())) {
       watchPath <- singleStationState$outputFolders()$outplotsdir
-      imgs <- list.files(watchPath, pattern=".jpg", full.names = TRUE)
+      imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
     bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    slickR(imgs, slideId = "slickRIndicesMain", height = 640) %synch% (slickR(imgs, slideId = "slickRIndicesNav", height = 100) + bottom_opts)
+    main <- slickR(imgs, slideId = "slickRIndicesMain", height = 600, width = 900)
+    nav <-  (slickR(imgs, slideId = "slickRIndicesNav", height = 100) + bottom_opts)
+    main %synch% nav
   })
 
   singleStationState$indexCalculationStatus <- reactiveVal("Not Started")
@@ -115,7 +117,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   })
 
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
-  outputOptions(output, "slickRIndices", suspendWhenHidden = FALSE)
+  outputOptions(output, "slickRIndices", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
 
   observe(toggleState("btn_next_step_3", singleStationState$indexCalculationStatus() == "Done"))
 

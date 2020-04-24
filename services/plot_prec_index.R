@@ -13,8 +13,8 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
     }
 
     subtmp <- paste("Index: ", index.name, " ", times[time], " month. ", sub, sep = "")
-    namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.jpg", sep = ""), sep = "/")
-    jpeg(file = namp, width = 1024, height = 768)
+    namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.png", sep = ""), sep = "/")
+    png(file = namp, width = 800, height = 600)
 
     #mktrend <<- autotrend(index[time,],icor=1)
     x1   <- seq(1, length(index[time, ]), 1) #as.numeric(names(index))

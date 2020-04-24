@@ -18,7 +18,8 @@ singleStationStep2UI <- function (id) {
         conditionalPanel(
           condition = "output.qcStatus != 'Not Started'",
           ns = ns,
-          slickROutput(ns("slickRQC"), width="640px")
+          slickROutput(ns("slickRQC"), width="900px")
+          # ,tags$script("$('#slickRQCMain').slick('slickGoTo', 1);")
         ),
         wellPanel(actionButton(ns("doQualityControl"), "Check Data Quality"),
           htmlOutput(ns("qualityControlError"))

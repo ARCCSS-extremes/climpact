@@ -87,7 +87,7 @@ singleStationStep3UI <- function(id) {
         ns = ns,
          fluidRow(
           column(12,
-        slickROutput(ns("slickRIndices"), width="640px"))),
+        slickROutput(ns("slickRIndices"), width="900px"))),
         fluidRow(
           column(12,
         uiOutput(ns("indicesLink")),

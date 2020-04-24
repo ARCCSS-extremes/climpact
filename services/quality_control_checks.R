@@ -179,9 +179,10 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
     pdf(file = plotFileName)
   } else if (mediaType == "png") {
     # %d allows all pages to generate a separate file,
-    # otherwise only last page is plotted in image
+    # otherwise only last page is plotted in image.
+    # needed here in QC, but not in calculations or correlations
     plotFileName <- paste0(plotFileName, "-%d.", mediaType)
-    png(file = plotFileName, width = 640, height = 640)
+    png(file = plotFileName, width = 800, height = 600)
   }
 
   # living with if statement to avoid a separate function just for prcp
