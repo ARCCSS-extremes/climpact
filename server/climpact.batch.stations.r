@@ -48,7 +48,7 @@ batch <- function(metadatafilepath, batchfiles, base.start, base.end, batchOutpu
     prog_int <- 0.9 / length(batch_metadata$station_file)
   }
   progressSNOW <- function(n) {
-    if (interactive()) { 
+    if (interactive()) {
       progress$inc(prog_int)
     }
   }
@@ -116,7 +116,6 @@ qc_and_calculateIndices <- function(batch_metadata, file.number, file, base.star
               qcResult <- QC.wrapper(NULL, station_metadata, user.data.ts, file, outputFolders, quantiles, NULL)
             },
             error = function(cond) {
-              browser()
               fileConn <- file(paste(file, ".error.txt", sep = ""))
               writeLines(toString(cond$message), fileConn)
               close(fileConn)

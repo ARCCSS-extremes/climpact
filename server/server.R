@@ -4,7 +4,7 @@ server <- function(input, output, session) {
   # REF: https://shiny.rstudio.com/articles/scoping.html
   source("models/outputFolders.R")
   source("server/climpact.GUI-functions.r")
-  source("services/quality_control_checks.r")
+  source("services/quality_control_checks.R")
   source("services/calculate_indices.R")
 
   source("models/stationWizardState.R", local = TRUE)

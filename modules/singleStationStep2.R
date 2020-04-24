@@ -108,7 +108,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         return(paste("Error:", cond$message))
       },
       error = function(cond) {
-        browser()
           return(paste("Error:", cond$message))
       },
       finally = {

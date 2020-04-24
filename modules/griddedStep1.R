@@ -82,7 +82,6 @@ griddedStep1 <- function(input, output, session, climpactUI) {
       ncdfCalc(progress, input$dataFiles$datapath, input$thresholdFiles$datapath, outputFolder(), params)
     },
     error = function(cond) {
-      browser()
       errorOccurred(TRUE)
       showModal(errorDialog(cond$message))
       return(paste0("Error occurred: ", cond$message))

@@ -36,9 +36,6 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
     if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
       return(paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct."))
     }
-  } else {
-    browser()
-    # just testing that this is never called
   }
 
   # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
