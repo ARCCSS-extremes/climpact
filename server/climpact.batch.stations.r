@@ -25,35 +25,36 @@ library(zoo)
 library(zyp)
 
 # return a nice list of station metadata
-read.file.list.metadata <- function(file.list.metadata) {
-  file.list.metadata <- read.table(file.list.metadata, header = T, col.names = c("station_file", "latitude", "longitude", "wsdin", "csdin", "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday", "rnnmm", "txtn", "SPEI"),
-          colClasses = c("character", "real", "real", "integer", "integer", "real", "real", "integer", "real", "real", "integer"))
-
-  return(file.list.metadata)
+read.file.list.metadata <- function(metadata_filepath) {
+    metadataTable <- read.table(metadata_filepath,
+    header = TRUE,
+    col.names = c("station_file", "latitude", "longitude", "wsdin",   "csdin",   "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday",  "rnnmm", "txtn", "SPEI"),
+    colClasses = c("character",   "real",     "real",      "integer", "integer", "real",   "real",   "real",   "integer", "real",  "real", "integer"))
+  return(metadataTable)
 }
 
-strip_file_extension <- function(file.name) {
-  file_parts <- strsplit(file.name, "\\.")[[1]]
-  stripped <- substr(file.name, start = 1, stop = nchar(file.name) - nchar(file_parts[length(file_parts)]) - 1)
-  print(paste0("input: ", file.name, " output: ", stripped))
+strip_file_extension <- function(fileName) {
+  file_parts <- strsplit(fileName, "\\.")[[1]]
+  stripped <- substr(fileName, start = 1, stop = nchar(fileName) - nchar(file_parts[length(file_parts)]) - 1)
+  print(paste0("input: ", fileName, " output: ", stripped))
   return(stripped)
 }
 
 # call QC and index calculation functionality for each file specified in metadata.txt
-batch <- function(metadatafilepath, batchfiles, base.start, base.end, batchOutputFolder) {
+batch <- function(progress, metadata_filepath, batchfiles, base.start, base.end, batchOutputFolder) {
 
-  batch_metadata <- read.file.list.metadata(metadatafilepath)
+  batch_metadata <- read.file.list.metadata(metadata_filepath)
 
-  if (exists("progress") && !is.null(progress)) {
+  if (!is.null(progress)) {
     prog_int <- 0.9 / length(batch_metadata$station_file)
   }
-  progressSNOW <- function(n) {
-    if (interactive()) {
-      progress$inc(prog_int)
-    }
-  }
-  opts <- list(progress = progressSNOW)
-  registerDoSNOW(cl)
+  # progressSNOW <- function(n) {
+  #   if (interactive()) {
+  #     progress$inc(prog_int)
+  #   }
+  # }
+  # opts <- list(progress = progressSNOW)
+  # registerDoSNOW(cl) # needs cl variable (cluster intialised via cl <- makeCluster(numCores))
 
   # batchfiles %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
   # batchfiles <- data.frame(batchfiles[,-1], row.names=batchfiles[,1])
@@ -64,29 +65,33 @@ batch <- function(metadatafilepath, batchfiles, base.start, base.end, batchOutpu
   for (file.number in 1:numfiles) {
     msg <- paste("File", file.number, "of", numfiles, ":", batch_metadata$station_file[file.number])
     print(msg)
-    progress$inc(detail = msg)
-    #file.name = batch_metadata$station_file[file.number]
-    #file <- batchfiles[file.name, 'datapath']
+    if (!is.null(progress)) progress$inc(detail = msg)
+    #fileName = batch_metadata$station_file[file.number]
     file <- batchfiles[file.number, "datapath"]
-    qc_and_calculateIndices(batch_metadata, file.number, file, base.start, base.end, batchOutputFolder)
+    qc_and_calculateIndices(progress, prog_int, batch_metadata, file.number, file, base.start, base.end, batchOutputFolder)
 
-    if (!is.null(progress)) progress$inc(prog_int)
+    # progress incremented in calculations if (!is.null(progress)) progress$inc(prog_int)
   }
   zipfilename <- zipFiles(batchOutputFolder, destinationFileName = paste0(basename(batchOutputFolder), ".zip"))
   return(zipfilename)
 }
 
-qc_and_calculateIndices <- function(batch_metadata, file.number, file, base.start, base.end, baseFolder) {
-  file.name <- batch_metadata$station_file[file.number]
-  cat(file = stderr(), "qc_and_calculateIndices(), working on :", file.name, "\n")
-  print(file.name)
+qc_and_calculateIndices <- function(progress, prog_int, batch_metadata, file.number, file, base.start, base.end, baseFolder) {
+  fileName <- batch_metadata$station_file[file.number]
+  cat(file = stderr(), "qc_and_calculateIndices(), working on :", fileName, "\n")
+  print(fileName)
   print(file)
-  user.data <- read_user_file(file)
-  user.data.ts <- create_user_data_ts(user.data)
-  station.name <- strip_file_extension(file.name)
-  outputFolders <- outputFolders(baseFolder, station.name)
   lat <- as.numeric(batch_metadata$latitude[file.number])
   lon <- as.numeric(batch_metadata$longitude[file.number])
+  stationName <- strip_file_extension(fileName)
+  outputFolders <- outputFolders(baseFolder, stationName)
+
+  qcResult <- load_data_qc(progress, prog_int, file, lat, lon, stationName, base.start, base.end, outputFolders)
+  # qcResult now has $errors, $cio, $metadata
+  if (qcResult$errors != "") {
+    print(qcResult$errors)
+    return(qcResult$errors)
+  }
   params <- climdexInputParams(wsdi_ud <- batch_metadata$wsdin[file.number],
                                 csdi_ud <- batch_metadata$csdin[file.number],
                                 rx_ud <- batch_metadata$rxnday[file.number],
@@ -97,44 +102,46 @@ qc_and_calculateIndices <- function(batch_metadata, file.number, file, base.star
                                 rnnmm_ud <- batch_metadata$rnnmm[file.number],
                                 custom_SPEI <- batch_metadata$SPEI[file.number]
                               )
-  station_metadata <- create_metadata(lat, lon, base.start, base.end, user.data.ts$dates, station.name)
 
-  title.station <- station_metadata$title.station
-  barplot_flag <- TRUE
-  min_trend <- 10
-  quantiles <- NULL #JMC TODO remove / replace with original intent
-  temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
-  prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
-  op.choice <- NULL
+  # title.station <- station_metadata$title.station
+  # barplot_flag <- TRUE
+  # min_trend <- 10
+  # quantiles <- NULL #JMC TODO remove / replace with original intent
+  # temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
+  # prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
+  # op.choice <- NULL
   skip <- FALSE
-  qcResult <- NULL
-  if (file_test("-f", paste(file, ".error.txt", sep = ""))) {
-    file.remove(paste(file, ".error.txt", sep = ""))
+
+  errorFilePath <- file.path(outputFolders$outputdir, paste0(stationName, ".error.txt"))
+  if (file_test("-f", errorFilePath)) {
+    file.remove(errorFilePath)
   }
-  # run quality control and create climdex input object
-  catch1 <- tryCatch({
-              qcResult <- QC.wrapper(NULL, station_metadata, user.data.ts, file, outputFolders, quantiles, NULL)
-            },
-            error = function(cond) {
-              fileConn <- file(paste(file, ".error.txt", sep = ""))
-              writeLines(toString(cond$message), fileConn)
-              close(fileConn)
-              if (file_test("-f", paste0(file, ".temporary"))) {
-                file.remove(paste0(file, ".temporary"))
-              }
-            })
-  if (skip) { return(NA) }
+
+  # # run quality control and create climdex input object
+  # catchQC <- tryCatch({
+  #             qcResult <- QC.wrapper(progress, prog_int, station_metadata, user.data.ts, file, outputFolders, quantiles)
+  #           },
+  #           error = function(cond) {
+  #             fileConn <- file(errorFilePath)
+  #             writeLines(toString(cond$message), fileConn)
+  #             close(fileConn)
+  #             if (file_test("-f", paste0(file, ".temporary"))) {
+  #               file.remove(paste0(file, ".temporary"))
+  #             }
+  #           })
+  # if (skip) { return(NA) }
 
   # calculate indices
-  catch2 <- tryCatch(index.calc(NULL, station_metadata, qcResult$cio, outputFolders, params),
-                      error = function(cond) {
-                        fileConn <- file(paste(file, ".error.txt", sep = ""))
-                        writeLines(toString(cond$message), fileConn)
-                        close(fileConn)
-                        if (file_test("-f", paste0(file, ".temporary"))) {
-                          file.remove(paste0(file, ".temporary"))
-                        }
-                      })
+  catchCalc <- tryCatch(index.calc(progress, prog_int, qcResult$metadata, qcResult$cio, outputFolders, params),
+                        error = function(cond) {
+                          fileConn <- file(errorFilePath)
+                          writeLines(toString(cond$message), fileConn)
+                          close(fileConn)
+                          if (file_test("-f", paste0(file, ".temporary"))) {
+                            file.remove(paste0(file, ".temporary"))
+                          }
+                        })
+
   if (skip) { return(NA) }
 
   # RJHD - NH addition for pdf error 2-aug-17

@@ -6,9 +6,10 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
   aspects <- c("HWM", "HWA", "HWN", "HWD", "HWF")
   units <- c("°C", "°C", "heatwaves", "days", "days")
   Encoding(units) <- "UTF-8"
-
   for (def in 1:length(definitions)) {
+  print(def)
     for (asp in 1:length(aspects)) {
+      print(asp)
       if (all(is.na(index[def, asp, ]))) { warning(paste("All NA values detected, not plotting ", aspects[asp], ", ", definitions[def], ".", sep = "")); next }
 
       plot.title <- paste0("Station: ", metadata$title.station)

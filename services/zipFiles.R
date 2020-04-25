@@ -21,16 +21,20 @@ zipFiles <- function (folderToZip, excludePattern = "", destinationFolder = "", 
   } else {
     fileName <- destinationFileName
   }
-  zipFilePath <- file.path(folderName, fileName)
+
+  # get zipping
+  zipFilePath <- ""
   filesToZip <- dir(folderToZip)
-  originalwd <- getwd()
-  setwd(folderToZip)
-  if (excludePattern == "") {
-    zip(zipfile = zipFilePath, files = filesToZip)
-  } else {
-    zip(zipfile = zipFilePath, files = filesToZip, extras = paste0("-x ", excludePattern))
+  if (length(filesToZip > 0)) {
+    zipFilePath <- file.path(folderName, fileName)
+    originalwd <- getwd()
+    setwd(folderToZip)
+    if (excludePattern == "") {
+      zip(zipfile = zipFilePath, files = filesToZip)
+    } else {
+      zip(zipfile = zipFilePath, files = filesToZip, extras = paste0("-x ", excludePattern))
+    }
+    setwd(originalwd)
   }
-  setwd(originalwd)
-  
   return(zipFilePath)
 }

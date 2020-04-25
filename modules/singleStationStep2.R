@@ -88,7 +88,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         singleStationState$outputFolders(outputFolders(baseFolder, singleStationState$stationName()))
 
         # apply quality control checks
-        qcResult <- load_data_qc(progress, singleStationState$dataFile()$datapath,
+        qcResult <- load_data_qc(progress, 0.05, singleStationState$dataFile()$datapath,
           singleStationState$latitude(), singleStationState$longitude(),
           singleStationState$stationName(), singleStationState$startYear(),
           singleStationState$endYear(), singleStationState$outputFolders())
@@ -100,23 +100,29 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         # capture climdex input object created
         if (qcResult$errors == "") {
           singleStationState$climdexInput(qcResult$cio)
+        } else {
+          print(qcResult$errors)
         }
 
         return(qcResult$errors)
       },
       readUserFileError = function(cond) {
+        browser()
         return(paste("Error:", cond$message))
       },
       error = function(cond) {
+          browser()
           return(paste("Error:", cond$message))
       },
       finally = {
         if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
         enable("doQualityControl")
         qcProgressStatus("Done")
-        folderToZip(singleStationState$outputFolders()$outqcdir)
-        pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
-        qcZipLink(getLinkFromPath(pathToZipFile, "here"))
+        if (!is.null(singleStationState) && !is.null(singleStationState$outputFolders())) {
+          folderToZip(singleStationState$outputFolders()$outqcdir)
+          pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
+          qcZipLink(getLinkFromPath(pathToZipFile, "here"))
+        }
         singleStationState$isQCCompleted(TRUE)
       }
     )

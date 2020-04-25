@@ -7,6 +7,7 @@ merge_data <- function(user_data, metadata) {
 }
 
 read_and_qc_check <- function(progress,
+  prog_int,
   user_data,
   user_file,
   latitude,
@@ -15,7 +16,7 @@ read_and_qc_check <- function(progress,
   base.year.start,
   base.year.end,
   outputFolders) {
-  if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
+  if (!is.null(progress)) progress$inc(prog_int, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
   qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
@@ -227,10 +228,11 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load_data_qc <- function(progress, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
-  if (!is.null(progress)) progress$inc(0.05, detail = "Reading data file...")
+load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
+  if (!is.null(progress)) progress$inc(prog_int, detail = "Reading data file...")
   user.data <- read_user_file(user.file)
   qcResult <- read_and_qc_check(progress,
+    prog_int,
     user.data,
     user.file,
     latitude,

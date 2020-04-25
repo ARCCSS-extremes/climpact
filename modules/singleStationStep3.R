@@ -75,7 +75,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
     singleStationState$indexCalculationStatus("In Progress")
 
-    index.calc(progress, singleStationState$metadata(),
+    index.calc(progress, 1, singleStationState$metadata(),
       singleStationState$climdexInput(), singleStationState$outputFolders(),
       singleStationState$climdexInputParams())
 

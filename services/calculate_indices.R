@@ -11,9 +11,9 @@ source("services/calculate/calculate_custom_index.R", local = TRUE)
 
 # This function loops through all indices and calls the appropriate functions to calculate them.
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
-index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParams) {
+index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdexInputParams) {
 
-  if (!is.null(progress)) progress$inc(0.01)
+  if (!is.null(progress)) progress$inc(0.01 * prog_int)
 
   # pdf file for all plots
   # Check 'all' PDF isn't open, then open.
@@ -36,7 +36,7 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
     "r95p", "r99p", "gsl", "spi", "spei", "hw", "wsdi", "wsdin", "csdi", "csdin",
     "ntxntn", "ntxbntnb")
 
-  if (!is.null(progress)) progress$inc(0.01)
+  if (!is.null(progress)) progress$inc(0.01 * prog_int)
 
   #####################################
   # Loop through and calculate and plot each index
@@ -46,7 +46,7 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
     tmp.index.name <- as.character(index.list$Short.name[i])
 
     if (!is.null(progress)) {
-      progress$inc(0.01, detail = paste("Calculating", index.list$Short.name[i], "..."))
+      progress$inc(0.01 * prog_int, detail = paste("Calculating", index.list$Short.name[i], "..."))
     }
     tmp.index.def <- as.character(index.list$Definition[i])
     # Set frequency if relevant to current index
@@ -125,11 +125,11 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
     }
 
     #index.function(cio)
-    index.stored <- eval(parse(text = paste0("climdex.", as.character(index.list$Short.name[i]), "(", index.parameter, ")"))) 
+    index.stored <- eval(parse(text = paste0("climdex.", as.character(index.list$Short.name[i]), "(", index.parameter, ")")))
     # Because climdex functions (called in above line) will still calculate
     # even if all data are NA, resulting in -Inf values being inserted into index.stored.
     # Climdex functions only check if cio data are NULL.
-    index.stored[index.stored == -Inf] = NA
+    index.stored[index.stored == -Inf] <- NA
     write.index.csv(index.stored, index.name = tmp.index.name, freq = frequency, header = tmp.index.def, metadata, climdexInputParams, outputFolders)
     plot.call(index.stored,
       index.name = tmp.index.name,
@@ -156,7 +156,7 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
     remove(index.parameter)
 
   }
-  if (!is.null(progress)) progress$inc(0.05)
+  if (!is.null(progress)) progress$inc(0.05 * prog_int)
 
   if (length(climdexInputParams$op.choice) == 0 || length(climdexInputParams$var.choice) == 0) {
     print("no custom index to calculate", quote = FALSE)
@@ -165,5 +165,5 @@ index.calc <- function(progress, metadata, cio, outputFolders, climdexInputParam
   }
   dev.off(pdf.dev)
 
-  if (!is.null(progress)) progress$inc(0.01)
+  if (!is.null(progress)) progress$inc(0.01 * prog_int)
 }
