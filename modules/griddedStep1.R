@@ -72,7 +72,8 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     progress$set(message = "Calculating ncdf indices", value = 0)
 
     ncdfCalculationStatus("In Progress")
-    outputFolder <- reactiveVal(file.path(getwd(), "www/output/ncdf"))
+    
+    outputFolder <- reactiveVal(file.path(getwd(), "www", "output", paste0(input$instituteID, "_ncdf")))
     errorOccurred <- reactiveVal(FALSE)
 
     out <- tryCatch({
@@ -117,28 +118,31 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     # Call the 'create.indices.from.files' function from the modified climdex.pcic.ncdf package
     # to calculate ETCCDI, ET-SCI and other indices, using data and parameters provided by the user.
     # Note even when using a threshold file, the base.range parameter must still be specified accurately.
-
-    create.indices.from.files(griddedFiles,
-      outputFolder,
-      params$outputFileNamePattern,
-      params$authorData,
-      variable.name.map = params$variableNameMap,
-      base.range = params$baseRange,
-      parallel = params$numCores,
-      axis.to.split.on = params$axisName,
-      climdex.vars.subset = params$indicesToCalculate,
-      thresholds.files = thresholdFiles,
-      fclimdex.compatible = params$fClimdexCompatible,
-      root.dir = NULL,
-      cluster.type = "SOCK",
-      ehfdef = params$ehfDefinition,
-      max.vals.millions = params$maxVals,
-      thresholds.name.map = c(tx05thresh = "tx05thresh", tx10thresh = "tx10thresh",
-        tx50thresh = "tx50thresh", tx90thresh = "tx90thresh", tx95thresh = "tx95thresh",
-        tn05thresh = "tn05thresh", tn10thresh = "tn10thresh", tn50thresh = "tn50thresh", tn90thresh = "tn90thresh", tn95thresh = "tn95thresh",
-        tx90thresh_15days = "tx90thresh_15days", tn90thresh_15days = "tn90thresh_15days", tavg90thresh_15days = "tavg90thresh_15days",
-        tavg05thresh = "tavg05thresh", tavg95thresh = "tavg95thresh",
-        txraw = "txraw", tnraw = "tnraw", precraw = "precraw",
-        r95thresh = "r95thresh", r99thresh = "r99thresh"))
-      }
+    create.indices.from.files(
+      root.dir                  = NULL,
+      input.files               = griddedFiles,
+      out.dir                   = outputFolder,
+      output.filename.template  = params$outputFileNamePattern,
+      author.data               = params$authorData,
+      climdex.vars.subset       = params$indicesToCalculate,
+      variable.name.map         = params$variableNameMap,
+      axis.to.split.on          = params$axisName,
+      fclimdex.compatible       = params$fClimdexCompatible,
+      base.range                = params$baseRange,
+      parallel                  = params$numCores,
+      thresholds.files          = thresholdFiles,
+      thresholds.name.map       = c(tx05thresh = "tx05thresh", tx10thresh = "tx10thresh",
+                                    tx50thresh = "tx50thresh", tx90thresh = "tx90thresh", tx95thresh = "tx95thresh",
+                                    tn05thresh = "tn05thresh", tn10thresh = "tn10thresh", tn50thresh = "tn50thresh",
+                                    tn90thresh = "tn90thresh", tn95thresh = "tn95thresh",
+                                    tx90thresh_15days = "tx90thresh_15days", tn90thresh_15days = "tn90thresh_15days",
+                                    tavg90thresh_15days = "tavg90thresh_15days",
+                                    tavg05thresh = "tavg05thresh", tavg95thresh = "tavg95thresh",
+                                    txraw = "txraw", tnraw = "tnraw", precraw = "precraw",
+                                    r95thresh = "r95thresh", r99thresh = "r99thresh"),
+      ehfdef                    = params$ehfDefinition,
+      max.vals.millions         = params$maxVals,
+      cluster.type              = "SOCK"
+    )
+  }
 }

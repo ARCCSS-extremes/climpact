@@ -107,11 +107,9 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         return(qcResult$errors)
       },
       readUserFileError = function(cond) {
-        browser()
         return(paste("Error:", cond$message))
       },
       error = function(cond) {
-          browser()
           return(paste("Error:", cond$message))
       },
       finally = {

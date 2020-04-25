@@ -76,7 +76,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
     progress$set(message = "Calculating ncdf thresholds", value = 0)
 
     thresholdCalculationStatus("In Progress")
-    outputFolder <- reactiveVal(file.path(getwd(), "www/output/thres"))
+    outputFolder <- reactiveVal(file.path(getwd(), "www", "output", paste0(input$instituteIDThresh, "_thres")))
     outputFilePath <- reactiveVal(file.path(outputFolder(), input$outputFileNameThresh))
     errorOccurred <- reactiveVal(FALSE)
 
