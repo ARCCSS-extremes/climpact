@@ -6,6 +6,27 @@
     box-sizing: border-box;
 }
 
+/* slickR styling of Next and Prev buttons */
+button.slick-prev:before {
+  font-size: 40px;
+}
+button.slick-next:before {
+  font-size: 40px;
+}
+.slick-prev {
+  left: -43px; /* line up prev button correctly (3px less than font-size) */
+}
+/* get button text to line up vertically with icon */
+button i {
+  vertical-align: middle;
+}
+
+button#ui-doQualityControl {
+  display: block; 
+  margin: 0 auto;
+}
+
+
 /* For disabled tabPanel */
 .nav li a.disabled {
     background-color: #ccc !important;

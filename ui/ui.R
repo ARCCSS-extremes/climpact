@@ -8,7 +8,7 @@ ui <- tagList(
     header = dashboardHeader(title = "ClimPACT"),
     sidebar = dashboardSidebar(
       sidebarMenu(
-        menuItem("Home", tabName = "home", icon = icon("sun")),
+        menuItem("Home", tabName = "home", icon = icon("sun")), #cloud-sun-rain when that icon is available
         menuItem("Process single station", tabName = "single", icon = icon("table")),
         menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
         menuItemOutput("griddedMenuItem"),

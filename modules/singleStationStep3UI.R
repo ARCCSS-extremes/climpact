@@ -7,29 +7,25 @@ singleStationStep3UI <- function(id) {
   ns <- NS(id)
   return(tagList(
     fluidRow(column(8,
-    conditionalPanel(
+    conditionalPanel(# show if no station data
     condition = "output.loadDataError != ''",
     ns = ns,
-    wellPanel(
-      HTML("<div class= 'alert alert-warning' role='alert'>
+      HTML("<div class= 'alert alert-info' role='alert'>
         <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-        <span class='sr-only'></span> Please load station data.</div>"
-      )
+        <span class='sr-only'>Info</span> Please load station data.</div>"
       )
     ),
-    conditionalPanel(
-      condition = "output.loadDataError == '' && output.qualityControlError != ''",
+    conditionalPanel(# show if station data, and quality control done and failed or quality control not done
+      condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError != '') || output.qcStatus != 'Done')",
       ns = ns,
-      wellPanel(
-        HTML("<div class= 'alert alert-warning' role='alert'>
-          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-          <span class='sr-only'></span>Please check data quality.</div>"
-        )
+      HTML("<div class= 'alert alert-info' role='alert'>
+        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+        <span class='sr-only'>Info</span> Please check data quality.</div>"
       )
     ),
     # # User specified parameters
-    conditionalPanel(
-      condition = "output.loadDataError == '' && output.qualityControlError == ''",
+    conditionalPanel(# show if quality control done and no errors
+      condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
         fluidRow(
           column(12,

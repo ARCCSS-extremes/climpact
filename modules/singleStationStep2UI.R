@@ -10,23 +10,24 @@ singleStationStep2UI <- function (id) {
       conditionalPanel(
         condition = "output.loadDataError != ''",
         ns = ns,
-        wellPanel(htmlOutput(ns("loadDataError")))
+        htmlOutput(ns("loadDataError"))
       ),
       conditionalPanel(
         condition = "output.loadDataError == ''",
         ns = ns,
         conditionalPanel(
-          condition = "output.qcStatus != 'Not Started'",
+          condition = "output.qcStatus == 'Done'",
           ns = ns,
-          slickROutput(ns("slickRQC"), width="900px")
-          # ,tags$script("$('#slickRQCMain').slick('slickGoTo', 1);")
+          htmlOutput(ns("qualityControlError")),
+          slickROutput(ns("slickRQC"), width = "850px")
         ),
-        wellPanel(actionButton(ns("doQualityControl"), "Check Data Quality"),
-          htmlOutput(ns("qualityControlError"))
+        conditionalPanel(
+          condition = "output.qcStatus != 'Done'",
+          ns = ns,
+          div(style = "margin-top: 3em; display: block;"),
+          actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-10x"))
         )
-      ),
-      br(),
-      actionButton(ns("btn_next_step_2"), label = "Next", icon = icon("chevron-circle-right"))
+      )
     ),
     column(4, class = "instructions",
       box(title = "Instructions", width = 12,
@@ -42,6 +43,17 @@ singleStationStep2UI <- function (id) {
         )
       )
     )
-    )
+    ),
+    fluidRow(
+          column(4, # left
+          ),
+          column(4, # right
+            div(align = "right",
+              actionBttn(ns("btn_next_step_2"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
+            )
+          ),
+          column(4, # under instructions
+          )
+        )
   ))
 }

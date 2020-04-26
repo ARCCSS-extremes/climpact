@@ -5,6 +5,7 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
 
   observeEvent(input$dataFile, {
     updateTextInput(session, "stationName", value = stationName())
+    singleStationState$isQCCompleted(FALSE)
   })
 
   # Validation, expression works, so we can reuse these elsewhere in the app

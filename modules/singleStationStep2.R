@@ -6,21 +6,27 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       watchPath <- singleStationState$outputFolders()$outqcdir
       imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
-    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    slickR(imgs, slideId = "slickRQCMain", height = 480, width = 800) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    slickR(imgs, slideId = "slickRQCMain", height = 600) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
     # runjs("alert('hi'); $('#slickRQCMain').slick('slickGoTo', 3);")
   })
 
   qcProgressStatus <- reactiveVal("Not Started")
   output$qcStatus <- reactive({
+    input$dataFile # trigger update
+    if (singleStationState$isQCCompleted() == "FALSE") {
+      qcProgressStatus("Not Started")
+    } else {
+      qcProgressStatus("Done")
+    }
     qcProgressStatus()
   })
 
   # Update UI with validation text
   output$loadDataError <- reactive({
-      errorDataFileNotLoaded <- HTML("<div class= 'alert alert-warning' role='alert'>",
+      errorDataFileNotLoaded <- HTML("<div class= 'alert alert-info' role='alert'>",
         "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>",
-        "<span class='sr-only'>Error:</span> Please load station data.</div>")
+        "<span class='sr-only'>Info</span> Please load station data.</div>")
       if (!is.null(input$dataFile)) {
         errorDataFileNotLoaded <- ""
       }
@@ -31,10 +37,11 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   qcZipLink <- reactiveVal("")
 
   output$qualityControlError <- reactive({
+    input$dataFile # trigger update
     errorHTML <- ""
     if (!singleStationState$isQCCompleted()) {
       # alert warning template
-      errorHTML <- HTML("<br /><div class= 'alert alert-warning' role='alert'>",
+      errorHTML <- HTML("<br /><div class= 'alert alert-info' role='alert'>",
         "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>",
         "<span class='sr-only'>Warning:</span> Please run quality control checks.</div>")
     } else {
@@ -115,13 +122,13 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       finally = {
         if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
         enable("doQualityControl")
-        qcProgressStatus("Done")
+        singleStationState$isQCCompleted(TRUE)
+        # qcProgressStatus("Done")
         if (!is.null(singleStationState) && !is.null(singleStationState$outputFolders())) {
           folderToZip(singleStationState$outputFolders()$outqcdir)
           pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
           qcZipLink(getLinkFromPath(pathToZipFile, "here"))
         }
-        singleStationState$isQCCompleted(TRUE)
       }
     )
     return(out)
@@ -141,6 +148,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   # ensure client-side javascript will inspect qcLink element
   outputOptions(output, "qcLink", suspendWhenHidden = FALSE)
   outputOptions(output, "qcStatus", suspendWhenHidden = FALSE)
+  outputOptions(output, "loadDataError", suspendWhenHidden = FALSE)
   outputOptions(output, "slickRQC", suspendWhenHidden = TRUE)
 
   observe(toggleState("btn_next_step_2", singleStationState$isQCCompleted() && singleStationState$qualityControlErrors() == ""))

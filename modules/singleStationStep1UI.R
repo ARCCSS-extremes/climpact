@@ -18,8 +18,7 @@ singleStationStep1UI <- function (id) {
       numericInput(ns("startYear"), "Base period start year:", 1971, min = 0),
       numericInput(ns("endYear"), "Base period end year:", 2000, min = 0),
       br(),
-      uiOutput(ns("fileUploaded")),
-      actionButton(ns("btn_next_step_1"), label = "Next", icon = icon("chevron-circle-right"))
+      uiOutput(ns("fileUploaded"))     
     ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,
@@ -40,6 +39,17 @@ singleStationStep1UI <- function (id) {
         HTML("Click the Next button or the tab labelled '2. Check' to proceed to the next step.")
       )
     )
-    )
+    ),
+    fluidRow(
+          column(4, # left
+          ),
+          column(4, # right
+            div(align = "right",
+              actionBttn(ns("btn_next_step_1"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
+            )
+          ),
+          column(4, # under instructions
+          )
+        )
   ))
 }
