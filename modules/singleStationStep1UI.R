@@ -18,7 +18,7 @@ singleStationStep1UI <- function (id) {
       numericInput(ns("startYear"), "Base period start year:", 1971, min = 0),
       numericInput(ns("endYear"), "Base period end year:", 2000, min = 0),
       br(),
-      uiOutput(ns("fileUploaded"))     
+      uiOutput(ns("fileUploaded"))
     ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,

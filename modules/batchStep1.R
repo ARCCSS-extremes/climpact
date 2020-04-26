@@ -125,12 +125,14 @@ batchStep1 <- function(input, output, session, climpactUI) {
   output$batchLink <- renderText({
     if (batchZipFileLink() != "") {
       if (isLocal) {
-        HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
+        HTML("<b>Batch output</b>",
+        "<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
       } else {
-        HTML("Batch output available: ", batchZipFileLink())
+        HTML("<b>Batch output</b>",
+        "<p>Batch output available: ", batchZipFileLink(), "</p>")
       }
     }
   })
-
+  outputOptions(output, "batchLink", suspendWhenHidden = FALSE)
   observe(toggleState("calculateBatchIndices", !is.null(input$batchMeta) && !is.null(input$batchData)))
 }

@@ -25,7 +25,7 @@ singleStationStep2UI <- function (id) {
           condition = "output.qcStatus != 'Done'",
           ns = ns,
           div(style = "margin-top: 3em; display: block;"),
-          actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
+          actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-3x"))
         )
       )
     ),
@@ -39,7 +39,11 @@ singleStationStep2UI <- function (id) {
         conditionalPanel(
           condition = "output.qcLink != ''",
           ns = ns,
-          uiOutput(ns("qcLink"))
+          HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+          </span><span class='sr-only'></span>"),
+          uiOutput(ns("qcLink")),
+          HTML("</div>")
         )
       )
     )
@@ -48,7 +52,7 @@ singleStationStep2UI <- function (id) {
           column(4, # left
           ),
           column(4, # right
-            div(align = "right",
+            div(align = "right", style = "padding-top: 1em;",
               actionBttn(ns("btn_next_step_2"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
             )
           ),

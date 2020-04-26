@@ -21,10 +21,13 @@ button i {
   vertical-align: middle;
 }
 
-button#ui-doQualityControl, button#ui-calculateIndices, button#ui-calculateSectorCorrelation {
+button#ui-doQualityControl, button#ui-calculateIndices, button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices {
   display: block; 
   margin: 0 auto;
   font-size: 2em;
+  margin-bottom: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 /* For disabled tabPanel */

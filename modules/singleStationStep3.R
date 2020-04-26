@@ -94,12 +94,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   output$indicesLink <- renderText({
     if (singleStationState$indexCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+        HTML("<b>Calculated Indices</b><br /><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<div class= 'alert alert-info' role='alert'>
-                    <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
-                    </span><span class='sr-only'></span>",
-                    " Calculated Indices available ", indicesZipLink(), "</div>")
+        HTML("<b>Calculated Indices</b><br /><p>Calculated Indices available ", indicesZipLink(), "</p>")
       }
     }
   })

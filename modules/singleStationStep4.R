@@ -68,12 +68,9 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
   output$sectorCorrelationLink <- renderText({
     if (correlationCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+        HTML("<b>Correlation output</b><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<div class= 'alert alert-info' role='alert'>
-              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
-              </span><span class='sr-only'></span>",
-              " Correlation output files ", corrZipLink, "</div>")
+        HTML("<b>Correlation output</b><p>Correlation output files ", corrZipLink, "</p>")
       }
     }
   })
@@ -82,6 +79,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
 
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
   outputOptions(output, "sectorCorrelationError", suspendWhenHidden = FALSE)
+  outputOptions(output, "sectorCorrelationLink", suspendWhenHidden = FALSE)
   outputOptions(output, "slickRCorr", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
 
 }

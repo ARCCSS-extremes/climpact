@@ -60,8 +60,16 @@ singleStationStep4UI <- function(id) {
          HTML("<p>Once you have reviewed the above parameters, select the 'Calculate Correlations' button.<br />",
          "A window and progress bar will appear providing an indication of progess as correlations proceed.</p>"),
          tags$p("Once processing is complete you can view the plots generated",
-         "and you will be provided with a link to all the correlation outputs that ClimPACT has produced."),
-        uiOutput(ns("sectorCorrelationLink"))
+         "and you will be provided with a link to all the correlation outputs that ClimPACT has produced."),        
+        conditionalPanel(
+            condition = "output.sectorCorrelationLink != ''",
+            ns = ns,
+            HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+          </span><span class='sr-only'></span>"),
+          uiOutput(ns("sectorCorrelationLink")),
+          HTML("</div>")
+        )
        )
     )
     )

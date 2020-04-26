@@ -64,7 +64,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
 
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
 
-      HTML("<h4>Evaluate Data Quality</h4>",
+      HTML("<b>Evaluate Data Quality</b>",
         "<p>Please view the quality control output described below and carefully evaluate before continuing.",
         "<br />Refer to ", appendixCLink, " of the ", climpactUI$userGuideLink, " for help.<br />",
         localOrRemoteLink(localLink, remoteLink), "</p>")

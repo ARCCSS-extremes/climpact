@@ -133,7 +133,10 @@ singleStationStep3UI <- function(id) {
           conditionalPanel(
             condition = "output.indexCalculationError == ''",
             ns = ns,
-            uiOutput(ns("indicesLink")),
+            HTML("<div class= 'alert alert-info' role='alert'>
+                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+                </span><span class='sr-only'></span>"),
+                uiOutput(ns("indicesLink")),
             tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
               tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
               tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
@@ -141,7 +144,8 @@ singleStationStep3UI <- function(id) {
               tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")),
               tags$li(HTML("If you have chosen to calculate and plot correlations ",
                 "between annual sector data you supply and the indices ClimPACT has calculated, ",
-                "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
+                "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."))),
+            HTML("</div>")
           ),
          h4("Next"),
          tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
