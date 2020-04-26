@@ -25,7 +25,7 @@ singleStationStep2UI <- function (id) {
           condition = "output.qcStatus != 'Done'",
           ns = ns,
           div(style = "margin-top: 3em; display: block;"),
-          actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-10x"))
+          actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
         )
       )
     ),

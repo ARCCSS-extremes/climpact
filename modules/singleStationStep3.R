@@ -6,8 +6,8 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
       watchPath <- singleStationState$outputFolders()$outplotsdir
       imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
-    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    main <- slickR(imgs, slideId = "slickRIndicesMain", height = 600, width = 900)
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    main <- slickR(imgs, slideId = "slickRIndicesMain", height = 600)
     nav <-  (slickR(imgs, slideId = "slickRIndicesNav", height = 100) + bottom_opts)
     main %synch% nav
   })
@@ -96,7 +96,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
       if (isLocal) {
         HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<div class= 'alert alert-success' role='alert'>
+        HTML("<div class= 'alert alert-info' role='alert'>
                     <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
                     </span><span class='sr-only'></span>",
                     " Calculated Indices available ", indicesZipLink(), "</div>")

@@ -25,7 +25,7 @@ singleStationStep3UI <- function(id) {
     ),
     # # User specified parameters
     conditionalPanel(# show if quality control done and no errors
-      condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
+      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
         fluidRow(
           column(12,
@@ -76,26 +76,21 @@ singleStationStep3UI <- function(id) {
               numericInput(ns("custThreshold"), "Threshold:", 0)
             )
           )
+        ),
+        fluidRow(
+          column(12,
+            div(style = "margin-top: 3em; display: block;"),
+            actionBttn(ns("calculateIndices"), label = "Calculate Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
+            textOutput(ns("indexCalculationError"))
+          )
         )
       ), # Results below
       conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
-         fluidRow(
-          column(12,
-        slickROutput(ns("slickRIndices"), width="900px"))),
         fluidRow(
-          column(12,
-        uiOutput(ns("indicesLink")),
-        tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
-          tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
-          tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
-          tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.")),
-          tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")),
-          tags$li(HTML("If you have chosen to calculate and plot correlations ",
-            "between annual sector data you supply and the indices ClimPACT has calculated, ",
-            "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
-          ))
+          column(12, slickROutput(ns("slickRIndices"), width="850px"))
+        )
       )
      ), # Right hand column below
      column(4, class = "instructions",
@@ -134,22 +129,35 @@ singleStationStep3UI <- function(id) {
          HTML("<p>Once you have reviewed the above parameters, select the 'Calculate Indices' button.<br />",
          "A window and progress bar will appear providing an indication of progess as calculations proceed.</p>"),
          tags$p("Once processing is complete you can view the plots generated",
-         "and you will be provided with a link to all the outputs that ClimPACT has produced."),
+         "and you will be provided with a link to all the outputs that ClimPACT has produced."), # Results below
+          conditionalPanel(
+            condition = "output.indexCalculationError == ''",
+            ns = ns,
+            uiOutput(ns("indicesLink")),
+            tags$ul(tags$li(HTML("The <i>plots</i> subdirectory contains an image file for each index.")),
+              tags$li(HTML("The <i>indices</i> subdirectory contains a .csv file with the plotted values for each index")),
+              tags$li(HTML("The <i>trend</i> subdirectory contains a .csv file containing linear trend information for each index.")),
+              tags$li(HTML("The <i>thres</i> subdirectory contains two .csv files containing threshold data calculated for various variables.")),
+              tags$li(HTML("The <i>qc</i> subdirectory contains quality control diagnostic information.")),
+              tags$li(HTML("If you have chosen to calculate and plot correlations ",
+                "between annual sector data you supply and the indices ClimPACT has calculated, ",
+                "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations.")))
+          ),
          h4("Next"),
          tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
        )
     )
     ),
-    fluidRow(column(12,
-        wellPanel(
-        conditionalPanel(
-          condition = "output.qualityControlError == ''",
-          ns = ns,
-          actionButton(ns("calculateIndices"), "Calculate Indices"),
-          textOutput(ns("indexCalculationError"))
-        ),
-        actionButton(ns("btn_next_step_3"), label = "Next", icon = icon("chevron-circle-right"))
+    fluidRow(
+      column(4, # left
+      ),
+      column(4, # right
+        div(align = "right",
+          actionBttn(ns("btn_next_step_3"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
+        )
+      ),
+      column(4, # under instructions
       )
-    ))
+    )
   ))
 }

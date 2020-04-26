@@ -29,18 +29,16 @@ singleStationStep4UI <- function(id) {
         )
     ),
     conditionalPanel(
-        condition = "output.sectorCorrelationError== ''",
-        ns = ns,
-        slickROutput(ns("slickRCorr"), width="900px"),
-        uiOutput(ns("sectorCorrelationLink"))
-    ),
-    conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
-        wellPanel(
-            actionButton(ns("calculateSectorCorrelation"), "Calculate Correlations"),
-            textOutput(ns("sectorCorrelationError"))
-        )
+        div(style = "margin-top: 3em; display: block;"),
+        actionBttn(ns("calculateSectorCorrelation"), label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
+        textOutput(ns("sectorCorrelationError"))
+    ),
+    conditionalPanel(
+        condition = "output.sectorCorrelationError== ''",
+        ns = ns,
+        slickROutput(ns("slickRCorr"), width="900px")
     )
   ), # Right hand column below
      column(4, class = "instructions",
@@ -62,7 +60,8 @@ singleStationStep4UI <- function(id) {
          HTML("<p>Once you have reviewed the above parameters, select the 'Calculate Correlations' button.<br />",
          "A window and progress bar will appear providing an indication of progess as correlations proceed.</p>"),
          tags$p("Once processing is complete you can view the plots generated",
-         "and you will be provided with a link to all the correlation outputs that ClimPACT has produced.")
+         "and you will be provided with a link to all the correlation outputs that ClimPACT has produced."),
+        uiOutput(ns("sectorCorrelationLink"))
        )
     )
     )

@@ -21,11 +21,11 @@ button i {
   vertical-align: middle;
 }
 
-button#ui-doQualityControl {
+button#ui-doQualityControl, button#ui-calculateIndices, button#ui-calculateSectorCorrelation {
   display: block; 
   margin: 0 auto;
+  font-size: 2em;
 }
-
 
 /* For disabled tabPanel */
 .nav li a.disabled {

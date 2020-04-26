@@ -41,15 +41,15 @@ singleStationStep1UI <- function (id) {
     )
     ),
     fluidRow(
-          column(4, # left
-          ),
-          column(4, # right
-            div(align = "right",
-              actionBttn(ns("btn_next_step_1"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
-            )
-          ),
-          column(4, # under instructions
-          )
+      column(4, # left
+      ),
+      column(4, # right
+        div(align = "right",
+          actionBttn(ns("btn_next_step_1"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
         )
+      ),
+      column(4, # under instructions
+      )
+    )
   ))
 }

@@ -6,8 +6,8 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       watchPath <- singleStationState$outputFolders()$corrdir
       imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
     }
-    bottom_opts <- settings(arrows = FALSE, slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    slickR(imgs, slideId = "slickRCorrMain", height = 600, width = 900) %synch% (slickR(imgs, slideId = "slickRCorrNav", height = 100) + bottom_opts)
+    bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    slickR(imgs, slideId = "slickRCorrMain", height = 600) %synch% (slickR(imgs, slideId = "slickRCorrNav", height = 100) + bottom_opts)
   })
 
   correlationCalculationStatus <- reactiveVal("Not Started")
@@ -68,9 +68,12 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
   output$sectorCorrelationLink <- renderText({
     if (correlationCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML("<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
+        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<p>Correlation output available ", corrZipLink, "</p>")
+        HTML("<div class= 'alert alert-info' role='alert'>
+              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+              </span><span class='sr-only'></span>",
+              " Correlation output files ", corrZipLink, "</div>")
       }
     }
   })
