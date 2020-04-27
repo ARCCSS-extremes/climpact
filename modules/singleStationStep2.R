@@ -57,10 +57,8 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
 
   output$qcLink <- renderText({
     if (singleStationState$isQCCompleted()) {
-      localLink <- paste0("Quality control directory: <b>", folderToZip(), "</b>")
-      remoteLink <- paste0("<div class= 'alert alert-info' role='alert'>",
-        "<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span><span class='sr-only'></span>",
-        " Quality control files: ", qcZipLink(), "</div>")
+      localLink <- paste0("<b> Quality control directory: ", folderToZip(), "</b>")
+      remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "<\b>")
 
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
 

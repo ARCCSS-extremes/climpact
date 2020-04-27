@@ -70,7 +70,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       if (isLocal) {
         HTML("<b>Correlation output</b><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
       } else {
-        HTML("<b>Correlation output</b><p>Correlation output files ", corrZipLink, "</p>")
+        HTML("<b>Correlation output</b><p>Correlation output files ", corrZipLink(), "</p>")
       }
     }
   })
