@@ -17,18 +17,19 @@ server <- function(input, output, session) {
   stationStep2 <- callModule(singleStationStep2, climpactUI$ns, session, climpactUI, stationStep1$singleStationState)
   stationStep3 <- callModule(singleStationStep3, climpactUI$ns, session, climpactUI, stationStep2$singleStationState)
   stationStep4 <- callModule(singleStationStep4, climpactUI$ns, climpactUI, stationStep3$singleStationState)
-  griddedStep1 <- callModule(griddedStep1, climpactUI$ns, climpactUI)
-  griddedStep2 <- callModule(griddedStep2, climpactUI$ns, climpactUI)
   batchStep1   <- callModule(batchStep1, climpactUI$ns, climpactUI)
-
-  output$griddedMenuItem <- renderMenu({
-    if (isLocal) {
-      menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
-        menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
-        menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
-      )
-    }
-  })
+  if (isLocal) {
+    griddedStep1 <- callModule(griddedStep1, climpactUI$ns, climpactUI)
+    griddedStep2 <- callModule(griddedStep2, climpactUI$ns, climpactUI)
+    output$griddedMenuItem <- renderMenu({
+      if (isLocal) {
+        menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
+          menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
+          menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
+        )
+      }
+    })
+  }
 
   withConsoleRedirect <- function(containerId, expr) {
     # Change type="output" to type="message" to catch stderr

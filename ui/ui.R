@@ -34,13 +34,13 @@ ui <- tagList(
         tabItem(
           tabName = "gridded-indices",
           box(title = "Calculate Gridded Indices", status = "primary", width = 12, solidHeader = TRUE,
-            griddedStep1UI("ui")
+            if (isLocal) { griddedStep1UI("ui") }
           )
         ),
         tabItem(
           tabName = "gridded-thresholds",
           box(title = "Calculate Gridded Thresholds", status = "primary", width = 12, solidHeader = TRUE,
-            griddedStep2UI("ui")
+            if (isLocal) { griddedStep2UI("ui") }
           )
         )
       )
