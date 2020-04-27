@@ -7,26 +7,28 @@ singleStationStep3UI <- function(id) {
   ns <- NS(id)
   return(tagList(
     fluidRow(column(8,
-    conditionalPanel(# show if no station data
-    condition = "output.loadDataError != ''",
-    ns = ns,
-      HTML("<div class= 'alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-        <span class='sr-only'>Info</span> Please load station data.</div>"
-      )
-    ),
-    conditionalPanel(# show if station data, and quality control done and failed or quality control not done
-      condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError != '') || output.qcStatus != 'Done')",
+      conditionalPanel(# show if no station data
+      condition = "output.loadDataError != ''",
       ns = ns,
-      HTML("<div class= 'alert alert-info' role='alert'>
-        <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-        <span class='sr-only'>Info</span> Please check data quality.</div>"
-      )
-    ),
-    # # User specified parameters
+        HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+          <span class='sr-only'>Info</span> Please load station data.</div>"
+        )
+      ),
+      conditionalPanel(# show if station data, and quality control done and failed or quality control not done
+        condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError != '') || output.qcStatus != 'Done')",
+        ns = ns,
+        HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+          <span class='sr-only'>Info</span> Please check data quality.</div>"
+        )
+      ),
+      # # User specified parameters
     conditionalPanel(# show if quality control done and no errors
       condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
+      h4("3. Calculate and plot indices"),
+      wellPanel(
         fluidRow(
           column(12,
             textInput(ns("plotTitle"), "Plot title:")
@@ -76,7 +78,11 @@ singleStationStep3UI <- function(id) {
               numericInput(ns("custThreshold"), "Threshold:", 0)
             )
           )
-        ),
+        )
+      )), #wellPanel + close out conditionalPanel
+      conditionalPanel(# show if quality control done and no errors (as for panel above, but splitting into two for layout elements eg wellPanel)
+      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
+      ns = ns,
         fluidRow(
           column(12,
             div(style = "margin-top: 3em; display: block;"),
@@ -88,17 +94,22 @@ singleStationStep3UI <- function(id) {
       conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
+        div(
+          h4("Plots of calculated indices"),
+          p("Plots are displayed below and available for download on this page using the link in the blue info box under Instructions.")
+        ),
         fluidRow(
-          column(12, slickROutput(ns("slickRIndices"), width="850px"))
+          column(12, slickROutput(ns("slickRIndices"), width = "850px"))
         )
       )
      ), # Right hand column below
      column(4, class = "instructions",
       box(title = "Instructions", width = 12,
+        h4("Plot title"),
         HTML("Enter a plot title. This will be included on all plots generated.<br />",
           " ClimPACT will generate a title for you automatically ",
           "based on the station name and coordinates provided when loading data, but you can override this here."),
-        h4("User Parameters"),
+        h4("User parameters"),
           HTML("You may also change the following default parameters that relate to several indices (see ",
           "<a href='user_guide/ClimPACT_user_guide.htm#appendixA' target='_blank'>Appendix A</a> for index definitions):"),
           tags$ul(tags$li(HTML("<b>WSDId Days</b> sets the number of days which need to occur consecutively ",
@@ -156,7 +167,7 @@ singleStationStep3UI <- function(id) {
       column(4, # left
       ),
       column(4, # right
-        div(align = "right",
+        div(align = "right", style = "padding-top: 2em;",
           actionBttn(ns("btn_next_step_3"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
         )
       ),

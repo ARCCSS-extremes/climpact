@@ -31,8 +31,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
   output$loadParamHelpText <- renderUI({
       indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#calculate_indices> Section 3.3</a>")
-      HTML(paste0("<p>The following fields change user-definable parameters in several ClimPACT indices. Leave as default unless you are interested
-                  in these indices. See ", indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
+      HTML(paste0("<p>The following fields change user-definable parameters in several ClimPACT indices.",
+                  "<br />Leave as default unless you are interested in these indices. See ",
+                  indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
   })
 
   # Index calculation has been requested by the user.

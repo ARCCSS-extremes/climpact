@@ -7,18 +7,21 @@ singleStationStep1UI <- function (id) {
   ns <- NS(id)
   return(tagList(
     fluidRow(column(8,
-      h4("Station data"),
-      HTML(climpactUI$sampleText,
-          "<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a></p>"),
-      fileInput(ns("dataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
-      h4("Metadata"),
-      textInput(ns("stationName"), "Station name (used in output file names):"),
-      numericInput(ns("stationLat"), "Latitude (decimal degrees eg -40.992):", 0, min = -90, max = 90),
-      numericInput(ns("stationLon"), "Longitude (decimal degrees eg 148.346):", 0, min = -180, max = 180),
-      numericInput(ns("startYear"), "Base period start year:", 1971, min = 0),
-      numericInput(ns("endYear"), "Base period end year:", 2000, min = 0),
-      br(),
-      uiOutput(ns("fileUploaded"))
+      h4("1. Load station data and provide metadata"),
+      wellPanel(
+        h4("Station data"),
+        HTML(climpactUI$sampleText,
+            "<a target=\"_blank\" href=sample_data/sydney_observatory_hill_1936-2015.txt> sydney_observatory_hill_1936.txt</a></p>"),
+        fileInput(ns("dataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+        h4("Metadata"),
+        textInput(ns("stationName"), "Station name (used in output file names):"),
+        numericInput(ns("stationLat"), "Latitude (decimal degrees eg -40.992):", 0, min = -90, max = 90),
+        numericInput(ns("stationLon"), "Longitude (decimal degrees eg 148.346):", 0, min = -180, max = 180),
+        numericInput(ns("startYear"), "Base period start year:", 1971, min = 0),
+        numericInput(ns("endYear"), "Base period end year:", 2000, min = 0),
+        br(),
+        uiOutput(ns("fileUploaded"))
+      )
     ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,

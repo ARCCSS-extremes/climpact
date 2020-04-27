@@ -21,13 +21,20 @@ button i {
   vertical-align: middle;
 }
 
-button#ui-doQualityControl, button#ui-calculateIndices, button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices {
+/* Centre and give a little breathing room to buttons used for main activities */
+button#ui-doQualityControl, button#ui-calculateIndices, 
+button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices {
   display: block; 
   margin: 0 auto;
   font-size: 2em;
   margin-bottom: 1em;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+}
+
+/* prevent actionBttn button from increasing in size when disabled */
+.bttn[disabled] {
+  transform: scale(1);
 }
 
 /* For disabled tabPanel */

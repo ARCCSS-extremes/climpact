@@ -16,16 +16,18 @@ singleStationStep2UI <- function (id) {
         condition = "output.loadDataError == ''",
         ns = ns,
         conditionalPanel(
-          condition = "output.qcStatus == 'Done'",
-          ns = ns,
-          htmlOutput(ns("qualityControlError")),
-          slickROutput(ns("slickRQC"), width = "850px")
-        ),
-        conditionalPanel(
           condition = "output.qcStatus != 'Done'",
           ns = ns,
           div(style = "margin-top: 3em; display: block;"),
           actionBttn(ns("doQualityControl"), label = " Check Data Quality", style = "jelly", color = "warning", icon = icon("play-circle", "fa-3x"))
+        ),
+        conditionalPanel(
+          condition = "output.qcStatus == 'Done'",
+          ns = ns,
+          h4("2. Check data quality"),
+          div("Quality control plots are displayed below and available for download on this page using the link in the blue info box under Instructions."),
+          htmlOutput(ns("qualityControlError")),
+          slickROutput(ns("slickRQC"), width = "850px")
         )
       )
     ),
@@ -52,7 +54,7 @@ singleStationStep2UI <- function (id) {
           column(4, # left
           ),
           column(4, # right
-            div(align = "right", style = "padding-top: 1em;",
+            div(align = "right", style = "padding-top: 2em;",
               actionBttn(ns("btn_next_step_2"), label = "Next", style = "jelly", color = "primary", icon = icon("chevron-circle-right"))
             )
           ),

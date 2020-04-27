@@ -7,37 +7,60 @@ singleStationStep4UI <- function(id) {
   ns <- NS(id)
   return(tagList(
     fluidRow(column(8,
-    conditionalPanel(
-      condition = "output.indexCalculationError == ''",
+    conditionalPanel(# show if no station data
+      condition = "output.loadDataError != ''",
       ns = ns,
-      h4("Sector data"),
-      fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
-      HTML(climpactUI$sampleText,
-        "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>wheat_yield_nsw_1922-1999.csv</a>"),    
-      h4("Plot attributes"),
-      textInput(ns("sectorPlotTitle"), "Title:"),
-      textInput(ns("y_axis_label"), "Label for y axis:"),
-      checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
+        HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+          <span class='sr-only'>Info</span> Please load station data.</div>"
+        )
+      ),
+      conditionalPanel(# show if station data, and quality control done and failed or quality control not done
+        condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError != '') || output.qcStatus != 'Done')",
+        ns = ns,
+        HTML("<div class= 'alert alert-info' role='alert'>
+          <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+          <span class='sr-only'>Info</span> Please check data quality.</div>"
+        )
+      ),
+      conditionalPanel(
+        condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError == '')) && output.indexCalculationError != ''",
+        ns = ns,
+        HTML("<div class= 'alert alert-info' role='alert'>
+                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
+                <span class='sr-only'></span> Please calculate climate indices.</div>")
     ),
     conditionalPanel(
-        condition = "output.indexCalculationError != ''",
-        ns = ns,
-        wellPanel(
-          HTML("<div class= 'alert alert-warning' role='alert'>
-                <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
-                <span class='sr-only'></span> Please complete previous step - Calculate Climate Indices.</div>")
-        )
+      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationError == ''",
+      ns = ns,
+      h4("4. Calculate and plot sector correlations"),
+      wellPanel(
+        h4("Sector data"),
+        fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+        HTML(climpactUI$sampleText,
+          "<a target=\"_blank\" href=sample_data/wheat_yield_nsw_1922-1999.csv>wheat_yield_nsw_1922-1999.csv</a>"),    
+        h4("Plot attributes"),
+        textInput(ns("sectorPlotTitle"), "Title:"),
+        textInput(ns("y_axis_label"), "Label for y axis:"),
+        checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
+      )
     ),
     conditionalPanel(
         condition = "output.indexCalculationError == ''",
         ns = ns,
         div(style = "margin-top: 3em; display: block;"),
-        actionBttn(ns("calculateSectorCorrelation"), label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
+        actionBttn(ns("calculateSectorCorrelation"),
+                  label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
         textOutput(ns("sectorCorrelationError"))
     ),
     conditionalPanel(
         condition = "output.sectorCorrelationError== ''",
         ns = ns,
+        div(
+          h4("Plots of calculated indices"),
+          p("Sector correlation plots are displayed below and available for download
+           on this page using the link in the blue info box under Instructions.")
+        ),
         slickROutput(ns("slickRCorr"), width="900px")
     )
   ), # Right hand column below

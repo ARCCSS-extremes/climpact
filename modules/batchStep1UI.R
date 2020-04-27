@@ -7,27 +7,30 @@ batchStep1UI <- function(id) {
   ns <- NS(id)
   return(tagList(
     column(8,
+      h4("Load station data and provide metadata"),
+      wellPanel(
       div(HTML("This page allows you to calculate the indices for multiple station text files.<br />",
           "Any errors will be reported after processing. This process can take a long time (~1 minute per file).")),
-          h4("Metadata"),
-          fileInput(ns("batchMeta"), NULL, accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt")),
-          h4("Station data"),
-          fileInput(ns("batchData"),
-            NULL,
-            accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
-            placeholder="Select or drop multiple station files",
-            multiple = TRUE),
-          h4("Parameters"),
-            numericInput(ns("startYearBatch"), "Base period start year:", 1970, min = 0),
-            numericInput(ns("endYearBatch"), "Base period end year:", 2010, min = 0),
-            conditionalPanel(
-              condition = paste0(tolower(isLocal)),
-              ns = ns,
-              numericInput(ns("nCoresBatch"),
-                paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
-                value = 1, min = 1, max = detectCores())
-            ),
-            actionBttn(ns("calculateBatchIndices"), label = "Calculate Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
+      h4("Metadata"),
+      fileInput(ns("batchMeta"), NULL, accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt")),
+      h4("Station data"),
+      fileInput(ns("batchData"),
+        NULL,
+        accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
+        placeholder="Select or drop multiple station files",
+        multiple = TRUE),
+      h4("Parameters"),
+        numericInput(ns("startYearBatch"), "Base period start year:", 1970, min = 0),
+        numericInput(ns("endYearBatch"), "Base period end year:", 2010, min = 0),
+        conditionalPanel(
+          condition = paste0(tolower(isLocal)),
+          ns = ns,
+          numericInput(ns("nCoresBatch"),
+            paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
+            value = 1, min = 1, max = detectCores())
+        )
+      ),
+      actionBttn(ns("calculateBatchIndices"), label = "Calculate Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
     ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,
