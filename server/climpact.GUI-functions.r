@@ -117,7 +117,8 @@ package.check <- function() {
   packages <- c("abind", "bitops", "Rcpp", "caTools", "PCICt", "SPEI", "climdex.pcic",
                 "ncdf4", "snow", "udunits2", "functional", "proj4", "foreach", "doParallel",
                 "doSNOW", "zoo", "zyp", "tcltk2", "shiny", "shinythemes", "markdown", "servr",
-                "dplyr", "corrplot", "ggplot2", "shinyjs", "slickR")
+                "dplyr", "corrplot", "ggplot2", "shinyjs", "slickR", "shinydashboard", "shinythemes",
+                "shinyBS", "shinyWidgets")
   new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
   # Install/update packages needed for ClimPACT
