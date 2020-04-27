@@ -92,15 +92,15 @@ qc_and_calculateIndices <- function(progress, prog_int, batch_metadata, file.num
     print(qcResult$errors)
     return(qcResult$errors)
   }
-  params <- climdexInputParams(wsdi_ud <- batch_metadata$wsdin[file.number],
-                                csdi_ud <- batch_metadata$csdin[file.number],
-                                rx_ud <- batch_metadata$rxnday[file.number],
-                                txtn_ud <- batch_metadata$txtn[file.number],
-                                Tb_HDD <- batch_metadata$Tb_HDD[file.number],
-                                Tb_CDD <- batch_metadata$Tb_CDD[file.number],
-                                Tb_GDD <- batch_metadata$Tb_GDD[file.number],
-                                rnnmm_ud <- batch_metadata$rnnmm[file.number],
-                                custom_SPEI <- batch_metadata$SPEI[file.number]
+  params <- climdexInputParams(wsdi_ud      = batch_metadata$wsdin[file.number],
+                                csdi_ud     = batch_metadata$csdin[file.number],
+                                rx_ud       = batch_metadata$rxnday[file.number],
+                                txtn_ud     = batch_metadata$txtn[file.number],
+                                Tb_HDD      = batch_metadata$Tb_HDD[file.number],
+                                Tb_CDD      = batch_metadata$Tb_CDD[file.number],
+                                Tb_GDD      = batch_metadata$Tb_GDD[file.number],
+                                rnnmm_ud    = batch_metadata$rnnmm[file.number],
+                                custom_SPEI = batch_metadata$SPEI[file.number]
                               )
 
   # title.station <- station_metadata$title.station

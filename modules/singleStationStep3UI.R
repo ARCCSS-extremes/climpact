@@ -53,7 +53,7 @@ singleStationStep3UI <- function(id) {
           column(4,
             numericInput(ns("hdd"), "Base temperature for HDDheat (°C):", 18),
             bsTooltip(id = paste0(id, "-", "hdd"), title = "HDDheat: Heating Degree Days", placement = "left", trigger = "hover"),
-            numericInput(ns("cdd"), "Base temperature for CDDheat (°C):", 18),
+            numericInput(ns("cdd"), "Base temperature for CDDcold (°C):", 18),
             bsTooltip(id = paste0(id, "-", "cdd"), title = "CDDcold: Cooling Degree Days", placement = "left", trigger = "hover"),
             numericInput(ns("gdd"), "Base temperature for GDDgrow (°C):", 10),
             bsTooltip(id = paste0(id, "-", "gdd"), title = "GDDgrow: Growing Degree Days", placement = "left", trigger = "hover"),

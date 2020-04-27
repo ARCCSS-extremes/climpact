@@ -55,19 +55,19 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
     disable("calculateIndices")
 
-    params <- climdexInputParams(wsdi_ud <- input$wsdin,
-                                  csdi_ud <- input$csdin,
-                                  rx_ud <- input$rxnday,
-                                  txtn_ud <- input$txtn,
-                                  Tb_HDD <- input$hdd,
-                                  Tb_CDD <- input$cdd,
-                                  Tb_GDD <- input$gdd,
-                                  rnnmm_ud <- input$rnnmm,
-                                  custom_SPEI <- input$spei,
-                                  var.choice <- input$custVariable,
-                                  op.choice <- input$custOperation,
-                                  constant.choice <- input$custThreshold
-                                )
+    params <- climdexInputParams(wsdi_ud          = input$wsdin,
+                                  csdi_ud         = input$csdin,
+                                  rx_ud           = input$rxnday,
+                                  txtn_ud         = input$txtn,
+                                  Tb_HDD          = input$hdd,
+                                  Tb_CDD          = input$cdd,
+                                  Tb_GDD          = input$gdd,
+                                  rnnmm_ud        = input$rnnmm,
+                                  custom_SPEI     = input$spei,
+                                  var.choice      = input$custVariable,
+                                  op.choice       = input$custOperation,
+                                  constant.choice = input$custThreshold
+                                  )
     singleStationState$climdexInputParams(params)
 
     progress <- shiny::Progress$new()

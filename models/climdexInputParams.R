@@ -7,10 +7,10 @@ new_climdexInputParams <- function(wsdi_ud = double(),
                                     csdi_ud = double(),
                                     rx_ud = double(),
                                     txtn_ud = double(),
-                                    rnnmm_ud = double(),
                                     Tb_HDD = double(),
                                     Tb_CDD = double(),
                                     Tb_GDD = double(),
+                                    rnnmm_ud = double(),
                                     custom_SPEI = double(),
                                     var.choice = character(),
                                     op.choice = character(),
@@ -20,10 +20,10 @@ new_climdexInputParams <- function(wsdi_ud = double(),
   stopifnot(is.double(csdi_ud))
   stopifnot(is.double(rx_ud))
   stopifnot(is.double(txtn_ud))
-  stopifnot(is.double(rnnmm_ud))
   stopifnot(is.double(Tb_HDD))
   stopifnot(is.double(Tb_CDD))
   stopifnot(is.double(Tb_GDD))
+  stopifnot(is.double(rnnmm_ud))
   stopifnot(is.double(custom_SPEI))
   stopifnot(is.character(var.choice))
   stopifnot(is.character(op.choice))
@@ -33,10 +33,10 @@ new_climdexInputParams <- function(wsdi_ud = double(),
                           csdi_ud = csdi_ud,
                           rx_ud = rx_ud,
                           txtn_ud = txtn_ud,
-                          rnnmm_ud = rnnmm_ud,
                           Tb_HDD = Tb_HDD,
                           Tb_CDD = Tb_CDD,
                           Tb_GDD = Tb_GDD,
+                          rnnmm_ud = rnnmm_ud,
                           custom_SPEI = custom_SPEI,
                           var.choice = var.choice,
                           op.choice = op.choice,
@@ -92,10 +92,10 @@ validate_climdexInputParams <- function(p) {
 #' @param   csdi_ud         double
 #' @param   rx_ud           double
 #' @param   txtn_ud         double
-#' @param   rnnmm_ud        double
 #' @param   Tb_HDD          double
 #' @param   Tb_CDD          double
 #' @param   Tb_GDD          double
+#' @param   rnnmm_ud        double
 #' @param   custom_SPEI     double
 #' @param   var.choice      character
 #' @param   op.choice       character
@@ -106,10 +106,10 @@ climdexInputParams <- function(wsdi_ud = double(),
                                 csdi_ud = double(),
                                 rx_ud = double(),
                                 txtn_ud = double(),
-                                rnnmm_ud = double(),
                                 Tb_HDD = double(),
                                 Tb_CDD = double(),
                                 Tb_GDD = double(),
+                                rnnmm_ud = double(),
                                 custom_SPEI = double(),
                                 var.choice = "",
                                 op.choice = "",
@@ -118,16 +118,15 @@ climdexInputParams <- function(wsdi_ud = double(),
   csdi_ud <- as.double(csdi_ud)
   rx_ud <- as.double(rx_ud)
   txtn_ud <- as.double(txtn_ud)
-  rnnmm_ud <- as.double(rnnmm_ud)
   Tb_HDD <- as.double(Tb_HDD)
   Tb_CDD <- as.double(Tb_CDD)
   Tb_GDD <- as.double(Tb_GDD)
+  rnnmm_ud <- as.double(rnnmm_ud)
   custom_SPEI <- as.double(custom_SPEI)
 
-  p <- new_climdexInputParams(wsdi_ud, csdi_ud, rx_ud,
-                              txtn_ud, rnnmm_ud,
+  p <- new_climdexInputParams(wsdi_ud, csdi_ud, rx_ud, txtn_ud,
                               Tb_HDD, Tb_CDD, Tb_GDD,
-                              custom_SPEI,
+                              rnnmm_ud, custom_SPEI,
                               var.choice, op.choice, constant.choice)
   validate_climdexInputParams(p)
 }
