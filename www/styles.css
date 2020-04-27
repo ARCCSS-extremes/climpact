@@ -23,7 +23,8 @@ button i {
 
 /* Centre and give a little breathing room to buttons used for main activities */
 button#ui-doQualityControl, button#ui-calculateIndices, 
-button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices {
+button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices,
+button#ui-calculateGriddedIndices, button#ui-calculateGriddedThresholds {
   display: block; 
   margin: 0 auto;
   font-size: 2em;

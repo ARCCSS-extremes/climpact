@@ -37,12 +37,11 @@ griddedStep2UI <- function(id) {
           numericInput(ns("nCoresThresh"),
             paste0("Number of cores to use (your computer has ", detectCores(), " cores):"), value = 1, min = 1, max = detectCores())
         ),
-        h4("5. Calculate"),
-        wellPanel(
-          actionButton(ns("calculateGriddedThresholds"), "Calculate NetCDF Thresholds"),
-          textOutput(ns("ncPrintThresh")),
-          textOutput(ns("ncGriddedThreshDone"))
-        )
+        div(style = "margin-top: 3em; display: block;"),
+        actionBttn(ns("calculateGriddedThresholds"),
+        label = "Calculate NetCDF Thresholds", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
+        textOutput(ns("ncPrintThresh")),
+        textOutput(ns("ncGriddedThreshDone"))
       ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,

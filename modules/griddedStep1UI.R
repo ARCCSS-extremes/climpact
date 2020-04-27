@@ -49,12 +49,11 @@ griddedStep1UI <- function(id) {
                 choices=list("Perkins & Alexander (2013)" = "PA13", "Nairn & Fawcett (2013)" = "NF13"), selected = 1),
               textInput(ns("maxVals"), "Number of data values to process at once (do not change unless you know what you are doing):", value = 10)
             ),
-            h4("5. Calculate"),
-            wellPanel(
-              actionButton(ns("calculateGriddedIndices"), "Calculate NetCDF Indices"),
-              textOutput(ns("ncPrint")),
-              textOutput(ns("ncGriddedDone"))
-            )
+            div(style = "margin-top: 3em; display: block;"),
+                actionBttn(ns("calculateGriddedIndices"),
+                label = "Calculate NetCDF Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
+            textOutput(ns("ncPrint")),
+            textOutput(ns("ncGriddedDone"))
         ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,
@@ -77,7 +76,7 @@ griddedStep1UI <- function(id) {
           " using thresholds calculated from historical simulations."),
         tags$p("The type of Excess Heat Factor (EHF) calculation can be chosen. You should not change this unless you are familiar with the EHF."),
         tags$p("It is possible to change the number of data values to process at once, but do not change this unless you know what you are doing."),
-        h4("5. Calculate"),
+        h4("Calculate"),
         tags$p("Click the 'Calculate NetCDF Indices' button. ",
           "If you have provided all the required information as described above, ",
           "a dialog box will appear reminding you that calcuating gridded indices usually takes a long time.<br />",
