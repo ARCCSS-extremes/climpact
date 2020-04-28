@@ -14,9 +14,9 @@ griddedStep2UI <- function(id) {
         wellPanel(
           fileInput(ns("dataFilesThresh"),
           NULL,
-          accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
-          placeholder="Select or drop one or more NetCDF files",
-          multiple = TRUE)
+          accept      = c("NetCDF", "application/netcdf,application/x-netcdf", ".nc"),
+          placeholder = "Select or drop one or more NetCDF files",
+          multiple    = TRUE)
         ),
         h4("2. Enter input dataset information"),
         wellPanel(
@@ -39,9 +39,7 @@ griddedStep2UI <- function(id) {
         ),
         div(style = "margin-top: 3em; display: block;"),
         actionBttn(ns("calculateGriddedThresholds"),
-        label = "Calculate NetCDF Thresholds", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
-        textOutput(ns("ncPrintThresh")),
-        textOutput(ns("ncGriddedThreshDone"))
+        label = "Calculate NetCDF Thresholds", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
       ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,
@@ -62,7 +60,16 @@ griddedStep2UI <- function(id) {
           "If you have provided all the required information as described above, ",
           "a dialog box will appear reminding you that calcuating gridded thresholds usually takes a long time.<br />",
           "Once you select 'Calculate Thresholds' processing will commence.<br />",
-          "If you are unsure, click 'Cancel' to return to this screen.")
+          "If you are unsure, click 'Cancel' to return to this screen."),
+        conditionalPanel(
+            condition = "output.thresholdCalculationStatusText != 'Not Started'",
+            ns = ns,
+            HTML("<div class= 'alert alert-info' role='alert'>
+              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+              </span><span class='sr-only'></span>"),
+            uiOutput(ns("ncGriddedThreshDone")),
+            HTML("</div>")
+        )
       )
     )
   ))

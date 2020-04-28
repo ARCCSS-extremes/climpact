@@ -12,9 +12,9 @@ griddedStep1UI <- function(id) {
             wellPanel(
               fileInput(ns("dataFiles"),
               NULL,
-              accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
-              placeholder="Select or drop one or more NetCDF files",
-              multiple = TRUE)
+              accept      = c("NetCDF", "application/netcdf,application/x-netcdf", ".nc"),
+              placeholder = "Select or drop one or more NetCDF files",
+              multiple    = TRUE)
             ),
             h4("2. Enter input dataset information"),
             wellPanel(
@@ -42,18 +42,17 @@ griddedStep1UI <- function(id) {
                 "otherwise provide a comma-separated list of index names in lower case (e.g. txxm, tn90p)):")),
               fileInput(ns("thresholdFiles"),
                 NULL,
-                accept=c("text/csv", "text/comma-separated-values,text/plain", ".txt"),
-                placeholder="Select or drop one or more threshold files",
-                multiple = TRUE),
+                accept      = c("NetCDF", "application/netcdf,application/x-netcdf", ".nc"),
+                placeholder = "Select or drop one or more threshold files",
+                multiple    = TRUE),
               selectInput(ns("ehfDefinition"), label = ("Select EHF calculation: "),
                 choices=list("Perkins & Alexander (2013)" = "PA13", "Nairn & Fawcett (2013)" = "NF13"), selected = 1),
               textInput(ns("maxVals"), "Number of data values to process at once (do not change unless you know what you are doing):", value = 10)
             ),
             div(style = "margin-top: 3em; display: block;"),
                 actionBttn(ns("calculateGriddedIndices"),
-                label = "Calculate NetCDF Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
-            textOutput(ns("ncPrint")),
-            textOutput(ns("ncGriddedDone"))
+                label = "Calculate NetCDF Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")
+            )
         ),
       column(4, class = "instructions",
       box(title = "Instructions", width = 12,
@@ -81,7 +80,16 @@ griddedStep1UI <- function(id) {
           "If you have provided all the required information as described above, ",
           "a dialog box will appear reminding you that calcuating gridded indices usually takes a long time.<br />",
           "Once you select 'Calculate Indices' processing will commence.<br />",
-          "If you are unsure, click 'Cancel' to return to this screen.")
+          "If you are unsure, click 'Cancel' to return to this screen."),
+        conditionalPanel(
+            condition = "output.ncdfCalculationStatusText != 'Not Started'",
+            ns = ns,
+            HTML("<div class= 'alert alert-info' role='alert'>
+              <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
+              </span><span class='sr-only'></span>"),
+            uiOutput(ns("ncGriddedDone")),
+            HTML("</div>")
+        )
       )
     )
   ))

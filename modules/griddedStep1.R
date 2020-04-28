@@ -32,7 +32,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     )
   }
 
-  output$ncPrint <- eventReactive(input$calculateGriddedIndices, {
+  observeEvent(input$calculateGriddedIndices, {
     validate(
         need(!is.null(input$dataFiles), message = "Please specify input file(s)."),
         need(input$prName, message = "Please specify the name of the precipitation variable as it is recorded in its netCDF file"),
@@ -45,10 +45,12 @@ griddedStep1 <- function(input, output, session, climpactUI) {
         need(input$maxVals, message = "Please specify max values.")
       )
       showModal(infoDialog())
-      return("")
   })
 
   ncdfCalculationStatus <- reactiveVal("Not Started")
+  output$ncdfCalculationStatusText <- renderText({
+    ncdfCalculationStatus()
+  })
 
   observeEvent(input$proceedGridded, {
     disable("calculateGriddedIndices")
@@ -72,7 +74,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     progress$set(message = "Calculating ncdf indices", value = 0)
 
     ncdfCalculationStatus("In Progress")
-    
+
     outputFolder <- reactiveVal(file.path(getwd(), "www", "output", paste0(input$instituteID, "_ncdf")))
     errorOccurred <- reactiveVal(FALSE)
 
@@ -95,16 +97,16 @@ griddedStep1 <- function(input, output, session, climpactUI) {
       ncdfCalculationStatus("Done")
     })
 
-    output$ncGriddedDone <- renderText({
+    output$ncGriddedDone <- renderUI({
       if (ncdfCalculationStatus() == "Done") {
         if (!errorOccurred()) {
-          HTML("Done.", paste0("Look in the following directory for your output: ", outputFolder()))
+          HTML("<b>NetCDF indices calculations complete</b><p>Please view the output in the following directory: <b>", outputFolder(), "</b></p>")
         } else {
-          HTML(out)
+          HTML("<b>An error occurred:</b><p>", out, "</p>")
         }
       } else if (ncdfCalculationStatus() == "In Progress") {
         # would like to put output from create.indices.from.file() here...
-        HTML("Calculating indices...")
+        HTML("<b>Calculating indices...</b>")
       } else {
         ""
       }
@@ -145,4 +147,16 @@ griddedStep1 <- function(input, output, session, climpactUI) {
       cluster.type              = "SOCK"
     )
   }
+  observe(toggleState("calculateGriddedIndices", !is.null(input$dataFiles)
+    & (input$prName != "")
+    & (input$txName != "")
+    & (input$tnName != "")
+    & (input$outputFileNamePattern != "")
+    & (input$instituteID != "")
+    & (input$instituteName != "")
+    & (input$baseStart != "")
+    & (input$baseEnd != "")
+    & (input$nCores != "")
+    & (input$maxVals != "")))
+  outputOptions(output, "ncdfCalculationStatusText", suspendWhenHidden = FALSE)
 }

@@ -37,7 +37,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
     )
   }
 
-  output$ncPrintThresh <- eventReactive(input$calculateGriddedThresholds, {
+  observeEvent(input$calculateGriddedThresholds, {
     validate(
       need(!is.null(input$dataFilesThresh), message = "Please specify input file(s)."),
       need(input$prNameThresh, message = "Please specify the name of the precipitation variable as it is recorded in its netCDF file"),
@@ -52,10 +52,12 @@ griddedStep2 <- function(input, output, session, climpactUI) {
         message = paste0("Number of cores is greater than ", detectCores(), ". Number of cores must be between 1 and ", detectCores()))
     )
     showModal(infoDialog())
-    return("")
   })
 
   thresholdCalculationStatus <- reactiveVal("Not Started")
+  output$thresholdCalculationStatusText <- renderText({
+    thresholdCalculationStatus()
+  })
 
   observeEvent(input$proceedGriddedThresh, {
     disable("calculateGriddedThresholds")
@@ -98,17 +100,16 @@ griddedStep2 <- function(input, output, session, climpactUI) {
       thresholdCalculationStatus("Done")
     })
 
-    output$ncGriddedThreshDone <- renderText({
+    output$ncGriddedThreshDone <- renderUI({
       if (thresholdCalculationStatus() == "Done") {
         if (!errorOccurred()) {
-          HTML("Done. Threshold file stored here: ", outputFilePath())
-          # HTML("Done.", paste0("Look in the following directory for your output: ", outputFolder()))
+          HTML("<b>NetCDF Threshold calculations complete</b><p>Please view the output at: <b>", outputFilePath(), "</b></p>")
         } else {
-          HTML(out)
+          HTML("<b>An error occurred:</b><p>", out, "</p>")
         }
       } else if (thresholdCalculationStatus() == "In Progress") {
         # would like to put output from create.thresholds.from.file() here...
-        HTML("Calculating thresholds...")
+        HTML("<b>Calculating thresholds...</b>")
       } else {
         ""
       }
@@ -136,4 +137,15 @@ griddedStep2 <- function(input, output, session, climpactUI) {
       root.dir            = NULL
     )
   }
+  observe(toggleState("calculateGriddedThresholds", !is.null(input$dataFilesThresh)
+    & (input$prNameThresh != "")
+    & (input$txNameThresh != "")
+    & (input$tnNameThresh != "")
+    & (input$outputFileNameThresh != "")
+    & (input$instituteIDThresh != "")
+    & (input$instituteNameThresh != "")
+    & (input$baseStartThresh != "")
+    & (input$baseEndThresh != "")
+    & (input$nCoresThresh != "")))
+  outputOptions(output, "thresholdCalculationStatusText", suspendWhenHidden = FALSE)
 }
