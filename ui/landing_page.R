@@ -8,5 +8,5 @@ tabPanel(title="ClimPACT", value="frontPage",
   div(class="landing-content",
     includeMarkdown(file.path("ui", "getting_started.md"))
   ),
-  div(class="photo-credit", "Background photo by Dominik Schröder on Unsplash")
+  div(class="photo-credit", HTML("Background photo by Dominik Schr&ouml;der on Unsplash"))
 )
