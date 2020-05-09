@@ -67,7 +67,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
       "' target='_blank'> here </a> for a list of missing dates. ",
       "Fill these with observations or missing values (-99.9) before continuing with quality control.")
 
-    skip <- TRUE
+    # skip <- TRUE
     warning(error_msg)
     return(error_msg)
   }
