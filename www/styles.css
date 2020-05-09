@@ -109,3 +109,7 @@ footer #logos img {
     height: 100%; 
     /* Photo by Dominik Schröder on Unsplash */
   }
+
+  .landing-content p {
+    font-size: 1.4em;
+  }
