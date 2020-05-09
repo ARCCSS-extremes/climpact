@@ -82,56 +82,50 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   # y.range <- range(y, na.rm = TRUE) #- 0.1 * (max(y, na.rm = TRUE) - min(y, na.rm = TRUE))
   # x.range <- min(x, na.rm = TRUE)      # should be no missing data in the x series
 
-  # TODO - no sign of barplot_flag ever being anything but TRUE - perhaps we can remove this check...
-  if (barplot_flag) {
-    if (index.name == "spei" | index.name == "spi") {
-      bp <- barplot(y, main = main, cex.main = 2, ylim = range(y, na.rm = TRUE), xlab = NULL, ylab = ylab, cex.lab = 1.5, cex.axis = 1.5, xpd = FALSE, col = ifelse(y > 0, "blue", "red"), border = NA, space = c(0, 0))
-      mtext(sub, cex = 1)
-      # NA points
-      na.x <- bp
-      na.y <- rep(NA, length(na.x))
-      na.y[is.na(y)] <- par("usr")[3]
-      points(na.x, na.y, pch = 17, col = "blue", cex = 1.5)
+  if (index.name == "spei" | index.name == "spi") {
+    bp <- barplot(y, main = main, cex.main = 2, ylim = range(y, na.rm = TRUE), xlab = NULL, ylab = ylab, cex.lab = 1.5, cex.axis = 1.5, xpd = FALSE, col = ifelse(y > 0, "blue", "red"), border = NA, space = c(0, 0))
+    mtext(sub, cex = 1)
+    # NA points
+    na.x <- bp
+    na.y <- rep(NA, length(na.x))
+    na.y[is.na(y)] <- par("usr")[3]
+    points(na.x, na.y, pch = 17, col = "blue", cex = 1.5)
 
-      subx = as.numeric(substr(x, 1, 4))
-      xind = which(subx %% 5 == 0)
+    subx = as.numeric(substr(x, 1, 4))
+    xind = which(subx %% 5 == 0)
+    xind = xind[seq(1, length(xind), 12)]
+    xtmp.int = unique(subx[xind])
+    axis(1, at = xind, labels = c(xtmp.int))
+
+    box()
+    #			xy <- cbind(bp,y)
+  } else {
+    op <- par(mar = c(5, 4, 5, 2) + 0.1)
+    plot(1:length(x), unname(y), cex.main = 2, ylim = range(unname(y), na.rm = TRUE), xaxt = "n", xlab = "", ylab = ylab, type = "b", cex.lab = 1.5, cex.axis = 1.5, col = "black")
+    par(op)
+    title(main, line = 2.5, cex.main = 2)
+
+    subx = as.numeric(substr(x, 1, 4))
+    xind = which(subx %% 5 == 0)
+    if (nchar(x[1]) == 7) {
       xind = xind[seq(1, length(xind), 12)]
       xtmp.int = unique(subx[xind])
-      axis(1, at = xind, labels = c(xtmp.int))
-
-      box()
-      #			xy <- cbind(bp,y)
     } else {
-      op <- par(mar = c(5, 4, 5, 2) + 0.1)
-      plot(1:length(x), unname(y), cex.main = 2, ylim = range(unname(y), na.rm = TRUE), xaxt = "n", xlab = "", ylab = ylab, type = "b", cex.lab = 1.5, cex.axis = 1.5, col = "black")
-      par(op)
-      title(main, line = 2.5, cex.main = 2)
-
-      subx = as.numeric(substr(x, 1, 4))
-      xind = which(subx %% 5 == 0)
-      if (nchar(x[1]) == 7) {
-        xind = xind[seq(1, length(xind), 12)]
-        xtmp.int = unique(subx[xind])
-      } else {
-        xtmp.int = subx[xind]
-      }
-      axis(1, at = xind, labels = c(xtmp.int))
-
-      mtext(paste(strwrap(sub, width = 100), collapse = "\n"), cex = 1)
-
-      # NA points
-      na.x <- x
-      na.y <- rep(NA, length(na.x))
-      na.y[is.na(y)] <- min(y, na.rm = TRUE)
-
-      points(1:length(na.x), na.y, pch = 17, col = "blue", cex = 1.5)
-      #			xy <- cbind(x, y)
+      xtmp.int = subx[xind]
     }
-  } else # if false, we're doing a regular (line) plot, I guess we're always doing a bar plot...
-  {
+    axis(1, at = xind, labels = c(xtmp.int))
 
+    mtext(paste(strwrap(sub, width = 100), collapse = "\n"), cex = 1)
+
+    # NA points
+    na.x <- x
+    na.y <- rep(NA, length(na.x))
+    na.y[is.na(y)] <- min(y, na.rm = TRUE)
+
+    points(1:length(na.x), na.y, pch = 17, col = "blue", cex = 1.5)
+    #			xy <- cbind(x, y)
   }
-
+  
   if (opt == 1) return() # no need to plot trend/fitting curve.
   if (opt == 2) {
     abline(h = 0.)

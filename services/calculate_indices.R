@@ -29,7 +29,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
   cat(file = trend_file, paste("Index", "Frequency", "StartYear", "EndYear", "Slope", "STD_of_Slope", "P_Value", sep = ","), fill = 180, append = T)
 
   # Read in index .csv file
-  index.list <- read.csv("server/climate.indices.csv", header = T, sep = "\t")
+  index.list <- read.csv("server/climate.indices.csv", header = TRUE, sep = "\t")
 
   # create a list of indices that do not require a 'frequency' parameter
   no.freq.list <- c("r95ptot", "r99ptot", "sdii", "hddheat", "cddcold", "gddgrow",
