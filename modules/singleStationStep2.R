@@ -93,7 +93,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         singleStationState$outputFolders(outputFolders(baseFolder, singleStationState$stationName()))
 
         # apply quality control checks
-        qcResult <- load_data_qc(progress, 0.05, singleStationState$dataFile()$datapath,
+        qcResult <- load_data_qc(progress, 1, singleStationState$dataFile()$datapath,
           singleStationState$latitude(), singleStationState$longitude(),
           singleStationState$stationName(), singleStationState$startYear(),
           singleStationState$endYear(), singleStationState$outputFolders())

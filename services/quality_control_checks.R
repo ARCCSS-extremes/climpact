@@ -19,7 +19,7 @@ read_and_qc_check <- function(progress,
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
-  qcResult <- QC.wrapper(progress, metadata, user_data_ts, user_file, outputFolders, NULL)
+  qcResult <- QC.wrapper(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL)
   return(qcResult)
 }
 
@@ -27,15 +27,15 @@ read_and_qc_check <- function(progress,
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, quantiles) {
+QC.wrapper <- function(progress, prog_int, metadata, user_data, user_file, outputFolders, quantiles) {
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
 
   # Check base period is valid when no thresholds loaded
   # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
     if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
-      return(paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct."))
+      return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct.")))
     }
   }
 
@@ -69,19 +69,19 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 
     # skip <- TRUE
     warning(error_msg)
-    return(error_msg)
+    return(list(errors = error_msg))
   }
 
   # Check for ascending order of years
   if (!all(user_data$year == cummax(user_data$year))) {
-    return("Years are not in ascending order, please check your input file.")
+    return(list(errors = "Years are not in ascending order, please check your input file."))
   }
 
   ##############################
   # Create climdex object
   # NICK: After this point all references to data should be made to the climdex input object 'cio'. One exception is the allqc function,
   # which still references the INPUT to the climdex.input function.
-  if (!is.null(progress)) progress$inc(0.05, detail = "Creating climdex object...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Creating climdex object...")
 
   merge_data <- merge_data(user_data, metadata)
   # unused date.months <- unique(format(as.character((merge_data[, 1]), format = "%Y-%m")))
@@ -90,7 +90,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   print("climdex input object created.", quote = FALSE)
 
   ##############################
-  if (!is.null(progress)) progress$inc(0.05, detail = "Calculating thresholds...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Calculating thresholds...")
   # Calculate and write out thresholds
   tavgqtiles <- get.outofbase.quantiles(cio@data$tavg, cio@data$tmin, tmax.dates = cio@dates, tmin.dates = cio@dates, base.range = c(metadata$base.start, metadata$base.end), temp.qtiles = temp.quantiles, prec.qtiles = NULL)
   cio@quantiles$tavg$outbase <- tavgqtiles$tmax$outbase # while this says tmax it is actually tavg, refer to above line.
@@ -111,7 +111,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   write.table(as.data.frame(thres), file = nam1, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c(paste("tmax", names(cio@quantiles$tmax$outbase), sep = "_"), paste("tmin", names(cio@quantiles$tmin$outbase), sep = "_"),
   paste("tavg", names(cio@quantiles$tavg$outbase), sep = "_"), paste("prec", names(cio@quantiles$prec), sep = "_"), "HW_TN90", "HW_TX90", "HW_TAVG90"), row.names = FALSE)
 
-  if (!is.null(progress)) progress$inc(0.05)
+  if (!is.null(progress)) progress$inc(0.05 * prog_int)
 
   # write raw tmin, tmax and prec data for future SPEI/SPI calcs
   yeardate2 <- format(cio@dates, format = "%Y")
@@ -138,10 +138,10 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   Encoding(lat_text) <- "UTF-8"
   metadata$title.station <- paste0(metadata$stationName, " [", metadata$lat, lat_text, ", ", metadata$lon, lon_text, "]")
 
-  createPlots(progress, outputFolders, metadata, "prcp", cio, "h")
-  createPlots(progress, outputFolders, metadata, "tmax", cio, "l")
-  createPlots(progress, outputFolders, metadata, "tmin", cio, "l")
-  createPlots(progress, outputFolders, metadata, "dtr", cio, "l")
+  createPlots(progress, prog_int, outputFolders, metadata, "prcp", cio, "h")
+  createPlots(progress, prog_int, outputFolders, metadata, "tmax", cio, "l")
+  createPlots(progress, prog_int, outputFolders, metadata, "tmin", cio, "l")
+  createPlots(progress, prog_int, outputFolders, metadata, "dtr", cio, "l")
 
   ##############################
   # Call the ExtraQC functions.
@@ -150,7 +150,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
   file.copy(user_file, temp.file)
 
-  errors <- allqc(progress, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
+  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
   ##############################
   # Write out NA statistics.
@@ -164,8 +164,8 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
 }
 # end of QC.wrapper()
 
-createPlots <- function(progress, outputFolders, metadata, var, cio, type) {
-  if (!is.null(progress)) progress$inc(0.05, detail = paste0("Plotting ", var, "..."))
+createPlots <- function(progress, prog_int, outputFolders, metadata, var, cio, type) {
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = paste0("Plotting ", var, "..."))
   plotFileName <- file.path(outputFolders$outlogdir, paste0(metadata$stationName, "_", var, "PLOT"))
   plotToFile(plotFileName, "png", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
   plotToFile(plotFileName, "pdf", var = var, type = type, title = metadata$stationName, cio = cio, metadata = metadata)
@@ -229,7 +229,7 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
 load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
-  if (!is.null(progress)) progress$inc(0.1 * prog_int, detail = "Reading data file...")
+  if (!is.null(progress)) progress$inc(0.01 * prog_int, detail = "Reading data file...")
   user.data <- read_user_file(user.file)
   qcResult <- read_and_qc_check(progress,
     prog_int,
@@ -247,48 +247,48 @@ load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, sta
 # extraQC code, taken from the "rclimdex_extraqc.r" package,
 # Quality Control procedures programed by Enric Aguilar (C3, URV, Tarragona, Spain) and
 # and Marc Prohom, (Servei Meteorologic de Catalunya). Edited by nherold to output to .csv (Jan 2016).
-allqc <- function(progress, master, output, metadata, outrange = 4) {
+allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   output <- file.path(output, metadata$stationName)
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting outliers...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting outliers...")
   # fourboxes will produce boxplots for non-zero precip, tx, tn, dtr using the IQR entered previously
   # the plot will go to series.name_boxes.pdf
   # outliers will be also listed on a file (series.name_outliers.txt)
   fourboxes(master, output, save = 1, outrange, metadata, "pdf")
   fourboxes(master, output, save = 1, outrange, metadata, "png")
 
-  if (!is.null(progress)) progress$inc(0.1, detail = "Plotting rounding problems...")
+  if (!is.null(progress)) progress$inc(0.1 * prog_int, detail = "Plotting rounding problems...")
   # Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
   # The plot will go to series.name_rounding.pdf. Needs some formal arrangements (title, nice axis, etc)
   roundcheck(master, output, save = 1, "pdf")
   roundcheck(master, output, save = 1, "png")
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting tmax <= tmin...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting tmax <= tmin...")
   # will list when tmax <= tmin. Output goes to series.name_tmaxmin.txt
   tmaxmin(master, output, metadata)
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting excessively large values...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting excessively large values...")
   # will list values exceeding 200 mm or temperatures with absolute values over 50. Output goes to
   # series.name_toolarge.txt
   humongous(master, output, metadata)
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Plotting annual time series...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting annual time series...")
   # 'Annual Time series' constructed with boxplots. Helps to identify years with very bad values
   # Output goes to series.name_boxseries.pdf
   boxseries(master, output, save = 1, "pdf")
   boxseries(master, output, save = 1, "png")
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Finding duplicate dates...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding duplicate dates...")
   # Lists duplicate dates. Output goes to series.name_duplicates.txt
   duplivals(master, output, metadata)
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Finding large jumps...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding large jumps...")
   # The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya) identify consecutive tx and tn values with differences larger than 20
   # Output goes to series.name_tx_jumps.txt and series.name_tn_jumps.txt. The first date is listed.
   jumps_tx(master, output, metadata)
   jumps_tn(master, output, metadata)
 
-  if (!is.null(progress)) progress$inc(0.05, detail = "Finding repeated values...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding repeated values...")
   # The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya)
   # identify series of 3 or more consecutive identical values. The first date is listed.
   # Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
