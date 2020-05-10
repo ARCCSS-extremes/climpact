@@ -99,7 +99,7 @@ batchStep1 <- function(input, output, session, climpactUI) {
     on.exit(progress$close())
     progress$set(message="Processing data", value = 0.01)
 
-    source("server/climpact.batch.stations.r")
+    source("server/batch_stations.R")
 
     # nCoresBatch <- nCoresBatch()
     # batchMode <- TRUE
