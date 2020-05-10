@@ -32,7 +32,7 @@ QC.wrapper <- function(progress, metadata, user_data, user_file, outputFolders, 
   if (!is.null(progress)) progress$inc(0.05, detail = "Checking dates...")
 
   # Check base period is valid when no thresholds loaded
-  # JMC This is always NULL as quantiles is never set...
+  # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
     if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
       return(paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct."))

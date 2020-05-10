@@ -103,13 +103,6 @@ qc_and_calculateIndices <- function(progress, prog_int, batch_metadata, file.num
                                 custom_SPEI = batch_metadata$SPEI[file.number]
                               )
 
-  # title.station <- station_metadata$title.station
-  # barplot_flag <- TRUE
-  # min_trend <- 10
-  # quantiles <- NULL #JMC TODO remove / replace with original intent
-  # temp.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95)
-  # prec.quantiles <- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
-  # op.choice <- NULL
   skip <- FALSE
 
   errorFilePath <- file.path(outputFolders$outputdir, paste0(stationName, ".error.txt"))
@@ -169,7 +162,7 @@ print_results_to_console <- function(outputFolder) {
   }
 }
 
-# JMC - following non-interactive code runs on shinyapps.io and breaks app
+# following non-interactive code runs on shinyapps.io and breaks app
 # set up variables and call main function if this is from the command line
 # if(!interactive()) {
 #   # Enable reading of command line arguments
