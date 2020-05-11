@@ -104,16 +104,19 @@ batchStep1 <- function(input, output, session, climpactUI) {
     # nCoresBatch <- nCoresBatch()
     # batchMode <- TRUE
     # cl <- makeCluster(nCoresBatch)
-    # cl could be used within batch, just need to pass the info into batch() function
+    # cl could be used within batch, just need to pass the info into processBatch() function
 
     metadatafilepath <- input$batchMeta$datapath
     metadatafilename <- input$batchMeta$name
 
     folderName <- strip_file_extension(metadatafilename)
-    folderToZip(file.path(getwd(), "www", "output", folderName))
+    batchOutputFolder <- file.path(getwd(), "www", "output", folderName)
+    folderToZip(batchOutputFolder)
 
     # This function is where the work is done
-    zipPath <- batch(progress, metadatafilepath, input$batchData, input$startYearBatch, input$endYearBatch, folderToZip())
+    processBatch(progress, metadatafilepath, input$batchData, input$startYearBatch, input$endYearBatch, batchOutputFolder)
+
+    zipPath <- zipFiles(batchOutputFolder, destinationFileName = paste0(basename(batchOutputFolder), ".zip"))
     batchZipFilePath(zipPath)
     batchZipFileLink(getLinkFromPath(zipPath, "here"))
 

@@ -7,19 +7,19 @@ merge_data <- function(user_data, metadata) {
 }
 
 read_and_qc_check <- function(progress,
-  prog_int,
-  user_data,
-  user_file,
-  latitude,
-  longitude,
-  stationName,
-  base.year.start,
-  base.year.end,
-  outputFolders) {
+                              prog_int,
+                              user_data,
+                              user_file,
+                              latitude,
+                              longitude,
+                              stationName,
+                              base.year.start,
+                              base.year.end,
+                              outputFolders) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
-  qcResult <- QC.wrapper(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL)
+  qcResult <- qualityControlCheck(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL)
   return(qcResult)
 }
 
@@ -27,7 +27,7 @@ read_and_qc_check <- function(progress,
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-QC.wrapper <- function(progress, prog_int, metadata, user_data, user_file, outputFolders, quantiles) {
+qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_file, outputFolders, quantiles) {
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
 
@@ -107,7 +107,7 @@ QC.wrapper <- function(progress, prog_int, metadata, user_data, user_file, outpu
 
   # write to file
   thres <- c(cio@quantiles$tmax$outbase, cio@quantiles$tmin$outbase, cio@quantiles$tavg$outbase, cio@quantiles$prec, as.list(tn90p), as.list(tx90p), as.list(tavg90p)) #,cio@dates,cio@data)#$tmin,cio@data$tmax,cio@data$prec)
-  nam1 <- file.path(paste(outputFolders$outthresdir, paste0(outputFolders$stationName, "_thres.csv")))
+  nam1 <- file.path(outputFolders$outthresdir, paste0(outputFolders$stationName, "_thres.csv"))
   write.table(as.data.frame(thres), file = nam1, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c(paste("tmax", names(cio@quantiles$tmax$outbase), sep = "_"), paste("tmin", names(cio@quantiles$tmin$outbase), sep = "_"),
   paste("tavg", names(cio@quantiles$tavg$outbase), sep = "_"), paste("prec", names(cio@quantiles$prec), sep = "_"), "HW_TN90", "HW_TX90", "HW_TAVG90"), row.names = FALSE)
 
@@ -162,7 +162,7 @@ QC.wrapper <- function(progress, prog_int, metadata, user_data, user_file, outpu
 
   return(list(errors = errors, cio = cio, metadata = metadata))
 }
-# end of QC.wrapper()
+
 
 createPlots <- function(progress, prog_int, outputFolders, metadata, var, cio, type) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = paste0("Plotting ", var, "..."))
@@ -229,18 +229,20 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
 load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
-  if (!is.null(progress)) progress$inc(0.01 * prog_int, detail = "Reading data file...")
+  detail <- paste("Reading data file...", user.file)
+  if (!is.null(progress)) progress$inc(0.01 * prog_int, detail = detail)
+  print(detail)
   user.data <- read_user_file(user.file)
   qcResult <- read_and_qc_check(progress,
-    prog_int,
-    user.data,
-    user.file,
-    latitude,
-    longitude,
-    stationName,
-    base.year.start,
-    base.year.end,
-    outputFolders)
+                                prog_int,
+                                user.data,
+                                user.file,
+                                latitude,
+                                longitude,
+                                stationName,
+                                base.year.start,
+                                base.year.end,
+                                outputFolders)
   return(qcResult)
 }
 
@@ -257,7 +259,7 @@ allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   fourboxes(master, output, save = 1, outrange, metadata, "pdf")
   fourboxes(master, output, save = 1, outrange, metadata, "png")
 
-  if (!is.null(progress)) progress$inc(0.1 * prog_int, detail = "Plotting rounding problems...")
+  if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting rounding problems...")
   # Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
   # The plot will go to series.name_rounding.pdf. Needs some formal arrangements (title, nice axis, etc)
   roundcheck(master, output, save = 1, "pdf")

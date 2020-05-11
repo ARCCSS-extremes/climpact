@@ -11,7 +11,9 @@ stop_custom <- function(.subclass, message, call = NULL, ...) {
   stop(err)
 }
 
-readUserFileError <<- function(msg, cond, ...) {stop_custom("readUserFileError", msg, cond$call, ...)}
+readUserFileError <- function(msg, cond, ...) {
+  stop_custom("readUserFileError", msg, cond$call, ...)
+}
 
 # Usage
 # err <- catch_cnd(
