@@ -24,14 +24,14 @@ singleStationStep4UI <- function(id) {
         )
       ),
       conditionalPanel(
-        condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError == '')) && output.indexCalculationError != ''",
+        condition = "output.loadDataError == '' && ((output.qcStatus == 'Done' && output.qualityControlError == '')) && output.indexCalculationStatus != 'Done'",
         ns = ns,
         HTML("<div class= 'alert alert-info' role='alert'>
                 <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>
                 <span class='sr-only'></span> Please calculate climate indices.</div>")
     ),
     conditionalPanel(
-      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationError == ''",
+      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
       ns = ns,
       h4("4. Calculate and plot sector correlations"),
       wellPanel(
@@ -43,18 +43,18 @@ singleStationStep4UI <- function(id) {
         textInput(ns("sectorPlotTitle"), "Title:"),
         textInput(ns("y_axis_label"), "Label for y axis:"),
         checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
-      )
+      ),
+      div(style = "margin-top: 3em; display: block;"),
+      actionBttn(ns("calculateSectorCorrelation"),
+                label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
     ),
     conditionalPanel(
-        condition = "output.indexCalculationError == ''",
+        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == '' && output.sectorCalculationStatus == 'Done' && output.sectorCorrelationError != ''",
         ns = ns,
-        div(style = "margin-top: 3em; display: block;"),
-        actionBttn(ns("calculateSectorCorrelation"),
-                  label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
         textOutput(ns("sectorCorrelationError"))
     ),
     conditionalPanel(
-        condition = "output.sectorCorrelationError== ''",
+        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == '' && output.sectorCalculationStatus == 'Done' && output.sectorCorrelationError == ''",
         ns = ns,
         div(
           h4("Plots of calculated indices"),
@@ -85,7 +85,7 @@ singleStationStep4UI <- function(id) {
          tags$p("Once processing is complete you can view the plots generated",
          "and you will be provided with a link to all the correlation outputs that ClimPACT has produced."),        
         conditionalPanel(
-            condition = "output.sectorCorrelationLink != ''",
+            condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == '' && output.sectorCalculationStatus == 'Done' && output.sectorCorrelationError == '' && output.sectorCorrelationLink != ''",
             ns = ns,
             HTML("<div class= 'alert alert-info' role='alert'>
           <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>

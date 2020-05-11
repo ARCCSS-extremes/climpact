@@ -131,11 +131,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     return(out)
   })
 
-  # TODO respond in other modules to event in this module
-  # updateTextInput(session, "plotTitle", value=val)
-
-  # session$sendCustomMessage("enableTab", "process_single_station_step_3")
-
   observeEvent(input$btn_next_step_2, {
     tabName <- "process_single_station_step_3"
     session$sendCustomMessage("enableTab", tabName)
@@ -149,6 +144,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   outputOptions(output, "slickRQC", suspendWhenHidden = TRUE)
 
   observe(toggleState("btn_next_step_2", singleStationState$isQCCompleted() && singleStationState$qualityControlErrors() == ""))
-
+  session$sendCustomMessage("enableTab", "process_single_station_step_3")
   return(list(singleStationState = singleStationState))
 }

@@ -36,8 +36,19 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
                   indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
   })
 
+  output$indexCalculationError <- reactive({
+    # currently always ""
+    input$dataFile # trigger refresh on update
+    singleStationState$indexCalculationErrors()
+  })
+
+  output$indexCalculationStatus <- reactive({
+    input$dataFile # trigger refresh on update
+    singleStationState$indexCalculationStatus()
+  })
+
   # Index calculation has been requested by the user.
-  output$indexCalculationError <- eventReactive(input$calculateIndices, {
+  observeEvent(input$calculateIndices, {
     # ------------------------------------------------------------------ #
     # Validate inputs
     # ------------------------------------------------------------------ #
@@ -75,8 +86,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     progress$set(message = "Calculating indices", value = 0)
 
     singleStationState$indexCalculationStatus("In Progress")
+    # singleStationState$indexCalculationErrors("")
 
-    index.calc(progress, 1, singleStationState$metadata(),
+    index.calc(progress, 2, singleStationState$metadata(),
       singleStationState$climdexInput(), singleStationState$outputFolders(),
       singleStationState$climdexInputParams())
 
@@ -88,8 +100,8 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
 
     enable("calculateIndices")
+    # singleStationState$indexCalculationErrors("")
     singleStationState$indexCalculationStatus("Done")
-    return("")
   })
 
   output$indicesLink <- renderText({
@@ -99,6 +111,8 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
       } else {
         HTML("<b>Calculated Indices</b><br /><p>Calculated Indices available ", indicesZipLink(), "</p>")
       }
+    } else {
+      ""
     }
   })
 
@@ -115,10 +129,10 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   })
 
   outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
+  outputOptions(output, "indexCalculationStatus", suspendWhenHidden = FALSE)
   outputOptions(output, "slickRIndices", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
 
   observe(toggleState("btn_next_step_3", singleStationState$indexCalculationStatus() == "Done"))
 
-  # must use = not <- to get named values in list()
   return(list(singleStationState = singleStationState))
 }

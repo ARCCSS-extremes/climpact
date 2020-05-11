@@ -13,6 +13,8 @@ new_stationWizardState <- function(stationName = character(),
                                     qualityControlErrors = "",
                                     indexCalculationStatus = "",
                                     indexCalculationErrors = "",
+                                    correlationCalculationStatus = "",
+                                    correlationCalculationErrors = "",
                                     climdexInput = NULL,
                                     metadata = NULL,
                                     outputFolders = NULL,
@@ -28,6 +30,8 @@ new_stationWizardState <- function(stationName = character(),
   stopifnot(is.character(qualityControlErrors))
   stopifnot(is.character(indexCalculationStatus))
   stopifnot(is.character(indexCalculationErrors))
+  stopifnot(is.character(correlationCalculationStatus))
+  stopifnot(is.character(correlationCalculationErrors))
 
   value <- structure(list(stationName = reactiveVal(stationName),
                           latitude = reactiveVal(latitude),
@@ -39,6 +43,8 @@ new_stationWizardState <- function(stationName = character(),
                           qualityControlErrors = reactiveVal(qualityControlErrors),
                           indexCalculationStatus = reactiveVal(indexCalculationStatus),
                           indexCalculationErrors = reactiveVal(indexCalculationErrors),
+                          correlationCalculationStatus = reactiveVal(correlationCalculationStatus),
+                          correlationCalculationErrors = reactiveVal(correlationCalculationErrors),
                           climdexInput = reactiveVal(climdexInput),
                           metadata = reactiveVal(metadata),
                           outputFolders = reactiveVal(outputFolders),
@@ -109,6 +115,8 @@ stationWizardState <- function(stationName = character(),
                                 qualityControlErrors = "",
                                 indexCalculationStatus = "",
                                 indexCalculationErrors = "",
+                                correlationCalculationStatus = "",
+                                correlationCalculationErrors = "",
                                 climdexInput = NULL,
                                 metadata = NULL,
                                 outputFolders = NULL,
@@ -124,6 +132,7 @@ stationWizardState <- function(stationName = character(),
                               dataFile, baseStart, baseEnd,
                               isQCCompleted, qualityControlErrors,
                               indexCalculationStatus, indexCalculationErrors,
+                              correlationCalculationStatus, correlationCalculationErrors,
                               climdexInput, metadata, outputFolders,
                               climdexInputParams, sectorInputParams)
 

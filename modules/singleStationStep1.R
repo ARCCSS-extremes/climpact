@@ -6,6 +6,11 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
   observeEvent(input$dataFile, {
     updateTextInput(session, "stationName", value = stationName())
     singleStationState$isQCCompleted(FALSE)
+    singleStationState$qualityControlErrors("")
+    singleStationState$indexCalculationStatus("Not Started")
+    singleStationState$indexCalculationErrors("")
+    singleStationState$correlationCalculationStatus("Not Started")
+    singleStationState$correlationCalculationErrors("")
   })
 
   # Validation, expression works, so we can reuse these elsewhere in the app
@@ -25,7 +30,7 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
   })
 
   stationNameCheck <- reactive({
-      validate(need(input$stationName != "", message="Please enter a station name"))
+      validate(need(input$stationName != "", message = "Please enter a station name"))
       input$stationName
   })
 
@@ -43,11 +48,6 @@ singleStationStep1 <- function (input, output, session, parentSession, singleSta
   })
 
   observe(toggleState("btn_next_step_1", (!is.null(input$dataFile) && latitudeValidation() && longitudeValidation())))
-  # session$sendCustomMessage("enableTab", "process_single_station_step_2")
-
-  # TODO respond in other modules to event in this module
-  # updateTextInput(session, "plotTitle", value=val)
-
-  # must use = not <- to get named values in list()
+  session$sendCustomMessage("enableTab", "process_single_station_step_2")
   return(list(singleStationState = singleStationState))
 }

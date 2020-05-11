@@ -86,13 +86,17 @@ singleStationStep3UI <- function(id) {
         fluidRow(
           column(12,
             div(style = "margin-top: 3em; display: block;"),
-            actionBttn(ns("calculateIndices"), label = "Calculate Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x")),
-            textOutput(ns("indexCalculationError"))
+            actionBttn(ns("calculateIndices"), label = "Calculate Indices", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))
           )
         )
-      ), # Results below
+      ), # Error message
       conditionalPanel(
-        condition = "output.indexCalculationError == ''",
+        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationError != ''",
+        ns = ns,
+        textOutput(ns("indexCalculationError"))
+      ), # Plots
+      conditionalPanel(
+        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
         ns = ns,
         div(
           h4("Plots of calculated indices"),
@@ -142,7 +146,7 @@ singleStationStep3UI <- function(id) {
          tags$p("Once processing is complete you can view the plots generated",
          "and you will be provided with a link to all the outputs that ClimPACT has produced."), # Results below
           conditionalPanel(
-            condition = "output.indexCalculationError == ''",
+            condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
             ns = ns,
             HTML("<div class= 'alert alert-info' role='alert'>
                 <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>
@@ -158,7 +162,6 @@ singleStationStep3UI <- function(id) {
                 "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."))),
             HTML("</div>")
           ),
-         h4("Next"),
          tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
        )
     )
