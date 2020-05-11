@@ -8,7 +8,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     }
     bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
     slickR(imgs, slideId = "slickRQCMain", height = 600) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
-    # runjs("alert('hi'); $('#slickRQCMain').slick('slickGoTo', 3);")
   })
 
   qcProgressStatus <- reactiveVal("Not Started")

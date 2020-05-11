@@ -13,8 +13,6 @@ source("services/calculate/calculate_custom_index.R", local = TRUE)
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
 index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdexInputParams) {
 
-  if (!is.null(progress)) progress$inc(0.01 * prog_int)
-
   # pdf file for all plots
   # Check 'all' PDF isn't open, then open.
   pdfname <- paste0(outputFolders$stationName, "_all_plots.pdf")
@@ -46,7 +44,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     tmp.index.name <- as.character(index.list$Short.name[i])
 
     if (!is.null(progress)) {
-      progress$inc(0.01 * prog_int, detail = paste("Calculating", index.list$Short.name[i], "..."))
+      progress$inc(0.005 * prog_int, detail = paste("Calculating", index.list$Short.name[i], "..."))
     }
     tmp.index.def <- as.character(index.list$Definition[i])
     # Set frequency if relevant to current index
@@ -156,14 +154,13 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     remove(index.parameter)
 
   }
-  if (!is.null(progress)) progress$inc(0.05 * prog_int)
+  if (!is.null(progress)) progress$inc(0.01 * prog_int)
 
   if (length(climdexInputParams$op.choice) == 0 || length(climdexInputParams$var.choice) == 0) {
     print("no custom index to calculate", quote = FALSE)
   } else {
     calculate.custom.index(cio, metadata, climdexInputParams, outputFolders, pdf.dev, trend_file)
+    if (!is.null(progress)) progress$inc(0.01 * prog_int)
   }
   dev.off(pdf.dev)
-
-  if (!is.null(progress)) progress$inc(0.01 * prog_int)
 }

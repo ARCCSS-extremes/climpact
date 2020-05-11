@@ -33,7 +33,7 @@ batch <- function(progress, metadata_filepath, batchfiles, base.start, base.end,
 
   if (!is.null(progress)) {
     # 0.5 below as we have two operations quality control and index calculations
-    prog_int <- 0.5 / length(batch_metadata$station_file) 
+    prog_int <- 0.5 / length(batch_metadata$station_file)
   }
   # progressSNOW <- function(n) {
   #   if (interactive()) {
@@ -43,24 +43,23 @@ batch <- function(progress, metadata_filepath, batchfiles, base.start, base.end,
   # opts <- list(progress = progressSNOW)
   # registerDoSNOW(cl) # needs cl variable (cluster intialised via cl <- makeCluster(numCores))
 
-  # batchfiles %>% tidyverse::remove_rownames %>% tidyverse::column_torownames(var=1)
-  # batchfiles <- data.frame(batchfiles[,-1], row.names=batchfiles[,1])
   # set each row name in batch file to station name for indexing
   row.names(batchfiles) <- batchfiles$name
   batchfiles[1] <- NULL
+
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
     msg <- paste("File", file.number, "of", numfiles, ":", batch_metadata$station_file[file.number])
     print(msg)
+
     if (!is.null(progress)) progress$inc(detail = msg)
-    #fileName = batch_metadata$station_file[file.number]
+
     file <- batchfiles[file.number, "datapath"]
     batchResult <- qc_and_calculateIndices(progress, prog_int, batch_metadata, file.number, file, base.start, base.end, batchOutputFolder)
-    if (batchResult$errors != "") {
+    if ((!is.null(dim(batchResult))) && (batchResult$errors != "")) {
       # we had an error with this file
-      
+      print(batchResult$errors)
     }
-    # progress incremented in calculations if (!is.null(progress)) progress$inc(prog_int)
   }
   zipfilename <- zipFiles(batchOutputFolder, destinationFileName = paste0(basename(batchOutputFolder), ".zip"))
   return(zipfilename)
