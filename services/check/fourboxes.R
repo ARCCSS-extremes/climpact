@@ -1,5 +1,5 @@
 # Plots boxplots. Needs only station and save
-# TODO JMC refactor so that calling this function twice (once for PNG and once for PDF)
+# TODO refactor so that calling this function twice (once for PNG and once for PDF)
 # will not write to csv files twice.
 # combo of if (file.exists(filena)) and
 # an eg 'overwrite' function parameter -

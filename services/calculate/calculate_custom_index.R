@@ -29,7 +29,7 @@ calculate.custom.index <- function(cio, metadata, climdexInputParams, outputFold
           cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), "JJA", metadata$year.start, metadata$year.end, JJAtrend[[1]][1], JJAtrend[[1]][2], JJAtrend[[1]][3], sep = ","), fill = 180, append = T)
           cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), "SON", metadata$year.start, metadata$year.end, SONtrend[[1]][1], SONtrend[[1]][2], SONtrend[[1]][3], sep = ","), fill = 180, append = T)
         }
-        # TODO why is this even here?
+        # TODO remove global vars
         remove(mktrend, envir = .GlobalEnv)
       }
     }

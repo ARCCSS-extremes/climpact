@@ -68,8 +68,9 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   create_save_scatter_plot(paste0(stationName, "_corr_above30_", sectorColumnFilePart),
     temp_per_year_sector, "above30", sectorCol, plot.title, "Days above 30°C", y_axis_label)
   progress$inc(0.2)
+  # TODO scatter plots for remaining indices
 
-  # TODO two overview bar plots, one with precip and one with temp related indices
+  # TODO two overview bar plots instead of current single plot, one with precip and one with temp related indices
 
   # create scatter plot of indice value (not normalized) vs sector data
   # this really needs a better method to account for user specified index values, hw, etc and category (temperature/precipition)

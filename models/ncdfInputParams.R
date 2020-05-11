@@ -41,8 +41,6 @@ new_ncdfInputParams <- function(prColName             = "",
 
   # Output filename format. Must use CMIP5 filename convention. i.e. "var_timeresolution_model_scenario_run_starttime-endtime.nc"
   if (outputFileNamePattern == "") {
-    # TODO JMC check that 1991-2010 is just a number match and
-    # filename genereated depends on base period specified
     outputFileNamePattern <- "var_daily_climpact.sample_historical_NA_1991-2010.nc"
   }
 

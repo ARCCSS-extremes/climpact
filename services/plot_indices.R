@@ -47,12 +47,11 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
 
       dev.set(which = pdf.dev)
       plotx((metadata$date.years), index[def, asp,], main = gsub('\\*', unit, plot.title), ylab = unit, xlab = x.label, index.name = index.name, sub = sub)
-      #			dev.copy()
       dev.off(dev0)
 
-      #JMC bug now climdex.pcic not available: cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
+      # TODO resolve bug when climdex.pcic not available (dodgy package release): cat(file=trend_file,paste(paste(definitions[def],aspects[asp],sep="."),"ANN",metadata$year.start,metadata$year.end,round(as.numeric(out$coef.table[[1]][2, 1]), 3),round(as.numeric(out$coef.table[[1]][2, 2]), 3),round(as.numeric(out$summary[1, 6]),3),sep=","),fill=180,append=T)
   
-  # TODO remove globalvars
+      # TODO remove global vars
       remove(mktrend, envir = .GlobalEnv)
     }
   }
