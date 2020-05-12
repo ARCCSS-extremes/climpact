@@ -17,8 +17,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     ns <- session$ns
     modalDialog(title = "Warning",
       HTML("There was a problem processing your gridded data. ",
-        "Check your R console for the specific error message generated. It is very likely your data is not formatted correctly."),
-      print(paste0("R error message was: ", msg)),
+      print(paste0("R error message was: ", msg))),
       footer = tagList(modalButton("OK"))
     )
   }
@@ -26,8 +25,7 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     ns <- session$ns
     modalDialog(title = "Error",
       HTML("There was a problem processing your gridded data.",
-        " Check your R console for the specific error message generated. It is very likely your data is not formatted correctly.",
-        "R error message was: ", msg),
+          print(paste0("R error message was: ", msg))),
       footer = tagList(modalButton("OK"))
     )
   }
