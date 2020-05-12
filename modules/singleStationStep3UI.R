@@ -25,7 +25,7 @@ singleStationStep3UI <- function(id) {
       ),
       # # User specified parameters
     conditionalPanel(# show if quality control done and no errors
-      condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
+      condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
       h4("3. Calculate and plot indices"),
       wellPanel(
@@ -91,12 +91,12 @@ singleStationStep3UI <- function(id) {
         )
       ), # Error message
       conditionalPanel(
-        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationError != ''",
+        condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors != ''",
         ns = ns,
-        textOutput(ns("indexCalculationError"))
+        textOutput(ns("indexCalculationErrors"))
       ), # Plots
       conditionalPanel(
-        condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
+        condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
         ns = ns,
         div(
           h4("Plots of calculated indices"),
@@ -146,7 +146,7 @@ singleStationStep3UI <- function(id) {
          tags$p("Once processing is complete you can view the plots generated",
          "and you will be provided with a link to all the outputs that ClimPACT has produced."), # Results below
           conditionalPanel(
-            condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == '' && output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
+            condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
             ns = ns,
             HTML("<div class= 'alert alert-info' role='alert'>
                 <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'>

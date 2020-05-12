@@ -1,9 +1,11 @@
 singleStationStep1 <- function (input, output, session, parentSession, singleStationState) {
+
   stationName <- reactive({
     strsplit(input$dataFile$name, "[_\\.]")[[1]][1]
   })
 
   observeEvent(input$dataFile, {
+    # reset the work flow
     updateTextInput(session, "stationName", value = stationName())
     singleStationState$isQCCompleted(FALSE)
     singleStationState$qualityControlErrors("")

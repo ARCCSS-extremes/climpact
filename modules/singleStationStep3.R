@@ -1,5 +1,21 @@
 singleStationStep3 <- function(input, output, session, parentSession, climpactUI, singleStationState) {
 
+  output$indexCalculationErrors <- reactive({
+    # trigger refresh on update
+    singleStationState$isQCCompleted()
+    singleStationState$indexCalculationStatus()
+    singleStationState$indexCalculationErrors()
+  })
+  outputOptions(output, "indexCalculationErrors", suspendWhenHidden = FALSE)
+
+  output$indexCalculationStatus <- reactive({
+    # trigger refresh on update
+    singleStationState$isQCCompleted()
+    singleStationState$indexCalculationStatus()
+  })
+  outputOptions(output, "indexCalculationStatus", suspendWhenHidden = FALSE)
+
+
   output$slickRIndices <- renderSlickR({
     imgs <- list()
     if (!is.null(singleStationState$outputFolders())) {
@@ -12,7 +28,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     main %synch% nav
   })
 
-  singleStationState$indexCalculationStatus <- reactiveVal("Not Started")
+  singleStationState$indexCalculationStatus("Not Started")
   folderToZip <- reactiveVal("")
   indicesZipLink <- reactiveVal("")
 
@@ -34,17 +50,6 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
       HTML(paste0("<p>The following fields change user-definable parameters in several ClimPACT indices.",
                   "<br />Leave as default unless you are interested in these indices. See ",
                   indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
-  })
-
-  output$indexCalculationError <- reactive({
-    # currently always ""
-    input$dataFile # trigger refresh on update
-    singleStationState$indexCalculationErrors()
-  })
-
-  output$indexCalculationStatus <- reactive({
-    input$dataFile # trigger refresh on update
-    singleStationState$indexCalculationStatus()
   })
 
   # Index calculation has been requested by the user.
@@ -128,8 +133,6 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     updateTabsetPanel(parentSession, "process_single_station", selected = tabName)
   })
 
-  outputOptions(output, "indexCalculationError", suspendWhenHidden = FALSE)
-  outputOptions(output, "indexCalculationStatus", suspendWhenHidden = FALSE)
   outputOptions(output, "slickRIndices", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
 
   observe(toggleState("btn_next_step_3", singleStationState$indexCalculationStatus() == "Done"))

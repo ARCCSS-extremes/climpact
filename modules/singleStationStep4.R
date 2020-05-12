@@ -1,4 +1,24 @@
 singleStationStep4 <- function(input, output, session, climpactUI, singleStationState) {
+  # Handle calculation of correlation between climate/sector data
+  output$sectorCorrelationStatus <- reactive({
+    # trigger refresh on update
+    singleStationState$isQCCompleted()
+    singleStationState$indexCalculationStatus()
+    singleStationState$correlationCalculationStatus()
+  })
+  outputOptions(output, "sectorCorrelationStatus", suspendWhenHidden = FALSE)
+
+  output$sectorCorrelationError <- reactive({
+    # trigger refresh on update
+    singleStationState$isQCCompleted()
+    singleStationState$indexCalculationStatus()
+    singleStationState$correlationCalculationErrors()
+  })
+  outputOptions(output, "sectorCorrelationError", suspendWhenHidden = FALSE)
+
+  singleStationState$correlationCalculationStatus("Not Started")
+  folderToZip <- reactiveVal("")
+  corrZipLink <- reactiveVal("")
 
   output$slickRCorr <- renderSlickR({
     imgs <- list()
@@ -9,30 +29,19 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
     slickR(imgs, slideId = "slickRCorrMain", height = 600) %synch% (slickR(imgs, slideId = "slickRCorrNav", height = 100) + bottom_opts)
   })
+  outputOptions(output, "slickRCorr", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
 
-  singleStationState$correlationCalculationStatus("Not Started")
-  folderToZip <- reactiveVal("")
-  corrZipLink <- reactiveVal("")
 
   observeEvent(input$sectorDataFile, {
     val <- strsplit(input$sectorDataFile$name, "[_\\.]")[[1]][1]
     updateTextInput(session, "y_axis_label", value = val)
+    singleStationState$correlationCalculationStatus("Not Started")
   })
 
   observeEvent(singleStationState$stationName(), {
     updateTextInput(session, "sectorPlotTitle", value = singleStationState$stationName())
   })
 
-  # Handle calculation of correlation between climate/sector data
-  output$sectorCorrelationStatus <- reactive({
-    input$dataFile # trigger refresh on update
-    singleStationState$correlationCalculationStatus()
-  })
-
-  output$sectorCorrelationError <- reactive({
-    input$dataFile # trigger refresh on update
-    singleStationState$correlationCalculationErrors()
-  })
 
   observeEvent(input$calculateSectorCorrelation, {
     validate(
@@ -54,7 +63,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     on.exit(progress$close())
     progress$set(message="Calculating correlation", value=0)
 
-    error <- draw.correlation(progress,
+    errors <- draw.correlation(progress,
                               singleStationState$dataFile()$datapath,
                               params$sectorDataFile()$datapath,
                               singleStationState$stationName(),
@@ -64,13 +73,13 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
                               singleStationState$outputFolders()$corrdir,
                               singleStationState$outputFolders()$outinddir)
 
-    if (error == "") {
+    if (errors == "") {
       # zip files and get link
       folderToZip(singleStationState$outputFolders()$corrdir)
       pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
       corrZipLink(getLinkFromPath(pathToZipFile, "here"))
     }
-    singleStationState$correlationCalculationErrors(error)
+    singleStationState$correlationCalculationErrors(errors)
     singleStationState$correlationCalculationStatus("Done")
   })
 
@@ -85,12 +94,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       ""
     }
   })
+  outputOptions(output, "sectorCorrelationLink", suspendWhenHidden = FALSE)
 
   observe(toggleState("calculateSectorCorrelation", !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
-
-  outputOptions(output, "sectorCorrelationStatus", suspendWhenHidden = FALSE)
-  outputOptions(output, "sectorCorrelationError", suspendWhenHidden = FALSE)
-  outputOptions(output, "sectorCorrelationLink", suspendWhenHidden = FALSE)
-  outputOptions(output, "slickRCorr", suspendWhenHidden = TRUE) # otherwise renders incorrectly initially
-
 }

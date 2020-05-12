@@ -120,7 +120,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         if (!is.null(progress)) progress$inc(0.05, detail = "Compressing outputs...")
         enable("doQualityControl")
         singleStationState$isQCCompleted(TRUE)
-        # qcProgressStatus("Done")
         if (!is.null(singleStationState) && !is.null(singleStationState$outputFolders())) {
           folderToZip(singleStationState$outputFolders()$outqcdir)
           pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
