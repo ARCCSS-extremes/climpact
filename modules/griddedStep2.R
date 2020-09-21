@@ -124,7 +124,7 @@ griddedStep2 <- function(input, output, session, climpactUI) {
     # request messages to be returned
     verbose <- TRUE
 
-    create.thresholds.from.file (griddedFiles,
+    create.thresholds.from.file(griddedFiles,
       outputFilePath,
       params$authorData,
       variable.name.map   = params$variableNameMap,
