@@ -12,7 +12,7 @@ climpactUI <- climpactUI("ui")
 localOrRemoteLink <- function (localLink, remoteLink) {
   result <- remoteLink
   if (isLocal) { result <- localLink }
-  return (result)
+  return(result)
 }
 
 #' Returns link HTML for specified filePath, with text as the specified linkText

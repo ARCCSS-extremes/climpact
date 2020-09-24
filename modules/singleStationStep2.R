@@ -57,7 +57,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   output$qcLink <- renderText({
     if (singleStationState$isQCCompleted()) {
       localLink <- paste0("<b> Quality control directory: ", folderToZip(), "</b>")
-      remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "<\b>")
+      remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "</b>")
 
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
 

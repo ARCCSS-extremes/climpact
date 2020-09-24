@@ -101,7 +101,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     folderToZip(singleStationState$outputFolders()$outputdir)
     pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip",
       destinationFolder = singleStationState$outputFolders()$baseFolder,
-      destinationFileName = singleStationState$stationName())
+      destinationFileName = paste0(singleStationState$stationName(), ".zip"))
     indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
 
     enable("calculateIndices")

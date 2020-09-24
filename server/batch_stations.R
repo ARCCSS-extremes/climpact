@@ -9,7 +9,7 @@ library(doParallel)
 library(zoo)
 library(zyp)
 
-source("models/custom_errors.R")
+source("models/errors.R")
 source("models/outputFolders.R")
 
 # return station metadata

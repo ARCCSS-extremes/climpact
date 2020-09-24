@@ -32,9 +32,21 @@ zipFiles <- function (folderToZip, excludePattern = "", destinationFolder = "", 
     if (excludePattern == "") {
       zip(zipfile = zipFilePath, files = filesToZip)
     } else {
-      zip(zipfile = zipFilePath, files = filesToZip, extras = paste0("-x ", excludePattern))
+      zip(zipfile = zipFilePath,
+        files = filesToZip,
+        extras = paste0("-x ", excludePattern))
     }
     setwd(originalwd)
+
+    cat("zipFilePath zipped to: ", zipFilePath, "\n")
+    if (isLocal) {
+      zipFilePath <- file.path(folderName, fileName)
+    } else {
+      # strip shinyapps.io path
+      zipFilePath <- paste0("output/", fileName)
+    }
+    cat("isLocal", isLocal)
+    cat("zipFilePath returned to page: ", zipFilePath, "\n")
   }
   return(zipFilePath)
 }
