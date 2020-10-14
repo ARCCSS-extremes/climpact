@@ -11,6 +11,7 @@ library(zyp)
 
 source("models/errors.R")
 source("models/outputFolders.R")
+source("services/calculate_indices.R")
 
 # return station metadata
 read.file.list.metadata <- function(metadata_filepath) {
