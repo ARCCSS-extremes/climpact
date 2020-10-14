@@ -141,7 +141,7 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   # printed but prevents a trend line from being plotted! Must fix. If this is a bug in the zyp package then need to try another package.
   if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
   {
-    subtit <- paste0("Mann-Kendall slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
+    subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
     print(paste0(mktrend$stat[4], " : ", mktrend$stat[2]))
     #abline(mktrend$stat[4],mktrend$stat[2])
   } else {
