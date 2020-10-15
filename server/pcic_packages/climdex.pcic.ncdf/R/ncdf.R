@@ -234,7 +234,7 @@ get.climdex.variable.list <- function(source.data.present, time.resolution=c("al
 #' cdx.funcs <- get.climdex.functions(get.climdex.variable.list(c("tmax", "tmin")))
 #'
 #' @export
-get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="PA13",wsdin_n=7,csdin_n=7) {
+get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="PA13",wsdin_n=7,csdin_n=7,hddheatn_n,cddcoldn_n) {
   func.names <- paste("climdex",index.data$Short.name,sep=".")
   el <- list()
   af <- list(freq="annual")
@@ -255,6 +255,8 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
   spei.opts <- list(lat=NULL)
   wsdin.opts <- list(spells.can.span.years=FALSE,n=wsdin_n)
   csdin.opts <- list(spells.can.span.years=FALSE,n=csdin_n)
+  cddcoldn.opts <- list(Tb=cddcoldn_n)
+  hddheatn.opts <- list(Tb=hddheatn_n)
 
 # Make spei.opts global so it can be manipulated down in another function before being sent to climdex.spei (I know I know... global variables, argh).
   assign("hw.opts",hw.opts,envir=.GlobalEnv)
@@ -279,12 +281,15 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
 	if(index.data$Short.name[x]=="cwd") options[[x]] = c(options[[x]],cwdd.opts)
 	if(index.data$Short.name[x]=="cdd") options[[x]] = c(options[[x]],cwdd.opts)
 	if(index.data$Short.name[x]=="rx5day") options[[x]] = c(options[[x]],rx5day.opts)
+        if(index.data$Short.name[x]=="cddcoldn") options[[x]] = cddcoldn.opts
+        if(index.data$Short.name[x]=="hddheatn") options[[x]] = hddheatn.opts
 
 	return(options[[x]])
   })
 
 # list indices which cannot accept a frequency flag and don't have custom options specified above, nherold.
-  el_list = c("r95ptot","r99ptot","sdii","hddheatn","cddcoldn","gddgrown","r95p","r99p","gsl","spi")
+#  el_list = c("r95ptot","r99ptot","sdii","hddheatn","cddcoldn","gddgrown","r95p","r99p","gsl","spi")
+  el_list = c("r95ptot","r99ptot","sdii","gddgrown","r95p","r99p","gsl","spi")
   options[which(index.data$Short.name %in% el_list)] = array(el,length(el_list))
 
 # source file containing ET-SCI functions - best place for this? nherold.
@@ -423,6 +428,7 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
   vars.to.clone.atts.for <- c(vars.to.copy, ncdf4.helpers::nc.get.dim.names(f.example, v.example))
   vars.ncvars <- sapply(vars.to.copy, function(x) { f.example$var[[x]] }, simplify=FALSE)
   vars.data <- lapply(vars.ncvars, function(ncvar) { if(length(ncvar$dim) == 0) NULL else ncdf4::ncvar_get(f.example, ncvar) })
+  names(vars.data) = vars.to.copy
   
   return(lapply(1:length(cdx.dat$var.name), function(x) {
     annual <- cdx.dat$annual[x]

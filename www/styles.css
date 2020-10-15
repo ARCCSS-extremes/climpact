@@ -1,0 +1,115 @@
+.instructions .box {
+  background-color: #EEEEEE;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* slickR styling of Next and Prev buttons */
+button.slick-prev:before {
+  font-size: 40px;
+}
+button.slick-next:before {
+  font-size: 40px;
+}
+.slick-prev {
+  left: -43px; /* line up prev button correctly (3px less than font-size) */
+}
+/* get button text to line up vertically with icon */
+button i {
+  vertical-align: middle;
+}
+
+/* Centre and give a little breathing room to buttons used for main activities */
+button#ui-doQualityControl, button#ui-calculateIndices, 
+button#ui-calculateSectorCorrelation, button#ui-calculateBatchIndices,
+button#ui-calculateGriddedIndices, button#ui-calculateGriddedThresholds {
+  display: block; 
+  margin: 0 auto;
+  font-size: 2em;
+  margin-bottom: 1em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+/* prevent actionBttn button from increasing in size when disabled */
+.bttn[disabled] {
+  transform: scale(1);
+}
+
+/* For disabled tabPanel */
+.nav li a.disabled {
+    background-color: #ccc !important;
+    color: #333 !important;
+    cursor: not-allowed !important;
+    border-color: #aaa !important;
+  }
+
+.shiny-notification {
+    height: 100%;
+    width: 100%;
+    position:fixed;
+    top: 0;
+    left: 0;
+    font-size: 250%;
+ }
+  /* text-align: center; */
+
+.content {
+  display: inline-block; /* expand beyond content inside */
+}
+
+footer {
+    padding: 3rem !important;
+    background-color: #222d32;
+    /* background-color: #231f20; */
+    width: 100%;
+    display: block;
+}
+footer #logos img {
+    padding: 10px;
+}
+
+#footer-content, footer #logos {
+    display: flex;
+    align-items: center;
+}
+footer #sitemap {
+    color: #fff;
+    width: 100%;
+    max-width: 400px;
+    padding: 3rem !important;
+}
+footer #logos {
+    width: 100%;
+    max-width: 800px;
+    padding-left: 3rem;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+footer #sitemap, footer #logos {
+    padding-right: 15px;
+    padding-right: 15px;
+}
+footer #logos img {
+    width: 100%;
+    padding: 20px;
+  }
+ 
+  @media (min-width: 992px) {
+    footer #logos img {
+      padding: 10px;
+    }
+  }
+  
+  .content-wrapper, .jumbotron {
+    background-image: url("assets/dominik-schroder-FIKD9t5_5zQ-unsplash.jpg");
+    background-size: cover;
+    height: 100%; 
+    /* Photo by Dominik Schröder on Unsplash */
+  }
+
+  .landing-content p {
+    font-size: 1.4em;
+  }
