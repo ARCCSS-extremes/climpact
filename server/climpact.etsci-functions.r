@@ -588,7 +588,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 		tavg05p <- ci@quantiles$tavg[["q5"]]
 	        if(ehfdef == "NF13") { tavg95p <- ci@quantiles$tavg[["q95"]] }
 	}
-	
+
 	# take any non leap year to create 365 month-day factors
 	beg = as.Date("2001-01-01",format="%Y-%m-%d")
 	end = as.Date("2001-12-31",format="%Y-%m-%d")
@@ -657,7 +657,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 	tx90p_arr <- tx90p[match(fact2,fact)]
 	tn90p_arr <- array(NA,length(tmin))
 	tn90p_arr <- tn90p[match(fact2,fact)]
-	
+
 	# Record which days had temperatures higher than 90p or where EHF > 0 
 	tx90p_boolean <- (tmax > tx90p_arr)
 	tn90p_boolean <- (tmin > tn90p_arr)
@@ -677,10 +677,10 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 	hw3_index <- array(NA,c(5,length(levels(annual.factors))))
 	hw4_index <- array(NA,c(5,length(levels(annual.factors))))
 	
-	hw_index[1,,] <- get.hw.aspects(hw1_index,tx90p_boolean,annual.factors,monthly.factors,tmax,ci@northern.hemisphere,ehfdef)
-	hw_index[2,,] <- get.hw.aspects(hw2_index,tn90p_boolean,annual.factors,monthly.factors,tmin,ci@northern.hemisphere,ehfdef)
-	hw_index[3,,] <- get.hw.aspects(hw3_index,EHF_boolean,annual.factors,monthly.factors,EHF,ci@northern.hemisphere,ehfdef,ehf=TRUE)
-	hw_index[4,,] <- get.hw.aspects(hw4_index,ECF_boolean,annual.factors,monthly.factors,ECF,ci@northern.hemisphere,ehfdef,ecf=TRUE)
+	hw_index[1,,] <- get.hw.aspects(hw1_index,tx90p_boolean,annual.factors,monthly.factors,tmax,ci@northern.hemisphere,ehfdef,namask=ci@namasks$annual$tmax)
+	hw_index[2,,] <- get.hw.aspects(hw2_index,tn90p_boolean,annual.factors,monthly.factors,tmin,ci@northern.hemisphere,ehfdef,namask=ci@namasks$annual$tmin)
+	hw_index[3,,] <- get.hw.aspects(hw3_index,EHF_boolean,annual.factors,monthly.factors,EHF,ci@northern.hemisphere,ehfdef,ehf=TRUE,namask=ci@namasks$annual$tmin*ci@namasks$annual$tmax)
+	hw_index[4,,] <- get.hw.aspects(hw4_index,ECF_boolean,annual.factors,monthly.factors,ECF,ci@northern.hemisphere,ehfdef,ecf=TRUE,namask=ci@namasks$annual$tmin*ci@namasks$annual$tmax)
 	
 	rm(tavg,tavg90p,EHIaccl,EHIsig,EHF,tx90p_boolean,tn90p_boolean,EHF_boolean,tx90p_arr,tn90p_arr,hw1_index,hw2_index,hw3_index,tn90p,tx90p,beg,end,beg2,end2,dat.seq,dat.seq2,fact,fact2,ECIaccl,ECIsig,ECF)
 	return(hw_index)
@@ -703,7 +703,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 #
 # OUTPUT:
 #    - aspect.array: filled with calculated aspects.
-get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.date.factors,daily.data,northern.hemisphere,ehfdef,ehf=FALSE,ecf=FALSE) {
+get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.date.factors,daily.data,northern.hemisphere,ehfdef,ehf=FALSE,ecf=FALSE,namask=1) {
 	if(all(is.na(daily.data))) { return(aspect.array) }
 
 	month <- substr(monthly.date.factors,nchar(as.character(levels(monthly.date.factors)[1]))-1,nchar(as.character(levels(monthly.date.factors)[1])))
@@ -803,10 +803,18 @@ get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.
 
 	aspect.array[2,] <- ifelse(aspect.array[2,]=="-Inf",NA,aspect.array[2,])
 	aspect.array[4,] <- ifelse(aspect.array[4,]=="-Inf",NA,aspect.array[4,])
+
 	if (northern.hemisphere==FALSE) {
 		if(ehf==TRUE && ehfdef=="NF13") { }	# If in southern hemisphere, remove last year since there is only half a summer (can risk removing 366 days since it won't infringe on the previous summer)
 		else { aspect.array[,length(aspect.array[1,])] <- NA }
 	}
+
+	# apply na.mask to outgoing data
+	aspect.array[1,] <- aspect.array[1,]*namask
+	aspect.array[2,] <- aspect.array[2,]*namask
+	aspect.array[3,] <- aspect.array[3,]*namask
+	aspect.array[4,] <- aspect.array[4,]*namask
+	aspect.array[5,] <- aspect.array[5,]*namask
 
 	rm(summer_indices,extended_indices,extended_data,extended_boolean,rle_extended_boolean,truevals,nhw,hwm,hwa,hwm2,last_day_of_hw_season,extvals,daily.data.full,boolean.str.full,ehf,ecf)
 	return(aspect.array)
