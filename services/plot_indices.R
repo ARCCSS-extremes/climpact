@@ -172,7 +172,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
 
 # plot.index
 plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL) {
-  print(index)
   if (is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
   if (all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT PLOTTING."), quote = FALSE); return() }
 
