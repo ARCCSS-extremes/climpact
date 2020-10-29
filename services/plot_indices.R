@@ -142,7 +142,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
   {
     subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
-    print(paste0(mktrend$stat[4], " : ", mktrend$stat[2]))
     #abline(mktrend$stat[4],mktrend$stat[2])
   } else {
     subtit <- paste0("No linear trend due to insufficient valid data points (", min_trend, ").")
@@ -153,7 +152,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
 
   # add mktrend line. nherold.
   #	if(!is.na(mktrend$stat[4]) && !is.na(mktrend$stat[2])) {
-  print(paste0(mktrend$stat[4], " : ", mktrend$stat[2]))
   #		abline(mktrend$stat[4],mktrend$stat[2])
   #	}
 
@@ -198,8 +196,6 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   x1 = seq(1, length(index), 1) #as.numeric(names(index))
   y1 = unname(index)
   zsen = zyp.sen(y1 ~ x1)
-  print("zyp.sen")
-  print(zsen)
   ci = confint(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
   mktrend$stat[1] <<- unname(ci[2, 1])
