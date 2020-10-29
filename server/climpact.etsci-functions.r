@@ -804,6 +804,10 @@ get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.
 	aspect.array[2,] <- ifelse(aspect.array[2,]=="-Inf",NA,aspect.array[2,])
 	aspect.array[4,] <- ifelse(aspect.array[4,]=="-Inf",NA,aspect.array[4,])
 
+	# In the case where insufficient inbase data exists then no quantiles will be calculated and HWA, HWM and HWD will be all NA. Howevere, this results in all years reporting zero heatwaves when it should report NA.
+	# The following line replaces HWF and HWN with NA values when all HWM values are NA. The plot and write functions subsequently deal appropriately with indices that contain all NA values (by not plotting them).
+	if(all(is.na(aspect.array[1,]))) { aspect.array[3,]=aspect.array[3,NA] ; aspect.array[5,]=aspect.array[5,NA] }
+
 	if (northern.hemisphere==FALSE) {
 		if(ehf==TRUE && ehfdef=="NF13") { }	# If in southern hemisphere, remove last year since there is only half a summer (can risk removing 366 days since it won't infringe on the previous summer)
 		else { aspect.array[,length(aspect.array[1,])] <- NA }
