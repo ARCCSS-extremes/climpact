@@ -1,22 +1,10 @@
 
-
-# ****
-# PRE-RELEASE: DO NOT USE THIS VERSION OF CLIMPACT. 
-# Use [this version](https://github.com/ARCCSS-extremes/climpact2)
-# ****
-
- 
- 
-# ClimPACT
-Last updated: November 2017
-
+# <p align="center">Climpact</p>
 
 ##  What is it?
   
-ClimPACT is an R software package that calculates the [ET-SCI](http://www.wmo.int/pages/prog/wcp/ccl/opace/opace4/ET-SCI-4-1.php) indices. It can read 
-data from text or netCDF files. It directly incorporates the R packages climdex.pcic 
-and climdex.pcic.ncdf developed by the Pacific Climate Impacts Consortium (PCIC). It
-runs on Windows, Linux and MacOS.
+Climpact is an R package that calculates the [ET-SCI](http://www.wmo.int/pages/prog/wcp/ccl/opace/opace4/ET-SCI-4-1.php) indices. It can read 
+data from text or netCDF files. If you want to calculate these indices on station data then you **do not** need to install this software, instead go to the [Climpact website](https://climpact-sci.org/get-started/). This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium (PCIC). It runs on Windows, Linux and MacOS.
   
   
 ##  Where can I get it?
