@@ -32,16 +32,16 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 
    *source('server/climpact.master.installer.r')*
 
-   In Linux/MacOS: cd to the climpact-master directory created in
-   step 1, then open R in a terminal window and type;  
+   In Linux/MacOS: in a terminal window navigate to the climpact-master directory created in
+   step 1, then open R and type;  
 
    *source('server/climpact.master.installer.r')*
 
 
-<mark>Video tutorial on how to install R in Windows  </mark>
+Video tutorial on how to install R in Windows
 -> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
 
-<mark>Video tutorial on how to install ClimPACT in Windows  </mark>
+Video tutorial on how to install ClimPACT in Windows
 -> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
 
 
@@ -67,13 +67,36 @@ Video tutorial on calculating indices from a station text file.
 -> 
 
 
-##  Advanced: Calculate indices on netCDF data via command line
+##  Advanced: Calculate indices on netCDF data (Linux/MacOS only)
 
-Modify the climpact.ncdf.wrapper.r file to suit your needs (see manual
-for optional parameters to specify). Then execute this file by running 
-*Rscript climpact.ncdf.wrapper.r* from the command line. Depending
-on the size of your data and the number of cores selected, this process
-can take anywhere from one to twelve hours.
+Warning: Due to an error in the netCDF SPEI and SPI package these indices will not be
+correct IF your data contain missing values (e.g. they are based on observations).
+    
+Warning: Calculating and using the gridded indices requires familiarity with the command line and netCDF files.
+    
+Software you will need installed on your operating system:
+* R (version 3.3 or later). You will need administrator privileges on your computer or the ability to install R libraries.
+* netCDF
+* PROJ4 development files (libproj-dev package on Ubuntu)
+* udunits development files (libudunits2-dev package on Ubuntu)
+
+1) Download and extract the following file to your computer:
+   https://github.com/ARCCSS-extremes/climpact/archive/master.zip
+       This will create a directory named "climpact-master".
+
+2) Cd to the climpact2-master directory created in step 1, open R and run 
+   *source('server/climpact.master.installer.r')* to install the required R packages.
+   You may be asked whether you would like to make a personal library, in 
+   most cases the answer should be 'yes'. Once complete, quit R by typing
+   "q()". This step only needs to be done once.
+
+3) Modify the *climpact.ncdf.wrapper.r* file to suit your needs (see manual
+   for optional parameters to specify). Then execute by running 
+   *Rscript climpact.ncdf.wrapper.r* from the command line. Depending
+   on the size of your data and the number of cores selected, this process
+   can take anywhere from one to effectively an infinite number of hours. As a
+   yard stick, for a 20 year global ~1x1 degree dataset you should assign ~30 hours
+   on 2 cores.
 
 ### Notes on netCDF data format:
 * Look at the sample netCDF file for guidance in formatting your
@@ -89,7 +112,7 @@ can take anywhere from one to twelve hours.
   you modify your netCDF files.
   http://nco.sourceforge.net/
 
-				
+
 ##  Advanced: Calculate thresholds on netCDF data via command line
 
 Modify the climpact.ncdf.thresholds.wrapper.r file to suit your needs (see manual
@@ -99,48 +122,42 @@ on the size of your data and the number of cores selected, this process
 can take anywhere from one to a few hours, but is quicker than calculating 
 the indices.
 
-### Notes on netCDF data format:
-* Look at the sample netCDF file for guidance in formatting your
-  data.
-* Files must be CF compliant.
-* There must be no 'bounds' attributes in your latitude or 
-  longitude variables.
-* Your precipitation variable must have units of "kg m-2 d-1",
-  not "mm/day". These are numerically equivalent.
-* Your minimum and maximum temperature variables must be 
-  uniquely named.
-* ncrename, ncatted and ncks from the NCO toolset can help 
-  you modify your netCDF files.
-  http://nco.sourceforge.net/
 
-				
-##  Advanced: batch process multiple station files via command line
+## Advanced: Batch processing multiple station (.txt) files from the command line:
+  
+Software you will need before proceeding:
+* R (version 3.3 or later). You will need administrator privileges on your computer or the ability to install R libraries.
 
-From the terminal run the following command, replacing the flags
-with the folder where your station text files are kept, a metadata file
-containing the file name of each station text file along with relevant 
-station information (see the sample file), the beginning and end years of 
-the base period, and the number of cores to use in processing, respectively. 
-See the user guide for more information.  
+1) Download and extract the following file to your computer:
+   https://github.com/ARCCSS-extremes/climpact/archive/master.zip
+   This will create a directory named "climpact-master".
 
-*Rscript climpact.batch.stations.r ./sample_data/ ./sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
+2) Cd to the climpact2-master directory created in step 1, open R and run 
+   *source('server/climpact.master.installer.r')* to install the required R packages.
+   You may be asked whether you would like to make a personal library, in 
+   most cases the answer should be 'yes'. Once complete, quit R by typing
+   "q()". This step only needs to be done once.
+       
+3) From the terminal run the following command, replacing the flags
+   with the folder where your station text files are kept, a metadata file
+   containing the file name of each station text file along with relevant 
+   station information, the beginning and end years of the base period, and
+   the number of cores to use in processing, respectively. See the user guide
+   for more information.
+   *Rscript climpact2.batch.stations.r ./sample_data/ ./sample_data/climpact2.sample.batch.metadata.txt 1971 2000 4*
 
 
 ##  Common problems
 
-* Running the GUI on MacOS. Users may need to install XQuartz, ensure
-  to restart your computer after installing. https://www.xquartz.org/
-
 * If you experience trouble installing R packages in Windows, try to disable
   your antivirus software temporarily.
-
-* If you are trying to use the wrapper scripts in Windows, ensure your PATH
+* If you are trying to use the wrapper scripts in Windows anyway, ensure your PATH
   environment variable is changed to include the installation directory of R.
 
 
 ##  Documentation
-  
-Documentation exists in the form of this README file, the official ClimPACT
+
+Documentation exists in the form of this README file, the official ClimPpact
 user guide (available in the *server* folder) as well as the source code.
 
 
