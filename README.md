@@ -9,12 +9,12 @@ data from text or netCDF files. If you want to calculate these indices on statio
   
 ##  Where can I get it?
   
-ClimPACT is available on github @ https://github.com/ARCCSS-extremes/climpact
+When calculating the indices for station data Climpact can be accessed [online](https://climpact-sci.org/get-started/). Climpact is also available for download at [this github site](https://github.com/ARCCSS-extremes/climpact) for users who wish to calculate the indices on gridded data.
 
 
 ## How do I install ClimPACT?
 
-Software requirements:  
+If you do not wish to use the [online version](https://climpact-sci.org/get-started/) of Climpact then you can install it locally noting the following requirements:  
 * R version 3.3 or later. You will need administrator privileges 
   on your computer or the ability to install R packages.
 * Linux users require the PROJ4 development files (libproj-dev package on 
@@ -38,11 +38,11 @@ Software requirements:
    *source('server/climpact.master.installer.r')*
 
 
-Video tutorial on how to install R in Windows  
+<mark>Video tutorial on how to install R in Windows  
 -> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
 
 Video tutorial on how to install ClimPACT in Windows  
--> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
+-> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s</mark>
 
 
 ##  How do I start ClimPACT?
