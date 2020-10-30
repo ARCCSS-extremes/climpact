@@ -38,11 +38,11 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
    *source('server/climpact.master.installer.r')*
 
 
-<mark>Video tutorial on how to install R in Windows  
+<mark>Video tutorial on how to install R in Windows  </mark>
 -> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
 
-Video tutorial on how to install ClimPACT in Windows  
--> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s</mark>
+<mark>Video tutorial on how to install ClimPACT in Windows  </mark>
+-> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
 
 
 ##  How do I start ClimPACT?
