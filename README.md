@@ -41,6 +41,7 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
    most cases the answer should be 'yes'. Once complete, quit R by typing
    *q()*. 
    
+<br/>
 
 Video tutorial on how to install R in Windows
 -> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
@@ -66,7 +67,7 @@ Video tutorial on calculating indices from a station text file.
 -> 
 
 
-##  ADVANCED: Calculate indices on netCDF data (Linux/MacOS only)
+##  ADVANCED: Calculate indices from netCDF data (Linux/MacOS only)
 
 **Warning:** Calculating and using the gridded indices requires familiarity with the command line and netCDF files.
 
@@ -98,7 +99,7 @@ correct for gridded data IF your data contain missing values (e.g. they are base
   http://nco.sourceforge.net/
 
 
-##  ADVANCED: Calculate thresholds on netCDF data from the command line
+##  ADVANCED: Calculate thresholds from netCDF data (Linux/MacOS only)
 
 1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide for guidance on the parameters to specify). 
    
@@ -120,7 +121,6 @@ correct for gridded data IF your data contain missing values (e.g. they are base
    
    *Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
-
 ##  Common problems
 
 * If you experience trouble installing R packages in Windows, try to disable
@@ -128,12 +128,14 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 * If you are trying to use the wrapper scripts in Windows anyway, ensure your PATH
   environment variable is changed to include the installation directory of R.
 
-
 ##  Documentation
 
 Documentation exists in the form of this README file, the official Climpact
 user guide (available in the *server* folder) as well as the source code.
 
+## Having trouble?
+
+Search and/or submit an [issue](https://github.com/ARCCSS-extremes/climpact/issues).
 
 ##  Contact
   
