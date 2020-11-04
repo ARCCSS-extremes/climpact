@@ -6,7 +6,7 @@
 Climpact is an R package that calculates [indices of daily climate extremes](https://climpact-sci.org/indices/). It can read 
 data for a single site (e.g. a weather station) in the form of a text file or gridded data (e.g. from a climate model) in the form of netCDF files. This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium ([PCIC](https://www.pacificclimate.org/)). 
 
-If you want to calculate these indices from text files then you **DO NOT** need to install this software, instead go to the [Climpact website](https://climpact-sci.org/get-started/) to calculate these indices online. 
+*If you want to calculate these indices from text files then you **DO NOT** need to install this software, instead go to the [Climpact website](https://climpact-sci.org/get-started/) to calculate these indices online.*
   
   
 ##  Where can I get Climpact?
@@ -18,7 +18,8 @@ When calculating the indices for station data Climpact can be accessed [online](
 
 If you do not wish to use the [online version](https://climpact-sci.org/get-started/) of Climpact then you can install it locally noting the following software requirements:  
 * R version 3.3 or later. You will need administrator privileges on your computer or the ability to install R packages.
-* Linux users wanting to calculate indices on gridded data require the PROJ4 development files (libproj-dev package on Ubuntu) and the [udunits](https://www.unidata.ucar.edu/software/udunits/) development files (libudunits2-dev package on Ubuntu).
+* Linux users wanting to calculate indices on gridded data require the *PROJ4* development files (libproj-dev package on Ubuntu) and the [*udunits*](https://www.unidata.ucar.edu/software/udunits/) development files (libudunits2-dev package on Ubuntu).
+
 
 
 1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
