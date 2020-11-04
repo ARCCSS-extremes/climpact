@@ -105,7 +105,6 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 
 ##  ADVANCED: Calculate thresholds on netCDF data from the command line
 
-
 1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide for guidance on the parameters to specify). 
    
 2) Then execute this file by running *Rscript climpact.ncdf.thresholds.wrapper.r* from the command line. Depending
@@ -114,9 +113,6 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 
 
 ## ADVANCED: Batch process multiple station files from the command line
-  
-Software you will need before proceeding:
-* R (version 3.3 or later). You will need administrator privileges on your computer or the ability to install R libraries.
 
 1) Navigate to the climpact-master directory created when installing Climpact. 
        
@@ -126,6 +122,7 @@ Software you will need before proceeding:
    station information (see the sample provided), the beginning and end years of the base period, and
    the number of cores to use in processing, respectively. See the user guide
    for more information.
+   
    *Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
 
