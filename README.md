@@ -51,16 +51,11 @@ Video tutorial on how to install ClimPACT in Windows
 
 ##  How do I start Climpact once I've installed it on my computer?
 
-**In Windows:** open R and select "File->Change dir..." and select the 
-climpact-master directory created when installing ClimPACT. Then run the 
-following two commands:  
+**In Windows**, open R and select "File->Change dir..." and select the 
+climpact-master directory created when installing ClimPACT. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created in
+step 1, then open R (by typing *R* at the command line). 
 
-*library(shiny)*  
-*runApp()* 
-
-**In Linux/MacOS:** navigate to the climpact-master directory created in
-step 1, then open R (by typing *R* at the command line) in a terminal window and run the following two
-commands:  
+Then run the following two commands:
 
 *library(shiny)*  
 *runApp()* 
