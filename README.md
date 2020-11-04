@@ -20,7 +20,7 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 * R version 3.3 or later. You will need administrator privileges on your computer or the ability to install R packages.
 * Linux users wanting to calculate indices on gridded data require the *PROJ4* development files (libproj-dev package on Ubuntu) and the [*udunits*](https://www.unidata.ucar.edu/software/udunits/) development files (libudunits2-dev package on Ubuntu).
 
-
+<br/>
 
 1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
    This will create a directory named "climpact-master".
