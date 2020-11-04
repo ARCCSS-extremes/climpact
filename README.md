@@ -1,30 +1,30 @@
 
 # <p align="center">Climpact</p>
 
-##  What is it?
+##  What is Climpact?
   
-Climpact is an R package that calculates a variety of daily [climate extremes indices](https://climpact-sci.org/indices/). It can read 
-data from a single site (e.g. a weather station) in the form of a text file or gridded data in the form of netCDF files. This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium (PCIC). 
+Climpact is an R package that calculates [indices of daily climate extremes](https://climpact-sci.org/indices/). It can read 
+data for a single site (e.g. a weather station) in the form of a text file or gridded data (e.g. from a climate model) in the form of netCDF files. This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium ([PCIC](https://www.pacificclimate.org/)). 
 
 If you want to calculate these indices from text files then you **DO NOT** need to install this software, instead go to the [Climpact website](https://climpact-sci.org/get-started/) to calculate these indices online. 
   
   
-##  Where can I get it?
+##  Where can I get Climpact?
   
-When calculating the indices for station data Climpact can be accessed [online](https://climpact-sci.org/get-started/). Climpact is also available for download at [this github site](https://github.com/ARCCSS-extremes/climpact) for users who also wish to calculate the indices on gridded data. The software runs on Windows, Linux and MacOS (though only on Linux and MacOS for gridded calculations).
+When calculating the indices for station data Climpact can be accessed [online](https://climpact-sci.org/get-started/). Climpact is also available for download at [this github site](https://github.com/ARCCSS-extremes/climpact) for users who also wish to calculate the indices on gridded data. The software runs on Windows, Linux and MacOS, though only on Linux and MacOS for gridded calculations.
 
 
 ## How do I install Climpact?
 
-If you do not wish to use the [online version](https://climpact-sci.org/get-started/) of Climpact then you can install it locally noting the following requirements:  
+If you do not wish to use the [online version](https://climpact-sci.org/get-started/) of Climpact then you can install it locally noting the following software requirements:  
 * R version 3.3 or later. You will need administrator privileges on your computer or the ability to install R packages.
-* Linux users require the PROJ4 development files (libproj-dev package on Ubuntu) and the [udunits](https://www.unidata.ucar.edu/software/udunits/) development files (libudunits2-dev package on Ubuntu).
+* Linux users wanting to calculate indices on gridded data require the PROJ4 development files (libproj-dev package on Ubuntu) and the [udunits](https://www.unidata.ucar.edu/software/udunits/) development files (libudunits2-dev package on Ubuntu).
 
 
 1. Download and extract [this file](https://github.com/ARCCSS-extremes/climpact/archive/master.zip) to your computer.
    This will create a directory named "climpact-master".
 
-2. Install the required R-packages. This process can take several minutes.
+2. Install the required R-packages. This step can take several minutes and only needs to be done once.
 
    In Windows: open R and select "File->Change dir..." and select the
    climpact-master directory created in step 1. Then type;  
@@ -38,7 +38,7 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 
    You may be asked whether you would like to make a personal library, in 
    most cases the answer should be 'yes'. Once complete, quit R by typing
-   "q()". This step only needs to be done once.
+   *q()*. 
    
 
 Video tutorial on how to install R in Windows
@@ -57,14 +57,14 @@ following two commands;
 *library(shiny)*  
 *runApp()* 
 
-* In Linux/MacOS: cd to the climpact-master directory created in
+* In Linux/MacOS: navigate to the climpact-master directory created in
 step 1, then open R (by typing *R* at the command line) in a terminal window and run the following two
 commands;  
 
 *library(shiny)*  
 *runApp()* 
 
-Follow the on-screen instructions to calculate the ClimPACT indices.
+Follow the on-screen instructions to calculate the Climpact indices.
 
 Video tutorial on calculating indices from a station text file.  
 -> 
@@ -72,30 +72,15 @@ Video tutorial on calculating indices from a station text file.
 
 ##  ADVANCED: Calculate indices on netCDF data (Linux/MacOS only)
 
-Warning: Due to an error in the netCDF SPEI and SPI package these indices will not be
-correct IF your data contain missing values (e.g. they are based on observations).
+Warning: Due to an error in the SPEI and SPI package these indices will not be
+correct for gridded data IF your data contain missing values (e.g. they are based on remote sensing observations).
     
 Warning: Calculating and using the gridded indices requires familiarity with the command line and netCDF files.
-    
-Software you will need installed on your operating system:
-* R (version 3.3 or later). You will need administrator privileges on your computer or the ability to install R libraries.
-* netCDF
-* PROJ4 development files (libproj-dev package on Ubuntu)
-* udunits development files (libudunits2-dev package on Ubuntu)
 
-1) Download and extract the following file to your computer:
-   https://github.com/ARCCSS-extremes/climpact/archive/master.zip
-       This will create a directory named "climpact-master".
-
-2) In a terminal window navigate to the climpact-master directory created in step 1, open R and run 
-   *source('server/climpact.master.installer.r')* to install the required R packages.
-   You may be asked whether you would like to make a personal library, in 
-   most cases the answer should be 'yes'. Once complete, quit R by typing
-   "q()". This step only needs to be done once.
-
-3) Modify the *climpact.ncdf.wrapper.r* file to suit your needs (see user guide
-   for optional parameters to specify). Then execute by running 
-   *Rscript climpact.ncdf.wrapper.r* from the command line. Depending
+1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.wrapper.r* file to suit your needs (see user guide
+   for optional parameters to specify). 
+   
+2) Execute the above script by running *Rscript climpact.ncdf.wrapper.r* from the command line. Depending
    on the size of your data and the number of cores selected, this process
    can take anywhere from one to effectively an infinite number of hours. As a
    yard stick, for a 20 year global ~1x1 degree dataset and a computer with 2 cores you should assign ~30 hours to begin with.
@@ -117,11 +102,12 @@ Software you will need installed on your operating system:
 
 ##  ADVANCED: Calculate thresholds on netCDF data via command line
 
-Modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide
-for optional parameters to specify). Then execute this file by running 
-*Rscript climpact.ncdf.thresholds.wrapper.r* from the command line. Depending
-on the size of your data and the number of cores selected, this process
-can take anywhere from one to many hours.
+
+1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide for guidance on the parameters to specify). 
+   
+2) Then execute this file by running *Rscript climpact.ncdf.thresholds.wrapper.r* from the command line. Depending
+   on the size of your data and the number of cores selected, this process
+   can take anywhere from one to many hours.
 
 
 ## ADVANCED: Batch processing multiple station (.txt) files from the command line:
