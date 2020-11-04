@@ -100,7 +100,7 @@ Warning: Calculating and using the gridded indices requires familiarity with the
   http://nco.sourceforge.net/
 
 
-##  ADVANCED: Calculate thresholds on netCDF data via command line
+##  ADVANCED: Calculate thresholds on netCDF data from the command line
 
 
 1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide for guidance on the parameters to specify). 
@@ -110,28 +110,20 @@ Warning: Calculating and using the gridded indices requires familiarity with the
    can take anywhere from one to many hours.
 
 
-## ADVANCED: Batch processing multiple station (.txt) files from the command line:
+## ADVANCED: Batch process multiple station files from the command line
   
 Software you will need before proceeding:
 * R (version 3.3 or later). You will need administrator privileges on your computer or the ability to install R libraries.
 
-1) Download and extract the following file to your computer:
-   https://github.com/ARCCSS-extremes/climpact/archive/master.zip
-   This will create a directory named "climpact-master".
-
-2) Cd to the climpact-master directory created in step 1, open R and run 
-   *source('server/climpact.master.installer.r')* to install the required R packages.
-   You may be asked whether you would like to make a personal library, in 
-   most cases the answer should be 'yes'. Once complete, quit R by typing
-   "q()". This step only needs to be done once.
+1) Navigate to the climpact-master directory created when installing Climpact. 
        
-3) From the terminal run the following command, replacing the flags
-   with the folder where your station text files are kept, a metadata file
+2) From the terminal run the following command, replacing the flags
+   with: the folder where your station text files are kept, a metadata file
    containing the file name of each station text file along with relevant 
-   station information, the beginning and end years of the base period, and
+   station information (see the sample provided), the beginning and end years of the base period, and
    the number of cores to use in processing, respectively. See the user guide
    for more information.
-   *Rscript climpact.batch.stations.r ./sample_data/ ./sample_data/climpact.sample.batch.metadata.txt 1971 2000 4*
+   *Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
 
 
 ##  Common problems
@@ -144,7 +136,7 @@ Software you will need before proceeding:
 
 ##  Documentation
 
-Documentation exists in the form of this README file, the official ClimPpact
+Documentation exists in the form of this README file, the official Climpact
 user guide (available in the *server* folder) as well as the source code.
 
 
