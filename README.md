@@ -28,12 +28,12 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 2. Install the required R-packages. This step can take several minutes and only needs to be done once.
 
    In Windows: open R and select "File->Change dir..." and select the
-   climpact-master directory created in step 1. Then type;  
+   climpact-master directory created in step 1. Then type:  
 
    *source('server/climpact.master.installer.r')*
 
    In Linux/MacOS: in a terminal window navigate to the climpact-master directory created in
-   step 1, then open R (by typing *R* at the command line) and type;  
+   step 1, then open R (by typing *R* at the command line) and type:  
 
    *source('server/climpact.master.installer.r')*
 
@@ -51,16 +51,16 @@ Video tutorial on how to install ClimPACT in Windows
 
 ##  How do I start Climpact once I've installed it on my computer?
 
-* In Windows: open R and select "File->Change dir..." and select the 
+**In Windows:** open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing ClimPACT. Then run the 
-following two commands;  
+following two commands:  
 
 *library(shiny)*  
 *runApp()* 
 
-* In Linux/MacOS: navigate to the climpact-master directory created in
+**In Linux/MacOS:** navigate to the climpact-master directory created in
 step 1, then open R (by typing *R* at the command line) in a terminal window and run the following two
-commands;  
+commands:  
 
 *library(shiny)*  
 *runApp()* 
@@ -73,30 +73,32 @@ Video tutorial on calculating indices from a station text file.
 
 ##  ADVANCED: Calculate indices on netCDF data (Linux/MacOS only)
 
-Warning: Due to an error in the SPEI and SPI package these indices will not be
+**Warning:** Calculating and using the gridded indices requires familiarity with the command line and netCDF files.
+
+**Warning:** Due to an error in the SPEI and SPI package these indices will not be
 correct for gridded data IF your data contain missing values (e.g. they are based on remote sensing observations).
     
-Warning: Calculating and using the gridded indices requires familiarity with the command line and netCDF files.
-
 1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.wrapper.r* file to suit your needs (see user guide
    for optional parameters to specify). 
    
-2) Execute the above script by running *Rscript climpact.ncdf.wrapper.r* from the command line. Depending
-   on the size of your data and the number of cores selected, this process
+2) Execute the above script by entering the following command at the command line:
+
+   *Rscript climpact.ncdf.wrapper.r* 
+   
+   Depending on the size of your data and the number of cores selected, this process
    can take anywhere from one to effectively an infinite number of hours. As a
    yard stick, for a 20 year global ~1x1 degree dataset and a computer with 2 cores you should assign ~30 hours to begin with.
 
-### Notes on netCDF data format:
-* Look at the sample netCDF file for guidance in formatting your
-  data.
+### Notes on netCDF file format:
 * Files must be CF compliant.
+* Look at the [sample netCDF file](https://github.com/ARCCSS-extremes/climpact/raw/master/www/sample_data/climpact.sampledata.gridded.1991-2010.nc) for an example of how to correctly structure your file. Most climate model output will be compatible with Climpact.
 * There must be no 'bounds' attributes in your latitude or 
   longitude variables.
 * Your precipitation variable must have units of "kg m-2 d-1",
   not "mm/day". These are numerically equivalent.
 * Your minimum and maximum temperature variables must be 
   uniquely named.
-* ncrename, ncatted and ncks from the NCO toolset can help 
+* The *ncrename*, *ncatted* and *ncks* commands from the NCO package can help 
   you modify your netCDF files.
   http://nco.sourceforge.net/
 
