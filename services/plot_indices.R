@@ -163,7 +163,7 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
   plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
   #	legend("bottomleft","locally weighted scatterplot smoothing",col = "red", lty = 2, lwd = 3, bty = "n")
-  legend("bottomright", paste("ClimPACT v ", version.climpact, sep = ""), col = "white", lty = 2, lwd = 0, bty = "n")
+  legend("bottomright", paste("Climpact v ", version.climpact, sep = ""), col = "white", lty = 2, lwd = 0, bty = "n")
   suppressWarnings(par(old.par)) # restore previous par settings. Suppress warnings regarding parameters that cannot be set.
 }
 # end of plotx

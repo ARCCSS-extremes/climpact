@@ -32,7 +32,7 @@ indices=NULL	#c("hw","tnn")
 # input threshold file to use, or NULL for none.
 thresholds.files=NULL#"thresholds.test.1991-1997.nc"
 
-# Directory where ClimPACT is stored. Use full pathname. Leave as NULL if you are running this script from the ClimPACT directory (where this script was initially stored).
+# Directory where Climpact is stored. Use full pathname. Leave as NULL if you are running this script from the Climpact directory (where this script was initially stored).
 root.dir=NULL
 
 

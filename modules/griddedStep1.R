@@ -5,8 +5,8 @@ griddedStep1 <- function(input, output, session, climpactUI) {
     modalDialog(title = "Important message",
         tags$p("Calculating gridded indices usually takes many hours, depending on how large your dataset is,",
           " how fast your computer is and how many cores you choose."),
-        tags$p("Do not close the ClimPACT browser window until this process is complete. ",
-          "You will see \"Done\" printed below the \"Calculate NetCDF indices\" button when ClimPACT is finished."),
+        tags$p("Do not close the Climpact browser window until this process is complete. ",
+          "You will see \"Done\" printed below the \"Calculate NetCDF indices\" button when Climpact is finished."),
         footer = tagList(
           modalButton("Cancel"),
           actionButton(ns("proceedGridded"), "Calculate Indices")

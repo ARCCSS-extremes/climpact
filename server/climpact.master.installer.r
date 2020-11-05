@@ -1,5 +1,5 @@
 # ------------------------------------------------
-# This script checks that the appropriate R packages are installed for running ClimPACT.
+# This script checks that the appropriate R packages are installed for running Climpact.
 # November 2017
 # ------------------------------------------------
 
@@ -11,7 +11,7 @@
 # 	print("",quote=FALSE)
 # 	print("******************************",quote=FALSE)
 # 	print("",quote=FALSE)
-# 	cat("Calculating the ClimPACT indices on netCDF data requires that PROJ4 and UDUNITS2 be installed on your opreating system
+# 	cat("Calculating the Climpact indices on netCDF data requires that PROJ4 and UDUNITS2 be installed on your opreating system
 # prior to running this script. If the following R packages fail to install ensure that these two packages are installed.\n\n")
 # 	readline(prompt="Press [enter] to continue")
 # } 

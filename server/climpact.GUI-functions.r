@@ -17,10 +17,10 @@ write_header <- function(filename, header = "", metadata) {
   if (is.null(filename)) { stop("Filename not passed to function 'write_header'") }
 
   header <- cbind("Description: ", header)
-  # No error checking here, file access is guaranteed because ClimPACT has own copy.
+  # No error checking here, file access is guaranteed because Climpact has own copy.
   write.table(header, sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
 
-  first_lines <- cbind(c("Station: ", "Latitude: ", "Longitude: ", "ClimPACT_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, version.climpact, toString(Sys.Date())))
+  first_lines <- cbind(c("Station: ", "Latitude: ", "Longitude: ", "Climpact_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, version.climpact, toString(Sys.Date())))
   write.table(first_lines, sep = ",", file = filename, append = TRUE, row.names = FALSE, col.names = FALSE)
 
 }
@@ -28,7 +28,7 @@ write_header <- function(filename, header = "", metadata) {
 # this check interferes with generation of image plots as 
 # it writes to file with %d pattern in filename causing it to appear on file system
 # check_open <- function(filename) {
-#   # No error checking here, file access is guaranteed because ClimPACT has own copy.
+#   # No error checking here, file access is guaranteed because Climpact has own copy.
 #   write.table("test text", sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
 # }
 # End of Prohom and Aguilar code.
@@ -121,13 +121,13 @@ package.check <- function() {
                 "shinyBS", "shinyWidgets")
   new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
 
-  # Install/update packages needed for ClimPACT
+  # Install/update packages needed for Climpact
   if (length(new.packages)) {
     print("******************************")
     print(paste("The following packages are not installed...", new.packages, sep = ""))
     print("Running master install script (this only needs to occur once).")
     # source("services/climpact.master.installer.r")
-    print("Continuing with ClimPACT execution...")
+    print("Continuing with Climpact execution...")
     print("******************************")
   }
 }

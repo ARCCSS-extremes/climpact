@@ -302,7 +302,7 @@ climdex.spei <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift
         stopifnot(is.numeric(scale),all(scale>0),!is.null(ci@data$prec))
         if(is.null(ci@data$tmin) | is.null(ci@data$tmax) | is.null(ci@data$prec)) stop("climdex.spei requires tmin, tmax and precip.")
 
-        scale <- c(3,6,12)      # hard-coded for ClimPACT definition.
+        scale <- c(3,6,12)      # hard-coded for Climpact definition.
         ts.origin = ("1850-01-01")      # arbitrarily chosen origin for time-series object
 
         # if we are to use thresholds from a previous calculation then set computefuture flag to TRUE
@@ -429,7 +429,7 @@ climdex.spi <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift=
         stopifnot(is.numeric(scale),all(scale>0),!is.null(ci@data$prec))
         if(is.null(ci@data$prec)) stop("climdex.spi requires precip.")
 
-        scale <- c(3,6,12)      # hard-coded for ClimPACT definition.
+        scale <- c(3,6,12)      # hard-coded for Climpact definition.
         ts.origin = ("1850-01-01")      # arbitrarily chosen origin for time-series object
 
 	# if we are to use thresholds from a previous calculation then set computefuture flag to TRUE

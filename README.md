@@ -46,14 +46,14 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 Video tutorial on how to install R in Windows
 -> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
 
-Video tutorial on how to install ClimPACT in Windows
+Video tutorial on how to install Climpact in Windows
 -> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
 
 
 ##  How do I start Climpact once I've installed it on my computer?
 
 **In Windows**, open R and select "File->Change dir..." and select the 
-climpact-master directory created when installing ClimPACT. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created in
+climpact-master directory created when installing Climpact. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created in
 step 1, then open R (by typing *R* at the command line). 
 
 Then run the following two commands:

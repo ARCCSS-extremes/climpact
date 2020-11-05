@@ -117,8 +117,8 @@ put.ETCCDI.atts <- function(f, freq, orig.title, author.data, definemode=FALSE, 
   ncdf4::ncatt_put(f, 0, "file_created_by_userid", system("whoami",intern=TRUE), definemode=definemode)
   ncdf4::ncatt_put(f, 0, "R_version", as.character(getRversion()), definemode=definemode)
   ncdf4::ncatt_put(f, 0, "climdex.pcic_version", as.character(packageVersion("climdex.pcic")), definemode=definemode)
-  ncdf4::ncatt_put(f, 0, "ClimPACT_version", software_id, definemode=definemode)
-  ncdf4::ncatt_put(f, 0, "ClimPACT_github", "https://github.com/ARCCSS-extremes/climpact", definemode=definemode)
+  ncdf4::ncatt_put(f, 0, "Climpact_version", software_id, definemode=definemode)
+  ncdf4::ncatt_put(f, 0, "Climpact_github", "https://github.com/ARCCSS-extremes/climpact", definemode=definemode)
 
   invisible(0)
 }
@@ -1497,7 +1497,7 @@ create.thresholds.from.file <- function(root.dir=NULL,input.files, output.file, 
   ## Define what the threshold indices will look like...
   threshold.dat <- get.thresholds.metadata(names(f.meta$v.f.idx))
 
-  # source climpact.etsci-functions.r to retrieve current ClimPACT2 version
+  # source climpact.etsci-functions.r to retrieve current Climpact2 version
   source(paste0(root.dir,"/server/climpact.etsci-functions.r"))
   assign("software_id",software_id,envir = .GlobalEnv)
   
@@ -1621,7 +1621,7 @@ get.thresholds.f.idx <- function(thresholds.files, thresholds.name.map) {
 #'
 #' The indices to be calculated can be specified; if not, they will be determined by data availability. Thresholds can be supplied (via \code{thresholds.files}) or, if there is data within the base period, calculated and used as part of the process. Note that in-base thresholds are separate from out-of-base thresholds; this is covered in more detail in the help for the \code{climdex.pcic} package.
 #'
-#' @param root.dir The directory where ClimPACT is stored. Default is NULL which uses the user's current working directory.
+#' @param root.dir The directory where Climpact is stored. Default is NULL which uses the user's current working directory.
 #' @param input.files A list of filenames of NetCDF files to be used as input. A NetCDF file may contain one or more variables.
 #' @param out.dir The directory to put the output files in.
 #' @param output.filename.template The output filename to be used as a template, which must follow the CMIP5 file naming conventions.

@@ -5,14 +5,14 @@ ui <- tagList(
   ),
   useShinyjs(),
   dashboardPage(
-    header = dashboardHeader(title = "ClimPACT"),
+    header = dashboardHeader(title = "Climpact"),
     sidebar = dashboardSidebar(
       sidebarMenu(
         menuItem("Home", tabName = "home", icon = icon("sun")), #cloud-sun-rain when that icon is available
         menuItem("Process single station", tabName = "single", icon = icon("table")),
         menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
         menuItemOutput("griddedMenuItem"),
-        menuItem("Documentation", icon = icon("book"), href = "user_guide/ClimPACT_user_guide.htm")
+        menuItem("Documentation", icon = icon("book"), href = "user_guide/Climpact_user_guide.htm")
       )
     ),
     body = dashboardBody(
