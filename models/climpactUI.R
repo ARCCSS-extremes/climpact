@@ -44,7 +44,7 @@ climpactUI <- function(ns = character(),
     ns <- "ui"
   }
   if (length(userGuideLink) == 0) {
-    userGuideLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>ClimPACT User Guide</a>"
+    userGuideLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm>Climpact User Guide</a>"
   }
   if (length(appendixBLink) == 0) {
     appendixBLink <- "<a target=\"_blank\" href=user_guide/ClimPACT_user_guide.htm#appendixB>Appendix B</a>"

@@ -34,10 +34,10 @@ singleStationStep2UI <- function (id) {
     column(4, class = "instructions",
       box(title = "Instructions", width = 12,
         h4("Check Data Quality"),
-        tags$p("Click 'Check Quality' button. ClimPACT will commence quality control checks."),
+        tags$p("Click 'Check Quality' button. Climpact will commence quality control checks."),
         tags$p("Once processing is complete you can view quality control plots and you will be provided with a link to ",
-          "the quality control diagnostics output that ClimPACT has produced."),
-        tags$p("It is recommended that you inspect the output to ensure no errors are present in the station data."),
+          "the quality control output that Climpact has produced."),
+        tags$p("It is necessary for you to inspect the output to ensure no errors are present in your station data."),
         conditionalPanel(
           condition = "output.qcLink != ''",
           ns = ns,
