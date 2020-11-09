@@ -1,4 +1,4 @@
-#Climpact user guide
+# Climpact user guide
 
 ## Table of contents
 <a name="toc"></a>
@@ -173,4 +173,190 @@ source('installers/Climpact.master.installer.r').
 The above process will start downloading and installing the R packages that Climpact requires. This process can take several minutes but will only need to be completed once. You will be prompted with a note part way through this process. You may also be asked to select the geographical location of the closest 'mirror' to download these packages from (see figure below). You may select any location, though the closest location will usually offer the fastest download speed. Once complete, you should see a message in the R console saying "Checking complete.".
 
 ![](images/CRAN_mirrors.png)
+
+See the video tutorial below for an example of getting and installing Climpact on a Windows computer.
+
+
+## 3. Calculating the indices from a station text file
+[RETURN TO TOP](#toc)
+
+### 3.1 Starting Climpact
+
+This section of the user guide describes how to calculate the Climpact indices on a station text file formatted according to Appendix B (it is imperative that your station text file is formatted according to these guidelines otherwise you will encounter errors).
+
+In Windows, open R and select File->Change dir... and select the climpact-master directory created when installing Climpact (see Section 2 if you have not done this). Then run the following two commands;
+```r
+library(shiny)
+runApp()
+```
+
+In Linux or MacOS, cd to the climpact-master directory created instep 1, then open R in a terminal window (by typing R) and run the following two commands;
+```r
+library(shiny)
+runApp()
+```
+
+Climpact should then start. And you should see the main screen as pictured below.
+
+![](images/front_page.png)
+
+### 3.2 Load and Check Data
+
+Different functionality in Climpact is accessed via the tabs at the top of the screen. From the main screen select the 'Load and Check Data' tab to begin calculating the indices on a station text file. You should see the following screen.
+
+![](images/load_check.png)
+
+### 3.3 Calculate Climate Indices
+
+On this screen you are required to enter information relating to the indices that will be calculated.
+
+![](images/calculate_indices.png)
+
+* Box 6: Enter the title that will appear on each plot. You may also change the following default parameters that relate to several indices (see Appendix A for index definitions);
+
+    * **WSDId Days** sets the number of days which need to occur consecutively with a TX > 90th  percentile to be counted in the WSDId index.
+
+    * **CSDId Days** sets the number of days which need to occur consecutively with a TN < 10th  percentile to be counted in the CSDId index.
+
+    * **RxdDay Days** sets the monthly maximum consecutive d-day precipitation to be recorded by the Rxdday index.
+
+    * **d for TXdTNd and TXbdTNbd** sets the number of consecutive days required for the TXdTNd and TXbdTNbd indices.
+
+    * **base temperature** for HDDheat, CDDcold and GDDgrow set the temperatures to be used in calculating these indices.
+
+    * **Number of days where precipitation >= nn (Rnnmm)** allows the user to calculate the number of days with precipitation greater than or equal to a set amount. This index will be called ‘rnnmm’, where ‘nn’ is the precipitation set by the user.
+
+    * **Custom day count index** gives the user the option to create their own index based on the number of days crossing a specified threshold for daily maximum temperature (TX), minimum temperature (TN), diurnal temperature range (DTR) or precipitation (PR). To calculate a custom index, the user must select one of these variables, an operator (<,<=,>,>=) and a constant. For example, selecting TX, the ‘>=’ operator and specifying ‘40’ as a constant will calculate an index representing the number of days where TX is greater than or equal to 40°C. Climpact will output this index as TXge40. Operators are abbreviated in text with lt, le, gt and ge for <, <=, > and >=, respectively.
+
+* **Box 7**: Once you have reviewed the above parameters, select the 'Calculate indices' button. A progress bar will appear in the lower right corner. This process can take up to a minute depending on the length of your record and the speed of your computer.
+
+* **Box 8**: Once Climpact has finished calculating the indices you will be presented with the directory path where your output has been created. In this directory you will find several subdirectories including plots, indices, trend, thres and qc. The plots subdirectory contains image files with plots of each index. The indices subdirectory contains .csv files with the data for each index. The trend subdirectory contains a .csv file with linear trend information calculated for each index. The thres subdirectory contains two files with threshold information used in calculating the indices. The qc subdirectory contains the quality control diagnostic information calculated in section 3.2. See section 3.5 for more information on Climpact output.
+
+**At this point** the calculating of the indices is complete. If you would like to also calculate the correlation between some sector data you have and the indices that have been calculated, you may proceed to the next section describing 'Sector Data Correlation'.
+
+
+### 3.4 Sector Data Correlation
+
+Climpact can calculate and plot correlations between annual sector data the user has and the indices it has calculated. Use the 'Sector Data Correlation' tab after you have calculated your indices to do this. Currently, Climpact only calculates correlations for annual sector data. Note that the indices must have been calculated in the current session of Climpact. So, if you have closed Climpact and wish to calculate correlations with sector data, you must repeat the process described in sections 3.2 and 3.3.
+
+Box 9: Select sector data file for correlating with indices. See Appendix B for guidance on formatting this file.
+
+Box 10: Select a name for your sector data and whether you would like the sector and index data to be detrended prior to calculating the correlations.
+
+Box 11: Once you have selected your data and chosen a name for your data, select the 'Calculate correlations' tab.
+
+Box 12: Once complete, you will be provided with a link to plots and .csv files containing the correlations.
+
+
+### 3.5 Examining Climpact output
+
+Climpact creates its output files in the climpact-master/www/output/[station_name] directory, where [station_name] is the name you entered on the 'Load and Check Data' tab in section 3.2. Climpact produces two key subdirectories where the results of each index are stored, plots/ and indices/. For each index one image file (.png) containing a plot of the index and one comma-separated value (.csv) file containing the index values are created and put into the the plots/ and indices/ subdirectories, respectively. The .csv files can be opened in Microsoft Excel, Open Office Calc or a text editor. The index files have names “sydney_XXX_YYY.csv” where XXX represents the name of the index (see Appendix A) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A sample .csv file for su is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using ALL available years/months).
+
+![](images/su_csv.png)
+
+An example of a plot for the index su is shown below. These files may be opened in any standard image viewing software. The plot of each index is shown with a locally weighted linear regression (red dashed line) to give an indication of longer-term variations. The linear Mann-Kendall trend are displayed at the bottom of the plot along with the lower and upper bounds of the 95% confidence interval. In addition, one .pdf file ending in \*_all_plots.pdf, is produced in the subdirectory plots/. This file contains all plots in each image file.
+
+See Appendix A for definitions of each Climpact index.
+
+![](images/sydney_su_ANN.png)
+
+
+
+
+## 4. Calculating the indices from netCDF files
+[RETURN TO TOP](#toc)
+
+Users who have three-dimensional netCDF datasets (time x latitude x longitude) of daily temperature and precipitation may also calculate the Climpact indices. Currently, there are two ways to do this. Firstly, users may utilise the separate Climpact.ncdf.wrapper.r script and optionally the Climpact.ncdf.thresholds.wrapper.r script by modifying them and executing them from the Windows or Linux command line. This functionality is intended for users familiar with R and/or the command line. Secondly, there is an experimental user interface to this functionality which can be accessed via the 'EXPERIMENTAL' tab that can be seen upon starting Climpact. While this uses the same code to calculate the indices as the above mentioned wrapper scripts, there are several instabilities in the Climpact user interface that result from errors that occur during calculation not being handled well by Climpact. Thus, unless you are confident your data is formatted correctly it is only recommended that users use the wrapper scripts.
+
+See Appendix B about ensuring your data is in the correct format. If it is not in the correct format, there may be unintended and non-obvious consequences.
+
+### 4.1 Using the netCDF wrapper scripts
+
+The Climpact.ncdf.wrapper.r script calculates the Climpact indices on the given netCDF file(s). To use this script, make a copy of it and edit the parameters inside according to your data (the comments in this file will guide you in determining how to change these variables). It is important that you make a copy of this file and do not alter the original. As a test, it is recommended to run this script on the provided sample data BEFORE running on your own data.
+
+If you wish to calculate the indices for data contained in one set of netCDF files, however using percentile thresholds based on data in another set of netCDF files, then the Climpact.ncdf.thresholds.wrapper.r will need to be used.
+
+A typical example of this follows.
+
+The user has a netCDF file containing model simulated daily precipitation, maximum temperature and minimum temperature for the present day period of 1990 - 2010. The user also has a netCDF file containing climate model projections for the period 2050 - 2070. They wish to calculate the Climpact indices on both of these periods but want the percentile-based indices in both periods (present and future) to utilise thresholds calculated from the present day climate. For a brief explanation of climate indices including thresholds-based indices refer to Appendix F (Wait, what is a climate index?).
+
+To complete the above scenario requires three steps:
+
+1. Make a copy of Climpact.ncdf.wrapper.r and modify it to point to the present day netCDF files, specifying your desired base period. In the above example this might be 1990 - 2000 (your base period does NOT have to cover the entire range of your data). Run this script from the command line using Rscript Climpact.ncdf.wrapper.COPY1.r
+
+2. Make a copy of Climpact.ncdf.thresholds.wrapper.r and modify it to point to the same present day netCDF files used as input in step 1. Here the user needs to specify the same base period, e.g. 1990 - 2000. Run this script from the command line using Rscript Climpact.ncdf.thresholds.wrapper.COPY.r. The output of this will be a single netCDF file containing threshold values. Note step 1 and 2 can technically be done in any order, step 2 is only required in order to complete step 3.
+
+3. Make another copy of Climpact.ncdf.wrapper.r and modify it to point to the future climate netCDF files, specifying a base period consistent with the above steps (e.g. 1990 - 2000) but this time specify the threshold file that was claculated in step 2 above. Run this script from the Linux command line using Rscript Climpact.ncdf.wrapper.COPY2.r
+
+These scripts typically take many hours to run (however, runtime varies strongly based on input file size and computer resources). Once you have run Climpact.ncdf.wrapper.r, numerous netCDF files will exist in the output directory specified. Where relevant, indices are calculated at both monthly and annual time scales. A typical output file name is r20mm_ETCCDI_ANN_climpact.sample_historical_NA_1991-2010.nc, where r20mm refers to the index calculated and ANN refers to the time scale this index was calculated on (MON for monthly). Output file names are dervied from the CMIP5 conventions and follow this format var_timeresolution_model_scenario_run_starttime-endtime.nc.
+
+### 4.2 Calculating gridded indices via the Climpact user-interface
+
+This functionality is experimental.
+
+Start Climpact. In Windows, open R and select File->Change dir... and select the climpact-master directory created when installing Climpact (see Section 2 if you have not done this). Then run the following two commands;
+```r
+library(shiny)
+runApp()
+```
+
+In Linux or MacOS, cd to the climpact-master directory created instep 1, then open R in a terminal window (by typing R) and run the following two commands;
+```r
+library(shiny)
+runApp()
+```
+
+Once Climpact has started, select the 'EXPERIMENTAL' tab from the top of the browser window. This will reveal a drop down menu with three options. To calculate indices from netCDF files select the 'Calculate gridded indices' option. If you wish to calculate the indices for data contained in one set of netCDF files, however using percentile thresholds based on data in another set of netCDF files, you need to make use of the 'Calculate gridded thresholds' option.
+
+To calculate the indices using data stored in one or more netCDF files follow these steps:
+
+1. From the Climpact home page, select the 'EXPERIMENTAL' tab at the top of the browser window, then select the 'Calculate gridded indices' button. You will be presented with the following screen.
+1. Fill in all of the required information. This includes selecting the netCDF file with the daily maximum and minimum temperatures and daily precipitation. You do not require all three variables, Climpact will only calculate indices that use the provided variables, and the variables can be stored in separate files (in which case you can select multiple files by holding CTRL and clicking the left-mouse button when the dialog box appears). You will need to provide the names of the three variables as they are stored in the provided file(s). The output filename convention should also be specified (this must follow CMIP5 conventions like the default provided). Institute name and ID are required for metadata. The base period start and end years, the output directory for the netCDF files, the number of computer cores to use and which indices to calculate (blank to calculate all) must also be entered. Optionally, a threshold file can be chosen, telling Climpact to use the thresholds in the given file instead of calculating it's own. This is required when, for example, you wish to calculate gridded indices based on future climate simulations using thresholds calculated from historical simulations. Lastly, the type of Excess Heat Factor (EHF) calculation can be chosen. You do not need to change this unless you are familiar with the EHF.
+1. Once your information is selected, click the 'Calculate netCDF indices' button. A dialog box will appear stating some important information that you should read (including where your output will be generated). Once you select 'PROCEED' processing will commence.
+
+To calculate thresholds from a single or set of netCDF files follow these steps:
+
+1. From the Climpact home page, select the 'EXPERIMENTAL' tab at the top of the browser window, then select the 'Calculate gridded thresholds' button. You will be presented with the following screen.
+1. Fill in all of the required information. This includes selecting the netCDF file with the daily maximum and minimum temperatures and daily precipitation. You do not require all three variables, Climpact will only calculate thresholds for the variables provided. You will need to provide the names of the three variables as they are stored in the provided file(s). Institute name and ID are required for metadata. The base period start and end years, the output directory for the threshold file, the output threshold filename and the number of computer cores to use must also be entered.
+1. Once the above information is entered select the 'Calculate netCDF thresholds' button. A dialog box will appear with important information for you to read. Once you select 'PROCEED' processing will commence. The output of this will be a single netCDF file containing thresholds for the variables provided. This file can then be used when calculating gridded indices.
+
+### 4.3 Examining netCDF files
+
+NetCDF files require special software for viewing and manipulating. We recommend using Panoply for easily viewing netCDF output, it is freely available and works under Windows, Linux and MacOS. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
+
+
+
+## 5. Batch processing multiple station text files
+[RETURN TO TOP](#toc)
+
+Occasionally users will have numerous station text files for which they would like to calculate the Climpact indices. For this purpose the user may use the experimental batch processing functionality. This can be accessed under the 'EXPERIMENTAL' tab at the top of the browser window, under the 'Process multiple stations' button. For advanced users, see the climpact.batch.stations.r script in the Climpact home directory.
+
+To use this functionality each station file must be formatted according to Appendix B and all of the station files must be stored in the same directory. Lastly, Climpact requires a metadata text file as input which provides details for calculating the indices for each station file. This metadata text file requires one row per station text file, the columns required are described below. Use this sample file as a template.
+
+| Table 2. Column definitions for metadata.txt file. See /climpact-master/www/sample_data/climpact.sample.batch.metadata.txt for an example.
+| ----------- | -------|
+| station_file | Station file name to process. This column lists all of the individual station text files that you wish to process and that are stored in the directory passed to Climpact.batch.stations.r (as argument 1 in table 2).
+| latitude | Latitude of station
+| longitude | Longitude of station
+| wsdin | Number of days to calculate WSDI on. See Appendix A.
+| csdin | Number of days to calculate CSDI on. See Appendix A.
+| Tb_HDD | Base temperature to use in the calculation of HDDHEAT. See Appendix A.
+| Tb_CDD | Base temperature to use in the calculation of CDDCOLD. See Appendix A.
+| Tb_GDD | Base temperature to use in the calculation of GDD. See Appendix A.
+| rxnday | Number of days across which to calculate Rxnday. See Appendix A.
+| rnnmm | Precipitation threshold used to calculate Rnnmm. See Appendix A.
+| txtn | Number of days across which to calculate both nTXnTN and nTXbnTNb. See Appendix A.
+| SPEI | Custom time scale over which to calculate SPEI and SPI. 3, 6 and 12 months are calculated by default. This could be set to 24 months, for example.
+
+Once you have your station text files in the correct format and in a single directory, and have created a metadata text file, you may enter this information on the 'Process multiple stations' page. Once your information is entered select 'Calculate indices'. A progress bar will appear in the bottom right of the browser window. This process takes approximately 1 minute per file per core (depending on the length of each file and the speed of your computer). If Climpact encounters problems in your text files (e.g. errors resulting from incorrectly formatted data), these will be stored in \*error.txt files where your input data is located. It is very important that the user views the contents of these files after Climpact finishes, making any necessary corrections to the corresponding station text files and re-running this process. The calculated indices and associated files will be stored in the input directory you specify on this page, with one new folder per station.
+
+
+## Appendix A: Tables of Climpact indices
+[RETURN TO TOP](#toc)
+
+
+To calculate all of the Climpact indices time-series of daily minimum temperature (TN), daily maximum temperature (TX) and daily precipitation (PR) are required. Daily mean temperature (TM) is calculated from TM = (TX + TN)/2. Diurnal temperature range (DTR) is calculated from DTR = TX – TN. Many indices are calculated at both annual and monthly time scales. In the following two tables of core and non-core ET-SCI indices, the sector(s) of relevance to each index are indicated as determined by the ET-SCI in consultation with sector representatives, where H=Health, AFS=Agriculture and Food Security and WRH=Water Resources and Hydrology. Some indices have not been evaluated against specific sectors.
+
+Note also that the Climpact GUI allows users to create their own absolute day count index as detailed in Section 3. 
+
 
