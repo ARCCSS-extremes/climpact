@@ -1,5 +1,5 @@
-<p align="center"># Climpact user guide</p>
-
+<p align="center">Climpact user guide</p>
+<center> <h1>Climpact user guide</h1> </center>
 ## Table of contents
 <a name="toc"></a>
 
