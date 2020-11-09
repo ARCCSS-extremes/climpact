@@ -1,12 +1,22 @@
-<p align="center">Climpact user guide</p>
-<center> <h1>Climpact user guide</h1> </center>
+#Climpact user guide
+
 ## Table of contents
 <a name="toc"></a>
 
-1. [Known issues](#issues)
 1. [Acknowledgements](#acknowledgements)
 1. [Background to the Climpact climate extremes indices](#background)
-
+1. [Known issues](#issues)
+1. [Getting and installing Climpact locally](#gettinginstalling)
+1. [Calculating the indices from a single station text file](#calculate_single_station)
+1. [Calculating the indices from multiple station text files](#calculate_multi_station)
+1. [Calculating the indices from netCDF files](#calculatenetcdf)
+1. [Appendix A: Table of Climpact indices](#tableofindices)
+1. [Appendix B: Formatting of input files](#formattinginput)
+1. [Appendix C: Quality control (QC) diagnostics](#qc)
+1. [Appendix D: Percentile calculations](#percentilecalc)
+1. [Appendix E: Heatwave and coldwave calculations](#heatcoldwaves)
+1. [Appendix F: FAQ](#faq)
+1. [Appendix G: Software license agreement](#licence)
 
 
 <a name="issues"></a>
@@ -134,6 +144,7 @@ It is also acknowledged that updating indices is problematic for many regions an
 
 Users are invited to view Climpact as ‘living software’ in that it can and will be amended as additional user needs arise.
 
+<a name="gettinginstalling"></a>
 ## Getting and installing Climpact
 [table of contents](#toc)
 
@@ -143,4 +154,23 @@ Climpact is an app that runs through your computer's web browser and is compatib
 For Linux users, the PROJ4 development files (libproj-dev package on Ubuntu) and udunits development files (libudunits2-dev package on Ubuntu) are required before installing Climpact. Use the package manager in your Linux distribution to install these files.
 
 [![](http://img.youtube.com/vi/a-vnLME6hRQ/0.jpg)](http://www.youtube.com/watch?v=a-vnLME6hRQ "")
+
+### 2.2 Getting Climpact
+
+The official Climpact github website is located at https://github.com/ARCCSS-extremes/climpact/
+
+To get the latest version of Climpact visit the above website or download and extract the following file to a new directory (https://github.com/ARCCSS-extremes/climpact/archive/master.zip). This will create a directory called climpact-master. 
+
+### 2.3 Installing Climpact
+
+Once you have installed R on your computer and downloaded Climpact you will need to install Climpact. This process installs the R packages that Climpact requires onto your computer. The following installation steps only need to be completed once.
+
+In Windows open R and select "File->Change dir..." and select the climpact-master directory created in section 2.2. Then at the R command line type source('installers/Climpact.master.installer.r').
+
+In Linux and MacOS open a terminal window and change to the climpact-master directory created in section 2.2, then open R in the terminal window (by typing R) and type
+source('installers/Climpact.master.installer.r').
+
+The above process will start downloading and installing the R packages that Climpact requires. This process can take several minutes but will only need to be completed once. You will be prompted with a note part way through this process. You may also be asked to select the geographical location of the closest 'mirror' to download these packages from (see figure below). You may select any location, though the closest location will usually offer the fastest download speed. Once complete, you should see a message in the R console saying "Checking complete.".
+
+![](images/CRAN_mirrors.png)
 
