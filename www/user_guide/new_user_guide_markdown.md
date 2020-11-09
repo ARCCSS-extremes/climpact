@@ -1,6 +1,7 @@
 # <p align="center">Climpact user guide</p>
 
 ## Table of contents
+<a name="toc"></a>
 
 1. [Known issues](#issues)
 1. [Acknowledgements](#acknowledgements)
@@ -22,6 +23,7 @@
 
 <a name="acknowledgements"></a>
 ## Acknowledgements
+[table of contents](#toc)
 
 This document and the body of work it represents was made possible through the efforts of The World Meteorological Organisation (WMO) Commission for Climatology (CCl) Open Panel of CCl Experts on Climate Information for Adaptation and Risk Management (OPACE 4) under the guidance of OPACE-4 co-chairs (Rodney Martinez and Andrew Tait); the CCl OPACE 4 Expert Team on Sector-specific Climate Indices (ET-SCI) members: Lisa Alexander (Chair, Australia), Toshiyuki Nakaegawa (co-Chair, Japan), Fatima Zohra El Guelai (Morocco), Amelia Diaz Pablo (Peru), Adam Kalkstein (USA) and Gé Verver (The Netherlands) and the WMO World Climate Applications and Services Programme (Rupa Kumar Kolli and Anahit Hovsepyan). It draws heavily on the input of the Expert Team on Climate Risk and Sector-specific Climate Indices (ET-CRSCI), the predecessor of the ET-SCI and including additional ET-CRSCI members Elena Akentyeva, Alexis Nimubona, G. Srinivasan, Philip Thornton, and Peiqun Zhang. Significant contributions to the development of the ET-SCI indices, software and technical manual also came from Nicholas Hannah, Enric Aguilar, Andrew King, James Goldie, Brad Rippey, Sarah Perkins, Sergio M. Vicente-Serrano, Juan Jose Nieto, Sandra Schuster and Hongang Yang. We are also grateful to the other experts and sector representatives who have contributed to the development of indices: Manola Brunet, Albert Klein Tank, Christina Koppe, Sari Kovats, Glenn McGregor, Xuebin Zhang, Javier Sigro, Peter Domonkos, Dimitrios Efthymiadis.
 
@@ -41,6 +43,7 @@ This work is also supported by WMO grant SSA 3876-12/REM/CNS and the Australian 
 
 <a name="background"></a>
 ## Background
+[table of contents](#toc)
 
 This document was prepared on behalf of the World Meteorological Organization (WMO) Commission for Climatology (CCl) Expert Team on Sector-specific Climate Indices (ET-SCI). It outlines the background and goals of the ET-SCI and describes the indices and software that were developed on their behalf.
 
@@ -130,3 +133,15 @@ It is also acknowledged that updating indices is problematic for many regions an
 
 
 Users are invited to view Climpact as ‘living software’ in that it can and will be amended as additional user needs arise.
+
+## Getting and installing Climpact
+[table of contents](#toc)
+
+### 2.1 Software requirements
+Climpact is an app that runs through your computer's web browser and is compatible with Windows, Linux and MacOS. While interaction with Climpact takes place through a web browser, it does not require an internet connection once it is installed. To run Climpact, the R software package version 3.3.2 or later needs to be installed on your operating system. The steps to install R on Linux and Mac computers will vary according to your set up, please see the R website for instructions. See below for a video tutorial on installing R in Windows 10.
+
+For Linux users, the PROJ4 development files (libproj-dev package on Ubuntu) and udunits development files (libudunits2-dev package on Ubuntu) are required before installing Climpact. Use the package manager in your Linux distribution to install these files.
+
+[![](http://img.youtube.com/vi/a-vnLME6hRQ/0.jpg)](http://www.youtube.com/watch?v=a-vnLME6hRQ "")
+
+
