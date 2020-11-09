@@ -333,20 +333,20 @@ Occasionally users will have numerous station text files for which they would li
 
 To use this functionality each station file must be formatted according to Appendix B and all of the station files must be stored in the same directory. Lastly, Climpact requires a metadata text file as input which provides details for calculating the indices for each station file. This metadata text file requires one row per station text file, the columns required are described below. Use this sample file as a template.
 
-| Table 2. Column definitions for metadata.txt file. See /climpact-master/www/sample_data/climpact.sample.batch.metadata.txt for an example.
+| Table 2. Column definitions for metadata.txt file. See /climpact-master/www/sample_data/climpact.sample.batch.metadata.txt for an example.|
 | ----------- | -------|
-| station_file | Station file name to process. This column lists all of the individual station text files that you wish to process and that are stored in the directory passed to Climpact.batch.stations.r (as argument 1 in table 2).
-| latitude | Latitude of station
-| longitude | Longitude of station
-| wsdin | Number of days to calculate WSDI on. See Appendix A.
-| csdin | Number of days to calculate CSDI on. See Appendix A.
-| Tb_HDD | Base temperature to use in the calculation of HDDHEAT. See Appendix A.
-| Tb_CDD | Base temperature to use in the calculation of CDDCOLD. See Appendix A.
-| Tb_GDD | Base temperature to use in the calculation of GDD. See Appendix A.
-| rxnday | Number of days across which to calculate Rxnday. See Appendix A.
-| rnnmm | Precipitation threshold used to calculate Rnnmm. See Appendix A.
-| txtn | Number of days across which to calculate both nTXnTN and nTXbnTNb. See Appendix A.
-| SPEI | Custom time scale over which to calculate SPEI and SPI. 3, 6 and 12 months are calculated by default. This could be set to 24 months, for example.
+| station_file | Station file name to process. This column lists all of the individual station text files that you wish to process and that are stored in the directory passed to Climpact.batch.stations.r (as argument 1 in table 2).|
+| latitude | Latitude of station|
+| longitude | Longitude of station|
+| wsdin | Number of days to calculate WSDI on. See Appendix A.|
+| csdin | Number of days to calculate CSDI on. See Appendix A.|
+| Tb_HDD | Base temperature to use in the calculation of HDDHEAT. See Appendix A.|
+| Tb_CDD | Base temperature to use in the calculation of CDDCOLD. See Appendix A.|
+| Tb_GDD | Base temperature to use in the calculation of GDD. See Appendix A.|
+| rxnday | Number of days across which to calculate Rxnday. See Appendix A.|
+| rnnmm | Precipitation threshold used to calculate Rnnmm. See Appendix A.|
+| txtn | Number of days across which to calculate both nTXnTN and nTXbnTNb. See Appendix A.|
+| SPEI | Custom time scale over which to calculate SPEI and SPI. 3, 6 and 12 months are calculated by default. This could be set to 24 months, for example.|
 
 Once you have your station text files in the correct format and in a single directory, and have created a metadata text file, you may enter this information on the 'Process multiple stations' page. Once your information is entered select 'Calculate indices'. A progress bar will appear in the bottom right of the browser window. This process takes approximately 1 minute per file per core (depending on the length of each file and the speed of your computer). If Climpact encounters problems in your text files (e.g. errors resulting from incorrectly formatted data), these will be stored in \*error.txt files where your input data is located. It is very important that the user views the contents of these files after Climpact finishes, making any necessary corrections to the corresponding station text files and re-running this process. The calculated indices and associated files will be stored in the input directory you specify on this page, with one new folder per station.
 
