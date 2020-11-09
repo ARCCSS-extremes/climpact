@@ -139,6 +139,4 @@ Search and/or submit an [issue](https://github.com/ARCCSS-extremes/climpact/issu
 
 ##  Contact
   
-Software issues contact Nicholas Herold : nicholas.herold@unsw.edu.au
- 
-All other issues contact Lisa Alexander : l.alexander@unsw.edu.au
+climdex.climpact@gmail.com
