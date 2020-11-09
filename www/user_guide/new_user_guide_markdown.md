@@ -1,3 +1,4 @@
+<div style="text-align: justify"> 
 # <p align="center">Climpact user guide</p>
 
 ## Table of contents
@@ -143,5 +144,5 @@ Climpact is an app that runs through your computer's web browser and is compatib
 For Linux users, the PROJ4 development files (libproj-dev package on Ubuntu) and udunits development files (libudunits2-dev package on Ubuntu) are required before installing Climpact. Use the package manager in your Linux distribution to install these files.
 
 [![](http://img.youtube.com/vi/a-vnLME6hRQ/0.jpg)](http://www.youtube.com/watch?v=a-vnLME6hRQ "")
-
+</div>
 
