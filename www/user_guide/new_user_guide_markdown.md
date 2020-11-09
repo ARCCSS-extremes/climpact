@@ -333,7 +333,8 @@ Occasionally users will have numerous station text files for which they would li
 
 To use this functionality each station file must be formatted according to Appendix B and all of the station files must be stored in the same directory. Lastly, Climpact requires a metadata text file as input which provides details for calculating the indices for each station file. This metadata text file requires one row per station text file, the columns required are described below. Use this sample file as a template.
 
-| Table 2. Column definitions for metadata.txt file. See /climpact-master/www/sample_data/climpact.sample.batch.metadata.txt for an example.|
+ Table 2. Column definitions for metadata.txt file. See /climpact-master/www/sample_data/climpact.sample.batch.metadata.txt for an example.
+| Column name | Column description |
 | ----------- | -------|
 | station_file | Station file name to process. This column lists all of the individual station text files that you wish to process and that are stored in the directory passed to Climpact.batch.stations.r (as argument 1 in table 2).|
 | latitude | Latitude of station|
