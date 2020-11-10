@@ -1,15 +1,16 @@
 singleStationStep2 <- function (input, output, session, parentSession, climpactUI, singleStationState) {
-
   output$slickRQC <- renderSlickR({
-    imgs <- list()
-    if (!is.null(singleStationState$outputFolders())) {
+    imgs(list())
+    if (qcProgressStatus() == "Done" && (!is.null(singleStationState$outputFolders()))) {
       watchPath <- singleStationState$outputFolders()$outqcdir
-      imgs <- list.files(watchPath, pattern=".png", full.names = TRUE)
+      imgs(list.files(watchPath, pattern=".png", full.names = TRUE))  
     }
-    bottom_opts <- settings(arrows = FALSE, slidesToShow = 5, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
-    slickR(imgs, slideId = "slickRQCMain", height = 600) %synch% (slickR(imgs, slideId = "slickRQCNav", height = 100) + bottom_opts)
+    bottom_opts <- settings(slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    sl <- slickR(imgs(), slideId = "slickRQCMain", height = 600) + bottom_opts
+    return(sl)
   })
 
+  imgs <- reactiveVal(list())
   qcProgressStatus <- reactiveVal("Not Started")
   output$qcStatus <- reactive({
     input$dataFile # trigger update
@@ -125,6 +126,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
           pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
           qcZipLink(getLinkFromPath(pathToZipFile, "here"))
         }
+        qcProgressStatus("Done")
       }
     )
     return(out)
@@ -140,7 +142,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   outputOptions(output, "qcLink", suspendWhenHidden = FALSE)
   outputOptions(output, "qcStatus", suspendWhenHidden = FALSE)
   outputOptions(output, "loadDataError", suspendWhenHidden = FALSE)
-  outputOptions(output, "slickRQC", suspendWhenHidden = TRUE)
+  outputOptions(output, "slickRQC", suspendWhenHidden = FALSE)
 
   observe(toggleState("btn_next_step_2", singleStationState$isQCCompleted() && singleStationState$qualityControlErrors() == ""))
   session$sendCustomMessage("enableTab", "process_single_station_step_3")
