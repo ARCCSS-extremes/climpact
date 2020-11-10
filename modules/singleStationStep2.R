@@ -60,7 +60,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       localLink <- paste0("<b> Quality control directory: ", folderToZip(), "</b>")
       remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "</b>")
 
-      appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/ClimPACT_user_guide.htm#appendixC>", "Appendix C</a>")
+      appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/Climpact_user_guide.htm#appendixC>", "Appendix C</a>")
 
       HTML("<b>Evaluate Data Quality</b>",
         "<p>Please view the quality control output described below and carefully evaluate before continuing.",
@@ -84,7 +84,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     progress$set(message="Quality Control checks", value=0, detail = "Starting...")
     singleStationState$isQCCompleted(FALSE)
 
-    # Call into ClimPACT to do the quality control.
+    # Call into Climpact to do the quality control.
     out <- tryCatch({
         # create output folders to hold files for quality control and index output and plots
         baseFolder <- file.path(getwd(), "www", "output")

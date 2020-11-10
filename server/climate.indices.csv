@@ -50,7 +50,7 @@ txge30	days	TX of at least 30 degrees_C	Annual number of days when TX >= 30 degr
 txge30	days	TX of at least 30 degrees_C	Monthly number of days when TX >= 30 degrees_C	ETSCI	F	F
 txge35	days	TX of at least 35 degrees_C	Annual number of days when TX >= 35 degrees_C	ETSCI	T	F
 txge35	days	TX of at least 35 degrees_C	Monthly number of days when TX >= 35 degrees_C	ETSCI	F	F
-tx95t	degrees_C	Very warm day threshold	Value of 95th percentile of TX	ETSCI	NA	F
+tx95t	degrees_C	Very warm day threshold	Value of 95th percentile of TX	ETSCI	NA	T
 hddheatn	degree-days	Heating Degree Days	Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)	ETSCI	T	F
 cddcoldn	degree-days	Cooling Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
 gddgrown	degree-days	Growing Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F

@@ -17,7 +17,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
   # Check 'all' PDF isn't open, then open.
   pdfname <- paste0(outputFolders$stationName, "_all_plots.pdf")
 
-  # ClimPACT has sole access to this file, should not encounter errors.
+  # Climpact has sole access to this file, should not encounter errors.
   pdf(file = file.path(outputFolders$outplotsdir, pdfname), height = 8, width = 11.5)
   pdf.dev <- dev.cur()
 

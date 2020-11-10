@@ -59,7 +59,7 @@ griddedStep1UI <- function(id) {
         h4("1. Select input file(s)"),
         tags$p("Select the netCDF file with the daily maximum and minimum temperatures and daily precipitation. "),
         tags$p("You are not required to include all three variables in this file. ",
-        "ClimPACT will only calculate indices that use the provided variables and the variables can be stored in separate files.<br />",
+        "Climpact will only calculate indices that use the provided variables and the variables can be stored in separate files.<br />",
         "To provide separate files, you can select multiple files by holding CTRL and clicking the left-mouse button when the dialog box appears."),
         h4("2. Enter input dataset information"),
         tags$p("You will need to provide the names of the three variables as they are stored in the provided input file(s)."),

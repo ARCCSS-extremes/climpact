@@ -130,8 +130,8 @@ ncdfInputParams <- function(prColName             = "",
   maxVals <- as.integer(maxVals)
   fClimdexCompatible <- as.logical(fClimdexCompatible)
 
-  # Directory where ClimPACT is stored. Use full pathname.
-  # Leave as NULL if you are running this script from the ClimPACT directory
+  # Directory where Climpact is stored. Use full pathname.
+  # Leave as NULL if you are running this script from the Climpact directory
   # (where this script was initially stored).
   #root.dir <- NULL
   # axis to split data on. For chunking up of grid, leave this.

@@ -71,7 +71,6 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 	batchFiles <- data.frame(name = basename(inputContents), datapath = inputContents, stringsAsFactors = FALSE)
 	batchOutputFolder <- strip_file_extension(file.list.metadata)
 	print(paste0("Processing batch, to output folder: ", batchOutputFolder))
-
 	processBatch(opts$progress(), file.list.metadata, batchFiles, base.start, base.end, batchOutputFolder)
 
 	print("",quote=FALSE)
@@ -89,11 +88,11 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 	print("",quote=FALSE)
 	print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.",quote=FALSE)
 	print("",quote=FALSE)
-	error.files <- suppressWarnings(list.files(path=input.directory,pattern=paste("*error.txt",sep="")))
+	error.files <- suppressWarnings(list.files(path=batchOutputFolder,pattern="*error.txt|*missing_dates*",recursive = TRUE,full.names=TRUE))
 	if(length(error.files)==0) { print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) } 
 	else {
 		for (i in 1:length(error.files)) { #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
-			print(error.files[i],quote=FALSE)
+			print(paste0(error.files[i]),quote=FALSE)
 			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
 		} 
 	}

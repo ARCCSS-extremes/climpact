@@ -1,17 +1,18 @@
 # ------------------------------------------------
-# This script checks that the appropriate R packages are installed for running ClimPACT.
+# This script checks that the appropriate R packages are installed for running Climpact.
 # November 2017
 # ------------------------------------------------
 
 # packages <- c("abind","bitops","Rcpp","caTools","PCICt","SPEI","climdex.pcic","ncdf4","snow","udunits2","functional","proj4","foreach","doParallel","doSNOW","zoo","zyp","tcltk2",
-# 			"shiny","shinythemes","markdown","servr","dplyr","corrplot","ggplot2","shinyjs")
+# 			"shiny","shinythemes","markdown","servr","dplyr","corrplot","ggplot2","shinyjs",
+#			"shinydashboard","shinyBS","slickR","xml2","shinyWidgets")
 
 # # Print Unix-specific messages
 # if(.Platform$OS.type == "unix") {
 # 	print("",quote=FALSE)
 # 	print("******************************",quote=FALSE)
 # 	print("",quote=FALSE)
-# 	cat("Calculating the ClimPACT indices on netCDF data requires that PROJ4 and UDUNITS2 be installed on your opreating system
+# 	cat("Calculating the Climpact indices on netCDF data requires that PROJ4 and UDUNITS2 be installed on your opreating system
 # prior to running this script. If the following R packages fail to install ensure that these two packages are installed.\n\n")
 # 	readline(prompt="Press [enter] to continue")
 # } 

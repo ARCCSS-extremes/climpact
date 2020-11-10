@@ -25,7 +25,7 @@ cores=FALSE
 # print messages?
 verbose=TRUE
 
-# Directory where ClimPACT is stored. Use full pathname. Leave as NULL if you are running this script from the ClimPACT directory (where this script was initially stored).
+# Directory where Climpact is stored. Use full pathname. Leave as NULL if you are running this script from the Climpact directory (where this script was initially stored).
 root.dir=NULL
 
 

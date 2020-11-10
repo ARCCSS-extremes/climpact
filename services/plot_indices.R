@@ -142,7 +142,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
   {
     subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
-    print(paste0(mktrend$stat[4], " : ", mktrend$stat[2]))
     #abline(mktrend$stat[4],mktrend$stat[2])
   } else {
     subtit <- paste0("No linear trend due to insufficient valid data points (", min_trend, ").")
@@ -153,7 +152,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
 
   # add mktrend line. nherold.
   #	if(!is.na(mktrend$stat[4]) && !is.na(mktrend$stat[2])) {
-  print(paste0(mktrend$stat[4], " : ", mktrend$stat[2]))
   #		abline(mktrend$stat[4],mktrend$stat[2])
   #	}
 
@@ -165,14 +163,13 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
   plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
   #	legend("bottomleft","locally weighted scatterplot smoothing",col = "red", lty = 2, lwd = 3, bty = "n")
-  legend("bottomright", paste("ClimPACT v ", version.climpact, sep = ""), col = "white", lty = 2, lwd = 0, bty = "n")
+  legend("bottomright", paste("Climpact v ", version.climpact, sep = ""), col = "white", lty = 2, lwd = 0, bty = "n")
   suppressWarnings(par(old.par)) # restore previous par settings. Suppress warnings regarding parameters that cannot be set.
 }
 # end of plotx
 
 # plot.index
 plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL) {
-  print(index)
   if (is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
   if (all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT PLOTTING."), quote = FALSE); return() }
 
@@ -199,8 +196,6 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   x1 = seq(1, length(index), 1) #as.numeric(names(index))
   y1 = unname(index)
   zsen = zyp.sen(y1 ~ x1)
-  print("zyp.sen")
-  print(zsen)
   ci = confint(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
   mktrend$stat[1] <<- unname(ci[2, 1])

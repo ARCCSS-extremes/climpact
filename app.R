@@ -1,29 +1,29 @@
 # ------------------------------------------------
-# ClimPACT
+# Climpact
 # University of New South Wales
 # This package is available on github https://github.com/ARCCSS-extremes/climpact
 # ------------------------------------------------
 #
-# This file constitutes the main user entry point into ClimPACT.
+# This file constitutes the main user entry point into Climpact.
 #
 # BUGS
-#   - Currently SPEI/SPI are calculated via the old ClimPACT code. This is because the CRAN package for SPEI/SPI does not
+#   - Currently SPEI/SPI are calculated via the old Climpact code. This is because the CRAN package for SPEI/SPI does not
 #     ostenisbly support large runs of NA values. When this occurs real numbers are included in the output where NA values
 #     should occur.
 #
 # TECHNICAL NOTES
-#   - See server/ClimPACT_developer_documentation.md for a technical document describing the major parts of this code. Refer
+#   - See server/Climpact_developer_documentation.md for a technical document describing the major parts of this code. Refer
 #     to this for insight when making changes such as adding indices.
 #
 # HISTORY
-#   The ClimPACT code has evolved very heavily since it's original incarnation in the form of the single source file climpact.r.
+#   The Climpact code has evolved very heavily since it's original incarnation in the form of the single source file climpact.r.
 #   The significant changes that have taken place include;
 #   - the calculation of the indices is almost entirely taken care of by climdex.pcic (with several exceptions such as the
 #     heatwave indices and SPEI/SPI).
 #   - the user interface has been re-written with R Shiny
 #   - the indices can now be calculated on netCDF files.
 #
-#   Several people contributed significantly to the development of the original ClimPACT software (which was originally derived
+#   Several people contributed significantly to the development of the original Climpact software (which was originally derived
 #   from RClimdex). For posterity and credit, below is a list of the key names and dates attributed to different changes.
 #
 #   Programmed by Yujun Ouyang,Mar,2004

@@ -6,7 +6,7 @@
 library(climdex.pcic)
 library(SPEI)
 
-software_id <- "2.0.0"
+software_id <- "3.0.0"
 
 # fd
 # Annual count when TN < 0ºC
@@ -170,6 +170,68 @@ climdex.rnnmm <- function(ci, threshold=1,freq=c("monthly", "annual")) {
 # Value of 95th percentile of TX
 climdex.tx95t <- function(ci, freq=c("monthly", "annual")) { stopifnot(!is.null(ci@data$tmax),!is.null(ci@quantiles$tmax)); return(ci@quantiles$tmax$outbase$q95) }
 
+
+
+
+
+################# TEMPORARY INCLUSION FROM CLIMDEX.PCIC
+# The following functions have been copied from climdex.pcic while a bug in percent.days.op.threshold is present. 
+# Once/if this is fixed in climdex.pcic then the following lines can be deleted. Issue has been logged on their github page.
+# nherold, Nov 2020.
+get.years <- function(dates) {
+  return(as.POSIXlt(dates)$year + 1900)
+}
+
+percent.days.op.threshold <- function(temp, dates, jdays, date.factor, threshold.outside.base, base.thresholds, base.range, op='<', max.missing.days) {
+  f <- match.fun(op)
+  dat <- f(temp, threshold.outside.base[jdays])
+  
+  inset <- dates >= base.range[1] & dates <= base.range[2]
+  ## Don't use in-base thresholds with data shorter than two years; no years to replace with.
+  if(sum(inset) > 0 && length(dates) >= 360 * 2) {
+    jdays.base <- jdays[inset]
+    years.base <- get.years(dates[inset])
+
+    ## Get number of base years, subset temp data to base period only.
+    temp.base <- temp[inset]
+    years.base.range <- range(years.base)
+    byrs <- (years.base.range[2] - years.base.range[1] + 1)
+
+    ## Linearize thresholds, then compare them to the temperatures
+    bdim <- dim(base.thresholds)
+    dim(base.thresholds) <- c(bdim[1] * bdim[2], bdim[3])
+    yday.byr.indices <- jdays.base + (years.base - get.years(base.range)[1]) * bdim[1]
+    f.result <- f(rep(temp.base, byrs - 1), base.thresholds[yday.byr.indices,])
+    dim(f.result) <- c(length(yday.byr.indices), bdim[3])
+
+    ## Chop up data along the 2nd dim into a list; sum elements of the list
+#    dat[inset] <- rowSums(f.result, na.rm=TRUE) / (byrs - 1)
+    # Replace above line to properly return NA when all values are NA (problem was occurring because sum(c(Na,NA)) = 0, when it should equal NA).
+    dat[inset] <- apply(f.result,1,function(x) if (all(is.na(x))) x[NA_integer_] else sum(x, na.rm = TRUE) / (byrs - 1))
+  }
+  dat[is.nan(dat)] <- NA
+  if(missing(date.factor))
+    return(dat)
+  na.mask <- get.na.mask(dat, date.factor, max.missing.days)
+  ## FIXME: Need to monthly-ize the NA mask calculation, which will be ugly.
+  ret <- tapply.fast(dat, date.factor, mean, na.rm=TRUE) * 100 * na.mask
+  ret[is.nan(ret)] <- NA
+  return(ret)
+}
+
+climdex.tn10p <- function(ci, freq=c("monthly", "annual")) { stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin)); return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q10, ci@quantiles$tmin$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin) }
+
+climdex.tx10p <- function(ci, freq=c("monthly", "annual")) { stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax)); return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q10, ci@quantiles$tmax$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax) }
+
+climdex.tn90p <- function(ci, freq=c("monthly", "annual")) { stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin)); return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q90, ci@quantiles$tmin$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin) }
+
+climdex.tx90p <- function(ci, freq=c("monthly", "annual")) { stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax)); return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q90, ci@quantiles$tmax$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax) }
+
+################# END TEMPORARY INCLUSION FROM CLIMDEX.PCIC
+
+
+
+
 # tx50p
 # Percentage of days of days where TX>50th percentile
 # same as climdex.tx90p, except for 50th percentile
@@ -240,7 +302,7 @@ climdex.spei <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift
         stopifnot(is.numeric(scale),all(scale>0),!is.null(ci@data$prec))
         if(is.null(ci@data$tmin) | is.null(ci@data$tmax) | is.null(ci@data$prec)) stop("climdex.spei requires tmin, tmax and precip.")
 
-        scale <- c(3,6,12)      # hard-coded for ClimPACT definition.
+        scale <- c(3,6,12)      # hard-coded for Climpact definition.
         ts.origin = ("1850-01-01")      # arbitrarily chosen origin for time-series object
 
         # if we are to use thresholds from a previous calculation then set computefuture flag to TRUE
@@ -367,7 +429,7 @@ climdex.spi <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift=
         stopifnot(is.numeric(scale),all(scale>0),!is.null(ci@data$prec))
         if(is.null(ci@data$prec)) stop("climdex.spi requires precip.")
 
-        scale <- c(3,6,12)      # hard-coded for ClimPACT definition.
+        scale <- c(3,6,12)      # hard-coded for Climpact definition.
         ts.origin = ("1850-01-01")      # arbitrarily chosen origin for time-series object
 
 	# if we are to use thresholds from a previous calculation then set computefuture flag to TRUE
@@ -526,7 +588,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 		tavg05p <- ci@quantiles$tavg[["q5"]]
 	        if(ehfdef == "NF13") { tavg95p <- ci@quantiles$tavg[["q95"]] }
 	}
-	
+
 	# take any non leap year to create 365 month-day factors
 	beg = as.Date("2001-01-01",format="%Y-%m-%d")
 	end = as.Date("2001-12-31",format="%Y-%m-%d")
@@ -595,7 +657,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 	tx90p_arr <- tx90p[match(fact2,fact)]
 	tn90p_arr <- array(NA,length(tmin))
 	tn90p_arr <- tn90p[match(fact2,fact)]
-	
+
 	# Record which days had temperatures higher than 90p or where EHF > 0 
 	tx90p_boolean <- (tmax > tx90p_arr)
 	tn90p_boolean <- (tmin > tn90p_arr)
@@ -615,10 +677,10 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 	hw3_index <- array(NA,c(5,length(levels(annual.factors))))
 	hw4_index <- array(NA,c(5,length(levels(annual.factors))))
 	
-	hw_index[1,,] <- get.hw.aspects(hw1_index,tx90p_boolean,annual.factors,monthly.factors,tmax,ci@northern.hemisphere,ehfdef)
-	hw_index[2,,] <- get.hw.aspects(hw2_index,tn90p_boolean,annual.factors,monthly.factors,tmin,ci@northern.hemisphere,ehfdef)
-	hw_index[3,,] <- get.hw.aspects(hw3_index,EHF_boolean,annual.factors,monthly.factors,EHF,ci@northern.hemisphere,ehfdef,ehf=TRUE)
-	hw_index[4,,] <- get.hw.aspects(hw4_index,ECF_boolean,annual.factors,monthly.factors,ECF,ci@northern.hemisphere,ehfdef,ecf=TRUE)
+	hw_index[1,,] <- get.hw.aspects(hw1_index,tx90p_boolean,annual.factors,monthly.factors,tmax,ci@northern.hemisphere,ehfdef,namask=ci@namasks$annual$tmax)
+	hw_index[2,,] <- get.hw.aspects(hw2_index,tn90p_boolean,annual.factors,monthly.factors,tmin,ci@northern.hemisphere,ehfdef,namask=ci@namasks$annual$tmin)
+	hw_index[3,,] <- get.hw.aspects(hw3_index,EHF_boolean,annual.factors,monthly.factors,EHF,ci@northern.hemisphere,ehfdef,ehf=TRUE,namask=ci@namasks$annual$tmin*ci@namasks$annual$tmax)
+	hw_index[4,,] <- get.hw.aspects(hw4_index,ECF_boolean,annual.factors,monthly.factors,ECF,ci@northern.hemisphere,ehfdef,ecf=TRUE,namask=ci@namasks$annual$tmin*ci@namasks$annual$tmax)
 	
 	rm(tavg,tavg90p,EHIaccl,EHIsig,EHF,tx90p_boolean,tn90p_boolean,EHF_boolean,tx90p_arr,tn90p_arr,hw1_index,hw2_index,hw3_index,tn90p,tx90p,beg,end,beg2,end2,dat.seq,dat.seq2,fact,fact2,ECIaccl,ECIsig,ECF)
 	return(hw_index)
@@ -641,7 +703,7 @@ climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13
 #
 # OUTPUT:
 #    - aspect.array: filled with calculated aspects.
-get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.date.factors,daily.data,northern.hemisphere,ehfdef,ehf=FALSE,ecf=FALSE) {
+get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.date.factors,daily.data,northern.hemisphere,ehfdef,ehf=FALSE,ecf=FALSE,namask=1) {
 	if(all(is.na(daily.data))) { return(aspect.array) }
 
 	month <- substr(monthly.date.factors,nchar(as.character(levels(monthly.date.factors)[1]))-1,nchar(as.character(levels(monthly.date.factors)[1])))
@@ -741,10 +803,22 @@ get.hw.aspects <- function(aspect.array,boolean.str,yearly.date.factors,monthly.
 
 	aspect.array[2,] <- ifelse(aspect.array[2,]=="-Inf",NA,aspect.array[2,])
 	aspect.array[4,] <- ifelse(aspect.array[4,]=="-Inf",NA,aspect.array[4,])
+
+	# In the case where insufficient inbase data exists then no quantiles will be calculated and HWA, HWM and HWD will be all NA. Howevere, this results in all years reporting zero heatwaves when it should report NA.
+	# The following line replaces HWF and HWN with NA values when all HWM values are NA. The plot and write functions subsequently deal appropriately with indices that contain all NA values (by not plotting them).
+	if(all(is.na(aspect.array[1,]))) { aspect.array[3,]=aspect.array[3,NA] ; aspect.array[5,]=aspect.array[5,NA] }
+
 	if (northern.hemisphere==FALSE) {
 		if(ehf==TRUE && ehfdef=="NF13") { }	# If in southern hemisphere, remove last year since there is only half a summer (can risk removing 366 days since it won't infringe on the previous summer)
 		else { aspect.array[,length(aspect.array[1,])] <- NA }
 	}
+
+	# apply na.mask to outgoing data
+	aspect.array[1,] <- aspect.array[1,]*namask
+	aspect.array[2,] <- aspect.array[2,]*namask
+	aspect.array[3,] <- aspect.array[3,]*namask
+	aspect.array[4,] <- aspect.array[4,]*namask
+	aspect.array[5,] <- aspect.array[5,]*namask
 
 	rm(summer_indices,extended_indices,extended_data,extended_boolean,rle_extended_boolean,truevals,nhw,hwm,hwa,hwm2,last_day_of_hw_season,extvals,daily.data.full,boolean.str.full,ehf,ecf)
 	return(aspect.array)
