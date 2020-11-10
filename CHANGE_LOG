@@ -1,7 +1,7 @@
 1.X		XX December 2020
 * MAJOR UPDATE: Shiny interface is finally released.
 * When insufficient data exists for quantile calculations the heatwave aspects HWN and HWF now show up as NA values. Whereas before they were zero which is nonsensical. 
-  This means plots are no longer created which is the correct behaviour. Thanks to Guido from Rome.
+  This means plots are no longer created for these heatwave aspects, which is the correct behaviour. Thanks to Guido from Rome.
 
 1.2.8		3 February 2020
 * Fixed 2D coordinate variables not always writing out correctly to netCDF.
