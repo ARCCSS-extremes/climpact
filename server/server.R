@@ -22,12 +22,12 @@ server <- function(input, output, session) {
     griddedStep1 <- callModule(griddedStep1, climpactUI$ns, climpactUI)
     griddedStep2 <- callModule(griddedStep2, climpactUI$ns, climpactUI)
     output$griddedMenuItem <- renderMenu({
-      if (isLocal) {
-        menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
-          menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
-          menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
-        )
-      }
+#      if (isLocal) {
+#        menuItem("Gridded data", tabName = "gridded", icon = icon("cube"),
+#          menuSubItem("Calculate Gridded Indices", tabName = "gridded-indices", icon = icon("cube")),
+#          menuSubItem("Calculate Gridded Thresholds", tabName = "gridded-thresholds", icon = icon("cube"))
+#        )
+#      }
     })
   }
 
