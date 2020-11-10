@@ -1,11 +1,10 @@
+<a name="toc"></a>
 # Climpact user guide
 
 ## Table of contents
-<a name="toc"></a>
 
 1. [Acknowledgements](#acknowledgements)
-1. [Background to the Climpact climate extremes indices](#background)
-1. [Known issues](#issues)
+1. [Background to Climpact](#background)
 1. [Getting and installing Climpact locally](#gettinginstalling)
 1. [Calculating the indices from a single station text file](#calculate_single_station)
 1. [Calculating the indices from multiple station text files](#calculate_multi_station)
@@ -19,35 +18,25 @@
 1. [Appendix G: Software license agreement](#licence)
 
 
-<a name="issues"></a>
-
-## Known issues
-1.
-1.
-1.
-1.
-1.
-1.
-1.
-
+Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](https://github.com/ARCCSS-extremes/climpact) to find out more about this project.
 
 <a name="acknowledgements"></a>
 ## Acknowledgements
-[table of contents](#toc)
+[RETURN TO TOP](#toc)
 
-This document and the body of work it represents was made possible through the efforts of The World Meteorological Organisation (WMO) Commission for Climatology (CCl) Open Panel of CCl Experts on Climate Information for Adaptation and Risk Management (OPACE 4) under the guidance of OPACE-4 co-chairs (Rodney Martinez and Andrew Tait); the CCl OPACE 4 Expert Team on Sector-specific Climate Indices (ET-SCI) members: Lisa Alexander (Chair, Australia), Toshiyuki Nakaegawa (co-Chair, Japan), Fatima Zohra El Guelai (Morocco), Amelia Diaz Pablo (Peru), Adam Kalkstein (USA) and Gé Verver (The Netherlands) and the WMO World Climate Applications and Services Programme (Rupa Kumar Kolli and Anahit Hovsepyan). It draws heavily on the input of the Expert Team on Climate Risk and Sector-specific Climate Indices (ET-CRSCI), the predecessor of the ET-SCI and including additional ET-CRSCI members Elena Akentyeva, Alexis Nimubona, G. Srinivasan, Philip Thornton, and Peiqun Zhang. Significant contributions to the development of the ET-SCI indices, software and technical manual also came from Nicholas Hannah, Enric Aguilar, Andrew King, James Goldie, Brad Rippey, Sarah Perkins, Sergio M. Vicente-Serrano, Juan Jose Nieto, Sandra Schuster and Hongang Yang. We are also grateful to the other experts and sector representatives who have contributed to the development of indices: Manola Brunet, Albert Klein Tank, Christina Koppe, Sari Kovats, Glenn McGregor, Xuebin Zhang, Javier Sigro, Peter Domonkos, Dimitrios Efthymiadis.
+* Climpact was made possible by the WMO Commission for Climatology (CCl) Open Panel of Experts on Climate Information for Adaptation and Risk Management (OPACE 4) under the guidance of OPACE-4 co-chairs (Rodney Martinez and Andrew Tait); the CCl OPACE 4 Expert Team on Sector-specific Climate Indices (ET-SCI) members: Lisa Alexander (Chair, Australia), Toshiyuki Nakaegawa (co-Chair, Japan), Fatima Zohra El Guelai (Morocco), Amelia Diaz Pablo (Peru), Adam Kalkstein (USA) and Gé Verver (The Netherlands) and the WMO World Climate Applications and Services Programme (Rupa Kumar Kolli and Anahit Hovsepyan). 
 
-Lisa Alexander, Nicholas Herold and Nicholas Hannah contributed significantly to development of this document, the indices and the Climpact software. The majority of indices in Climpact are calculated using code from the climdex.pcic R package which was developed by the Pacific Climate Impacts Consortium (PCIC). Input was also provided by James Hiebert of PCIC during the development of Climpact.
+* Climpact and its associated material draws heavily on the input of the Expert Team on Climate Risk and Sector-specific Climate Indices (ET-CRSCI), the ET-SCI that succeeded it and including additional ET-CRSCI members Elena Akentyeva, Alexis Nimubona, G. Srinivasan, Philip Thornton, and Peiqun Zhang. Significant contributions to the development of the Climpact indices, software and documentation also came from Jonathan McComb, Nicholas Herold, Nicholas Hannah, Enric Aguilar, Andrew King, James Goldie, Brad Rippey, Sarah Perkins, Sergio M. Vicente-Serrano, Juan Jose Nieto, Sandra Schuster and Hongang Yang. Input was also provided by James Hiebert of PCIC. We are also grateful to the other experts and sector representatives who have contributed to the development of indices: Manola Brunet, Albert Klein Tank, Christina Koppe, Sari Kovats, Glenn McGregor, Xuebin Zhang, Javier Sigro, Peter Domonkos, Dimitrios Efthymiadis.
 
-The application of climate indices to the Agriculture sector was undertaken in full cooperation with the WMO Commission for Agricultural Meteorology, through which Brad Rippey and Sergio Vicente Serrano supported the work.
+* Climpact uses the R packages [climdex.pcic](https://pacificclimate.github.io/climdex.pcic/) and [climdex.pcic.ncdf](https://pacificclimate.github.io/climdex.pcic.ncdf/) as its core. These packages were developed by the Pacific Climate Impacts Consortium (PCIC).
 
-Commission for Climatology experts Glenn McGregor, Christina Koppe and Sari Kovats supported the applications of indices for Climate and Health, in particular for heat waves and health.
+* The application of climate indices to the Agriculture sector was undertaken in full cooperation with the WMO Commission for Agricultural Meteorology, through which Brad Rippey and Sergio Vicente Serrano supported the work.
 
-This version of Climpact updates the original Climpact which was based on the RClimDEX software developed by the WMO CCl/WCRP/JCOMM Expert Team on Climate Change Detection and Indices (ETCCDI). The CCl Co Chair for the CCl OPACE on Climate Monitoring and Assessment (Manola Brunet), ETCCDI members, Albert Klein Tank and Xuebin Zhang, along with Enric Aguilar, Juan Jose Nieto, Javier Sigro, Peter Domonkos, and Dimitrios Efthymiadis, contributed to development of the indices and software described in the previous version of the technical manual.
+* Commission for Climatology experts Glenn McGregor, Christina Koppe and Sari Kovats supported the applications of indices for Climate and Health, in particular for heat waves and health.
 
-Climpact is written in R, a language and environment for statistical computing and graphics and makes use of numerous R packages. R is available as Free Software under the terms of the Free Software Foundation's GNU General Public License in source code form.
+* Climpact is written in the R programming language and makes use of numerous third party R packages. R is available as Free Software under the terms of the Free Software Foundation's GNU General Public License in source code form.
 
-This work is also supported by WMO grant SSA 3876-12/REM/CNS and the Australian Research Council grant CE110001028 specifically through funding from the New South Wales Office of the Environment and Heritage. 
+* This work has also been historically supported by WMO grant SSA 3876-12/REM/CNS and Australian Research Council grants CE110001028... and through funding from the New South Wales Office of the Environment and Heritage. 
 
 
 
@@ -146,35 +135,39 @@ Users are invited to view Climpact as ‘living software’ in that it can and w
 
 <a name="gettinginstalling"></a>
 ## Getting and installing Climpact
-[table of contents](#toc)
+[RETURN TO TOP](#toc)
+
+To calculate the Climpact indices for station data the user may go to the [Climpact website](https://climpact-sci.org/). This section describes the process of downloading and installing Climpact locally, for users who wish to calculate the indices on gridded data, or on station data using their own computer. Calculation of the Climpact indices on gridded data requires a Linux or MacOS system.
+
+The following sections describe the software requirements and the process of downloading and installing Climpact locally. 
 
 ### 2.1 Software requirements
-Climpact is an app that runs through your computer's web browser and is compatible with Windows, Linux and MacOS. While interaction with Climpact takes place through a web browser, it does not require an internet connection once it is installed. To run Climpact, the R software package version 3.3.2 or later needs to be installed on your operating system. The steps to install R on Linux and Mac computers will vary according to your set up, please see the R website for instructions. See below for a video tutorial on installing R in Windows 10.
+* [R](https://cran.r-project.org/) version 3.3 or higher.
+* A modern web browser. Note that while a web browser is required to use Climpact locally, once it is installed an internet connection is **not** required.
+* For calculation of gridded indices:
+    * a Linux or MacOS operating system
+    * the PROJ4 development files (libproj-dev package on Ubuntu)
+    * the udunits development files (libudunits2-dev package on Ubuntu)
 
-For Linux users, the PROJ4 development files (libproj-dev package on Ubuntu) and udunits development files (libudunits2-dev package on Ubuntu) are required before installing Climpact. Use the package manager in your Linux distribution to install these files.
+See the video below for a demonstration of installing R in Windows 10.
 
 [![](http://img.youtube.com/vi/a-vnLME6hRQ/0.jpg)](http://www.youtube.com/watch?v=a-vnLME6hRQ "")
 
 ### 2.2 Getting Climpact
 
-The official Climpact github website is located at https://github.com/ARCCSS-extremes/climpact/
-
-To get the latest version of Climpact visit the above website or download and extract the following file to a new directory (https://github.com/ARCCSS-extremes/climpact/archive/master.zip). This will create a directory called climpact-master. 
+Climpact can be downloaded from the [Github website](https://github.com/ARCCSS-extremes/climpact). The latest version can be downloaded as a zip file from [this link](https://github.com/ARCCSS-extremes/climpact/archive/master.zip). Download and extract the contents of this file. This will create a directory called climpact-master. 
 
 ### 2.3 Installing Climpact
 
-Once you have installed R on your computer and downloaded Climpact you will need to install Climpact. This process installs the R packages that Climpact requires onto your computer. The following installation steps only need to be completed once.
+Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install Climpact. This process involves installing the R packages that Climpact requires and only need to be completed once. Watch the video below for a demonstration of installing Climpact in Windows 10, or follow the steps outlined below.
 
-In Windows open R and select "File->Change dir..." and select the climpact-master directory created in section 2.2. Then at the R command line type source('installers/Climpact.master.installer.r').
+**In Windows** open R and select *File->Change dir...* and select the *climpact-master* directory created in section 2.2. Then at the R command line type ```source('installers/climpact.master.installer.r').```
 
-In Linux and MacOS open a terminal window and change to the climpact-master directory created in section 2.2, then open R in the terminal window (by typing R) and type
-source('installers/Climpact.master.installer.r').
+**In Linux and MacOS** open a terminal window and change to the *climpact-master* directory created in section 2.2, then open R in the terminal window by typing ```R``` and then type ```source('installers/climpact.master.installer.r').```
 
-The above process will start downloading and installing the R packages that Climpact requires. This process can take several minutes but will only need to be completed once. You will be prompted with a note part way through this process. You may also be asked to select the geographical location of the closest 'mirror' to download these packages from (see figure below). You may select any location, though the closest location will usually offer the fastest download speed. Once complete, you should see a message in the R console saying "Checking complete.".
+The above process will start downloading and installing the R packages that Climpact requires. This process can take several minutes but will only need to be completed once. If this is the first time you are installing R packages you will be prompted to select a "mirror", these are geographical locations of servers around the world and you should typically select the mirror closest to your location (see figure below). You may select any location, though the closest location will usually offer the fastest download speed. Once complete, you should see a message in the R console saying ```Checking complete.```.
 
 ![](images/CRAN_mirrors.png)
-
-See the video tutorial below for an example of getting and installing Climpact on a Windows computer.
 
 
 ## 3. Calculating the indices from a station text file
