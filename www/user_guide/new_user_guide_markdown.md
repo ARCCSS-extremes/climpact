@@ -1,24 +1,26 @@
 <a name="toc"></a>
 # Climpact user guide
 
+Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](https://github.com/ARCCSS-extremes/climpact) to find out more about this project.
+
 ## Table of contents
 
 1. [Acknowledgements](#acknowledgements)
 1. [Background to Climpact](#background)
 1. [Getting and installing Climpact locally](#gettinginstalling)
 1. [Calculating the indices from a single station text file](#calculate_single_station)
+1. [Examininng output from a station text file](#outputstation)
 1. [Calculating the indices from multiple station text files](#calculate_multi_station)
 1. [Calculating the indices from netCDF files](#calculatenetcdf)
-1. [Appendix A: Table of Climpact indices](#tableofindices)
-1. [Appendix B: Formatting of input files](#formattinginput)
-1. [Appendix C: Quality control (QC) diagnostics](#qc)
-1. [Appendix D: Percentile calculations](#percentilecalc)
-1. [Appendix E: Heatwave and coldwave calculations](#heatcoldwaves)
-1. [Appendix F: FAQ](#faq)
-1. [Appendix G: Software license agreement](#licence)
+1. [Examining output from netCDF files](#outputgridded)
+1. [*Appendix A*: Table of Climpact indices](#tableofindices)
+1. [*Appendix B*: Formatting of input files](#formattinginput)
+1. [*Appendix C*: Quality control (QC) diagnostics](#qc)
+1. [*Appendix D*: Percentile calculations](#percentilecalc)
+1. [*Appendix E*: Heatwave and coldwave calculations](#heatcoldwaves)
+1. [*Appendix F*: FAQ](#faq)
+1. [*Appendix G*: Software license agreement](#licence)
 
-
-Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](https://github.com/ARCCSS-extremes/climpact) to find out more about this project.
 
 <a name="acknowledgements"></a>
 ## Acknowledgements
@@ -141,7 +143,7 @@ To calculate the Climpact indices for station data the user may go to the [Climp
 
 The following sections describe the software requirements and the process of downloading and installing Climpact locally. 
 
-### 2.1 Software requirements
+### 3.1 Software requirements
 * [R](https://cran.r-project.org/) version 3.3 or higher.
 * A modern web browser. Note that while a web browser is required to use Climpact locally, once it is installed an internet connection is **not** required.
 * For calculation of gridded indices:
@@ -153,11 +155,11 @@ See the video below for a demonstration of installing R in Windows 10.
 
 [![](http://img.youtube.com/vi/a-vnLME6hRQ/0.jpg)](http://www.youtube.com/watch?v=a-vnLME6hRQ "")
 
-### 2.2 Getting Climpact
+### 3.2 Getting Climpact
 
 Climpact can be downloaded from the [Github website](https://github.com/ARCCSS-extremes/climpact). The latest version can be downloaded as a zip file from [this link](https://github.com/ARCCSS-extremes/climpact/archive/master.zip). Download and extract the contents of this file. This will create a directory called climpact-master. 
 
-### 2.3 Installing Climpact
+### 3.3 Installing Climpact
 
 Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install Climpact. This process involves installing the R packages that Climpact requires and only need to be completed once. Watch the video below for a demonstration of installing Climpact in Windows 10, or follow the steps outlined below.
 
@@ -170,36 +172,54 @@ The above process will start downloading and installing the R packages that Clim
 ![](images/CRAN_mirrors.png)
 
 
-## 3. Calculating the indices from a station text file
+<a name="calculatestation"></a>
+## 4. Calculating the indices from a station text file
 [RETURN TO TOP](#toc)
 
-### 3.1 Starting Climpact
+### 4.1 Starting Climpact
 
-This section of the user guide describes how to calculate the Climpact indices on a station text file formatted according to Appendix B (it is imperative that your station text file is formatted according to these guidelines otherwise you will encounter errors).
+Climpact can calculate climate extremes indices for a single location using data stored in a text file, or for a gridded dataset using data stored in a netCDF file. This section of the user guide describes how to calculate the Climpact indices for a single location text file (usually a weather station). It is imperative that your text file is formatted according to the guidelines in [Appendix B](#appendixb).
 
-In Windows, open R and select File->Change dir... and select the climpact-master directory created when installing Climpact (see Section 2 if you have not done this). Then run the following two commands;
+In Windows, open R and select *File->Change dir...* and select the *climpact-master* directory created when installing Climpact (see [Section 2](#gettinginstalling) if you have not done this). Then run the following two commands;
 ```r
 library(shiny)
 runApp()
 ```
 
-In Linux or MacOS, cd to the climpact-master directory created instep 1, then open R in a terminal window (by typing R) and run the following two commands;
+In Linux or MacOS, cd to the *climpact-master* directory created instep 1, then open R in a terminal window (by typing ```R```) and run the following two commands;
 ```r
 library(shiny)
 runApp()
 ```
 
-Climpact should then start. And you should see the main screen as pictured below.
+Climpact should then start in your web browser. And you should see the home page as pictured below. From here you can follow the on-screen information to calculate the indices, or continue reading.
 
 ![](images/front_page.png)
 
-### 3.2 Load and Check Data
+### 4.2 Load data
 
-Different functionality in Climpact is accessed via the tabs at the top of the screen. From the main screen select the 'Load and Check Data' tab to begin calculating the indices on a station text file. You should see the following screen.
+Different functionality in Climpact is accessed via the tabs on the left of the screen. From the home page select the *Process single station* to begin calculating the indices on a station text file. You should see the following screen which shows 4 tabs at the top of the screen highlighting the steps to calculate the indices and their correlation to any sector data the user has (this last step is optional).
+
+The first step is to load your text file into Climpact. To do this, select *Browse* and upload your station file to Climpact. **NO STATION DATA IS STORED BY CLIMPACT AFTER YOU LEAVE THE SITE.**
+
+After selecting your station file, enter the following station information:
+* **Name**: Name of your station if the default is incorrect.
+* **Latitude**: a decimal value between -90 and 90.
+* **Longitude**: a decimal value between -180 and 180.
+* **Base period start year**: the beginning of the period of time on which you would like percentile thresholds to be based (e.g. if you want your base period to be 1961-1990, enter 1961 here). Confused by what this is for? See [Appendix D](#appendixd).
+* **Base period end year**: the end of the period of time on which you would like percentile thresholds to be based (e.g. if you want your base period to be 1961-1990, enter 1990 here). Confused by what this is for? See [Appendix D](#appendixd).
+
+Once the above information is entered select the *Next* button at the bottom of the screen which will bring you to tab 2.
 
 ![](images/load_check.png)
 
-### 3.3 Calculate Climate Indices
+
+### 4.2 Check data
+
+Tab 2 
+
+
+### 4.3 Calculate Climate Indices
 
 On this screen you are required to enter information relating to the indices that will be calculated.
 
@@ -228,7 +248,7 @@ On this screen you are required to enter information relating to the indices tha
 **At this point** the calculating of the indices is complete. If you would like to also calculate the correlation between some sector data you have and the indices that have been calculated, you may proceed to the next section describing 'Sector Data Correlation'.
 
 
-### 3.4 Sector Data Correlation
+### 4.4 Sector Data Correlation
 
 Climpact can calculate and plot correlations between annual sector data the user has and the indices it has calculated. Use the 'Sector Data Correlation' tab after you have calculated your indices to do this. Currently, Climpact only calculates correlations for annual sector data. Note that the indices must have been calculated in the current session of Climpact. So, if you have closed Climpact and wish to calculate correlations with sector data, you must repeat the process described in sections 3.2 and 3.3.
 
@@ -240,8 +260,8 @@ Box 11: Once you have selected your data and chosen a name for your data, select
 
 Box 12: Once complete, you will be provided with a link to plots and .csv files containing the correlations.
 
-
-### 3.5 Examining Climpact output
+<a name="outputstation"></a>
+## 5. Examining output from a station station text file
 
 Climpact creates its output files in the climpact-master/www/output/[station_name] directory, where [station_name] is the name you entered on the 'Load and Check Data' tab in section 3.2. Climpact produces two key subdirectories where the results of each index are stored, plots/ and indices/. For each index one image file (.png) containing a plot of the index and one comma-separated value (.csv) file containing the index values are created and put into the the plots/ and indices/ subdirectories, respectively. The .csv files can be opened in Microsoft Excel, Open Office Calc or a text editor. The index files have names “sydney_XXX_YYY.csv” where XXX represents the name of the index (see Appendix A) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A sample .csv file for su is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using ALL available years/months).
 
@@ -254,16 +274,20 @@ See Appendix A for definitions of each Climpact index.
 ![](images/sydney_su_ANN.png)
 
 
+<a name="calculate_multi_station"></a>
+## 6. Calculating indices for multiple station text files
 
 
-## 4. Calculating the indices from netCDF files
+
+<a name="calculatenetcdf"></a>
+## 7. Calculating the indices from netCDF files
 [RETURN TO TOP](#toc)
 
 Users who have three-dimensional netCDF datasets (time x latitude x longitude) of daily temperature and precipitation may also calculate the Climpact indices. Currently, there are two ways to do this. Firstly, users may utilise the separate Climpact.ncdf.wrapper.r script and optionally the Climpact.ncdf.thresholds.wrapper.r script by modifying them and executing them from the Windows or Linux command line. This functionality is intended for users familiar with R and/or the command line. Secondly, there is an experimental user interface to this functionality which can be accessed via the 'EXPERIMENTAL' tab that can be seen upon starting Climpact. While this uses the same code to calculate the indices as the above mentioned wrapper scripts, there are several instabilities in the Climpact user interface that result from errors that occur during calculation not being handled well by Climpact. Thus, unless you are confident your data is formatted correctly it is only recommended that users use the wrapper scripts.
 
 See Appendix B about ensuring your data is in the correct format. If it is not in the correct format, there may be unintended and non-obvious consequences.
 
-### 4.1 Using the netCDF wrapper scripts
+### 7.1 Using the netCDF wrapper scripts
 
 The Climpact.ncdf.wrapper.r script calculates the Climpact indices on the given netCDF file(s). To use this script, make a copy of it and edit the parameters inside according to your data (the comments in this file will guide you in determining how to change these variables). It is important that you make a copy of this file and do not alter the original. As a test, it is recommended to run this script on the provided sample data BEFORE running on your own data.
 
@@ -283,7 +307,7 @@ To complete the above scenario requires three steps:
 
 These scripts typically take many hours to run (however, runtime varies strongly based on input file size and computer resources). Once you have run Climpact.ncdf.wrapper.r, numerous netCDF files will exist in the output directory specified. Where relevant, indices are calculated at both monthly and annual time scales. A typical output file name is r20mm_ETCCDI_ANN_climpact.sample_historical_NA_1991-2010.nc, where r20mm refers to the index calculated and ANN refers to the time scale this index was calculated on (MON for monthly). Output file names are dervied from the CMIP5 conventions and follow this format var_timeresolution_model_scenario_run_starttime-endtime.nc.
 
-### 4.2 Calculating gridded indices via the Climpact user-interface
+### 7.2 Calculating gridded indices via the Climpact user-interface
 
 This functionality is experimental.
 
@@ -313,12 +337,14 @@ To calculate thresholds from a single or set of netCDF files follow these steps:
 1. Fill in all of the required information. This includes selecting the netCDF file with the daily maximum and minimum temperatures and daily precipitation. You do not require all three variables, Climpact will only calculate thresholds for the variables provided. You will need to provide the names of the three variables as they are stored in the provided file(s). Institute name and ID are required for metadata. The base period start and end years, the output directory for the threshold file, the output threshold filename and the number of computer cores to use must also be entered.
 1. Once the above information is entered select the 'Calculate netCDF thresholds' button. A dialog box will appear with important information for you to read. Once you select 'PROCEED' processing will commence. The output of this will be a single netCDF file containing thresholds for the variables provided. This file can then be used when calculating gridded indices.
 
-### 4.3 Examining netCDF files
+
+<a name="outputgridded"></a>
+## 8. Examining output from netCDF files
 
 NetCDF files require special software for viewing and manipulating. We recommend using Panoply for easily viewing netCDF output, it is freely available and works under Windows, Linux and MacOS. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
 
 
-
+<a name="batch"></a>
 ## 5. Batch processing multiple station text files
 [RETURN TO TOP](#toc)
 
@@ -345,6 +371,7 @@ To use this functionality each station file must be formatted according to Appen
 Once you have your station text files in the correct format and in a single directory, and have created a metadata text file, you may enter this information on the 'Process multiple stations' page. Once your information is entered select 'Calculate indices'. A progress bar will appear in the bottom right of the browser window. This process takes approximately 1 minute per file per core (depending on the length of each file and the speed of your computer). If Climpact encounters problems in your text files (e.g. errors resulting from incorrectly formatted data), these will be stored in \*error.txt files where your input data is located. It is very important that the user views the contents of these files after Climpact finishes, making any necessary corrections to the corresponding station text files and re-running this process. The calculated indices and associated files will be stored in the input directory you specify on this page, with one new folder per station.
 
 
+<a name="appendixa"></a>
 ## Appendix A: Tables of Climpact indices
 [RETURN TO TOP](#toc)
 
