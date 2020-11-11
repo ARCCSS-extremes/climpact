@@ -9,17 +9,24 @@ Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](
 1. [Background to Climpact](#background)
 1. [Getting and installing Climpact locally](#gettinginstalling)
 1. [Calculating the indices from a single station text file](#calculate_single_station)
-1. [Examininng output from a station text file](#outputstation)
 1. [Calculating the indices from multiple station text files](#calculate_multi_station)
+1. [Output for station text files](#outputstation)
 1. [Calculating the indices from netCDF files](#calculatenetcdf)
-1. [Examining output from netCDF files](#outputgridded)
-1. [*Appendix A*: Table of Climpact indices](#tableofindices)
-1. [*Appendix B*: Formatting of input files](#formattinginput)
-1. [*Appendix C*: Quality control (QC) diagnostics](#qc)
-1. [*Appendix D*: Percentile calculations](#percentilecalc)
-1. [*Appendix E*: Heatwave and coldwave calculations](#heatcoldwaves)
-1. [*Appendix F*: FAQ](#faq)
-1. [*Appendix G*: Software license agreement](#licence)
+1. [Output for netCDF files](#outputgridded)
+
+[*Appendix A*: Table of Climpact indices](#tableofindices)
+<br>
+[*Appendix B*: Formatting of input files](#formattinginput)
+<br>
+[*Appendix C*: Quality control (QC) diagnostics](#qc)
+<br>
+[*Appendix D*: Percentile calculations](#percentilecalc)
+<br>
+[*Appendix E*: Heatwave and coldwave calculations](#heatcoldwaves)
+<br>
+[*Appendix F*: FAQ](#faq)
+<br>
+[*Appendix G*: Software license agreement](#licence)
 
 
 <a name="acknowledgements"></a>
@@ -219,7 +226,7 @@ Once the above information is entered select the *Next* button at the bottom of 
 Tab 2 
 
 
-### 4.3 Calculate Climate Indices
+### 4.3 Calculate climate indices
 
 On this screen you are required to enter information relating to the indices that will be calculated.
 
@@ -260,22 +267,290 @@ Box 11: Once you have selected your data and chosen a name for your data, select
 
 Box 12: Once complete, you will be provided with a link to plots and .csv files containing the correlations.
 
-<a name="outputstation"></a>
-## 5. Examining output from a station station text file
+<a name="calculate_multi_station"></a>
+## 5. Calculating indices for multiple station text files
 
-Climpact creates its output files in the climpact-master/www/output/[station_name] directory, where [station_name] is the name you entered on the 'Load and Check Data' tab in section 3.2. Climpact produces two key subdirectories where the results of each index are stored, plots/ and indices/. For each index one image file (.png) containing a plot of the index and one comma-separated value (.csv) file containing the index values are created and put into the the plots/ and indices/ subdirectories, respectively. The .csv files can be opened in Microsoft Excel, Open Office Calc or a text editor. The index files have names “sydney_XXX_YYY.csv” where XXX represents the name of the index (see Appendix A) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A sample .csv file for su is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using ALL available years/months).
+
+
+<a name="outputstation"></a>
+## 6. Output for station text files
+
+When calculating indices on station text files Climpact creates six sub-directories at *climpact-master/www/output/[station_name]*, where [station_name] is the name you entered on the 'Load' tab in section X.Y. The sub-directories created are listed in the table below and will contain files if [all four steps](#calculatestation) for calculating the indices on a station text file are completed. The subsections that follow describe the output found in these six folders.
+
+|Output folder name|Description|
+|---------|-------|
+|indices|Stores .csv files for each index calculated|
+|plots|Stores image files containing plots of each index|
+|qc|Stores quality-control information calculated in step 2 of the [index calculation process](#calculatestation)|
+|thres|Stores two .csv files containing threshold information|
+|trend|Stores a .csv file containing trend information for each index|
+
+### 6.1 Quality control
+***PREFACE****: The text in this section is adapted from text written by Enric Aguilar and Marc Prohom for the R functions they created to perform quality control, which have been integrated into Climpact with their permission.*
+
+Quality control (QC) diagnostics are only calculated for station text files (i.e. they are NOT calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors will be detected. Furthermore, a separate category of QC issues, that of homogeneity, often occurs in station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be sure of the quality of their data before using Climpact, or, that they utilise additional checks for homogeneity after running the QC checks performed by Climpact (and described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and is also built on the R programming language.
+
+Below is a seminar on the QC functionality described in this section.
+
+[![](http://img.youtube.com/vi/gusIge2bTNk/0.jpg)](http://www.youtube.com/watch?v=gusIge2bTNk "")
+
+
+#### 6.1.1 Overview of the quality control output
+
+Once the user selects the *Check* button under tab 2 (see [section 4](#calculatestation)) Climpact will calculate thresholds and perform QC checks on the user-provided station file. At the end of this process a dialogue box will appear telling the user to check the *qc* sub-directory created in *climpact-master/www/output/[station_name]*.
+
+The *qc* folder contains the following files (where “mystation” refers to the name of the user’s station file):
+
+**7 .pdf files**, with graphical information on data quality:
+<br>
+mystation_tminPLOT.pdf
+<br>
+mystation_tmaxPLOT.pdf
+<br>
+mystation_dtrPLOT.pdf
+<br>
+mystation_prcpPLOT.pdf
+<br>
+mystation_boxes.pdf
+<br>
+mystation_boxseries.pdf
+<br>
+mystation_rounding.pdf
+
+
+**9 .csv files** with numerical information on data quality
+
+mystation_duplicates.csv
+
+ mystation_outliers.csv
+
+ mystation_tmaxmin.csv
+
+mystation_tx_flatline.csv
+
+mystation_tn_flatline.csv
+
+mystation_toolarge.csv
+
+mystation_tx_jumps.csv
+
+mystation_tn_jumps.csv
+
+mystation_temp_nastatistics.csv
+
+ 
+
+C.2 File descriptions 
+
+mystation_tminPLOT.pdf
+
+mystation_tmaxPLOT.pdf
+
+mystation_dtrPLOT.pdf
+
+mystation_prcpPLOT.pdf
+
+ 
+
+These files contain simple plots of the daily time-series of minimum temperature, maximum temperature, diurnal temperature range and precipitation, respectively. This allows the user to view the data and identify obvious problems by eye such as missing data (indicated by red circles) or unrealistic values.
+
+Below is an example for tmax.
+
+tmax
+
+mystation_boxes.pdf
+
+ 
+
+This file identifies potential outliers based on the interquartilic (IQR). The IQR is defined as the difference between the 75th (p75) and the 25th (p25) percentiles. As can be seen in the example below, the mystation_boxes.pdf file contains boxplots of temperature and precipitation data flagging as outliers (round circles) all those temperature values falling outside a range defined by p25 – 3 interquartilic ranges (lower bound) and p75 + 3 interquartilic ranges (upper bound). For precipitation, 5 IQR are used.
+
+
+
+ 
+
+The values identified by this graphical quality control, are sent to a .csv file, mystation_outliers.csv. This file lists the outliers grouped under the variable that produced the inclusion of the record in the file and specifying the margin (upper bound or lower bound) that is surpassed. So, under ‘Prec up’ appear those values that represent a precipitation outlier; under ‘TX up’ are those that represent a maximum temperature higher than p75+3*IQR; under ‘TX low’ are outliers that represent an observation lower than p25-3*IQR. The explanation given for TX, also applies to TN and DTR. The advantage of this approach is that the detection of this percentile based outliers is not affected by the presence of larger outliers, so ONE RUN OF THE PROCESS IS ENOUGH.
+
+ 
+
+Date    Prec     TX       TN       DTR
+
+Prec up                                               
+
+2/01/1951        31.8     14.3     10.2     4.1
+
+12/01/1961      47.5     23.4     11.4     12
+
+5/04/1963        42.8     19.2     13.6     5.6
+
+18/04/1967      29.1     20.2     11.8     8.4
+
+19/04/1969      28.2     27.7     17.9     9.8
+
+19/04/1973      53.6     14.8     11.1     3.7
+
+21/11/1991      55.9     11.4     7.8       3.6
+
+11/11/1995      32.1     18.4     13.5     4.9
+
+1/12/2000        31.6     18.6     12.6     6
+
+31/12/2001      32.1     16        9.4       6.6
+
+15/12/2005      30.2     22.1     13.3     8.8
+
+TX up                                     
+
+TX low                                               
+
+TN up                                     
+
+TN low                                               
+
+30/10/1972      2.5       -11.2    -23.4    12.2
+
+31/10/1972      4.3       -4.8      -24.8    20
+
+DTR up                                              
+
+DTR low                                            
+
+ 
+
+mystation_boxseries.pdf
+
+ 
+
+The graphic file boxseries.pdf (which does not have a numerical counterpart) produces annual boxplots. This file is useful to have a panoramic view of the series and be alerted of parts of the series which can be problematic (see values around 1984 in the example figure below).
+
+
+
+mystation_rounding.pdf
+
+This file looks at rounding problems by plotting the frequency of values after each decimal point. It shows how frequently each of the 10 possible values (.0 to .9) appears. It is expected that .0 and .5 will be more frequent (although there is no statistical reason for this!).
+
+
+
+mystation_tn_flatline.csv
+
+mystation_tx_flatline.csv
+
+ 
+
+The mystation_tn_flatline.csv and mystation_tx_flatline.csv files report occurrences of 4 or more equal consecutive values in, respectively, TX and TN. A line for each sequence of 4 or more consecutive equal values is generated. In the example below all sequences are 4 values long (i.e. each corresponding value has been repeated 3 extra times). The date specified belongs to the end of the sequence.
+
+ 
+
+Date    TX       Number of duplicates
+
+4/09/1937        18        3
+
+28/11/1937      16.9     3
+
+ 
+
+Looking at the data, the first sequence identified by the QC test is shown below.
+
+ 
+
+1937    9          1          0          16.4     11.6
+
+1937    9          2          0          18        10.2
+
+1937    9          3          0          18        8.6
+
+1937    9          4          0          18        7
+
+ 
+
+mystation_duplicates.csv
+
+ 
+
+The file mystation_duplicates.csv includes all dates which appear more than once in a datafile. In the listing below, one can see that 1958/08/26 occurs twice, and thus will be reported in mystation_duplicates.csv.
+
+ 
+
+1951 8 24
+
+1951 8 25
+
+1951 8 26
+
+1951 8 26
+
+1951 8 28
+
+1951 8 29
+
+1951 8 30
+
+1951 8 31
+
+ 
+
+mystation_toolarge.csv
+
+ 
+
+The file mystation_toolarge.csv reports precipitation values exceeding 200 mm (this and any other threshold can be easily reconfigured before execution) and temperature values exceeding 50 ºC.
+
+ 
+
+mystation_tx_jumps.csv
+
+mystation_tn_jumps.csv
+
+ 
+
+The files mystation_tx_jumps.csv and mystation_tn_jumps.csv will list those records where the
+
+temperature difference with the previous day is greater or equal than 20 ºC.
+
+ 
+
+mystation_tmaxmin.csv
+
+ 
+
+The mystation_tmaxmin.csv file, records all those dates where maximum temperature is lower than minimum temperature.
+
+ 
+
+mystation_temp_nastatistics.csv
+
+ 
+
+This file lists the number of missing values that exists for each variable (TX, TN, PR) for each year.
+
+ 
+
+
+### 6.2 Climpact indices and plots
+
+Climpact produces two key subdirectories where the results of each index are stored, *plots* and *indices*. For each index one image file (.png) containing a plot of the index and one comma-separated value file (.csv) containing the index values are created and put into the the *plots* and indices* subdirectories, respectively. The .csv files can be opened in Microsoft Excel, Open Office Calc or a text editor. The index files have filenames “sydney_XXX_YYY.csv” where XXX represents the name of the index (see [Appendix A](#appendixa)) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A sample .csv file for the index *su* is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using all available years/months). Note that for any years or months where insufficient data exists, the missing value of -99.9 will be used.
 
 ![](images/su_csv.png)
 
-An example of a plot for the index su is shown below. These files may be opened in any standard image viewing software. The plot of each index is shown with a locally weighted linear regression (red dashed line) to give an indication of longer-term variations. The linear Mann-Kendall trend are displayed at the bottom of the plot along with the lower and upper bounds of the 95% confidence interval. In addition, one .pdf file ending in \*_all_plots.pdf, is produced in the subdirectory plots/. This file contains all plots in each image file.
+An example plot for the index *su* is shown below. These files may be opened in any standard image viewing software. The Sen's slope is displayed at the bottom of the plot along with the lower and upper bounds of the 95% confidence interval (these are calculated with the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package in R). In addition, one .pdf file ending in \*_all_plots.pdf, is produced in the subdirectory plots/. This file contains all plots.
 
-See Appendix A for definitions of each Climpact index.
+See [Appendix A](#appendixa) for definitions of each Climpact index.
+
+![](images/sydney_su_ANN.png)
+
+### 6.3 Sector data
+Climpact can also calculate basic statistics between the climate extremes indices and user-provided sector data. Refer to [section 4](#) for instructions on calculating these sector statistics. Refer to [Appendix B](#appendixb) for guidance on how sector data must be formatted. Currently, the sector data must be annual. 
+
+Specifically, Climpact calculates correlations between each index and the user's sector data, as well as regressions of the sector data onto the minimum, maximum and average daily temperatures.
+
+Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars.
+
+![](images/sydney_su_ANN.png)
+
+Below is an example of a regression plot between maximum temperature and sector data. Whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.
 
 ![](images/sydney_su_ANN.png)
 
 
-<a name="calculate_multi_station"></a>
-## 6. Calculating indices for multiple station text files
 
 
 
@@ -339,7 +614,7 @@ To calculate thresholds from a single or set of netCDF files follow these steps:
 
 
 <a name="outputgridded"></a>
-## 8. Examining output from netCDF files
+## 8. Examining output for netCDF files
 
 NetCDF files require special software for viewing and manipulating. We recommend using Panoply for easily viewing netCDF output, it is freely available and works under Windows, Linux and MacOS. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
 
