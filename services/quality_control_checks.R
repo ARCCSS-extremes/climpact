@@ -64,7 +64,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       metadata$stationName,
       "/qc/",
       missingDatesFileName,
-      "' target='_blank'> here </a> for a list of missing dates. ",
+      "' target='_blank'>here</a> for a list of missing dates. ",
       "Fill these with observations or missing values (-99.9) before continuing with quality control.")
 
     # skip <- TRUE

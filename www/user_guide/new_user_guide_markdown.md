@@ -271,11 +271,29 @@ Box 12: Once complete, you will be provided with a link to plots and .csv files 
 ## 5. Calculating indices for multiple station text files
 [RETURN TO TOP](#toc)
 
-Occasionally users will have numerous station text files (e.g. dozens to thousands) for which they would like to calculate the Climpact indices. For this purpose using the user-interface provided with Climpact ([Section 3](#calculatestation)) would be impractical. In this case the data may be processed using the *climpact.batch.stations.r* script. All station files must be in the same format as specified in [Appendix B](#appendixb).
+Occasionally users will have numerous station text files (e.g. dozens to thousands) for which they would like to calculate the Climpact indices. For this purpose using the method highlighted in ([Section 3](#calculatestation)) would be impractical. The user can instead use the *Batch process stations* option on the left hand side of the screen, or use the *climpact.batch.stations.r* script on their local computer (if Climpact has been [installed locally](gettinginstalling)). 
+
+Whether using the web interface or *climpact.batch.stations.r*, all station files for processing must be in the format specified in [Appendix B](#appendixb). Additionally, the batch processing of station files requires a *metadata* file to be prepared, as is described in the next section.
+
+### 5.1 Setting up the metadata file
+
+The *metadata* is a simple text file that contains all of the information the user would normally enter into Climpact when calculating the indices for single stations (see [Section 3](#calculatestation)).
+
+
+
+
+
+
+
+
+
+
+### 5.2 Using climpact.batch.stations.r
 
 Unlike the [netCDF wrapper scripts](#calculatenetcdf), the *climpact.batch.stations.r* script does not require modifying but is passed information at runtime in the form of command line arguments. Execution of this script takes the following form, from the Linux command line:
 
-```Rscript climpact.batch.stations.r /full/path/to/station/files/ /full/path/to/metadata.txt base_period_begin base_period_end cores_to_use
+```
+Rscript climpact.batch.stations.r /full/path/to/station/files/ /full/path/to/metadata.txt base_period_begin base_period_end cores_to_use
 ```
 
 The 5 command line arguments following *climpact.batch.stations.r* above are described in the following table.
@@ -290,7 +308,8 @@ The 5 command line arguments following *climpact.batch.stations.r* above are des
 
 An example of executing the *climpact.batch.stations.r* file would be:
 
-```Rscript climpact.batch.stations.r ./www/sample_data/Renovados_hasta_2010 ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 4
+```
+Rscript climpact.batch.stations.r ./www/sample_data/Renovados_hasta_2010 ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 4
 ```
 
 The metadata.txt file contains 12 columns defined in the following table. A sample metadata.txt file can be found at *www/sample_data/climpact.sample.batch.metadata.txt*.
