@@ -3,9 +3,9 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     imgs(list())
     if (qcProgressStatus() == "Done" && (!is.null(singleStationState$outputFolders()))) {
       watchPath <- singleStationState$outputFolders()$outqcdir
-      imgs(list.files(watchPath, pattern=".png", full.names = TRUE))  
+      imgs(list.files(watchPath, pattern=".png", full.names = TRUE))
     }
-    bottom_opts <- settings(slidesToShow = 3, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
+    bottom_opts <- settings(slidesToShow = 1, slidesToScroll = 1, centerMode = TRUE, focusOnSelect = TRUE, initialSlide = 0)
     sl <- slickR(imgs(), slideId = "slickRQCMain", height = 600) + bottom_opts
     return(sl)
   })
