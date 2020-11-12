@@ -44,6 +44,11 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
   batchFiles[1] <- NULL
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
+    # set error log file name remove if present from a past run of climpact
+    errorfile <- file.path("www","output",paste0(strip_file_extension(batch_metadata$station_file[file.number]),".error.txt"))
+
+    if(file_test("-f",errorfile)) { file.remove(errorfile) }
+
     currentFileName <- batch_metadata$station_file[file.number]
     msg <- paste("File", file.number, "of", numfiles, ":", currentFileName)
     print(msg)
@@ -53,14 +58,16 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
     if (!is.na(currentFilePath)) {
       fileName <- batch_metadata$station_file[file.number]
       stationName <- strip_file_extension(fileName)
-      outputFolders <- outputFolders(batchOutputFolder, stationName)
-      qcResult <- checkStation(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, base.start, base.end, outputFolders)
+      outputFolders <- outputFolders(file.path("www","output"),stationName)
+      qcResult <- suppressWarnings(checkStation(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, base.start, base.end, outputFolders))
       if (qcResult$errors == "") {
         # do index calculations
-        calculateStationIndices(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, qcResult$metadata, qcResult$cio, outputFolders)
+        calculateStationIndices(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, qcResult$metadata, qcResult$cio, outputFolders,errorfile)
       } else {
         # we had an error with this file
-        print(qcResult$errors)
+	fileConn<-file(errorfile)
+	writeLines(toString(qcResult$errors), fileConn)
+	close(fileConn)
       }
     }
   }
@@ -79,7 +86,7 @@ checkStation <- function(progress, prog_int, batch_metadata, file.number, curren
   return(qcResult)
 }
 
-calculateStationIndices <- function(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, station_metadata, station_cio, outputFolders) {
+calculateStationIndices <- function(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, station_metadata, station_cio, outputFolders,errorfile) {
   print(paste0("Calculating station indices for:", currentFilePath))
   params <- climdexInputParams(wsdi_ud      = batch_metadata$wsdin[file.number],
                                 csdi_ud     = batch_metadata$csdin[file.number],
@@ -92,15 +99,10 @@ calculateStationIndices <- function(progress, prog_int, batch_metadata, file.num
                                 custom_SPEI = batch_metadata$SPEI[file.number]
                               )
 
-  errorFilePath <- file.path(outputFolders$outputdir, paste0(stationName, ".error.txt"))
-  if (file_test("-f", errorFilePath)) {
-    file.remove(errorFilePath)
-  }
-
   # calculate indices
   catchCalc <- tryCatch(index.calc(progress, prog_int, station_metadata, station_cio, outputFolders, params),
                         error = function(cond) {
-                          fileConn <- file(errorFilePath)
+                          fileConn <- file(errorfile)
                           writeLines(toString(cond$message), fileConn)
                           close(fileConn)
                           if (file_test("-f", paste0(currentFilePath, ".temporary"))) {
