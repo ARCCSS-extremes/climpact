@@ -152,6 +152,11 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
 
   errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
+  # Concatenate all of the QC PDF's into one file
+  tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
+  outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_ALL_QC_OUTPUT.pdf"))
+  pdf_combine(tmplist,outqcfile)
+
   ##############################
   # Write out NA statistics.
   write.NA.statistics(cio, outputFolders, metadata)
