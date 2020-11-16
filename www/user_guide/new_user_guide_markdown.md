@@ -620,7 +620,7 @@ To calculate all of the Climpact indices time-series of daily minimum temperatur
 **Table A1. The table below describes all of the indices calculated by Climpact (as agreed by the ET-SCI July 2011. Updated index names and definitions May 2016). Bold indicates indices also recommended by the ETCCDI.**
 
 |Short name| Long name |Definition|Plain language description|Units|Time scale|Sector(s)|
-|---|---|---------|---------|---|---|---|
+|--|---|---------|---------|--|---|---|
 |FD|Frost Days|Number of days when TN < 0 °C|Days when minimum temperature is below 0°C|days|Mon/Ann|H, AFS|
 |TNlt2|TN below 2°C|Number of days when TN < 2 °C|Days when minimum temperature is below 2°C|days|Mon/Ann|AFS|
 |TNltm2|TN below -2°C|Number of days when TN < -2 °C|Days when minimum temperature is below -2°C|days|Mon/Ann|AFS|
