@@ -268,57 +268,26 @@ Box 11: Once you have selected your data and chosen a name for your data, select
 Box 12: Once complete, you will be provided with a link to plots and .csv files containing the correlations.
 
 <a name="calculatebatch"></a>
-## 5. Calculating indices for multiple station text files
+## 5. Calculating indices for multiple station (text) files
 [RETURN TO TOP](#toc)
 
-Occasionally users will have numerous station text files (e.g. dozens to thousands) for which they would like to calculate the Climpact indices. For this purpose using the method highlighted in ([Section 3](#calculatestation)) would be impractical. The user can instead use the *Batch process stations* option on the left hand side of the screen, or use the *climpact.batch.stations.r* script on their local computer (if Climpact has been [installed locally](gettinginstalling)). 
+Occasionally users will have numerous station files (e.g. dozens to thousands) for which they want to calculate the Climpact indices. For this purpose using the *Process single station* menu option described in [Section 3](#calculatestation) would be impractical. The user should instead use either the *Batch process stations* option on the left hand side of the web interface, or use the *climpact.batch.stations.r* script on their local computer, if Climpact has been [installed locally](gettinginstalling). Both of these options perform the same function, however, users may find using the *climpact.batch.stations.r* script provides more (and necessary) flexibility for all but the smallest of batch processing jobs.
 
-Whether using the web interface or *climpact.batch.stations.r*, all station files for processing must be in the format specified in [Appendix B](#appendixb). Additionally, the batch processing of station files requires a *metadata* file to be prepared, as is described in the next section.
+Whether using the web interface or the *climpact.batch.stations.r* script, all station files for processing must be in the format specified in [Appendix B](#appendixb). Additionally, the batch processing of station files requires a *metadata* file to be prepared, as is described in the next section.
 
-### 5.1 Setting up the metadata file
+NOTE: currently sector data statistics cannot be calculated on multiple files.
 
-The *metadata* is a simple text file that contains all of the information the user would normally enter into Climpact when calculating the indices for single stations (see [Section 3](#calculatestation)).
+### 5.1 Setting up the batch processing metadata file
 
+The *metadata* file is a simple text file that contains all of the information the user would normally enter into Climpact when calculating the indices for a single station ([Section 3](#calculatestation)).
 
-
-
-
-
-
-
-
-
-### 5.2 Using climpact.batch.stations.r
-
-Unlike the [netCDF wrapper scripts](#calculatenetcdf), the *climpact.batch.stations.r* script does not require modifying but is passed information at runtime in the form of command line arguments. Execution of this script takes the following form, from the Linux command line:
-
-```
-Rscript climpact.batch.stations.r /full/path/to/station/files/ /full/path/to/metadata.txt base_period_begin base_period_end cores_to_use
-```
-
-The 5 command line arguments following *climpact.batch.stations.r* above are described in the following table.
-
-|Command line argument|Description|
-|---|---|
-|/full/path/to/station/files/|Directory where individual station files are kept. An example can be found in sample_data/XXXX|
-|/full/path/to/metadata.txt|Text file that contains information about each station file to process.|
-|base_period_begin|Beginning year for the base period. To be used on all stations.|
-|base_period_end|Ending year for the base period. To be used on all stations.|
-|cores_to_use|Number of processor cores to use. When processing hundreds or thousands of files this is useful.|
-
-An example of executing the *climpact.batch.stations.r* file would be:
-
-```
-Rscript climpact.batch.stations.r ./www/sample_data/Renovados_hasta_2010 ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 4
-```
-
-The metadata.txt file contains 12 columns defined in the following table. A sample metadata.txt file can be found at *www/sample_data/climpact.sample.batch.metadata.txt*.
+The *metadata* file contains 12 columns described in the following table. A sample metadata.txt file can be found at *www/sample_data/climpact.sample.batch.metadata.txt*. A separate line is required in the file for each station. Once the *metadata* file has been created the user can proceed to using the *climpact.batch.stations.r* script, or the *Batch process stations* option on the left hand side of the Climpact home screen. These are described in the following sections.
 
 |Column name|Description|
 |---|---|
-|station_file|Station file name to process. This column lists all of the individual station text files that you wish to process and that are stored in the directory passed to climpact.batch.stations.r|
-|latitude|Latitude of station|
-|longitude|Longitude of station|
+|station_file|The file name for the stations to process. This should **not** include the directory path. |
+|latitude|Latitude of station.|
+|longitude|Longitude of station.|
 |wsdin|Number of days to calculate WSDI on. See [Appendix A](#appendixa).|
 |csdin|Number of days to calculate CSDI on. See [Appendix A](#appendixa).|
 |Tb_HDD|Base temperature to use in the calculation of HDDHEAT. See [Appendix A](#appendixa).|
@@ -329,41 +298,84 @@ The metadata.txt file contains 12 columns defined in the following table. A samp
 |txtn|Number of days across which to calculate both nTXnTN and nTXbnTNb. See [Appendix A](#appendixa).|
 |SPEI|Custom time scale over which to calculate SPEI and SPI. 3, 6 and 12 months are calculated by default. This could be set to 24 months, for example.|
 
-As the climpact.batch.stations.r is executed, a folder will be created in the directory where your metadata text file is stored and will use the same name. In this directory a new directory will be created for each station specified in the metadata.txt file. In each station's folder the same directories described in [section 6](#outputstation) are created. 
+### 5.2 Using climpact.batch.stations.r to process multiple stations
 
-When calculating the indices on numerous files, errors are bound to occur (typically due to insufficient data to calculate the indices on). When Climpact encounters an error with an input file during batch processing the error will be recorded in a text file that has the same name as the corresponding input file, with *.error.txt* appended. A summary of all errors will be printed to screen when batch processing finishes.
+Unlike the [netCDF wrapper scripts](#calculatenetcdf), the *climpact.batch.stations.r* script does not require modifying but is passed information at runtime in the form of command line arguments. Execution of this script takes the following form, from the Linux/MacOS command line:
+
+```
+Rscript climpact.batch.stations.r /full/path/to/station/files/ /full/path/to/metadata.txt base_period_begin base_period_end cores_to_use
+```
+
+The 5 command line arguments following *climpact.batch.stations.r* above are described in the following table.
+
+|Command line argument|Description|
+|---|---|
+|/full/path/to/station/files/|Directory where individual station files are kept (all station files should be stored in the one directory). An example can be found in sample_data/XXXX|
+|/full/path/to/metadata.txt|Text file that contains information about each station file to process. The contents of which are described in the previous table.|
+|base_period_begin|Beginning year for the base period. To be used on all stations.|
+|base_period_end|Ending year for the base period. To be used on all stations.|
+|cores_to_use|Number of processor cores to use. When processing hundreds or thousands of files this is useful.|
+
+An example of executing the *climpact.batch.stations.r* file would be:
+
+```
+Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2
+```
+
+As the *climpact.batch.stations.r* script is executed, directories will be created for each station in *www/output/*. In each station's directory several sub-directories are created relating to various different output created by Climpact. See [section 6](#outputstation) for a description of this output. 
+
+When calculating the indices for numerous files, errors are bound to occur. When Climpact encounters an error with a station file during batch processing, the error will be recorded in a text file stored in *www/output/* using the station name appended with *.error.txt*. A list of all error and missing date files contained in *www/output/* will be printed to the terminal after batch processing is complete. These *\*.error.txt* files should be examined and any errors rectified. If there was an error for a particular station then it is likely the indices did not get calculated for that station.
+
+
+### 5.3 Using the web interface to process multiple stations
+
+The web interface can be used to calculate the Climpact indices for multiple stations. This utilises the same functionality as the *climpact.batch.stations.r* script but may prove less flexible for large workflows. To use the web interface, first select *Batch process stations* from the left hand side of the Climpact home page, as shown below.
+
+![](images/climpact_home_screen.png)
+
+You will then be presented with a screen to provide several inputs:
+
+1. The first dialogue box allows you to select your metadata file, the details of which are described in section 5.1 above. 
+1. The second dialogue box allows you to select your stations text files, the format of which is described in [Appendix B](#appendixb). All of the station files you wish to process should be located in the same directory. Multiple files can be selected by holding the *Ctrl* key while selecting files with the mouse.
+1. The beginning and end of the base period must also be processed. The base period will be the same for each station file, therefore they must all have a common time period with existing data.
+1. Lastly, if you are running Climpact locally you will be able to specify the number of computing cores to use to process your stations. Each station takes ~1-2 minutes on a modern CPU core. If you have many stations it may be preferable to select multiple cores. You will only be allowed to select as many as your computer has. It is not recommended to use all of the cores as this will likely render the computer unusable while processing occurs.
+
+Once the above information has been entered select the orange *Calculate Indices* button. This process may take a long time. Once it is complete a blue text box will appear on the right side bar with a link to where the output can be viewed or downloaded. 
+
+Importantly, any errors encountered in processing the provided stations will be recorded in *\*.error.txt* files stored in the link provided. When calculating the indices on numerous files, errors are bound to occur. These *\*.error.txt* files should be examined and any errors rectified. If there was an error for a particular station then it is likely the indices did not get calculated for that station.
 
 
 <a name="outputstation"></a>
 ## 6. Output for station text files
 
-When calculating indices on station text files Climpact creates six sub-directories at *climpact-master/www/output/[station_name]*, where [station_name] is the name you entered on the 'Load' tab in section X.Y. The sub-directories created are listed in the table below and will contain files if [all four steps](#calculatestation) for calculating the indices on a station text file are completed. The subsections that follow describe the output found in these six folders.
+When calculating indices on station text files Climpact creates six sub-directories at *www/output/[station_name]*, where [station_name] is the name you entered on the 'Load' tab in [section 4](#calculatesingle), or, if batch processing was conducted these station names will be based on each station's filename. The sub-directories created are listed in the table below and will contain files if [all four steps](#calculatestation) for calculating the indices on a station text file are completed. The subsections that follow describe the output found in these six folders.
 
 |Output folder name|Description|
 |---------|-------|
-|indices|Stores .csv files for each index calculated|
-|plots|Stores image files containing plots of each index|
-|qc|Stores quality-control information calculated in step 2 of the [index calculation process](#calculatestation)|
+|qc|Stores quality-control information related to your station|
+|indices|Stores .csv files for each index|
+|plots|Stores .png files containing plots of each index|
 |thres|Stores two .csv files containing threshold information|
-|trend|Stores a .csv file containing trend information for each index|
+|trend|Stores a .csv file containing trend information|
+|corr|Stores .png and .csv files containing information about the relationship between the calculated indices and the sector data provided.|
 
-### 6.1 Quality control output (the *qc* folder)
-***PREFACE****: The text in this section is adapted from text written by Enric Aguilar and Marc Prohom for the R functions they created to perform quality control, which have been integrated into Climpact with their permission.*
+### 6.1 Quality control output (the *qc* directory)
+***PREFACE****: This section is adapted from text written by Enric Aguilar and Marc Prohom for the R functions they created to perform quality control, which have been integrated into Climpact with their permission.*
 
-Quality control (QC) diagnostics are only calculated for station text files (i.e. they are NOT calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors will be detected. Furthermore, a separate category of QC issues, that of homogeneity, often occurs in station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be sure of the quality of their data before using Climpact, or, that they utilise additional checks for homogeneity after running the QC checks performed by Climpact (and described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and is also built on the R programming language.
+Quality control (QC) diagnostic plots are only calculated for station text files (i.e. they are **not** calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors will be detected. Furthermore, a separate category of QC, that of homogeneity, is often relevant in station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be aware of the quality of their data before using Climpact and that if necessary they perform additional checks for homogeneity after running the QC checks performed by Climpact (and described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and also built on the R programming language.
 
-Below is a seminar on the QC functionality described in this section.
+See below for a seminar on the QC functionality described in this section.
 
 [![](http://img.youtube.com/vi/gusIge2bTNk/0.jpg)](http://www.youtube.com/watch?v=gusIge2bTNk "")
 
 
-#### 6.1.1 Overview of the quality control output
+#### 6.1.1 An overview of the quality control output files
 
-Once the user selects the *Check* button under tab 2 (see [section 4](#calculatestation)) Climpact will calculate thresholds and perform QC checks on the user-provided station file. At the end of this process a dialogue box will appear telling the user to check the *qc* sub-directory created in *climpact-master/www/output/[station_name]*.
+Once the user selects the *Check* button under tab 2 (see [section 4](#calculatestation)) Climpact will calculate thresholds and perform QC checks on the user-provided station file. At the end of this process a dialogue box will appear telling the user to check the *qc* sub-directory created in *climpact-master/www/output/[station_name]*. QC checks will also be performed automatically when conducting [batch processing](#calculatebatch). 
 
 The *qc* folder contains the following files (where *mystation* refers to the name of the user’s station file):
 
-**7 .pdf files**, with graphical information on data quality:
+**8 .pdf files**, with graphical information on data quality:
 <br>
 mystation_tminPLOT.pdf
 <br>
@@ -378,7 +390,8 @@ mystation_boxes.pdf
 mystation_boxseries.pdf
 <br>
 mystation_rounding.pdf
-
+<br>
+mystation_ALL_QC_OUTPUT.pdf
 
 **9 .csv files** with numerical information on data quality
 <br>
@@ -399,6 +412,8 @@ mystation_tx_jumps.csv
 mystation_tn_jumps.csv
 <br>
 mystation_temp_nastatistics.csv
+
+**Multiple .png files** that replicating the information found in the .pdf files described above. The number of .png files depends on the length of the station record.
 
 #### 6.1.2 Descriptions of file contents
 
@@ -422,7 +437,7 @@ This file identifies potential outliers based on the interquartilic (IQR). The I
 
 ![](images/QC_boxes.png)
 
-The values identified by this graphical quality control are sent to a .csv file (*mystation_outliers.csv* for our example station). This file lists the outliers grouped under the corresponding variable and the UPper or LOWer margins depending on whether the outlier is a high or low outlier, respectively. An example of the contents of this file are shown below. So, under **Prec up* appear those values that represent a precipitation outlier; under *TX up* are those that represent a maximum temperature higher than p75+3\*IQR; under *TX low* are outliers that represent an observation lower than p25-3\*IQR. The explanation given for TX, also applies to TN and DTR. The advantage of this approach is that the detection of this percentile based outliers is not affected by the presence of larger outliers, so ONE RUN OF THE PROCESS IS ENOUGH.
+The values identified by this graphical quality control are sent to a .csv file (*mystation_outliers.csv* for our example station). This file lists the outliers grouped under the corresponding variable and the **UP**per or **LOW**er margins of the IQR, depending on whether the outlier is a high or low outlier, respectively. An example of the contents of this file are shown below. So, under **Prec up* appear those values that represent a precipitation outlier; under *TX up* are those that represent a maximum temperature higher than p75+3\*IQR; under *TX low* are outliers that represent an observation lower than p25-3\*IQR. The explanation given for TX, also applies to TN and DTR. The advantage of this approach is that the detection of this percentile based outliers is not affected by the presence of larger outliers, so ONE RUN OF THE PROCESS IS ENOUGH.
 
 ```
 Date    Prec     TX       TN       DTR
@@ -513,28 +528,37 @@ The mystation_tmaxmin.csv file, records all those dates where maximum temperatur
 
 This file lists the number of missing values that exists for each variable (TX, TN, PR) for each year.
 
-### 6.2 Climpact indices and plots (the *plots* and *indices* folders)
+### 6.2 Climpact indices and plots (the *plots* and *indices* directories)
 
-Climpact produces two sub-directories where the results of each index are stored, *plots* and *indices*. For each index one image file (.png) containing a plot of the index and one comma-separated value file (.csv) containing the index values are created and put into the the *plots* and *indices* sub-directories, respectively. The .csv files can be opened in Microsoft Excel, the freely available [Libre Office Calc](https://libreoffice.org/) or a text editor. The index files have filenames “sydney_XXX_YYY.csv” where XXX represents the name of the index (see [Appendix A](#appendixa) for index definitions) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A sample .csv file for the index *su* is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using all available years/months). **Note that for any years or months where insufficient data exists, the missing value of -99.9 will be used.**
+Climpact produces two sub-directories where the results of each index are stored, *plots* and *indices*. For each index one image file (.png) containing a plot of the index and one comma-separated value file (.csv) containing the index values are created and put into the the *plots* and *indices* directories, respectively. The .csv files can be opened in Microsoft Excel, the freely available [Libre Office Calc](https://libreoffice.org/) or any text editor. The index files have filenames “mystation_XXX_YYY.csv” where XXX represents the short name of the index (see [Appendix A](#appendixa)) and YYY is either ANN or MON depending on whether the index has been calculated annually or monthly, respectively. A portion of a sample .csv file for the index *su* is shown below. There is one value for each year the index is calculated. For indices calculated monthly there will be one value per month. A column containing normalised values is also written for most indices (these values are normalised using all available years/months). **Note that any years or months where insufficient data exists will have the missing value of -99.9**
 
 ![](images/su_csv.png)
 
-An example plot for the index *su* is shown below. These files may be opened in any standard image viewing software. The Sen's slope is displayed at the bottom of the plot along with the lower and upper bounds of the 95% confidence interval (these are calculated with the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package in R). In addition, one .pdf file ending in \*_all_plots.pdf, is produced in the subdirectory *plots*. This file contains all plots.
+An example plot for the index *su* is shown below. These files may be opened in any standard image viewing software. The Sen's slope is displayed at the bottom of the plot along with the lower and upper bounds of the 95% confidence interval (these are calculated with the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package in R). In addition, one .pdf file ending in \*_all_plots.pdf, is produced in the *plots* directory. This file contains all index plots and is provided for easier viewing.
 
 See [Appendix A](#appendixa) for definitions of each Climpact index.
 
 ![](images/sydney_su_ANN.png)
 
-### 6.3 Sector data
-Climpact can also calculate basic statistics between the climate extremes indices and user-provided sector data. Refer to [section 4](#) for instructions on calculating these sector statistics. Refer to [Appendix B](#appendixb) for guidance on how sector data must be formatted. Currently, the sector data must be annual. 
+### 6.3 Threshold and trend data (the *thres* and *trend* directories)
+
+The *thres* directory contains a .csv file named after the relevant station and ending with \*_thres.csv. This \*_thres.csv file contains the percentile thresholds used by Climpact to calculate the thresholds-based indices, such as TX90p (which calculates the percentage of days above the 90th percentile). There are 365 rows, corresponding to each day of the year. As described in XXXX, percentile thresholds are calculated using a 5 day moving window (with the exception of heatwave percentiles which use 15 day moving windows). Each column is named after the variable and the percentile being reported, e.g. *tmin_q10* is the 10th percentile of minimum daily temperature (TN). Since TX, TN and TAVG use a different size moving window the percentiles for heatwaves are recorded separately in the last three columns. The information in this file is purely "for interest" and may be helpful in further understanding the climate at your location.
+
+The *trend* directory contains a .csv file named after the relevant station and ending with \*_trend.csv. This \*_trend.csv file contains all of the trend information printed at the bottom of each plot for each index. This is to aid comparison of trends between indices. Trends for calendar seasons (DJF, MAM, JJA, SON) are also provided for indices that include monthly values. 
+
+The trends calculated by Climpact are based on the [Sen's slope](https://www.tandfonline.com/doi/abs/10.1080/01621459.1968.10480934) (and relies on the [zyp](https://cran.r-project.org/web/packages/zyp/index.html) package in R). Sen's slope reflects the median slope of all ordered pairs of points in a dataset and is more appropriate for calculating trends in extremes - compared to other common trend estimators like the method of least-squares - since it is less impacted by outliers. 95% confidence intervals are calculated for the slope and the lower and upper bounds reported in each plot and in the \*_trend.csv file.
+
+
+### 6.4 Sector data (the *corr* directory)
+Climpact can also calculate basic statistics between its extremes indices and user-provided sector data. Refer to [section 4](#) for instructions on calculating these sector statistics. Refer to [Appendix B](#appendixb) for guidance on how sector data must be formatted. Currently, the sector data must be annual. 
 
 Specifically, Climpact calculates correlations between each index and the user's sector data, as well as regressions of the sector data onto the minimum, maximum and average daily temperatures.
 
-Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars.
+Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars. Coefficients are reported on each bar.
 
 ![](images/sydney_su_ANN.png)
 
-Below is an example of a regression plot between maximum temperature and sector data. Whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.
+Below is an example of a regression plot between maximum temperature and sector data. R-squared values and regression line equations are also shown. Regardless of whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.
 
 ![](images/sydney_su_ANN.png)
 
@@ -544,50 +568,120 @@ Below is an example of a regression plot between maximum temperature and sector 
 
 **WARNING: This functionality is intended for users familiar with the command line.**
 
-Users who have gridded netCDF datasets of daily minimum and maximum temperature and daily precipitation may also calculate the Climpact indices. This process utilises the wrapper scripts *climpact.ncdf.wrapper.r* script and (optionally) the *climpact.ncdf.thresholds.wrapper.r* script. The user must modify these scripts and execute them from the Linux or MacOS command line.
+Users who have gridded netCDF datasets of daily minimum and maximum temperature and daily precipitation (or at least one of these) may also calculate the Climpact indices. This process utilises the *wrapper* scripts *climpact.ncdf.wrapper.r* and, optionally, the *climpact.ncdf.thresholds.wrapper.r*. The user must modify these scripts and execute them from the Linux or MacOS command line.
 
-See [Appendix B](#appendixb) to ensure your data is in the correct format. If it is not in the correct format, there may be unintended consequences.
+Note that prior to following the instructions below Climpact must be installed locally (see [section 3.3](#gettinginstalling)).
+
+See [Appendix B](#appendixb) to ensure your data is in the correct format.
 
 ### 7.1 Using the netCDF wrapper scripts
 
-The *climpact.ncdf.wrapper.r* script calculates the Climpact indices on the given netCDF file(s). To use this script, make a copy of it and edit the parameters inside according to your data (**the comments in this file will guide you in making changes**). It is highly recommended that you make a copy of this file and do not alter the original. As a test, it is recommended to run the original script BEFORE running on your modified copy of this. Doing so will calculate the indices on the provided sample data and confirm that Climpact and the required software is installed correctly.
+The *climpact.ncdf.wrapper.r* script calculates the Climpact indices on the given netCDF file(s). The three input variables that Climpact requires can be stored in a single netCDF file or in separate files. To use this script, make a copy of it and edit the parameters inside according to your data (**the comments in this file will guide you in making edits**). It is highly recommended that you make a copy of this file and do not alter the original. 
 
-If you wish to calculate the indices for data contained in one set of netCDF files, however the base period is contained within data stored in another set of netCDF files, then the climpact.ncdf.thresholds.wrapper.r will need to be used.
+As a first step, it is recommended to test the original wrapper script before running your own modified copy. Doing so will calculate the indices on the provided sample data and confirm that Climpact and the required packages are installed correctly.
 
-### 7.2 A typical use case
+If you wish to calculate the indices for data contained in one set of netCDF files but using percentiles from a base period contained in another set of netCDF files, then the *climpact.ncdf.thresholds.wrapper.r* will need to be used. This file calculates and stores a set of percentile thresholds calculated from one set of files, in order to be used to calculate the Climpact indices on another set of files. See the comments in this wrapper script for guidance on any edits to make.
+
+### 7.2 A typical use case of the wrapper scripts
 
 A typical example for using these scripts is illustrated below.
 
-The user has one or more netCDF file(s) containing model simulated daily precipitation, maximum temperature and minimum temperature for the present day period of 1990 - 2010. The user also has a netCDF file containing climate model projections for the period 2050 - 2070. They wish to calculate the Climpact indices on both of these periods but want the percentile-based indices in both periods (present and future) to utilise thresholds calculated from the present day climate. For a brief explanation of thresholds-based indices refer to [Appendix F](#appendixf).
+The user has three netCDF files containing model simulated daily precipitation, maximum temperature and minimum temperature for the present day period of 1990 - 2010. The user also has a netCDF file containing climate model projections for the period 2050 - 2080. They want to calculate the Climpact indices for both of these periods but want the percentile-based indices in both the present and future datasets to utilise thresholds calculated from the present dataset. For a brief explanation of thresholds-based indices refer to [Appendix F](#appendixf).
 
 To complete the above scenario requires three steps:
 
-1. Make a copy of climpact.ncdf.wrapper.r (e.g. climpact.ncdf.wrapper.PRESENT.r) and modify it to point to the present day netCDF files, specifying your desired base period. In the above example this might be 1990 - 2000 (your base period does NOT have to cover the entire range of your data). Run this script from the command line using ```Rscript climpact.ncdf.wrapper.PRESENT.r```. This will calculate the indices for the present day data.
+1. Make a copy of climpact.ncdf.wrapper.r (e.g. climpact.ncdf.wrapper.PRESENT.r) and modify it to point to the present day netCDF files, specifying your desired base period. In the above example this might be 1990 - 2000 (your base period does NOT have to cover the entire range of your file(s)). Run this script from the command line using ```Rscript climpact.ncdf.wrapper.PRESENT.r```. This will calculate the indices for the present day data.
 
-2. Make a copy of climpact.ncdf.thresholds.wrapper.r (climpact.ncdf.thresholds.wrapper.COPY.r) and modify it to point to the same present day netCDF files used as input in step 1 above. Here the user needs to specify the same base period, e.g. 1990 - 2000. Run this script from the command line using ```Rscript climpact.ncdf.thresholds.wrapper.COPY.r```. The output of this will be a single netCDF file containing percentile threshold values. Note step 1 and 2 can technically be done in any order, step 2 is only required in order to complete step 3. If you only have one time period to calculate the indices for you can stop after step 1 above.
+2. Make a copy of climpact.ncdf.thresholds.wrapper.r (e.g. climpact.ncdf.thresholds.wrapper.COPY.r) and modify it to point to the same present day netCDF files used in step 1. Here the user needs to specify the same base period, e.g. 1990 - 2000. Run this script from the command line using ```Rscript climpact.ncdf.thresholds.wrapper.COPY.r```. The output of this will be a single netCDF file containing percentile threshold values. Note step 1 and 2 can technically be done in any order, step 2 is only required in order to complete step 3. If you only have one time period to calculate the indices for you can stop after step 1.
 
-3. Make another copy of climpact.ncdf.wrapper.r (e.g. climpact.ncdf.wrapper.FUTURE.r) and modify it to point to the future climate netCDF files, specifying a base period consistent with the above steps (e.g. 1990 - 2000) but this time specify the threshold file that was calculated in step 2 above. Run this script from the Linux command line using ```Rscript climpact.ncdf.wrapper.FUTURE.r```.
+3. Make another copy of climpact.ncdf.wrapper.r (e.g. climpact.ncdf.wrapper.FUTURE.r) and modify it to point to the future climate netCDF files, specifying a base period consistent with the above steps (e.g. 1990 - 2000) but this time specify the threshold file that was calculated in step 2 above, as opposed to setting it to NULL. Run this script from the Linux command line using ```Rscript climpact.ncdf.wrapper.FUTURE.r```.
 
-These scripts typically take many, many hours to run and runtime varies strongly based on input file size and computer resources. The sample file provided with Climpact should only take 10-20 minutes to run on a modern laptop or desktop computer. 
+These scripts typically take many, many hours to run and runtime varies strongly based on input file size and computer resources. Therefore it is intended for these scripts to be run in a server environment. However, the sample file provided with Climpact (which is a very low resolution dataset) should only take 10-20 minutes to run on a modern laptop or desktop computer. 
 
-Once you have run climpact.ncdf.wrapper.r, numerous netCDF files will exist in the output directory specified. Where relevant, indices are calculated at both monthly and annual time scales. A typical output file name is r20mm_ETCCDI_ANN_climpact.sample_historical_NA_1991-2010.nc, where *r20mm* refers to the index calculated and ANN refers to the time scale this index was calculated on (MON for monthly). Output file names are derived from the CMIP5 conventions and follow this format var_timeresolution_model_scenario_run_starttime-endtime.nc.
+Once you have run climpact.ncdf.wrapper.r, numerous netCDF files will exist in the output directory specified. Where relevant, indices are calculated at both monthly and annual time scales. Output filenames follow the filename conventions of phase 5 of the Coupled Modelling Intercomparison Project (CMIP5) and a typical example is r20mm_ETCCDI_ANN_climpact.sample_historical_NA_1991-2010.nc, where *r20mm* refers to the index calculated and ANN refers to the time scale this index was calculated on (MON for monthly). Strictly, the CMIP5 conventions follow this format var_timeresolution_model_scenario_run_starttime-endtime.nc.
 
 
 <a name="outputgridded"></a>
 ## 8. Examining output for netCDF files
 
-NetCDF files require special software for viewing and manipulating. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) for easily viewing netCDF output, it is freely available and works under Linux, MacOS and Windows. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
+NetCDF files require special software for viewing and manipulating. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) for easily viewing netCDF output (which can also generate animations), it is freely available and works under Linux, MacOS and Windows. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
 
 ![](images/SPEI.png)
 
 
 <a name="appendixa"></a>
+
 ## Appendix A: Tables of Climpact indices
 [RETURN TO TOP](#toc)
 
 
-To calculate all of the Climpact indices time-series of daily minimum temperature (TN), daily maximum temperature (TX) and daily precipitation (PR) are required. Daily mean temperature (TM) is calculated from TM = (TX + TN)/2. Diurnal temperature range (DTR) is calculated from DTR = TX – TN. Many indices are calculated at both annual and monthly time scales. In the following two tables of core and non-core ET-SCI indices, the sector(s) of relevance to each index are indicated as determined by the ET-SCI in consultation with sector representatives, where H=Health, AFS=Agriculture and Food Security and WRH=Water Resources and Hydrology. Some indices have not been evaluated against specific sectors.
+To calculate all of the Climpact indices time-series of daily minimum temperature (TN), daily maximum temperature (TX) and daily precipitation (PR) are required. Daily mean temperature (TM) is calculated from TM = (TX + TN)/2. Diurnal temperature range (DTR) is calculated from DTR = TX - TN. Many indices are calculated at both annual and monthly time scales. In the following two tables of core and non-core ET-SCI indices, the sector(s) of relevance to each index are indicated as determined by the ET-SCI in consultation with sector representatives, where H=Health, AFS=Agriculture and Food Security and WRH=Water Resources and Hydrology. Some indices have not been evaluated against specific sectors. Note also that the Climpact web interface allows users to create their own absolute day count index as detailed in [section 4](#calculatsingle). 
 
-Note also that the Climpact GUI allows users to create their own absolute day count index as detailed in Section 3. 
+**Table A1. The table below describes all of the indices calculated by Climpact (as agreed by the ET-SCI July 2011. Updated index names and definitions May 2016). Bold indicates indices also recommended by the ETCCDI.**
 
+|Short name| Long name |Definition|Plain language description|Units|Time scale|Sector(s)|
+|---|---|---------|---------|---|---|---|
+|FD|Frost Days|Number of days when TN < 0 °C|Days when minimum temperature is below 0°C|days|Mon/Ann|H, AFS|
+|TNlt2|TN below 2°C|Number of days when TN < 2 °C|Days when minimum temperature is below 2°C|days|Mon/Ann|AFS|
+|TNltm2|TN below -2°C|Number of days when TN < -2 °C|Days when minimum temperature is below -2°C|days|Mon/Ann|AFS|
+|TNltm20|TN below -20°C|Number of days when TN < -20 °C|Days when minimum temperature is below -20°C|days|Mon/Ann|H, AFS|
+|ID|Ice Days|Number of days when TX < 0 °C|Days when maximum temperature is below 0°C|days|Mon/Ann|H, AFS|
+|SU|Summer days|Number of days when TX > 25 °C|Days when maximum temperature exceeds 25°C|days|Mon/Ann|H|
+|TR|Tropical nights|Number of days when TN > 20 °C|Days when minimum temperature exceeds 20°C|days|Mon/Ann|H,AFS|
+|GSL|Growing Season Length|Annual number of days between the first occurrence of 6 consecutive days with TM > 5 °C and the first occurrence of 6 consecutive days with TM < 5 °C|Length of time in which plants can grow|days|Ann|AFS|
+|TXx|Max TX|Warmest daily TX|Hottest day|°C|Mon/Ann|AFS|
+|TNn|Min TN|Coldest daily TN|Coldest night|°C|Mon/Ann|AFS|
+|WSDI|Warm spell duration indicator|Annual number of days contributing to events where 6 or more consecutive days experience TX > 90th percentile|Number of days contributing to a warm period (where the period has to be at least 6 days long)|days|Ann|H, AFS, WRH|
+|WSDId|User-defined WSDI|Annual number of days contributing to events where d or more consecutive days experience TX > 90th percentile|Number of days contributing to a warm period (where the minimum length is user-specified)|days|Ann|H, AFS, WRH|
+|CSDI|Cold spell duration indicator|Annual number of days contributing to events where 6 or more consecutive days experience TN < 10th percentile|Number of days contributing to a cold period (where the period has to be at least 6 days long)|days|Ann|H, AFS|
+|CSDId|User-defined CSDI|Annual number of days contributing to events where d or more consecutive days experience TN < 10th percentile|Number of days contributing to a cold period (where the minimum length is user-specified)|days|Ann|H, AFS, WRH|
+|TXgt50p|Fraction of days with above average temperature|Percentage of days where TX > 50th percentile|Fraction of days with above average temperature|%|Mon/Ann|H, AFS, WRH|
+|TX95t|Very warm day threshold|Value of 95th percentile of TX|A threshold where days above this temperature would be classified as very warm|°C|Daily|H, AFS|
+|TMge5|TM of at least 5°C|Number of days when TM >= 5 °C|Days when average temperature is at least 5°C|days|Mon/Ann|AFS|
+|TMlt5|TM below 5°C|Number of days when TM < 5 °C|Days when average temperature is below 5°C|days|Mon/Ann|AFS|
+|TMge10|TM of at least 10°C|Number of days when TM >= 10 °C|Days when average temperature is at least 10°C|days|Mon/Ann|AFS|
+|TMlt10|TM below 10°C|Number of days when TM < 10 °C|Days when average temperature is below 10°C|days|Mon/Ann|AFS|
+|TXge30|TX of at least 30°C|Number of days when TX >= 30 °C|Days when maximum temperature is at least 30°C|days|Mon/Ann|H, AFS|
+|TXge35|TX of at least 35°C|Number of days when TX >= 35 °C|Days when maximum temperature is at least 35°C|days|Mon/Ann|H, AFS|
+|TXdTNd|User-defined consecutive number of hot days and nights|Annual count of d consecutive days where both TX > 95th percentile and TN > 95th percentile, where 10 >= d >= 2|Total consecutive hot days and hot nights (where consecutive periods are user-specified)|events|Ann|H, AFS, WRH|
+|HDDheatn|Heating Degree Days|Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)|A measure of the energy demand needed to heat a building|degree-days|Ann|H|
+|CDDcoldn|Cooling Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of the energy demand needed to cool a building|degree-days|Ann|H|
+|GDDgrown|Growing Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of heat accumulation to predict plant and animal developmental rates|degree-days|Ann|H, AFS|
+|CDD|Consecutive Dry Days|Maximum number of consecutive dry days (when PR < 1.0 mm)|Longest dry spell|days|Mon/Ann|H, AFS, WRH|
+|R20mm|Number of very heavy rain days|Number of days when PR >= 20 mm|Days when rainfall is at least 20mm|days|Mon/Ann|AFS, WRH|
+|PRCPTOT|Annual total wet-day PR|Sum of daily PR >= 1.0 mm|Total wet-day rainfall|mm|Mon/Ann|AFS, WRH|
+|R95pTOT|Contribution from very wet days|100*r95p / PRCPTOT|Fraction of total wet-day rainfall that comes from very wet days|%|Ann|AFS, WRH|
+|R99pTOT|Contribution from extremely wet days|100*r99p / PRCPTOT|Fraction of total wet-day rainfall that comes from extremely wet days|%|Ann|AFS, WRH|
+|RXdday|User-defined consecutive days PR amount|Maximum d-day PR total|Maximum amount of rain that falls in a user-specified period|mm|Mon/Ann|H, AFS, WRH|
+|SPI|Standardised Precipitation Index|Measure of “drought” using the Standardised Precipitation Index on time scales of 3, 6 and 12 months. See McKee et al. (1993) and the WMO SPI User guide (World Meteorological Organization, 2012)for details.<br>Calculated using the SPEI R package.|A drought measure specified as a precipitation deficit|unitless|Custom|H, AFS, WRH|
+|SPEI|Standardised Precipitation Evapotranspiration Index|Measure of “drought” using the Standardised Precipitation Evapotranspiration Index on time scales of 3, 6 and 12 months. See Vicente-Serrano et al. (2010) for details.<br>Calculated using the SPEI R package.|A drought measure specified using precipitation and evaporation|unitless|Custom|H, AFS, WRH|
+|TXbdTNbd|User-defined consecutive number of cold days and nights|Annual number of d consecutive days where both TX < 5th percentile and TN < 5th percentile, where 10 >= d >=2|Total consecutive cold days and cold nights (where consecutive periods are user-specified)|events|Ann|H, AFS, WRH|
+|DTR|Daily Temperature Range|Mean difference between daily TX and daily TN|Average range of maximum and minimum temperature|°C|Mon/Ann||
+|TNx|Max TN|Warmest daily TN|Hottest night|°C|Mon/Ann||
+|TXn	|Min TX|Coldest daily TX|Coldest day|°C|Mon/Ann||
+|TMm|Mean TM|Mean daily mean temperature|Average daily temperature|°C|Mon/Ann||
+|TXm|Mean TX|Mean daily maximum temperature|Average daily maximum temperature|°C|Mon/Ann||
+|TNm|Mean TN|Mean daily minimum temperature|Average daily minimum temperature|°C|Mon/Ann||
+|TX10p|Amount of cool days|Percentage of days when TX < 10th percentile|Fraction of days with cool day time temperatures|%|Ann||
+|TX90p|Amount of hot days|Percentage of days when TX > 90th percentile|Fraction of days with hot day time temperatures|%|Ann||
+|TN10p|Amount of cold nights|Percentage of days when TN < 10th percentile|Fraction of days with cold night time temperatures|%|Ann||
+|TN90p|Amount of warm nights|Percentage of days when TN > 90th percentile|Fraction of days with warm night time temperatures|%|Ann||
+|CWD|Consecutive Wet Days|Maximum annual number of consecutive wet days (when PR >= 1.0 mm)|The longest wet spell|days|Ann||
+|R10mm|Number of heavy rain days|Number of days when PR >= 10 mm|Days when rainfall is at least 10mm|days|Mon/Ann||
+|Rnnmm|Number of customised rain days|Number of days when PR >= nn|Days when rainfall is at least a user-specified number of mm|days|Mon/Ann||
+|SDII|Daily PR intensity|Annual total PR divided by the number of wet days (when total PR >= 1.0 mm)|Average daily wet-day rainfall intensity|mm/day|Ann||
+|R95p|Total annual PR from heavy rain days|Annual sum of daily PR > 95th percentile|Amount of rainfall from very wet days|mm|Ann||
+|R99p|Total annual PR from very heavy rain days|Annual sum of daily PR > 99th percentile|Amount of rainfall from extremely wet days|mm|Ann||
+|Rx1day|Max 1-day PR|Maximum 1-day PR total|Maximum amount of rain that falls in one day|mm|Mon/Ann||
+|Rx5day|Max 5-day PR|Maximum 5-day PR total|Maximum amount of rain that falls in five consecutive days|mm|Mon/Ann|
+|HWN(EHF/Tx90/Tn90)|Heatwave number (HWN) as defined by either the Excess Heat Factor (EHF), 90th percentile of TX or the 90th percentile of TN|The number of individual heatwaves that occur each summer (Nov – Mar in southern hemisphere and May – Sep in northern hemisphere). A heatwave is defined as 3 or more days where either the EHF is positive, TX > 90th percentile of TX or where TN > 90th percentile of TN. Where percentiles are calculated from base period specified by user.|See Appendix D and Perkins and Alexander (2013) for more details.|Number of individual heatwaves|events|Ann|H, AFS, WRH|
+|HWF(EHF/Tx90/Tn90)|Heatwave frequency (HWF) as defined by either the Excess Heat Factor (EHF), 90th percentile of TX or the 90th percentile of TN|The number of days that contribute to heatwaves as identified by HWN.|See Appendix D and Perkins and Alexander (2013) for more details.|Total number of days that contribute to individual heatwaves|days|Ann|H, AFS, WRH|
+|HWD(EHF/Tx90/Tn90)|Heatwave duration (HWD) as defined by either the Excess Heat Factor (EHF), 90th percentile of TX or the 90th percentile of TN|The length of the longest heatwave identified by HWN.|See Appendix D and Perkins and Alexander (2013) for more details.|Length of the longest heatwave|days|Ann|H, AFS, WRH|
+|HWM(EHF/Tx90/Tn90)|Heatwave magnitude (HWM) as defined by either the Excess Heat Factor (EHF), 90th percentile of TX or the 90th percentile of TN|The mean temperature of all heatwaves identified by HWN.|See Appendix D and Perkins and Alexander (2013) for more details.|Average temperature across all individual heatwaves|°C (°C2 for  EHF)|Ann|H, AFS, WRH|
+|HWA(EHF/Tx90/Tn90)|Heatwave amplitude (HWA) as defined by either the Excess Heat Factor (EHF), 90th percentile of TX or the 90th percentile of TN|The peak daily value in the hottest heatwave (defined as the heatwave with highest HWM).|See Appendix D and Perkins and Alexander (2013) for more details.|Hottest day of the hottest heatwave|°C (°C2 for  EHF)|Ann|H, AFS, WRH|
+|CWN_ECF|Coldwave number (CWN) as defined by the Excess Cold Factor (ECF).|The number of individual ‘coldwaves’ that occur each year.|See Appendix D and Nairn and Fawcett (2013) for more information.|Number of individual coldwaves|events|Ann|H, AFS, WRH|
+|CWF_ECF|Coldwave frequency (CWF) as defined by the Excess Cold Factor (ECF).|The number of days that contribute to ‘coldwaves’ as identified by ECF_HWN.|See Appendix D and Nairn and Fawcett (2013) for more information.|Total number of days that contribute to individual coldwaves|days|Ann|H, AFS, WRH|
+|CWD_ECF|Coldwave duration (CWD) as defined by the Excess Cold Factor (ECF).|The length of the longest ‘coldwave’ identified by ECF_HWN.|See Appendix D and Nairn and Fawcett (2013) for more information.|Length of the longest coldwave|days|Ann|H, AFS, WRH|
+|CWM_ECF|Coldwave magnitude (CWM) as defined by the Excess Cold Factor (ECF).|The mean temperature of all ‘coldwaves’ identified by ECF_HWN.|See Appendix D and Nairn and Fawcett (2013) for more information.|Average temperature across all individual coldwaves|°C2|Ann|H, AFS, WRH|
+|CWA_ECF|Coldwave amplitude (CWA) as defined by the Excess Cold Factor (ECF).|The minimum daily value in the coldest ‘coldwave’ (defined as the coldwave with lowest ECF_HWM).|See Appendix D and Nairn and Fawcett (2013) for more information.|Coldest day of the coldest coldwave|°C2|Ann|H, AFS, WRH|
 
