@@ -119,8 +119,8 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   base.dates <- dates[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)]
   thres2 <- list(dates = base.dates, tmin = cio@data$tmin[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)], tmax = cio@data$tmax[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)],
   prec = cio@data$prec[which(yeardate2 >= metadata$base.start & yeardate2 <= metadata$base.end)])
-  nam2 <- file.path(outputFolders$outthresdir, paste0(outputFolders$stationName, "_thres_spei.csv"))
-  write.table(as.data.frame(thres2), file = nam2, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c("Base_period_dates", "Base_period_tmin", "Base_period_tmax", "Base_period_prec"), row.names = FALSE)
+#  nam2 <- file.path(outputFolders$outthresdir, paste0(outputFolders$stationName, "_thres_spei.csv"))
+#  write.table(as.data.frame(thres2), file = nam2, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c("Base_period_dates", "Base_period_tmin", "Base_period_tmax", "Base_period_prec"), row.names = FALSE)
 
   ##############################
   # Set some text options
@@ -153,8 +153,9 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
   # Concatenate all of the QC PDF's into one file
-  tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
   outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_ALL_QC_OUTPUT.pdf"))
+  if(file.exists(outqcfile)) {file.remove(outqcfile)} # remove any previous version of this file so it's not included in the concatenation.
+  tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
   pdf_combine(tmplist,outqcfile)
 
   ##############################
@@ -261,14 +262,14 @@ allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   # fourboxes will produce boxplots for non-zero precip, tx, tn, dtr using the IQR entered previously
   # the plot will go to series.name_boxes.pdf
   # outliers will be also listed on a file (series.name_outliers.txt)
-  fourboxes(master, output, save = 1, outrange, metadata, "pdf")
-  fourboxes(master, output, save = 1, outrange, metadata, "png")
+  fourboxes(master, output, save = 1, outrange, metadata, mediaType="pdf")
+  fourboxes(master, output, save = 1, outrange, metadata, mediaType="png")
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting rounding problems...")
   # Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
   # The plot will go to series.name_rounding.pdf. Needs some formal arrangements (title, nice axis, etc)
-  roundcheck(master, output, save = 1, "pdf")
-  roundcheck(master, output, save = 1, "png")
+  roundcheck(master, output, save = 1, mediaType="pdf")
+  roundcheck(master, output, save = 1, mediaType="png")
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting tmax <= tmin...")
   # will list when tmax <= tmin. Output goes to series.name_tmaxmin.txt
@@ -282,8 +283,8 @@ allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting annual time series...")
   # 'Annual Time series' constructed with boxplots. Helps to identify years with very bad values
   # Output goes to series.name_boxseries.pdf
-  boxseries(master, output, save = 1, "pdf")
-  boxseries(master, output, save = 1, "png")
+  boxseries(master, output, save = 1, mediaType="pdf")
+  boxseries(master, output, save = 1, mediaType="png")
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding duplicate dates...")
   # Lists duplicate dates. Output goes to series.name_duplicates.txt
