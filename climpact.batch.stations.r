@@ -23,6 +23,7 @@ library(climdex.pcic)
 library(doParallel)
 library(zoo)
 library(zyp)
+library(qpdf)
 
 source("models/climdexInputParams.R")
 source("server/climpact.GUI-functions.r")
