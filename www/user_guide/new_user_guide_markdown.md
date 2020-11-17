@@ -28,7 +28,7 @@ Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](
 
 
 <a name="acknowledgements"></a>
-## Acknowledgements
+## 1. Acknowledgements
 [RETURN TO TOP](#toc)
 
 * Climpact was made possible by the WMO Commission for Climatology (CCl) Open Panel of Experts on Climate Information for Adaptation and Risk Management (OPACE 4) under the guidance of OPACE-4 co-chairs (Rodney Martinez and Andrew Tait); the CCl OPACE 4 Expert Team on Sector-specific Climate Indices (ET-SCI) members: Lisa Alexander (Chair, Australia), Toshiyuki Nakaegawa (co-Chair, Japan), Fatima Zohra El Guelai (Morocco), Amelia Diaz Pablo (Peru), Adam Kalkstein (USA) and Gé Verver (The Netherlands) and the WMO World Climate Applications and Services Programme (Rupa Kumar Kolli and Anahit Hovsepyan). 
@@ -48,7 +48,7 @@ Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](
 
 
 <a name="background"></a>
-## Background
+## 2. Background
 [RETURN TO TOP](#toc)
 
 This document was prepared on behalf of the World Meteorological Organization (WMO) Commission for Climatology (CCl) Expert Team on Sector-specific Climate Indices (ET-SCI). It outlines the background and goals of the ET-SCI and describes the indices and software that were developed on their behalf.
@@ -57,7 +57,7 @@ The ET-SCI, formerly known as the Expert Team on Climate Risk and Sector-specifi
 
  
 
-### 1.1 Role of ET-SCI in GFCS
+### 2.1 Role of ET-SCI in GFCS
 
 The ET-SCI sits within CCl under the Open Panel of CCl Experts (OPACE) on Climate Information for Adaptation and Risk Management (OPACE-4). The objective of OPACE-4 is to improve decision-making for planning, operations, risk management and for adaptation to both climate change and variability (covering time scales from seasonal to centennial) and will be achieved through a higher level of climate knowledge, as well as by access to and use of actionable information and products, tailored to meet their needs. OPACE-4 activities primarily focus on the development of tailored climate information, products and services for user application in adaptation and risk management, and building interfaces with user groups to facilitate GFCS implementation.
 
@@ -67,9 +67,7 @@ The work of OPACE-4 is multidisciplinary, and requires close collaboration with 
 
 The ET-SCI Terms of Reference (ToR) and expected deliverables are shown in Appendix H. The deliverables include the collection and analysis of existing sector-relevant climate indices in addition to developing the tools required to produce them. At a meeting in Tarragona in 2011, members of the former ET-CRSCI invited sector and Commission representatives to help define a suite of indices that would represent a “core set” that would meet the ToR and deliverables. This manual outlines the rationale behind the creation of those indices and the Climpact software developed for their calculation.
 
-      
-
-### 1.2 The ‘value’ of climate indices
+### 2.2 The ‘value’ of climate indices
 
 Monthly averages of climate data smooth over a lot of important information that is relevant for sectoral impacts. For this reason indices derived from daily data are an attempt to objectively extract information from daily weather observations to answer questions concerning aspects of the climate system that affect many human and natural systems with particular emphasis on extremes. Such indices might reflect the duration or amplitude of heat waves, extreme rainfall intensity and frequency or measures of extremely wet or dry/hot or cold periods that have socio-economic impacts. Climate indices provide valuable information contained in daily data, without the need to transmit the daily data itself.
 
@@ -78,7 +76,7 @@ Much progress has been made in recent decades through internationally agreed ind
 
  
 
-### 1.3 Background to ETCCDI, Indices and Software
+### 2.3 Background to ETCCDI, Indices and Software
 
 The ETCCDI started in 1999 and is co-sponsored by the World Climate Research Program (WCRP) and JCOMM. They developed an internationally coordinated set of core climate indices consisting of 27 descriptive indices for moderate extremes (Alexander et al. 2006; Zhang et al. 2011). These indices were developed with the ‘detection and attribution’ research community in mind. In order to detect changes in climate extremes, it was important to develop a set of indices that were statistically robust, covered a wide range of climates, and had a high signal-to-noise ratio. In addition, internationally agreed indices derived from daily temperature and precipitation allowed results to be compared consistently across different countries and also had the advantage of overcoming most of the restrictions on the dissemination of daily data that apply in many countries.
 
@@ -90,7 +88,7 @@ As part of the workshop development, software called RClimDEX was also developed
 
  
 
-### 1.4 Background to Development of ET-SCI Indices
+### 2.4 Background to Development of ET-SCI Indices
 
 Most ETCCDI indices focus on counts of days crossing a threshold; either absolute/fixed thresholds or percentile/variable thresholds relative to local climate. Others focus on absolute extreme values such as the warmest, coldest or wettest day of the year. The indices are used for both observations and models, globally as well as regionally, and can be coupled with simple trend analysis techniques, and standard detection and attribution methods in addition to complementing the analysis of more rare extremes using Extreme Value Theory (EVT).
 
@@ -105,7 +103,7 @@ It should be noted that indices development is an ongoing activity as additional
 
  
 
-### 1.5 Requirements for data quality when computing indices
+### 2.5 Requirements for data quality when computing indices
 
 Before indices can be computed, it is important that any daily input data are checked for quality and homogeneity. Homogeneity implies consistency of a series through time and is an obvious requirement for the robust analysis of climate time series. While many of the time series that are used for indices calculations have been adjusted to improve homogeneity, some aspects of these records may remain inhomogeneous, and this should be borne in mind when interpreting changes in indices. For example, most methods for assessing homogeneity do not consider changes in day-to-day variability or changes in how the series has been derived. It is possible for a change of variance to occur without a change in mean temperature. Two examples of ways in which this could occur are where a station moves from an exposed coastal location to a location further inland, increasing maximum temperatures and decreasing minimum temperatures, or where the number of stations contributing to a composite series changes.
 
@@ -116,9 +114,7 @@ Homogeneity adjustment of daily data is difficult because of high variability in
 *NB Daily adjustments, especially with absolute methods, must be applied with extreme care as – if incorrectly applied – they can damage the statistical distribution of the series. Therefore, data require careful post-workshop analysis in concert with metadata (where available) and as such ET-SCI recommend that any homogeneity software used at regional workshops is for demonstration purposes only.
 
 
- 
-
-### 1.6 Future prospects for the Indices
+### 2.6 Future prospects for the Indices
 
 At present the core set of indices are defined using only daily maximum temperature (TX), daily minimum temperature (TN) and daily precipitation (PR). It is acknowledged that for sector applications, these variables (and the related indices) are all required, but users have also indicated a need for additional variables including: humidity (important for both agricultural and health indices); wind speed and direction (important for health indices, building design, energy, transportation, etc.); Sea Surface Temperatures (SSTs; useful for marine applications and in relation to the onset and variability of the El Niño-Southern Oscillation (ENSO)); onset and cessation dates for monsoon; rain periods, snow fall, snow depth, snow-water equivalent, days with snowfall and hydrological parameters (particularly important for mid-and high latitude applications). Some of these (e.g. onset dates) may require considerable study and available systematic long-term data. Furthermore, in a subsequent phase of the work of the Team, addition of ‘event statistics’ such as days with thunderstorms, hail, tornados, number of consecutive days with snowfall, etc., for expanded studies of hazards could be considered. The ET-SCI will consider at a later date whether to add these new variables to the dataset as a second level priority.
 
@@ -141,7 +137,7 @@ It is also acknowledged that updating indices is problematic for many regions an
 Users are invited to view Climpact as ‘living software’ in that it can and will be amended as additional user needs arise.
 
 <a name="gettinginstalling"></a>
-## Getting and installing Climpact
+## 3. Getting and installing Climpact
 [RETURN TO TOP](#toc)
 
 To calculate the Climpact indices for station data the user may go to the [Climpact website](https://climpact-sci.org/). This section describes the process of downloading and installing Climpact locally, for users who wish to calculate the indices on gridded data, or on station data using their own computer. Calculation of the Climpact indices on gridded data requires a Linux or MacOS system.
@@ -345,6 +341,7 @@ Importantly, any errors encountered in processing the provided stations will be 
 
 <a name="outputstation"></a>
 ## 6. Output for station text files
+[RETURN TO TOP](#toc)
 
 When calculating indices on station text files Climpact creates six sub-directories at *www/output/[station_name]*, where [station_name] is the name you entered on the 'Load' tab in [section 4](#calculatesingle), or, if batch processing was conducted these station names will be based on each station's filename. The sub-directories created are listed in the table below and will contain files if [all four steps](#calculatestation) for calculating the indices on a station text file are completed. The subsections that follow describe the output found in these six folders.
 
@@ -601,6 +598,7 @@ Once you have run climpact.ncdf.wrapper.r, numerous netCDF files will exist in t
 
 <a name="outputgridded"></a>
 ## 8. Examining output for netCDF files
+[RETURN TO TOP](#toc)
 
 NetCDF files require special software for viewing and manipulating. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) for easily viewing netCDF output (which can also generate animations), it is freely available and works under Linux, MacOS and Windows. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
 
@@ -871,11 +869,11 @@ Perkins S E and Alexander L V 2013 On the Measurement of heatwaves J. Clim. 26 4
 ## Appendix E: Frequently Asked Questions
 [RETURN TO TOP](#toc)
 
-### 1. Wait, what is a climate index?
+#### 1. Wait, what is a climate index?
 
 In the broadest sense an index is a representation of a particular aspect of some data. In the context of climate science an index is a calculation that reflects a certain aspect of a climate record. For example, there are indices that measure different aspects of the El-Nino Southern Oscillation (ENSO) as well as indices that measure drought such as the Palmer Drought Severity Index (PDSI) - just like there are indices that measure aspects of the stock market. A climate extremes index is one that characterises some extreme aspect of the climate record (as opposed to, let's say, a mean aspect). For example, and of direct relevance to the indices calculated by Climpact, if someone possesses 30 years of daily maximum temperatures then they have essentially a list of approximately 10,950 daily values. One climate index that could be applied to this data is the calculation of the maximum of daily maximum temperatures for each year. This would show whether the peaks of maximum temperatures are changing over time and would return 30 values, one for each year. The application of this index reduces the 10,950 values to 30 values and provides insight into how the positive extremes of a particular climate record are changing. Importantly, the purpose of any index is to extract some useful information from a larger dataset.
 
-#### Types of climate indices in Climpact
+##### Types of climate indices in Climpact
 
 Climpact reads in daily precipitation, maximum temperature and minimum temperature and calculates numerous climate indices, most of which relate to extreme aspects of the climate. Substantial literature exists describing a large portion of these indices and also contain excellent introductions to climate indices in general (e.g. [Zhang et al. 2011, Zwiers et al. 2013](#appendixe_refs)). Most of these indices - but not all - fall under one of several categories, including minimum/maximum indices, threshold indices and duration indices.
 
@@ -885,11 +883,11 @@ Threshold indices count the number or percentage of days above or below a certai
 
 Duration indices measure the length of time of or between certain events, or the aggregate number of days meeting a certain criteria. For example, the growing season length (GSL) measures the number of days between the first instance in the year when daily mean temperatures exceed that needed for growth and the first instance subsequently when daily mean temperature falls below that needed for growth.
 
-### 2. What should be the length of the baseline/reference period?
+#### 2. What should be the length of the baseline/reference period?
 
 The World Meteorological Organisation (WMO) recommends that for climate monitoring assessments the current definition of the 'normal' climate be that between 1981-2010 ([WMO, 2017](#appendixe_refs)). For long term climate change assessments, however, the WMO recommends 1961 and 1990. Thus, ideally at least one of these 30 year periods exist in your data. However, it is recognised that many stations do not have this length of record (or discontinuous records throughout this period), thus a period as close to the above years as possible is desired. It is generally of far more importance that the chosen base period be at least 30 years in length, as opposed to capturing the specific years of 1961-1990 or 1981-2010. This length is important to incorporate as much climate variability into the threshold calculations as possible.
 
-### 3. How are missing data handled by Climpact?
+#### 3. How are missing data handled by Climpact?
 
 When calculating indices for station text files, missing data need to be stored as -99.9 in the input text files (see [Appendix B](#appendixb)). Blank spaces cannot be used.
 
@@ -897,32 +895,32 @@ For netCDF files, missing data can be any valid real value, so long as the missi
 
 In order to calculate robust statistics of climate extremes strict criteria must be applied to limit the amount of missing data in a record. This is often underappreciated by users and unfortunately many station records can have significant numbers of missing data, even if the record began a long time ago. Climpact permits a maximum of 3 missing days in any month, and a maximum of 15 missing days in any year. If any of these thresholds is exceeded then the month or year in question is not calculated. Further, if a month is missing then the corresponding year is also removed. Lastly, at least 10% of the base period must have valid values in order for percentile-based indices to be calculated.
 
-### 4. Why do the SPI/SPEI output produce so much missing data when my input files do not contain missing data?
+#### 4. Why do the SPI/SPEI output produce so much missing data when my input files do not contain missing data?
 
 If you observe numerous missing data in your SPI or SPEI output when calculated on gridded indices, despite your input not having a corresponding amount of missing data, it is likely that you have specified a base period that is too short. Try and specify a base period of at least 30 years when possible. The R package used to calculate SPI and SPEI has been known to produce numerous missing data when a base period of ~10 years or less is specified.
 
-### 5. Are the SPI/SPEI the best or only form of drought indices?
+#### 5. Are the SPI/SPEI the best or only form of drought indices?
 
 There is no best index for drought nor any other climate extreme, as what one considers "best" will depend on context. The SPI and SPEI are also not the only drought indices available and the user is referred to the [WMO Handbook on drought indicators](#appendixe_refs) for an overview of other indices. 
 
 The SPI is recommended by the WMO as a measure of meteorological drought ([Hayes et al., 2011](#appendixe_refs)). It is widely used due to its simplicity and ability to span multiple time scales. The SPEI is a modification that takes into account evapotranspiration. We encourage you to read the original SPI and SPEI documentation ([Mckee et al., 1993; Vicente-Serrano et al., 2010](#appendixe_refs)), as well as [this excellent online resource](https://spei.csic.es/) by Vicente-Serrano and Begueria on the SPEI, its history and its application. An excellent example of the responsible use of the SPI/SPEI can be seen in work by the Global Precipitation Climatology Centre ([Ziese et al., 2014](#appendixe_refs)).
 
-### 6. How can Climpact results be analysed further or used to produce customised graphics using other popular packages?
+#### 6. How can Climpact results be analysed further or used to produce customised graphics using other popular packages?
 
 Climpact produces its own plots of each index (in the “plots” folder) for station text files. However, all of the indices output data are stored in the “indices” directory in .csv format. Many graphics packages are able to handle this file format so you can produce your own customised plots easily with your favourite software package. The simplest would be spreadsheet software like Microsoft Excel or Libre Office Calc.
 
 For gridded netCDF files that Climpact creates, any netCDF viewer can be used to view this data. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) or [Ncview](http://meteora.ucsd.edu/~pierce/ncview_home_page.html) for viewing netCDF output. Numerous programming language will also allow you to manipulate and plot data in netCDF files (e.g. R, Python, Ferret).
 
-### 7. Can I add additional indices to Climpact myself?
+#### 7. Can I add additional indices to Climpact myself?
 
 [Section 4](#calculatesingle) describes how a custom day count index can be created via the web interface. Besides this process, there is no easy method to add indices. However, if you are familiar with the R programming language you can amend the code to add additional indices if you require. This is a good solution if you have very specific sector requirements that are not covered by the current suite of indices. 
 
-### 8. Can I recommend additional indices to be added to the ET-SCI core set?
+#### 8. Can I recommend additional indices to be added to the ET-SCI core set?
 
 You can always send feedback and suggestions to the Climpact team, but any indices added to the core set have to be agreed by the members of the ET-SCI.
 
 <a name="appendixe_refs"></a>
-### Appendix E References
+#### Appendix E References
 
 Hayes M, Svoboda M, Wall N and Widhalm M 2011 The Lincoln Declaration on Drought Indices: Universal Meteorological Drought Index Recommended Bull. Am. Meteorol. Soc. 92 485–8 Online: https://doi.org/10.1175/2010BAMS3103.1
 
