@@ -41,11 +41,11 @@ singleStationStep3UI <- function(id) {
         ),
         fluidRow(
           column(4,
-            numericInput(ns("wsdin"), "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+            numericInput(ns("wsdin"), "d for WSDId (1 =< d <= 10):", 1, min = 1, max = 10),
             bsTooltip(id = paste0(id, "-", "wsdin"), title = "Number of days contributing to a warm period (where the minimum length is user-specified) - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            numericInput(ns("csdin"), "d for CSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+            numericInput(ns("csdin"), "d for CSDId (1 =< d <= 10):", 1, min = 1, max = 10),
             bsTooltip(id = paste0(id, "-", "csdin"), title = "Number of days contributing to a cold period (where the period has to be at least 6 days long) - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            numericInput(ns("rxnday"), "d for Rxdday Days (d >= 1):", 3, min = 1),
+            numericInput(ns("rxnday"), "d for Rxdday (d >= 1):", 3, min = 1),
             bsTooltip(id = paste0(id, "-", "rxnday"), title = "Maximum amount of rain that falls in a user-specified period - value is the number of consecutive days", placement = "left", trigger = "hover"),
             numericInput(ns("txtn"), "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1),
             bsTooltip(id = paste0(id, "-", "txtn"), title = "Total consecutive hot days and hot nights (TXdTNd) or cold days and cold nights (TXbdTNbd) - value is the number of consecutive days", placement = "left", trigger = "hover")
