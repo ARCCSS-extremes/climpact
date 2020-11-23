@@ -15,7 +15,7 @@ box(title = "Process Single Station", status = "primary", width = 12, solidHeade
         value = "process_single_station_step_3",
         singleStationStep3UI("ui")
     ),
-    tabPanel(title = tagList(icon("chevron-circle-right"), HTML("&nbsp;&nbsp;&nbsp;"), HTML("4. Correlate&nbsp;&nbsp;&nbsp;&nbsp;")),
+    tabPanel(title = tagList(icon("chevron-circle-right"), HTML("&nbsp;&nbsp;&nbsp;"), HTML("4. Compare&nbsp;&nbsp;&nbsp;&nbsp;")),
         id = "process_single_station_step_4",
         value = "process_single_station_step_4",
         singleStationStep4UI("ui")

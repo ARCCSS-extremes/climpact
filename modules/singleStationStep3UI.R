@@ -64,9 +64,9 @@ singleStationStep3UI <- function(id) {
           ),
           column(4,
             wellPanel(
-              h4("Specify custom thresholds"),
-              strong("Custom index counting days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
-              br(),
+              h4("Create a custom threshold index"),
+              strong("Create an index that counts the number of days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
+              br(),br(),
               selectInput(ns("custVariable"), label = "Variable:",
                 choices = list("TN", "TX", "TM", "PR", "DTR"),
                 selected = "TN"
@@ -162,7 +162,7 @@ singleStationStep3UI <- function(id) {
                 "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."))),
             HTML("</div>")
           ),
-         tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
+         tags$p("Click the Next button or the tab labelled '4. Compare' to proceed to the next step.")
        )
     )
     ),
