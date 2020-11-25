@@ -113,3 +113,7 @@ footer #logos img {
   .landing-content p {
     font-size: 1.4em;
   }
+
+  h5 {
+    font-weight: 600;
+  }

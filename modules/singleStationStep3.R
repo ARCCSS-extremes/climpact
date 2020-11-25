@@ -116,9 +116,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   getLinkTextTopMiddle <- function() {
     if (singleStationState$indexCalculationStatus() == "Done") {
       if (isLocal) {
-        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+        HTML("<h5>Please view the output in the following directory: <b>", folderToZip(), "</b></h5>")
       } else {
-        HTML("<p>Calculated Indices available ", indicesZipLink(), "</p>")
+        HTML("<h5>Calculated Indices available ", indicesZipLink(), "</h5>")
       }
     } else {
       ""
