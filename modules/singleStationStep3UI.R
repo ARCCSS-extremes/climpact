@@ -105,6 +105,7 @@ singleStationStep3UI <- function(id) {
         ns = ns,
         div(
           h4("Plots of calculated indices"),
+          uiOutput(ns("indicesLinkMiddle")),
           p("Plots are displayed below and available for download on this page using the link in the blue info box under Instructions.")
         ),
         fluidRow(

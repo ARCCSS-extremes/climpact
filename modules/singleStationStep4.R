@@ -83,6 +83,21 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     singleStationState$correlationCalculationStatus("Done")
   })
 
+  output$sectorCorrelationLinkTop <- renderText(getLinkForTopMiddle())
+  output$sectorCorrelationLinkMiddle <- renderText(getLinkForTopMiddle())
+
+  getLinkForTopMiddle <- function() {
+    if (singleStationState$correlationCalculationStatus() == "Done") {
+      if (isLocal) {
+        HTML("<p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+      } else {
+        HTML("<p>Correlation output files ", corrZipLink(), "</p>")
+      }
+    } else {
+      ""
+    }
+  }
+
   output$sectorCorrelationLink <- renderText({
     if (singleStationState$correlationCalculationStatus() == "Done") {
       if (isLocal) {

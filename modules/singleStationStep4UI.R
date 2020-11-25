@@ -33,7 +33,12 @@ singleStationStep4UI <- function(id) {
     conditionalPanel(
       condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
       ns = ns,
-      h4("4. Calculate and plot sector correlations"),
+      h4("4. Calculate and plot sector correlations"),        
+      conditionalPanel(
+          condition = "output.sectorCorrelationStatus == 'Done' && output.sectorCorrelationError == '' && output.sectorCorrelationLink != ''",
+          ns = ns,
+          uiOutput(ns("sectorCorrelationLinkTop"))
+      ),
       wellPanel(
         h4("Sector data"),
         fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
@@ -59,7 +64,12 @@ singleStationStep4UI <- function(id) {
         div(
           h4("Plots of calculated indices"),
           p("Sector correlation plots are displayed below and available for download
-           on this page using the link in the blue info box under Instructions.")
+           on this page using the link in the blue info box under Instructions."),        
+          conditionalPanel(
+            condition = "output.sectorCorrelationStatus == 'Done' && output.sectorCorrelationError == '' && output.sectorCorrelationLink != ''",
+            ns = ns,
+            uiOutput(ns("sectorCorrelationLinkMiddle"))
+          )
         ),
         slickROutput(ns("slickRCorr"), width="900px")
     )
