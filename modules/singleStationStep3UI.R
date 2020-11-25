@@ -28,6 +28,11 @@ singleStationStep3UI <- function(id) {
       condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
       h4("3. Calculate and plot indices"),
+      conditionalPanel(
+            condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
+            ns = ns,
+            uiOutput(ns("indicesLinkTop"))
+      ),
       wellPanel(
         fluidRow(
           column(12,
