@@ -55,9 +55,7 @@ hddheatn	degree-days	Heating Degree Days	Annual sum of n - TM (where n is a user
 cddcoldn	degree-days	Cooling Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
 gddgrown	degree-days	Growing Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
 cdd	days	Consecutive Dry Days	Maximum annual number of consecutive dry days (when precipitation < 1.0 mm)	ETCCDI	T	F
-cdd	days	Consecutive Dry Days	Maximum monthly number of consecutive dry days (when precipitation < 1.0 mm)	ETCCDI	F	F
 cwd	days	Consecutive Wet Days	Maximum annual number of consecutive wet days (when precipitation >= 1.0 mm)	ETCCDI	T	F
-cwd	days	Consecutive Wet Days	Maximum monthly number of consecutive wet days (when precipitation >= 1.0 mm)	ETCCDI	F	F
 r10mm	days	Number of heavy rain days	Annual number of days when precipitation >= 10 mm	ETCCDI	T	F
 r10mm	days	Number of heavy rain days	Monthly number of days when precipitation >= 10 mm	ETCCDI	F	F
 r20mm	days	Number of very heavy rain days	Annual number of days when precipitation >= 20 mm	ETCCDI	T	F

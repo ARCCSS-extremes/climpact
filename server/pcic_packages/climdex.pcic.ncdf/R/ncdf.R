@@ -183,7 +183,7 @@ create.climdex.cmip5.filenames <- function(fn.split, vars.list) {
 get.climdex.variable.list <- function(source.data.present, time.resolution=c("all", "annual", "monthly"), climdex.vars.subset=NULL) {
   time.res <- match.arg(time.resolution)
   annual.only <- c("txdtnd","txbdtnbd","gsl","wsdi","wsdid","csdi","csdid","hw",
-		"hddheatn","cddcoldn","gddgrown","sdii","r95p","r99p","r95ptot","r99ptot","tx95t")
+		"hddheatn","cddcoldn","gddgrown","sdii","r95p","r99p","r95ptot","r99ptot","tx95t","cwd","cdd")
   monthly.only <- c("spei","spi")
 
   vars.by.src.data.reqd <- list(tmax=c("su", "id", "txx", "txn", "tx10p", "tx90p", "wsdi", "wsdid","txge30","txge35","txm","txgt50p","tx95t"),
