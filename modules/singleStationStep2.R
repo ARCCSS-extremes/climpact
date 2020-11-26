@@ -60,7 +60,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
   getQCEvalText <- function() {
     if (singleStationState$isQCCompleted()) {
 
-      appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/Climpact_user_guide.htm#appendixC>", "Appendix C</a>")
+      appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/Climpact_user_guide.html#outputstation>", "section 6</a>")
 
       HTML("<b>Evaluate Data Quality</b>",
         "<p>Please view the quality control output described below and carefully evaluate before continuing.",

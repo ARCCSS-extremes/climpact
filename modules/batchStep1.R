@@ -2,7 +2,7 @@ batchStep1 <- function(input, output, session, climpactUI) {
 
   output$batchIntroText <- renderText({
     HTML("A text file must be created with information describing each station that you will provide as input data.",
-        "<br> Refer to <a target=\"_blank\" href=user_guide/Climpact_user_guide.htm#batch>section 5</a>",
+        "<br> Refer to <a target=\"_blank\" href=user_guide/Climpact_user_guide.html#calculatebatch>section 5.3</a>",
         " of the user guide and use ",
         "<a target=\"_blank\" href=sample_data/climpact.sample.batch.metadata.txt>this file</a>",
         " as a template.")

@@ -46,7 +46,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   })
 
   output$loadParamHelpText <- renderUI({
-      indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/Climpact_user_guide.htm#calculate_indices> Section 3.3</a>")
+      indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/Climpact_user_guide.html#calculatesingle> Section 4.4</a>")
       HTML(paste0("<p>The following fields change user-definable parameters in several Climpact indices.",
                   "<br />Leave as default unless you are interested in these indices. See ",
                   indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))

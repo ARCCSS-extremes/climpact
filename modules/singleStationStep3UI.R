@@ -121,7 +121,7 @@ singleStationStep3UI <- function(id) {
           "based on the station name and coordinates provided when loading data, but you can override this here."),
         h4("User parameters"),
           HTML("You may also change the following default parameters that relate to several indices (see ",
-          "<a href='user_guide/Climpact_user_guide.htm#appendixA' target='_blank'>Appendix A</a> for index definitions):"),
+          "<a href='user_guide/Climpact_user_guide.html#appendixa' target='_blank'>Appendix A</a> for index definitions):"),
           tags$ul(tags$li(HTML("<b>WSDId Days</b> sets the number of days which need to occur consecutively ",
             "with a TX > 90th  percentile to be counted in the WSDId index.")),
             tags$li(HTML("<b>CSDId Days</b> sets the number of days which need to occur consecutively ",

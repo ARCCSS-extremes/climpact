@@ -12,7 +12,7 @@ ui <- tagList(
         menuItem("Process single station", tabName = "single", icon = icon("table")),
         menuItem("Batch process stations", tabName = "batch", icon = icon("layer-group")),
         menuItemOutput("griddedMenuItem"),
-        menuItem("Documentation", icon = icon("book"), href = "user_guide/Climpact_user_guide.htm")
+        menuItem("Documentation", icon = icon("book"), href = "user_guide/Climpact_user_guide.html")
       )
     ),
     body = dashboardBody(

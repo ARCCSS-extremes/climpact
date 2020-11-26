@@ -44,10 +44,10 @@ climpactUI <- function(ns = character(),
     ns <- "ui"
   }
   if (length(userGuideLink) == 0) {
-    userGuideLink <- "<a target=\"_blank\" href=user_guide/Climpact_user_guide.htm>Climpact User Guide</a>"
+    userGuideLink <- "<a target=\"_blank\" href=user_guide/Climpact_user_guide.html>Climpact User Guide</a>"
   }
   if (length(appendixBLink) == 0) {
-    appendixBLink <- "<a target=\"_blank\" href=user_guide/Climpact_user_guide.htm#appendixB>Appendix B</a>"
+    appendixBLink <- "<a target=\"_blank\" href=user_guide/Climpact_user_guide.html#appendixb>Appendix B</a>"
   }
   sampleText <- paste0("The dataset <strong>must</strong> use the format described in ",
                 appendixBLink, " of the ", userGuideLink, ".",
