@@ -31,14 +31,14 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
    climpact-master directory created in step 1. Then type:  
 
 ```
-   *source('server/climpact.master.installer.r')*
+   source('server/climpact.master.installer.r')
 ```
 
    In Linux/MacOS: in a terminal window navigate to the climpact-master directory created in
    step 1, then open R (by typing *R* at the command line) and type:  
 
 ```
-   *source('server/climpact.master.installer.r')*
+   source('server/climpact.master.installer.r')
 ```
 
    You may be asked whether you would like to make a personal library, in 
@@ -63,8 +63,8 @@ step 1, then open R (by typing *R* at the command line).
 Then run the following two commands:
 
 ```
-*library(shiny)*  
-*runApp()* 
+library(shiny) 
+runApp()
 ```
 
 Follow the on-screen instructions to calculate the Climpact indices.
@@ -86,7 +86,7 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 2) Execute the above script by entering the following command at the command line:
 
 ```
-   *Rscript climpact.ncdf.wrapper.r* 
+   Rscript climpact.ncdf.wrapper.r
 ```
 
    Depending on the size of your data and the number of cores selected, this process
@@ -111,7 +111,7 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 
 1) Navigate to the climpact-master directory created when installing Climpact. Then modify the *climpact.ncdf.thresholds.wrapper.r* file to suit your needs (see user guide for guidance on the parameters to specify). 
    
-2) Then execute this file by running *Rscript climpact.ncdf.thresholds.wrapper.r* from the command line. Depending
+2) Then execute this file by running ```Rscript climpact.ncdf.thresholds.wrapper.r``` from the command line. Depending
    on the size of your data and the number of cores selected, this process
    can take anywhere from one to many hours.
 
@@ -128,7 +128,7 @@ correct for gridded data IF your data contain missing values (e.g. they are base
    for more information.
 
 ```
-   *Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
+   Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2
 ```
 
 ##  Common problems
