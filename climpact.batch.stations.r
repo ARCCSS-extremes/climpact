@@ -23,105 +23,56 @@ library(climdex.pcic)
 library(doParallel)
 library(zoo)
 library(zyp)
+library(qpdf)
+
+source("models/climdexInputParams.R")
 source("server/climpact.GUI-functions.r")
 source("server/climpact.etsci-functions.r")
+source("server/batch_stations.R")
+source("services/quality_control_checks.R")
 
-# return a nice list of station metadata
-read.file.list.metadata <- function(file.list.metadata) 
-{
-	file.list.metadata <- read.table(file.list.metadata,header=T,col.names=c("station","latitude","longitude","wsdin","csdin","Tb_HDD","Tb_CDD","Tb_GDD","rxnday","rnnmm","txtn","SPEI"),
-					colClasses=c("character","real","real","integer","integer","real","real","integer","real","real","integer"))
-	return(file.list.metadata) 
+# return station metadata
+read.file.list.metadata <- function(metadata_filepath) {
+    metadataTable <- read.table(metadata_filepath,
+    header = TRUE,
+    col.names = c("station_file", "latitude", "longitude", "wsdin",   "csdin",   "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday",  "rnnmm", "txtn", "SPEI"),
+    colClasses = c("character",   "real",     "real",      "integer", "integer", "real",   "real",   "real",   "integer", "real",  "real", "integer"))
+  return(metadataTable)
+}
+
+strip_file_extension <- function(fileName) {
+  file_parts <- strsplit(fileName, "\\.")[[1]]
+  stripped <- substr(fileName, start = 1, stop = nchar(fileName) - nchar(file_parts[length(file_parts)]) - 1)
+#  print(paste0("input: ", fileName, " output: ", stripped))
+  return(stripped)
 }
 
 # call QC and index calculation functionality for each file specified in metadata.txt
 batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 	batchMode <<- TRUE
+	version.climpact <<- software_id
+	temp.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95)
+	prec.quantiles <<- c(0.05, 0.1, 0.5, 0.9, 0.95, 0.99)
+	barplot_flag <<- TRUE
+	min_trend <<- 10
+
 	metadata <- read.file.list.metadata(file.list.metadata)
 	
 	if(exists("progress") && !is.null(progress)) { 
-		prog_int <- 1/length(metadata$station) 
+		prog_int <- 0.5/length(metadata$station_file) 
 	}
 	
 	progressSNOW <- function(n) { 
 		if(interactive()) { progress$inc(prog_int) }
 	}
 	opts <- list(progress = progressSNOW)
-#	registerDoSNOW(cl)
 
-	# foreach does not support 'next'. This code is removed from the dopar loop in order to provide 'next' like functionality, in the form of return(NA) calls.
-	func = function(file.number) {
-		file=paste(input.directory,"/",metadata$station[file.number],sep="")
-		print(file)
-		user.data <- read.user.file(file)
-		user.data <- check.and.create.dates(user.data)
-		get.file.path(file)
-		create.dir(file)
-	
-		# define variables for indices
-		lat <- as.numeric(metadata$latitude[file.number])
-		lon <- as.numeric(metadata$longitude[file.number])
-		wsdi_ud <<- metadata$wsdin[file.number]
-		csdi_ud <<- metadata$csdin[file.number]
-		Tb_HDD <<- metadata$Tb_HDD[file.number]
-		Tb_CDD <<- metadata$Tb_CDD[file.number]
-		Tb_GDD <<- metadata$Tb_GDD[file.number]
-		rx_ud <<- metadata$rxnday[file.number]
-		rnnmm_ud <<- metadata$rnnmm[file.number]
-		txtn_ud <<- metadata$txtn[file.number]
-		custom_SPEI <<- metadata$SPEI[file.number]
-	
-		# global variables needed for calling climpact2.GUI.r functionality
-		station.metadata <- create.metadata(lat,lon,base.start,base.end,user.data$dates,"ofile_filler")
-		assign("metadata",station.metadata,envir=.GlobalEnv)
-		version.climpact <<- software_id
-		quantiles <<- NULL
-		if(lat<0) lat_text = "°S" else lat_text = "°N"
-		if(lon<0) lon_text = "°W" else lon_text = "°E"
-		Encoding(lon_text) <- "UTF-8"   # to ensure proper plotting of degree symbol in Windows (which uses Latin encoding by default)
-		Encoding(lat_text) <- "UTF-8"
-		title.station <- paste(ofilename, " [", lat,lat_text, ", ", lon,lon_text, "]", sep = "")
-		assign("title.station", title.station, envir = .GlobalEnv)
-		plot.title<-gsub('\\#',title.station,"Station: #"); assign('plot.title',plot.title,envir=.GlobalEnv)
-		barplot_flag <<- TRUE
-		min_trend <<- 10
-		temp.quantiles <<- c(0.05,0.1,0.5,0.9,0.95)
-		prec.quantiles <<- c(0.05,0.1,0.5,0.9,0.95,0.99)
-		op.choice <<- NULL
-		skip <<- FALSE
-	
-		if(file_test("-f",paste(file,".error.txt",sep=""))) { file.remove(paste(file,".error.txt",sep="")) }
-		# run quality control and create climdex input object
-		catch1 <- tryCatch(QC.wrapper(NULL,station.metadata,user.data,file),
-				error=function(msg) {
-					fileConn<-file(paste(file,".error.txt",sep=""))
-					writeLines(toString(msg), fileConn)
-					close(fileConn)
-					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
-				})
-		if(skip) { return(NA) }
-		
-		# calculate indices
-		catch2 <- tryCatch(index.calc(NULL,station.metadata),
-				error=function(msg) {
-					fileConn<-file(paste(file,".error.txt",sep=""))
-					writeLines(toString(msg), fileConn)
-					close(fileConn)
-					if(file_test("-f",paste0(file,".temporary"))) { file.remove(paste0(file,".temporary")) }
-				})
-		if(skip) { return(NA) }
-			
-	# RJHD - NH addition for pdf error 2-aug-17                  
-	        graphics.off()
-		print(paste(file," done",sep=""))
-	}
-
-#	capture.output(stdout <- foreach(file.number=1:length(metadata$station)) %dopar%
-	for (file.number in 1:length(metadata$station))
-#	foreach(file.number=1:length(metadata$station)) %dopar%
-	{
-		func(file.number)
-	}
+	# create batchFiles data frame, with cols name, datapath
+	inputContents <- list.files(input.directory, full.names = TRUE)
+	batchFiles <- data.frame(name = basename(inputContents), datapath = inputContents, stringsAsFactors = FALSE)
+	batchOutputFolder <- strip_file_extension(file.list.metadata)
+	print(paste0("Processing batch, to output folder: ", batchOutputFolder))
+	processBatch(opts$progress(), file.list.metadata, batchFiles, base.start, base.end, batchOutputFolder)
 
 	print("",quote=FALSE)
 	print("",quote=FALSE)
@@ -136,14 +87,14 @@ batch <- function(input.directory,file.list.metadata,base.start,base.end) {
 	print("",quote=FALSE)
 	print("",quote=FALSE)
 	print("",quote=FALSE)
-	print("Any errors encountered during processing are listed below by input file. Assess these files carefully and correct any errors.",quote=FALSE)
+	print("Any log files to do with errors encountered during processing are listed below. Examine these files carefully and correct any errors.",quote=FALSE)
 	print("",quote=FALSE)
-	error.files <- suppressWarnings(list.files(path=input.directory,pattern=paste("*error.txt",sep="")))
+#	error.files <- suppressWarnings(list.files(path=batchOutputFolder,pattern="*error.txt|*missing_dates*",recursive = TRUE,full.names=TRUE))
+        error.files <- suppressWarnings(list.files(path=file.path("www","output"),pattern="*error.txt|*missing_dates*",recursive = TRUE,full.names=TRUE))
 	if(length(error.files)==0) { print("... no errors detected in processing your files. That doesn't mean there aren't any!",quote=FALSE) } 
 	else {
 		for (i in 1:length(error.files)) { #system(paste("ls ",input.directory,"*error.txt | wc -l",sep=""))) {
-			print(error.files[i],quote=FALSE)
-			#system(paste("cat ",input.directory,"/",error.files[i],sep=""))
+			print(paste0(error.files[i]),quote=FALSE)
 		} 
 	}
 }

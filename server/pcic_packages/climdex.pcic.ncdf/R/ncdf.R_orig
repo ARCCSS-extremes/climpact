@@ -117,8 +117,8 @@ put.ETCCDI.atts <- function(f, freq, orig.title, author.data, definemode=FALSE, 
   ncdf4::ncatt_put(f, 0, "file_created_by_userid", system("whoami",intern=TRUE), definemode=definemode)
   ncdf4::ncatt_put(f, 0, "R_version", as.character(getRversion()), definemode=definemode)
   ncdf4::ncatt_put(f, 0, "climdex.pcic_version", as.character(packageVersion("climdex.pcic")), definemode=definemode)
-  ncdf4::ncatt_put(f, 0, "ClimPACT2_version", software_id, definemode=definemode)
-  ncdf4::ncatt_put(f, 0, "ClimPACT2_github", "https://github.com/ARCCSS-extremes/climpact2", definemode=definemode)
+  ncdf4::ncatt_put(f, 0, "Climpact2_version", software_id, definemode=definemode)
+  ncdf4::ncatt_put(f, 0, "Climpact2_github", "https://github.com/ARCCSS-extremes/climpact2", definemode=definemode)
 
   invisible(0)
 }
@@ -1483,7 +1483,7 @@ create.thresholds.from.file <- function(input.files, output.file, author.data, v
   ## Define what the threshold indices will look like...
   threshold.dat <- get.thresholds.metadata(names(f.meta$v.f.idx))
 
-  # source climpact2.etsci-functions.r to retrieve current ClimPACT2 version
+  # source climpact2.etsci-functions.r to retrieve current Climpact2 version
   source("ancillary/climpact2.etsci-functions.r")
   assign("software_id",software_id,envir = .GlobalEnv)
   
