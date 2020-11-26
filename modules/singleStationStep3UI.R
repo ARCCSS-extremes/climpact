@@ -28,6 +28,11 @@ singleStationStep3UI <- function(id) {
       condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
       h4("3. Calculate and plot indices"),
+      conditionalPanel(
+            condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
+            ns = ns,
+            uiOutput(ns("indicesLinkTop"))
+      ),
       wellPanel(
         fluidRow(
           column(12,
@@ -100,6 +105,7 @@ singleStationStep3UI <- function(id) {
         ns = ns,
         div(
           h4("Plots of calculated indices"),
+          uiOutput(ns("indicesLinkMiddle")),
           p("Plots are displayed below and available for download on this page using the link in the blue info box under Instructions.")
         ),
         fluidRow(

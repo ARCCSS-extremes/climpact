@@ -109,7 +109,23 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     singleStationState$indexCalculationStatus("Done")
   })
 
-  output$indicesLink <- renderText({
+  output$indicesLinkTop <- renderText(getLinkTextTopMiddle())
+  output$indicesLinkMiddle <- renderText(getLinkTextTopMiddle())
+  output$indicesLink <- renderText(getLinkText())
+
+  getLinkTextTopMiddle <- function() {
+    if (singleStationState$indexCalculationStatus() == "Done") {
+      if (isLocal) {
+        HTML("<h5>Please view the output in the following directory: <b>", folderToZip(), "</b></h5>")
+      } else {
+        HTML("<h5>Calculated Indices available ", indicesZipLink(), "</h5>")
+      }
+    } else {
+      ""
+    }
+  }
+
+  getLinkText <- function() {
     if (singleStationState$indexCalculationStatus() == "Done") {
       if (isLocal) {
         HTML("<b>Calculated Indices</b><br /><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
@@ -119,7 +135,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     } else {
       ""
     }
-  })
+  }
 
   observeEvent(singleStationState$indexCalculationStatus(), {
     if (singleStationState$indexCalculationStatus() == "Done") {

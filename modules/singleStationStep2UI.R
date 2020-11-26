@@ -25,7 +25,12 @@ singleStationStep2UI <- function (id) {
           condition = "output.qcStatus == 'Done'",
           ns = ns,
           h4("2. Check data quality"),
-          div("Quality control plots are displayed below and available for download on this page using the link in the blue info box under Instructions."),
+          div("Quality control plots are displayed below."),
+          conditionalPanel(
+            condition = "output.qcLink != ''",
+            ns = ns,
+            uiOutput(ns("qcLinkTop"))
+          ),
           htmlOutput(ns("qualityControlError")),
           slickROutput(ns("slickRQC"), width = "850px")
         )

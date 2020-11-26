@@ -54,21 +54,27 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     }
     return(errorHTML)
   })
+  output$qcLinkTop <- renderText(HTML(getQCLink()))
+  output$qcLink <- renderText(getQCEvalText())
 
-  output$qcLink <- renderText({
+  getQCEvalText <- function() {
     if (singleStationState$isQCCompleted()) {
-      localLink <- paste0("<b> Quality control directory: ", folderToZip(), "</b>")
-      remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "</b>")
 
       appendixCLink <- paste0("<a target=\"_blank\" href=", "user_guide/Climpact_user_guide.htm#appendixC>", "Appendix C</a>")
 
       HTML("<b>Evaluate Data Quality</b>",
         "<p>Please view the quality control output described below and carefully evaluate before continuing.",
         "<br />Refer to ", appendixCLink, " of the ", climpactUI$userGuideLink, " for help.<br />",
-        localOrRemoteLink(localLink, remoteLink), "</p>")
+        getQCLink(), "</p>")
     }
-  })
-
+  }
+  getQCLink <- function() {
+    if (singleStationState$isQCCompleted()) {
+      localLink <- paste0("<b> Quality control directory: ", folderToZip(), "</b>")
+      remoteLink <- paste0("<b> Quality control files: ", qcZipLink(), "</b>")
+      return(localOrRemoteLink(localLink, remoteLink))
+    }
+  }
   observeEvent(input$doQualityControl, {
     # input$dataFile will be NULL initially. After the user selects
     # and uploads a file, it will be a data frame with
