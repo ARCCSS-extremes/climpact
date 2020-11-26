@@ -30,12 +30,16 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
    In Windows: open R and select "File->Change dir..." and select the
    climpact-master directory created in step 1. Then type:  
 
+```
    *source('server/climpact.master.installer.r')*
+```
 
    In Linux/MacOS: in a terminal window navigate to the climpact-master directory created in
    step 1, then open R (by typing *R* at the command line) and type:  
 
+```
    *source('server/climpact.master.installer.r')*
+```
 
    You may be asked whether you would like to make a personal library, in 
    most cases the answer should be 'yes'. Once complete, quit R by typing
@@ -58,8 +62,10 @@ step 1, then open R (by typing *R* at the command line).
 
 Then run the following two commands:
 
+```
 *library(shiny)*  
 *runApp()* 
+```
 
 Follow the on-screen instructions to calculate the Climpact indices.
 
@@ -79,8 +85,10 @@ correct for gridded data IF your data contain missing values (e.g. they are base
    
 2) Execute the above script by entering the following command at the command line:
 
+```
    *Rscript climpact.ncdf.wrapper.r* 
-   
+```
+
    Depending on the size of your data and the number of cores selected, this process
    can take anywhere from one to effectively an infinite number of hours. As a
    yard stick, for a 20 year global ~1x1 degree dataset and a computer with 2 cores you should assign ~30 hours to begin with.
@@ -118,8 +126,10 @@ correct for gridded data IF your data contain missing values (e.g. they are base
    station information (see the sample provided), the beginning and end years of the base period, and
    the number of cores to use in processing, respectively. See the user guide
    for more information.
-   
+
+```
    *Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2*
+```
 
 ##  Common problems
 
