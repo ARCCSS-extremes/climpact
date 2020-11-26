@@ -24,7 +24,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
   # trend file
   trend_file <- file.path(outputFolders$outtrddir, paste0(outputFolders$stationName, "_trend.csv"))
   write_header(trend_file, "Linear trend statistics", metadata)
-  cat(file = trend_file, paste("Index", "Frequency", "StartYear", "EndYear", "Slope", "STD_of_Slope", "P_Value", sep = ","), fill = 180, append = T)
+  cat(file = trend_file, paste("Index", "Frequency", "StartYear", "EndYear", "Lower bound", "Slope", "Upper bound", sep = ","), fill = 180, append = T)
 
   # Read in index .csv file
   index.list <- read.csv("server/climate.indices.csv", header = TRUE, sep = "\t")

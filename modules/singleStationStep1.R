@@ -1,7 +1,8 @@
 singleStationStep1 <- function (input, output, session, parentSession, singleStationState) {
 
   stationName <- reactive({
-    strsplit(input$dataFile$name, "[_\\.]")[[1]][1]
+    file_parts <- strsplit(input$dataFile$name, "\\.")[[1]]
+    stripped <- substr(input$dataFile$name, start = 1, stop = nchar(input$dataFile$name) - nchar(file_parts[length(file_parts)]) - 1)
   })
 
   observeEvent(input$dataFile, {

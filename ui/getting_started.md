@@ -1,14 +1,8 @@
-### About Climpact
+### Welcome
 Climpact is an R software package that calculates the [ET-SCI](https://climpact-sci.org/about/project/) indices.
 
-It directly incorporates the R climdex.pcic package to perform most of the calculations. climdex.pcic is available thanks to the efforts of the [Pacific Climate Impacts Consortium (PCIC)](https://www.pacificclimate.org/).
+To start calculating indices for a station text file select **Process single station** on the left-hand side of the screen.
 
-Climpact is a web app which can be run online or on a personal computer without connecting to the Internet - it is displayed through your web browser. Climpact is developed at the University of New South Wales.
+Climpact can also be downloaded and installed on a personal computer or server environment in order to calculate the ET-SCI indices on gridded netCDF data. Get the latest version from the [Climpact GitHub page](https://github.com/ARCCSS-extremes/climpact).
 
-### Getting started
-To start calculating indices for a station text file select **Process single station** on the lefthand side of the screen.
-
-### More
 For more help and an introduction to Climpact and the [Expert Team on Sector-specific Climate Indices (ET-SCI)](https://climpact-sci.org/about/project/) view the [user-guide](user_guide/Climpact_user_guide.htm).
-
-Get the latest version and/or contribute to the code at the [Climpact GitHub page](https://github.com/ARCCSS-extremes/climpact).

@@ -5,7 +5,7 @@
 
 # packages <- c("abind","bitops","Rcpp","caTools","PCICt","SPEI","climdex.pcic","ncdf4","snow","udunits2","functional","proj4","foreach","doParallel","doSNOW","zoo","zyp","tcltk2",
 # 			"shiny","shinythemes","markdown","servr","dplyr","corrplot","ggplot2","shinyjs",
-#			"shinydashboard","shinyBS","slickR","xml2","shinyWidgets")
+#			"shinydashboard","shinyBS","slickR","xml2","shinyWidgets","qpdf")
 
 # # Print Unix-specific messages
 # if(.Platform$OS.type == "unix") {

@@ -126,7 +126,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   }
   df <- df[df$indice != "",]
   df$indice <- factor(df$indice, levels = found.indices)
-  create_bar_plot(paste0(stationName, "_indice_",sectorColumnFilePart), df, "indice", "cor", "category", plot.title, "", "")
+  create_bar_plot(paste0(stationName, "_index-sector_correlation_",sectorColumnFilePart), df, "indice", "cor", "category", plot.title, "", "")
 
   progress$inc(0.1)
   # all ok

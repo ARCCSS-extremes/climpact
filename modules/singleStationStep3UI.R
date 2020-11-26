@@ -46,11 +46,11 @@ singleStationStep3UI <- function(id) {
         ),
         fluidRow(
           column(4,
-            numericInput(ns("wsdin"), "d for WSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+            numericInput(ns("wsdin"), "d for WSDId (1 =< d <= 10):", 1, min = 1, max = 10),
             bsTooltip(id = paste0(id, "-", "wsdin"), title = "Number of days contributing to a warm period (where the minimum length is user-specified) - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            numericInput(ns("csdin"), "d for CSDId Days (1 =< d <= 10):", 1, min = 1, max = 10),
+            numericInput(ns("csdin"), "d for CSDId (1 =< d <= 10):", 1, min = 1, max = 10),
             bsTooltip(id = paste0(id, "-", "csdin"), title = "Number of days contributing to a cold period (where the period has to be at least 6 days long) - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            numericInput(ns("rxnday"), "d for Rxdday Days (d >= 1):", 3, min = 1),
+            numericInput(ns("rxnday"), "d for Rxdday (d >= 1):", 3, min = 1),
             bsTooltip(id = paste0(id, "-", "rxnday"), title = "Maximum amount of rain that falls in a user-specified period - value is the number of consecutive days", placement = "left", trigger = "hover"),
             numericInput(ns("txtn"), "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1),
             bsTooltip(id = paste0(id, "-", "txtn"), title = "Total consecutive hot days and hot nights (TXdTNd) or cold days and cold nights (TXbdTNbd) - value is the number of consecutive days", placement = "left", trigger = "hover")
@@ -69,9 +69,9 @@ singleStationStep3UI <- function(id) {
           ),
           column(4,
             wellPanel(
-              h4("Specify custom thresholds"),
-              strong("Custom index counting days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
-              br(),
+              h4("Create a custom threshold index"),
+              strong("Create an index that counts the number of days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
+              br(),br(),
               selectInput(ns("custVariable"), label = "Variable:",
                 choices = list("TN", "TX", "TM", "PR", "DTR"),
                 selected = "TN"
@@ -168,7 +168,7 @@ singleStationStep3UI <- function(id) {
                 "the <i>corr</i> subdirectory will contain plots and .csv files containing the correlations."))),
             HTML("</div>")
           ),
-         tags$p("Click the Next button or the tab labelled '4. Correlate' to proceed to the next step.")
+         tags$p("Click the Next button or the tab labelled '4. Compare' to proceed to the next step.")
        )
     )
     ),
