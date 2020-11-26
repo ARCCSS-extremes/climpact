@@ -168,7 +168,7 @@ runApp()
 
 Climpact should then start in your web browser and you should see the home page as pictured below. From here you can follow the on-screen guidance to calculate the indices, or continue reading below.
 
-![](images/front_page.png)
+![](images/home_screen.jpg)
 
 ### 4.2 Load data
 
@@ -185,17 +185,19 @@ After selecting your station file, enter the following information:
 
 Once the above information is entered select the blue *Next* button at the bottom of the screen which will bring you to tab 2.
 
-![](images/load_check.png)
+![](images/load_tab1.jpg)
 
 ### 4.3 Check data
 
 Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen which will bring you to tab 3.
 
+![](images/check_tab2.jpg)
+
 ### 4.4 Calculate climate indices
 
 In tab 3 you can change the title that will appear on each plots as well as several parameters affecting how some indices are calculated, as shown in the screenshot below. 
 
-![](images/calculate_indices.png)
+![](images/calculate_tab1.jpg)
 
 These climate index parameters are described below. Review these before preceding. The definitions of each index can be found in [Appendix A](#appendixa). 
 
@@ -217,9 +219,7 @@ These climate index parameters are described below. Review these before precedin
 
 Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. Users may have to scroll down the screen to see this box (see screenshot below). Preview plots will also be shown on the web page. See [section 6](#outputstation) for a description of the output files.
 
-
-!INSERT SCREENSHOT!
-  
+![](images/calculate_tab2.jpg)
 
 **This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or tab 4 at the top of the screen to compare the calculated indices to their sector data.
 
@@ -507,7 +507,7 @@ An example plot for the index *su* is shown below. These files may be opened in 
 
 See [Appendix A](#appendixa) for definitions of each Climpact index.
 
-![](images/sydney_su_ANN.png)
+![](images/sydney_observatory_hill_1936-2015_su_ANN.png)
 
 ### 6.3 Threshold and trend data (the *thres* and *trend* directories)
 
@@ -525,11 +525,11 @@ Specifically, Climpact calculates correlations between each index and the user's
 
 Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars. Coefficients are reported on each bar.
 
-![](images/sydney_su_ANN.png)
+![](images/sydney_observatory_hill_1936-2015_index-sector_correlation_detrended.wheat.yield.png)
 
 Below is an example of a regression plot between maximum temperature and sector data. R-squared values and regression line equations are also shown. Regardless of whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.
 
-![](images/sydney_su_ANN.png)
+![](images/sydney_observatory_hill_1936-2015_corr_tmax_detrended.wheat.yield.png)
 
 <a name="calculatenetcdf"></a>
 ## 7. Calculating the indices from netCDF files
