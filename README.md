@@ -35,7 +35,7 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 ```
 
    In Linux/MacOS: in a terminal window navigate to the climpact-master directory created in
-   step 1, then open R (by typing *R* at the command line) and type:  
+   step 1, then open R (by typing ```R``` at the command line) and type:  
 
 ```
    source('server/climpact.master.installer.r')
@@ -43,7 +43,7 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 
    You may be asked whether you would like to make a personal library, in 
    most cases the answer should be 'yes'. Once complete, quit R by typing
-   *q()*. 
+   ```q()```. 
    
 <br/>
 
@@ -58,7 +58,7 @@ Video tutorial on how to install Climpact in Windows
 
 **In Windows**, open R and select "File->Change dir..." and select the 
 climpact-master directory created when installing Climpact. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created in
-step 1, then open R (by typing *R* at the command line). 
+step 1, then open R (by typing ```R``` at the command line). 
 
 Then run the following two commands:
 
