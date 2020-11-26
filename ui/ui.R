@@ -51,9 +51,8 @@ ui <- tagList(
       id = "footer-content",
       div(
         id = "sitemap",
-        h4("Climpact 2.0.0"),
+        h4("Climpact"),
         p("Copyright © 2012–2020"),
-        p("Climpact."),
         p("All Rights Reserved.")
       ),
       div(
