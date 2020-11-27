@@ -440,7 +440,7 @@ The graphic file boxseries.pdf (which does not have a numerical counterpart) pro
 
 This file looks at rounding problems by plotting the frequency of each decimal value. It shows how frequently each of the 10 possible values is used at a precision of 1 decimal place (i.e .0 to .9). It is not uncommon that .0 and .5 are more frequent at stations simply because of human rounding (there is no statistical reason for these values to occur more often!).
 
-<img src="images/QC_rounding.png" alt="drawing" width="900" height="800"/>
+<img src="images/QC_rounding.png" alt="drawing" width="600" height="540"/>
 
 **mystation_tn_flatline.csv**
 <br>
