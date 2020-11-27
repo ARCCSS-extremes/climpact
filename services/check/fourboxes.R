@@ -17,7 +17,7 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
   datos <- read.table(station, col.names = c("year", "month", "day", "pc", "tx", "tn"), na.strings = "-99.9")
   datos$tr <- datos$tx - datos$tn
   prec <- subset(datos, datos$pc > 0)
-  par(mfrow = c(2, 2))
+  par(mfrow = c(2, 2),mar=c(4,4,2,2.5), oma=c(2,2,2,2.5))
 
   # we open a file for writing outliers. First time is not append; rest is append
   filena <- paste(output, "_outliers.csv", sep = "")
@@ -150,6 +150,8 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
     plot.new()
     text(x = 0.5, y = 0.5, "NO DATA AVAILABLE", adj = c(0.5, NA))
   }
+
+  mtext("Outliers per calendar month", outer=TRUE, cex=1.5, line=-0.2)
 
   if (save == 1) dev.off()
 

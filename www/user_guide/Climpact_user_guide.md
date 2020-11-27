@@ -342,23 +342,7 @@ Once the user selects the *Check* button under tab 2 (see [section 4](#calculate
 
 The *qc* folder contains the following files (where *mystation* refers to the name of the user’s station file):
 
-**8 .pdf files**, with graphical information on data quality:
-<br>
-mystation_tminPLOT.pdf
-<br>
-mystation_tmaxPLOT.pdf
-<br>
-mystation_dtrPLOT.pdf
-<br>
-mystation_prcpPLOT.pdf
-<br>
-mystation_boxes.pdf
-<br>
-mystation_boxseries.pdf
-<br>
-mystation_rounding.pdf
-<br>
-mystation_ALL_QC_OUTPUT.pdf
+**mystation_QC_PLOTS.pdf**: which contains plots that aid in the identification of various QC issues. Details of some of the issues highlighted by these plots are output to the .csv files listed below.
 
 **9 .csv files** with numerical information on data quality
 <br>
@@ -380,7 +364,7 @@ mystation_tn_jumps.csv
 <br>
 mystation_temp_nastatistics.csv
 
-**Multiple .png files** replicating the information in the .pdf files listed above. The number of .png files depends on the length of the station record. These are the files previewed in the web interface.
+**Multiple .png files** replicating the information in the .pdf files listed above. The number of .png files created depends on the length of the station record. These are the files previewed in the web interface.
 
 #### 6.1.2 Descriptions of file contents
 

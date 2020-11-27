@@ -153,10 +153,11 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
   # Concatenate all of the QC PDF's into one file
-  outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_ALL_QC_OUTPUT.pdf"))
+  outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_QC_PLOTS.pdf"))
   if(file.exists(outqcfile)) {file.remove(outqcfile)} # remove any previous version of this file so it's not included in the concatenation.
   tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
-  pdf_combine(tmplist,outqcfile)
+  pdf_combine(c(tmplist[1],tmplist[2],tmplist[5],tmplist[4],tmplist[6],tmplist[7],tmplist[3]),outqcfile)
+  file.remove(tmplist)
 
   ##############################
   # Write out NA statistics.
@@ -194,7 +195,7 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
     prcp <- cio@data$prec[cio@data$prec >= 1 & !is.na(cio@data$prec)]
     if (length(prcp) > 30) {
       hist(prcp,
-        main = paste("Histogram for Station:", metadata$stationName, " of PRCP>=1mm", sep = ""),
+        main = paste("PRCP (>=1 mm) histogram for ", metadata$stationName, sep = ""),
         breaks = c(seq(0, 40, 2), max(prcp)),
         xlab = "",
         col = "green",
@@ -204,6 +205,7 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
   }
 
   pplotts(var = var, type = type, tit = title, cio = cio, metadata = metadata)
+
   dev.off()
 }
 

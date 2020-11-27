@@ -11,7 +11,7 @@ boxseries <- function(station, output, save = 0, mediaType = "pdf") {
   datos <- read.table(station, col.names = c("year", "month", "day", "pc", "tx", "tn"), na.strings = "-99.9")
   datos$tr <- datos$tx - datos$tn
   prec <- subset(datos, datos$pc > 0)
-  par(mfrow = c(2, 2))
+  par(mfrow = c(2, 2),mar=c(4,4,2,2.5), oma=c(2,2,2,2.5))
 
   if (any(!is.na(prec$pc))) respc <- boxplot(prec$pc ~ prec$year, main = "NON ZERO PREC", col = "blue", range = 4) else {
     plot.new()
@@ -29,6 +29,8 @@ boxseries <- function(station, output, save = 0, mediaType = "pdf") {
     plot.new()
     text(x = 0.5, y = 0.5, "NO DATA AVAILABLE", adj = c(0.5, NA))
   }
+
+  mtext("Outliers per year", outer=TRUE, cex=1.5, line=-0.2)
 
   if (save == 1) dev.off()
 
