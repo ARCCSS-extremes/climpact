@@ -33,7 +33,8 @@ singleStationStep3UI <- function(id) {
             ns = ns,
             uiOutput(ns("indicesLinkTop"))
       ),
-      wellPanel(
+      bsCollapse(id = ns("collapseStep3"), open = "Settings", multiple = TRUE,
+      bsCollapsePanel("Settings",
         fluidRow(
           column(12,
             textInput(ns("plotTitle"), "Plot title:")
@@ -71,7 +72,8 @@ singleStationStep3UI <- function(id) {
             wellPanel(
               h4("Create a custom threshold index"),
               strong("Create an index that counts the number of days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
-              br(),br(),
+              br(),
+              br(),
               selectInput(ns("custVariable"), label = "Variable:",
                 choices = list("TN", "TX", "TM", "PR", "DTR"),
                 selected = "TN"
@@ -84,7 +86,7 @@ singleStationStep3UI <- function(id) {
             )
           )
         )
-      )), #wellPanel + close out conditionalPanel
+      ))), #wellPanel + close out conditionalPanel
       conditionalPanel(# show if quality control done and no errors (as for panel above, but splitting into two for layout elements eg wellPanel)
       condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,

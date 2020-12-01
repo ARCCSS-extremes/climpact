@@ -48,7 +48,7 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
       need(!is.null(input$sectorDataFile), message="Please load station data"),
       need(input$sectorPlotTitle != "", message="Please enter a plot title")
     )
-
+    updateCollapse(session, "collapseStep4", close = "Settings")
     singleStationState$correlationCalculationStatus("In Progress")
 
     if (is.null(singleStationState$dataFile())) {
