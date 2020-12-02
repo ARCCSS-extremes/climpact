@@ -372,25 +372,14 @@ The values identified in these plots are sent to a .csv file (*mystation_outlier
 ```
 Date    Prec     TX       TN       DTR
 Prec up                                               
-2/01/1951        31.8     14.3     10.2     4.1
-12/01/1961      47.5     23.4     11.4     12
-5/04/1963        42.8     19.2     13.6     5.6
-18/04/1967      29.1     20.2     11.8     8.4
-19/04/1969      28.2     27.7     17.9     9.8
-19/04/1973      53.6     14.8     11.1     3.7
-21/11/1991      55.9     11.4     7.8       3.6
-11/11/1995      32.1     18.4     13.5     4.9
-1/12/2000        31.6     18.6     12.6     6
-31/12/2001      32.1     16        9.4       6.6
-15/12/2005      30.2     22.1     13.3     8.8
-TX up
-TX low             
-TN up
-TN low
-30/10/1972      2.5       -11.2    -23.4    12.2
-31/10/1972      4.3       -4.8      -24.8    20
-DTR up
-DTR low
+...
+1991-12-12	50.8		20.7		16.4		4.3
+1991-12-14	56		23.9		16.5		7.4
+2002-12-11	49.2		21.7		14.2		7.5
+TX up				
+1939-1-14	0		45.3		21.9		23.4
+1940-1-25	0		41.3		21.6		19.7
+...
 ```
 
 The second set of plots are titled **Outliers per year** and identify statistical outliers per year based on the IQR. The plots on this page are useful to obtain a panoramic view of the series and be alerted to parts of the series which may be problematic. An example of this page is shown below.
@@ -416,7 +405,7 @@ The *mystation_tn_flatline.csv* and *mystation_tx_flatline.csv* files report occ
 ```
 Date    TX       Number of duplicates
 4/09/1937        18        3
-28/11/1937      16.9     3
+28/11/1937       16.9      3
 ```
 
 Looking at the data, the first sequence identified by the QC test above is shown below.
