@@ -54,6 +54,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
   # Index calculation has been requested by the user.
   observeEvent(input$calculateIndices, {
+
     # ------------------------------------------------------------------ #
     # Validate inputs
     # ------------------------------------------------------------------ #
@@ -90,8 +91,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     on.exit(progress$close())
     progress$set(message = "Calculating indices", value = 0)
 
+    updateCollapse(session, "collapseStep3", close = "Settings")
+
     singleStationState$indexCalculationStatus("In Progress")
-    # singleStationState$indexCalculationErrors("")
 
     index.calc(progress, 2, singleStationState$metadata(),
       singleStationState$climdexInput(), singleStationState$outputFolders(),
@@ -109,7 +111,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     singleStationState$indexCalculationStatus("Done")
   })
 
-  output$indicesLinkTop <- renderText(getLinkTextTopMiddle())
+  # output$indicesLinkTop <- renderText(getLinkTextTopMiddle())
   output$indicesLinkMiddle <- renderText(getLinkTextTopMiddle())
   output$indicesLink <- renderText(getLinkText())
 
