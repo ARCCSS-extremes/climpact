@@ -28,12 +28,8 @@ singleStationStep3UI <- function(id) {
       condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
       h4("3. Calculate and plot indices"),
-      conditionalPanel(
-            condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
-            ns = ns,
-            uiOutput(ns("indicesLinkTop"))
-      ),
-      wellPanel(
+      bsCollapse(id = ns("collapseStep3"), open = "Settings", multiple = TRUE,
+      bsCollapsePanel("Settings",
         fluidRow(
           column(12,
             textInput(ns("plotTitle"), "Plot title:")
@@ -71,7 +67,8 @@ singleStationStep3UI <- function(id) {
             wellPanel(
               h4("Create a custom threshold index"),
               strong("Create an index that counts the number of days above or below a given threshold (e.g. number of days where TX > 40, named TXgt40)"),
-              br(),br(),
+              br(),
+              br(),
               selectInput(ns("custVariable"), label = "Variable:",
                 choices = list("TN", "TX", "TM", "PR", "DTR"),
                 selected = "TN"
@@ -84,7 +81,7 @@ singleStationStep3UI <- function(id) {
             )
           )
         )
-      )), #wellPanel + close out conditionalPanel
+      ))), #wellPanel + close out conditionalPanel
       conditionalPanel(# show if quality control done and no errors (as for panel above, but splitting into two for layout elements eg wellPanel)
       condition = "output.loadDataError == '' && output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
@@ -121,7 +118,7 @@ singleStationStep3UI <- function(id) {
           "based on the station name and coordinates provided when loading data, but you can override this here."),
         h4("User parameters"),
           HTML("You may also change the following default parameters that relate to several indices (see ",
-          "<a href='user_guide/Climpact_user_guide.html#appendixa' target='_blank'>Appendix A</a> for index definitions):"),
+          "<a href='https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md#appendixa' target='_blank'>Appendix A</a> for index definitions):"),
           tags$ul(tags$li(HTML("<b>WSDId Days</b> sets the number of days which need to occur consecutively ",
             "with a TX > 90th  percentile to be counted in the WSDId index.")),
             tags$li(HTML("<b>CSDId Days</b> sets the number of days which need to occur consecutively ",

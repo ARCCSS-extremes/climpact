@@ -46,7 +46,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
   })
 
   output$loadParamHelpText <- renderUI({
-      indexParamLink <- paste0("<a target=\"_blank\" href=user_guide/Climpact_user_guide.html#calculatesingle> Section 4.4</a>")
+      indexParamLink <- paste0("<a target=\"_blank\" href=https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md#calculatesingle> Section 4.4</a>")
       HTML(paste0("<p>The following fields change user-definable parameters in several Climpact indices.",
                   "<br />Leave as default unless you are interested in these indices. See ",
                   indexParamLink, " of the ", climpactUI$userGuideLink, " for guidance.</p>"))
@@ -54,6 +54,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
 
   # Index calculation has been requested by the user.
   observeEvent(input$calculateIndices, {
+
     # ------------------------------------------------------------------ #
     # Validate inputs
     # ------------------------------------------------------------------ #
@@ -90,8 +91,9 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     on.exit(progress$close())
     progress$set(message = "Calculating indices", value = 0)
 
+    updateCollapse(session, "collapseStep3", close = "Settings")
+
     singleStationState$indexCalculationStatus("In Progress")
-    # singleStationState$indexCalculationErrors("")
 
     index.calc(progress, 2, singleStationState$metadata(),
       singleStationState$climdexInput(), singleStationState$outputFolders(),
@@ -109,7 +111,7 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     singleStationState$indexCalculationStatus("Done")
   })
 
-  output$indicesLinkTop <- renderText(getLinkTextTopMiddle())
+  # output$indicesLinkTop <- renderText(getLinkTextTopMiddle())
   output$indicesLinkMiddle <- renderText(getLinkTextTopMiddle())
   output$indicesLink <- renderText(getLinkText())
 

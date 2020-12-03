@@ -168,7 +168,7 @@ runApp()
 
 Climpact should then start in your web browser and you should see the home page as pictured below. From here you can follow the on-screen guidance to calculate the indices, or continue reading below.
 
-<img src="images/home_screen.jpg" alt="drawing" width="1000"/>
+<img src="images/home_screen.jpg" alt="drawing" width="1000" height="540"/>
 
 ### 4.2 Load data
 
@@ -185,19 +185,19 @@ After selecting your station file, enter the following information:
 
 Once the above information is entered select the blue *Next* button at the bottom of the screen which will bring you to tab 2.
 
-<img src="images/load_tab1.jpg" alt="drawing" width="1000"/>
+<img src="images/load_tab1.jpg" alt="drawing" width="1000" height="540"/>
 
 ### 4.3 Check data
 
 Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen which will bring you to tab 3.
 
-<img src="images/check_tab2.jpg" alt="drawing" width="1000"/>
+<img src="images/check_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
 ### 4.4 Calculate climate indices
 
 In tab 3 you can change the title that will appear on each plots as well as several parameters affecting how some indices are calculated, as shown in the screenshot below. 
 
-<img src="images/calculate_tab1.jpg" alt="drawing" width="1000"/>
+<img src="images/calculate_tab1.jpg" alt="drawing" width="1000" height="540"/>
 
 These climate index parameters are described below. Review these before preceding. The definitions of each index can be found in [Appendix A](#appendixa). 
 
@@ -219,7 +219,7 @@ These climate index parameters are described below. Review these before precedin
 
 Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. Users may have to scroll down the screen to see this box (see screenshot below). Preview plots will also be shown on the web page. See [section 6](#outputstation) for a description of the output files.
 
-<img src="images/calculate_tab2.jpg" alt="drawing" width="1000"/>
+<img src="images/calculate_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
 **This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or tab 4 at the top of the screen to compare the calculated indices to their sector data.
 
@@ -299,7 +299,7 @@ When calculating the indices for many files, errors are bound to occur. When Cli
 
 The web interface can be used to calculate the Climpact indices for multiple stations. This utilises the same functionality as the *climpact.batch.stations.r* script but may prove less flexible for complex workflows. To use the web interface, first select *Batch process stations* from the left hand side of the Climpact home page.
 
-<img src="images/batch1.jpg" alt="drawing" width="1000"/>
+<img src="images/batch1.jpg" alt="drawing" width="1000" height="540"/>
 
 You will then be presented with a screen to provide several inputs:
 
@@ -396,13 +396,13 @@ These files contain simple plots of the daily time-series of minimum temperature
 
 Below is an example for tmax.
 
-<img src="images/tmax_plot.png" alt="drawing" width="1000"/>
+<img src="images/tmax_plot.png" alt="drawing" width="1000" height="480"/>
 
 **mystation_boxes.pdf**
 
 This file identifies potential outliers based on the interquartile (IQR). The IQR is defined as the difference between the 75th (p75) and the 25th (p25) percentiles. As can be seen in the example below, mystation_boxes.pdf contains boxplots of temperature and precipitation data flagging as outliers (round circles) all those temperature values falling outside a range defined by p25 – 3 interquartile ranges (lower bound) and p75 + 3 interquartile ranges (upper bound). For precipitation, 5 IQR are used.
 
-<img src="images/QC_boxes.png" alt="drawing" width="1000"/>
+<img src="images/QC_boxes.png" alt="drawing" width="800" height="800"/>
 
 The values identified by this graphical quality control are sent to a .csv file (*mystation_outliers.csv* for our example station). This file lists the outliers grouped under the corresponding variable and the **UP**per or **LOW**er margins of the IQR, depending on whether the outlier is a high or low outlier, respectively. An example of the contents of this file are shown below. Under **Prec up* appear those values that represent a precipitation outlier; under *TX up* are those that represent a maximum temperature higher than p75+3\*IQR; under *TX low* are outliers that represent an observation lower than p25-3\*IQR. The explanation given for TX, also applies to TN and DTR. The advantage of this approach is that the detection of this percentile based outliers is not affected by the presence of larger outliers, so ONE RUN OF THE QC PROCESS IS ENOUGH.
 
@@ -434,13 +434,13 @@ DTR low
 
 The graphic file boxseries.pdf (which does not have a numerical counterpart) produces annual boxplots. This file is useful to have a panoramic view of the series and be alerted of parts of the series which can be problematic. An example of this file is shown below.
 
-<img src="images/QC_boxseries.png" alt="drawing" width="1000"/>
+<img src="images/QC_boxseries.png" alt="drawing" width="800" height="800"/>
 
 **mystation_rounding.pdf**
 
 This file looks at rounding problems by plotting the frequency of each decimal value. It shows how frequently each of the 10 possible values is used at a precision of 1 decimal place (i.e .0 to .9). It is not uncommon that .0 and .5 are more frequent at stations simply because of human rounding (there is no statistical reason for these values to occur more often!).
 
-<img src="images/QC_rounding.png" alt="drawing" width="1000"/>
+<img src="images/QC_rounding.png" alt="drawing" width="600" height="540"/>
 
 **mystation_tn_flatline.csv**
 <br>
@@ -525,11 +525,11 @@ Specifically, Climpact calculates correlations between each index and the user's
 
 Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars. Coefficients are reported on each bar.
 
-<img src="images/sydney_observatory_hill_1936-2015_index-sector_correlation_detrended.wheat.yield.png" alt="drawing" width="1000"/>
+<img src="images/sydney_observatory_hill_1936-2015_index-sector_correlation_detrended.wheat.yield.png" alt="drawing" width="900" height="650"/>
 
 Below is an example of a regression plot between maximum temperature and sector data. R-squared values and regression line equations are also shown. Regardless of whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.
 
-<img src="images/sydney_observatory_hill_1936-2015_corr_tmax_detrended.wheat.yield.png" alt="drawing" width="1000"/>
+<img src="images/sydney_observatory_hill_1936-2015_corr_tmax_detrended.wheat.yield.png" alt="drawing" width="900" height="650"/>
 
 <a name="calculatenetcdf"></a>
 ## 7. Calculating the indices from netCDF files
@@ -574,7 +574,7 @@ Once you have run climpact.ncdf.wrapper.r, numerous netCDF files will exist in t
 
 NetCDF files require special software for viewing and manipulating. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) for easily viewing netCDF output (and can also generate animations), it is freely available and works under Linux, MacOS and Windows. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.
 
-<img src="images/SPEI.png" alt="drawing" width="600"/>
+<img src="images/SPEI.png" alt="drawing" width="600" height="400"/>
 
 <a name="appendixa"></a>
 ## Appendix A: Tables of Climpact indices
