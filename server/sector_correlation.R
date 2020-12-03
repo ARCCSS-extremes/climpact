@@ -20,6 +20,9 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   # assume the sector data is a csv file for now
   sector.data <- read.csv(sector.file)
 
+  # replace -99.9 with NA
+  sector.data[2][sector.data[2]==-99.9]=NA
+
   # Increment progress bar.
   progress$inc(0.1)
 
