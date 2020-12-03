@@ -335,9 +335,6 @@ Quality control (QC) diagnostic plots are only calculated for station text files
 <br>
 [![](http://img.youtube.com/vi/gusIge2bTNk/0.jpg)](http://www.youtube.com/watch?v=gusIge2bTNk "")
 
-<iframe width="420" height="315" src="http://www.youtube.com/watch?v=gusIge2bTNk">
-</iframe>
-
 The *qc* folder contains the following files (where *mystation* refers to the name of the user’s station file) and which are described in in the following sections.
 
 **mystation_QC_PLOTS.pdf
