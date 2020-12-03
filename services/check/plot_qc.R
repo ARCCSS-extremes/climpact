@@ -26,7 +26,7 @@ pplotts <- function(var = "prcp", type = "h", tit = NULL, cio, metadata) {
   }
 
   par(mfrow = c(4, 1))
-  par(mar = c(3.1, 2.1, 2.1, 2.1))
+  par(mar = c(3.1, 2.1, 3.1, 2.1),oma=c(2,2,2,2.5)) #c(3.1, 2.1, 2.1, 2.1))
 
   year.start = as.numeric(format(metadata$dates[1], format = "%Y"))
   year.end = as.numeric(format(metadata$dates[length(metadata$dates)], format = "%Y"))
@@ -50,5 +50,6 @@ pplotts <- function(var = "prcp", type = "h", tit = NULL, cio, metadata) {
       abline(v = at[k], col = "yellow")
     lines(tt, rep(ymin, length(tt)), type = "p", col = "red")
     title(paste("Station: ", tit, ", ", i, "~", min(i + 9, year.end), ",  ", var1, sep = ""))
+if(i==year.start) {   mtext(paste0("Time series for ",var), outer=TRUE, cex=1.5, line=-0.2) }
   }
 }
