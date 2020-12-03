@@ -148,8 +148,8 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 
 ##  Documentation
 
-Documentation exists in the form of this README file, the official Climpact
-user guide (available in the *server* folder) as well as the source code.
+Documentation exists in the form of this README file, the [Climpact
+user guide](https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md) as well as the source code.
 
 ## Having trouble?
 
