@@ -60,12 +60,21 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       row.names = FALSE,
       col.names = FALSE)
 
-    error_msg <- paste0("You seem to have missing dates. See <a href='output/",
-      metadata$stationName,
-      "/qc/",
-      missingDatesFileName,
-      "' target='_blank'>here</a> for a list of missing dates. ",
-      "Fill these with observations or missing values (-99.9) before continuing with quality control.")
+    if(isLocal) {
+       error_msg <- paste0("You seem to have missing dates. See 'www/output/",
+         metadata$stationName,
+         "/qc/",
+         missingDatesFileName,
+         "' for a list of missing dates. ",
+         "Fill these with observations or missing values (-99.9) before continuing with quality control.")
+    } else {
+       error_msg <- paste0("You seem to have missing dates. See <a href='output/",
+         metadata$stationName,
+         "/qc/",
+         missingDatesFileName,
+         "' target='_blank'>here</a> for a list of missing dates. ",
+         "Fill these with observations or missing values (-99.9) before continuing with quality control.")
+    }
 
     # skip <- TRUE
     warning(error_msg)
