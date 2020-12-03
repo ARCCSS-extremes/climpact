@@ -183,13 +183,13 @@ After selecting your station file, enter the following information:
 * **Base period start year**: the first year of the time period on which you would like percentile thresholds to be calculated (e.g. if the base period is to be 1961-1990, enter 1961). Confused by what this is for? See [Appendix E](#appendixe).
 * **Base period end year**: the last year of the time period on which you would like percentile thresholds to be calculated (e.g. if the base period is to be 1961-1990, enter 1990). Confused by what this is for? See [Appendix E](#appendixe).
 
-Once the above information is entered select the blue *Next* button at the bottom of the screen which will bring you to tab 2.
+Once the above information is entered select the blue *Next* button at the bottom of the screen or select the *2. Check* tab at the top of the screen, both of which will bring you to tab 2.
 
 <img src="images/load_tab1.jpg" alt="drawing" width="1000" height="540"/>
 
 ### 4.3 Check data
 
-Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen which will bring you to tab 3.
+Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen or select the *3. Calculate* tab at the top of the screen, both of which will bring you to tab 3.
 
 <img src="images/check_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
@@ -217,11 +217,11 @@ These climate index parameters are described below. Review these before precedin
 
 * **Custom a custom threshold index** gives the user the option to create their own index based on the number of days crossing a specified threshold for daily maximum temperature (TX), minimum temperature (TN), daily average temperature (TM), diurnal temperature range (DTR) or precipitation (PR). To calculate a custom index, the user must select one of these variables, an operator (<,<=,>,>=) and a threshold constant. For example, selecting TX, the ‘>=’ operator and specifying ‘40’ as a threshold will calculate the number of days where TX is greater than or equal to 40°C, for each year and month. Climpact will output this index as *TXge40*. Operators are abbreviated in text with lt, le, gt and ge for <, <=, > and >=, respectively.
 
-Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. Users may have to scroll down the screen to see this box (see screenshot below). Preview plots will also be shown on the web page. See [section 6](#outputstation) for a description of the output files.
+Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. The settings panel will also be collapsed and preview plots will be shown on the web page. See [section 6](#outputstation) for a description of the output files. If you wish to change any of the settings and calculate the indices again, simply click the grey Settings bar to un-collapse the settings panel.
 
 <img src="images/calculate_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
-**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or tab 4 at the top of the screen to compare the calculated indices to their sector data.
+**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or the *4. Compare* tab at the top of the screen, both of which will bring you to tab 4.
 
 ### 4.5 Sector Data Correlation
 
@@ -334,6 +334,9 @@ Quality control (QC) diagnostic plots are only calculated for station text files
 **VIDEO: Presentation on the QC functionality described in this section.**
 <br>
 [![](http://img.youtube.com/vi/gusIge2bTNk/0.jpg)](http://www.youtube.com/watch?v=gusIge2bTNk "")
+
+<iframe width="420" height="315" src="http://www.youtube.com/watch?v=gusIge2bTNk">
+</iframe>
 
 The *qc* folder contains the following files (where *mystation* refers to the name of the user’s station file) and which are described in in the following sections.
 
