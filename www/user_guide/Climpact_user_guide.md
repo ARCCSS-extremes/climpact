@@ -41,8 +41,6 @@ Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](
 
 * Commission for Climatology experts Glenn McGregor, Christina Koppe and Sari Kovats supported the application of indices for Climate and Health, in particular for heat waves and health.
 
-* This work has also been historically supported by WMO grant SSA 3876-12/REM/CNS and Australian Research Council grants CE110001028... and through funding from the New South Wales Office of the Environment and Heritage. 
-
 <a name="background"></a>
 ## 2. Background to the ET-SCI
 [RETURN TO TOP](#toc)
