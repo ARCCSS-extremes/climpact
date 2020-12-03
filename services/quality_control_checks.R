@@ -60,21 +60,34 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       row.names = FALSE,
       col.names = FALSE)
 
-    if(isLocal) {
-       error_msg <- paste0("You seem to have missing dates. See 'www/output/",
-         metadata$stationName,
-         "/qc/",
-         missingDatesFileName,
-         "' for a list of missing dates. ",
-         "Fill these with observations or missing values (-99.9) before continuing with quality control.")
-    } else {
-       error_msg <- paste0("You seem to have missing dates. See <a href='output/",
-         metadata$stationName,
-         "/qc/",
-         missingDatesFileName,
+# Don't include following isLocal condition because even when local we want a hyperlink to appear when processing
+# a single station. This means that the href HTML code is visible in the batch processing error messages.
+#    if(isLocal) {
+#       error_msg <- paste0("You seem to have missing dates. See 'www/output/",
+#         metadata$stationName,
+#         "/qc/",
+#         missingDatesFileName,
+#         "' for a list of missing dates. ",
+#         "Fill these with observations or missing values (-99.9) before continuing with quality control.")
+#    } else {
+
+#    splitfolders = strsplit(outputFolders[1],"/")
+#    i1 = match("output",outputFolders[1])
+print(outputFolders)
+print(outputFolders$baseFolder)
+split_path <- function(x) if (dirname(x)==x) x else c(basename(x),split_path(dirname(x)))
+splitfolders = rev(split_path(outputFolders$baseFolder))
+print(paste0("Split: ",splitfolders))
+i1=match("output",splitfolders)
+#outpath = file.path(splitfolders[i1:length(splitfolders)])
+if(i1 < length(splitfolders)) { outpath = file.path(splitfolders[i1],splitfolders[i1+1],outputFolders$stationName,"qc",missingDatesFileName) }
+else { outpath = file.path(splitfolders[i1],outputFolders$stationName,"qc",missingDatesFileName) }
+print(paste0("double ARF: ",outpath))
+
+       error_msg <- paste0("You seem to have missing dates. See <a href='",outpath,
          "' target='_blank'>here</a> for a list of missing dates. ",
          "Fill these with observations or missing values (-99.9) before continuing with quality control.")
-    }
+#    }
 
     # skip <- TRUE
     warning(error_msg)
