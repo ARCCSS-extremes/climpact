@@ -178,7 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(shiny)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw">runApp</span>()</a></code></pre></div>
 <p>Climpact should then start in your web browser and you should see the home page as pictured below. From here you can follow the on-screen guidance to calculate the indices, or continue reading below.</p>
-<p><img src="images/home_screen.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/home_screen.jpg" alt="drawing" width="1000" height="540"/></p>
 <h3>4.2 Load data</h3>
 <p>Different functionality in Climpact is accessed via the tabs on the left hand side of the screen. From the home page select <em>Process single station</em> to begin calculating the indices on a station text file. You should then see the following screen which shows4 tabs at the top which highlight the steps to calculate the indices and their correlation to sector data the user may have (this last step is optional).</p>
 <p>The first of the 4 steps is to load your text file into Climpact. To do this, select <em>Browse</em> and upload your station file. <strong>NOTE: NO STATION DATA IS RETAINED BY CLIMPACT AFTER YOU LEAVE THE SITE.</strong></p>
@@ -191,13 +191,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>Base period end year</strong>: the last year of the time period on which you would like percentile thresholds to be calculated (e.g. if the base period is to be 1961-1990, enter 1990). Confused by what this is for? See <a href="#appendixe">Appendix E</a>.</li>
 </ul>
 <p>Once the above information is entered select the blue <em>Next</em> button at the bottom of the screen which will bring you to tab 2.</p>
-<p><img src="images/load_tab1.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/load_tab1.jpg" alt="drawing" width="1000" height="540"/></p>
 <h3>4.3 Check data</h3>
 <p>Tab 2 performs quality control (QC) checks on your data. Click the orange <em>Check data quality</em> button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See <a href="#outputstation">section 6</a> for guidance on how to interpret the QC output. <strong>Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).</strong> Once this is done and you are satisfied no errors exist in your data, select the <em>Next</em> button at the bottom of the screen which will bring you to tab 3.</p>
-<p><img src="images/check_tab2.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/check_tab2.jpg" alt="drawing" width="1000" height="540"/></p>
 <h3>4.4 Calculate climate indices</h3>
 <p>In tab 3 you can change the title that will appear on each plots as well as several parameters affecting how some indices are calculated, as shown in the screenshot below.</p>
-<p><img src="images/calculate_tab1.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/calculate_tab1.jpg" alt="drawing" width="1000" height="540"/></p>
 <p>These climate index parameters are described below. Review these before preceding. The definitions of each index can be found in <a href="#appendixa">Appendix A</a>.</p>
 <ul>
 <li><p><strong>d for WSDId Days</strong> sets the number of days which need to occur consecutively with a TX &gt; 90th percentile in order to be counted in the WSDId index. <em>d</em> must be at least 1 and no greater than 10.</p></li>
@@ -210,7 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p><strong>Custom a custom threshold index</strong> gives the user the option to create their own index based on the number of days crossing a specified threshold for daily maximum temperature (TX), minimum temperature (TN), daily average temperature (TM), diurnal temperature range (DTR) or precipitation (PR). To calculate a custom index, the user must select one of these variables, an operator (&lt;,&lt;=,&gt;,&gt;=) and a threshold constant. For example, selecting TX, the ‘&gt;=’ operator and specifying ‘40’ as a threshold will calculate the number of days where TX is greater than or equal to 40°C, for each year and month. Climpact will output this index as <em>TXge40</em>. Operators are abbreviated in text with lt, le, gt and ge for &lt;, &lt;=, &gt; and &gt;=, respectively.</p></li>
 </ul>
 <p>Once the above input boxes have been reviewed and changed where necessary, select the orange <em>Calculate Indices</em> button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. Users may have to scroll down the screen to see this box (see screenshot below). Preview plots will also be shown on the web page. See <a href="#outputstation">section 6</a> for a description of the output files.</p>
-<p><img src="images/calculate_tab2.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/calculate_tab2.jpg" alt="drawing" width="1000" height="540"/></p>
 <p><strong>This is the final step in calculating the Climpact indices.</strong> However, if the user has sector data in the <a href="#appendixb">appropriate format</a> then they can select the blue “Next” button or tab 4 at the top of the screen to compare the calculated indices to their sector data.</p>
 <h3>4.5 Sector Data Correlation</h3>
 <p>Climpact can calculate and plot correlations between annual sector data the user has and the indices calculated in tab 3. Use the ‘4. Compare’ tab after you have calculated your indices to do this. Currently, Climpact only calculates correlations for annual sector data. Also note that the indices must have been calculated in the current session of Climpact. If you have closed Climpact and wish to calculate correlations with sector data, you must repeat the process described in sections 4.2 to 4.4 (tabs 1, 2 and 3).</p>
@@ -337,7 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>When calculating the indices for many files, errors are bound to occur. When Climpact encounters an error with a station file during batch processing, the error will be recorded in a text file stored in <em>www/output/</em> using the station name appended with <em>.error.txt</em>. A list of all error and missing date files contained in <em>www/output/</em> will be printed to the terminal after batch processing is complete. These <em>*.error.txt</em> files should be examined and any errors rectified. If there was an error for a particular station then it is likely the indices did not get calculated for that station.</p>
 <h3>5.3 Using the web interface to process multiple stations</h3>
 <p>The web interface can be used to calculate the Climpact indices for multiple stations. This utilises the same functionality as the <em>climpact.batch.stations.r</em> script but may prove less flexible for complex workflows. To use the web interface, first select <em>Batch process stations</em> from the left hand side of the Climpact home page.</p>
-<p><img src="images/batch1.jpg" alt="drawing" width="1000"/></p>
+<p><img src="images/batch1.jpg" alt="drawing" width="1000" height="540"/></p>
 <p>You will then be presented with a screen to provide several inputs:</p>
 <ol>
 <li>The first dialogue box allows you to select your metadata file, the details of which are described in section 5.1 above.</li>
@@ -403,10 +403,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>mystation_tminPLOT.pdf <br> mystation_tmaxPLOT.pdf <br> mystation_dtrPLOT.pdf <br> mystation_prcpPLOT.pdf</strong></p>
 <p>These files contain simple plots of the daily time-series of minimum temperature, maximum temperature, diurnal temperature range and precipitation, respectively. This allows the user to view the data and identify obvious problems by eye, such as missing data (indicated by red circles) or unrealistic values.</p>
 <p>Below is an example for tmax.</p>
-<p><img src="images/tmax_plot.png" alt="drawing" width="1000"/></p>
+<p><img src="images/tmax_plot.png" alt="drawing" width="1000" height="440"/></p>
 <p><strong>mystation_boxes.pdf</strong></p>
 <p>This file identifies potential outliers based on the interquartile (IQR). The IQR is defined as the difference between the 75th (p75) and the 25th (p25) percentiles. As can be seen in the example below, mystation_boxes.pdf contains boxplots of temperature and precipitation data flagging as outliers (round circles) all those temperature values falling outside a range defined by p25 – 3 interquartile ranges (lower bound) and p75 + 3 interquartile ranges (upper bound). For precipitation, 5 IQR are used.</p>
-<p><img src="images/QC_boxes.png" alt="drawing" width="1000"/></p>
+<p><img src="images/QC_boxes.png" alt="drawing" width="1000" height="800"/></p>
 <p>The values identified by this graphical quality control are sent to a .csv file (<em>mystation_outliers.csv</em> for our example station). This file lists the outliers grouped under the corresponding variable and the <strong>UP</strong>per or <strong>LOW</strong>er margins of the IQR, depending on whether the outlier is a high or low outlier, respectively. An example of the contents of this file are shown below. Under **Prec up* appear those values that represent a precipitation outlier; under <em>TX up</em> are those that represent a maximum temperature higher than p75+3*IQR; under <em>TX low</em> are outliers that represent an observation lower than p25-3*IQR. The explanation given for TX, also applies to TN and DTR. The advantage of this approach is that the detection of this percentile based outliers is not affected by the presence of larger outliers, so ONE RUN OF THE QC PROCESS IS ENOUGH.</p>
 <pre><code>Date    Prec     TX       TN       DTR
 Prec up                                               
@@ -431,10 +431,10 @@ DTR up
 DTR low</code></pre>
 <p><strong>mystation_boxseries.pdf</strong></p>
 <p>The graphic file boxseries.pdf (which does not have a numerical counterpart) produces annual boxplots. This file is useful to have a panoramic view of the series and be alerted of parts of the series which can be problematic. An example of this file is shown below.</p>
-<p><img src="images/QC_boxseries.png" alt="drawing" width="1000"/></p>
+<p><img src="images/QC_boxseries.png" alt="drawing" width="1000" height="800"/></p>
 <p><strong>mystation_rounding.pdf</strong></p>
 <p>This file looks at rounding problems by plotting the frequency of each decimal value. It shows how frequently each of the 10 possible values is used at a precision of 1 decimal place (i.e .0 to .9). It is not uncommon that .0 and .5 are more frequent at stations simply because of human rounding (there is no statistical reason for these values to occur more often!).</p>
-<p><img src="images/QC_rounding.png" alt="drawing" width="1000"/></p>
+<p><img src="images/QC_rounding.png" alt="drawing" width="1000" height="800"/></p>
 <p><strong>mystation_tn_flatline.csv</strong> <br> <strong>mystation_tx_flatline.csv</strong></p>
 <p>The mystation_tn_flatline.csv and mystation_tx_flatline.csv files report occurrences of 4 or more equal consecutive values in, respectively, TX and TN. A line for each sequence of 4 or more consecutive equal values is generated. In the example below all sequences are 4 values long (i.e. each corresponding value has been repeated 3 extra times). The date specified belongs to the end of the sequence.</p>
 <pre><code>Date    TX       Number of duplicates
@@ -478,9 +478,9 @@ DTR low</code></pre>
 <p>Climpact can also calculate basic statistics between the extremes indices it calculates and user-provided sector data. <a href="#calculatesingle">Section 4</a> describes how to calculate sector statistics. Refer to <a href="#appendixb">Appendix B</a> for guidance on how sector data must be formatted. Currently, the sector data must be annual.</p>
 <p>Specifically, Climpact calculates correlations between each index and the user’s sector data, as well as regressions of the sector data onto the minimum, maximum and average daily temperatures.</p>
 <p>Below is an example of the bar chart produced which shows the correlation coefficient between Climpact indices and sector data. Precipitation-related indices are represented by blue bars and temperature-related indices by red bars. Coefficients are reported on each bar.</p>
-<p><img src="images/sydney_observatory_hill_1936-2015_index-sector_correlation_detrended.wheat.yield.png" alt="drawing" width="1000"/></p>
+<p><img src="images/sydney_observatory_hill_1936-2015_index-sector_correlation_detrended.wheat.yield.png" alt="drawing" width="1000" height="600"/></p>
 <p>Below is an example of a regression plot between maximum temperature and sector data. R-squared values and regression line equations are also shown. Regardless of whether the variable being regressed onto is the daily minimum, maximum or average, all of this data is averaged annually in order to perform the regression.</p>
-<p><img src="images/sydney_observatory_hill_1936-2015_corr_tmax_detrended.wheat.yield.png" alt="drawing" width="1000"/></p>
+<p><img src="images/sydney_observatory_hill_1936-2015_corr_tmax_detrended.wheat.yield.png" alt="drawing" width="1000" height="600"/></p>
 <p><a name="calculatenetcdf"></a></p>
 <h2>7. Calculating the indices from netCDF files</h2>
 <p><a href="#toc">RETURN TO TOP</a></p>
@@ -506,7 +506,7 @@ DTR low</code></pre>
 <h2>8. Examining output for netCDF files</h2>
 <p><a href="#toc">RETURN TO TOP</a></p>
 <p>NetCDF files require special software for viewing and manipulating. We recommend using <a href="https://www.giss.nasa.gov/tools/panoply/">Panoply</a> for easily viewing netCDF output (and can also generate animations), it is freely available and works under Linux, MacOS and Windows. To access and manipulate netCDF files requires a programming language such as R (which you already have installed!), Python, Matlab or many others. A visualisation from Panoply of the Standardised Precipitation-Evapotranspiration Index (SPEI) calculated over Australia is shown below.</p>
-<p><img src="images/SPEI.png" alt="drawing" width="600"/></p>
+<p><img src="images/SPEI.png" alt="drawing" width="600" height="400"/></p>
 <p><a name="appendixa"></a></p>
 <h2>Appendix A: Tables of Climpact indices</h2>
 <p><a href="#toc">RETURN TO TOP</a></p>
