@@ -35,7 +35,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
     if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
-      return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct.")))
+	return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct by refreshing this web page and entering a new base period in step 1.")))
     }
   }
 
