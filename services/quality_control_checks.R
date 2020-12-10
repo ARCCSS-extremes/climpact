@@ -150,9 +150,11 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   ##############################
   # Call the ExtraQC functions.
   print("TESTING DATA, PLEASE WAIT...", quote = FALSE)
-
   temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
-  file.copy(user_file, temp.file)
+
+  # This is a bit silly. We are writing out data to a file for temporary reading by the QC functions, when really the QC functions should just be passed the 
+  # already "cleaned" data as a variable. This will do for now.
+  write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
 
   errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 

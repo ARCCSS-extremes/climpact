@@ -77,14 +77,14 @@ read_user_file <- function(user_file_path) {
   sub <- tryCatch({      
     raw.table = readLines(user_file_path)
     newtext = gsub(",", "\t", raw.table)
-    cat(newtext, file = temp_filename, sep = "\n")    
+    cat(newtext, file = temp_filename, sep = "\n")
   },
   error = function(cond) {
     readUserFileError(paste("Error creating temporary file",cond$message), cond)
   })
 
   out <- tryCatch({
-    data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6))
+    data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6),strip.white=TRUE)
     # Replace -99.9 data with NA
     if (!is.null(data)) {
       print(str(data))
