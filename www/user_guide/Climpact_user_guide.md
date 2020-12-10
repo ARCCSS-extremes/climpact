@@ -635,13 +635,14 @@ Zhang X, Alexander L, Hegerl G C, Jones P, Tank A K, Peterson T C, Trewin B and 
 Users should use the sample input file provided with Climpact as a template for preparing their own data (sydney_observatory_hill_1936-2015.txt). Station text files have the following requirements:
 
 1. They must be an ASCII text file.
-1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. NOTE: PR units are in millimeters and TX/TN units are degrees Celsius.
-1. No column headings should be present.
-1. There should be one row for each day in the record.
+1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. *Year*, *Month* and *Day* must be integers.
+1. PR units are in millimeters and TX/TN units are degrees Celsius.
+1. Column headings can be present but must be strings (i.e. not numbers).
+1. There should be a separate row for each day in the record.
 1. Any missing data must be coded as -99.9 and not left blank.
 1. Days must be in chronological order.
-1. Missing dates are allowed, their corresponding temperature and precipitation values will be assumed missing (i.e. -99.9).
-1. The data must be space or comma delimited.
+1. Missing days are allowed, their corresponding temperature and precipitation values will be assumed missing (i.e. -99.9).
+1. The data must be tab or comma delimited.
 1. Decimal places must be denoted by the period character, not a comma (i.e. "32.4" not "32,4").
 
 See below for an example of 5 days from a station text file. There is no PR data for these 5 days so they are encoded as -99.9. See question 3 of [Appendix E](#appendixe) for a discussion on the number of missing values allowed by Climpact.

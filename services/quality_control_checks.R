@@ -47,7 +47,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   user.date.series <- as.Date(paste(user_data$year, user_data$month, user_data$day, sep = "-"))
   missing.dates <- date.series[!date.series %in% user.date.series]
 
-  # Fill in missing values and remake the date related columns in the metadata
+  # ... and remake the date related columns in the metadata
   dffull=data.frame(dates=date.series)
   l=merge(dffull,user_data,by="dates",all.x=TRUE)
   user_data=l

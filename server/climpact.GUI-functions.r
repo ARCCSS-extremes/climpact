@@ -84,7 +84,17 @@ read_user_file <- function(user_file_path) {
   })
 
   out <- tryCatch({
-    data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6),strip.white=TRUE)
+    # see if we should ignore first row by checking the variable type of the first row of the first column. This should be either an integer
+    # representing the first year or a column title like "Year" or similar.
+    firstline=read.table(file = temp_filename,header = F,nrows = 1,stringsAsFactors = FALSE)
+    if(typeof(firstline[[1]])=="integer") {
+	# then no header is assumed
+	data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6),strip.white=TRUE)
+    } else { 
+	# assume a header is present
+	data <- read.table(temp_filename, header = F, col.names = c("year", "month", "day", "prcp", "tmax", "tmin"), colClasses = rep("real", 6),strip.white=TRUE,skip=1)
+    }
+
     # Replace -99.9 data with NA
     if (!is.null(data)) {
       print(str(data))
