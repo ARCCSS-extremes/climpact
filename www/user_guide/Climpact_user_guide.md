@@ -638,8 +638,9 @@ Users should use the sample input file provided with Climpact as a template for 
 1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. NOTE: PR units are in millimeters and TX/TN units are degrees Celsius.
 1. No column headings should be present.
 1. There should be one row for each day in the record.
-1. Days must be in chronological order and no missing dates are allowed.
 1. Any missing data must be coded as -99.9 and not left blank.
+1. Days must be in chronological order.
+1. Missing dates are allowed, their corresponding temperature and precipitation values will be assumed missing (i.e. -99.9).
 1. The data must be space or comma delimited.
 1. Decimal places must be denoted by the period character, not a comma (i.e. "32.4" not "32,4").
 
