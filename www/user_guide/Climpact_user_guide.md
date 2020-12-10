@@ -219,7 +219,7 @@ Once the above input boxes have been reviewed and changed where necessary, selec
 
 <img src="images/calculate_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
-**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or the *4. Compare* tab at the top of the screen, both of which will bring you to tab 4.
+**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue *Next* button or the *4. Compare* tab at the top of the screen, both of which will bring you to tab 4.
 
 ### 4.5 Sector Data Correlation
 
