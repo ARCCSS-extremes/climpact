@@ -574,7 +574,7 @@ To calculate all of the Climpact indices time-series of daily minimum temperatur
 |HDDheatn|Heating Degree Days|Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)|A measure of the energy demand needed to heat a building|degree-days|Ann|H|
 |CDDcoldn|Cooling Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of the energy demand needed to cool a building|degree-days|Ann|H|
 |GDDgrown|Growing Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of heat accumulation to predict plant and animal developmental rates|degree-days|Ann|H, AFS|
-|CDD|Consecutive Dry Days|Maximum number of consecutive dry days (when PR < 1.0 mm)|Longest dry spell|days|Mon/Ann|H, AFS, WRH|
+|CDD|Consecutive Dry Days|Maximum number of consecutive dry days (when PR < 1.0 mm)|Longest dry spell|days|Ann|H, AFS, WRH|
 |R20mm|Number of very heavy rain days|Number of days when PR >= 20 mm|Days when rainfall is at least 20mm|days|Mon/Ann|AFS, WRH|
 |PRCPTOT|Annual total wet-day PR|Sum of daily PR >= 1.0 mm|Total wet-day rainfall|mm|Mon/Ann|AFS, WRH|
 |R95pTOT|Contribution from very wet days|100*r95p / PRCPTOT|Fraction of total wet-day rainfall that comes from very wet days|%|Ann|AFS, WRH|
@@ -636,10 +636,11 @@ Users should use the sample input file provided with Climpact as a template for 
 
 1. They must be an ASCII text file.
 1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. NOTE: PR units are in millimeters and TX/TN units are degrees Celsius.
+1. No column headings should be present.
 1. There should be one row for each day in the record.
 1. Days must be in chronological order and no missing dates are allowed.
 1. Any missing data must be coded as -99.9 and not left blank.
-1. The data must be space delimited (e.g. each element separated by one or more spaces).
+1. The data must be space or comma delimited.
 1. Decimal places must be denoted by the period character, not a comma (i.e. "32.4" not "32,4").
 
 See below for an example of 5 days from a station text file. There is no PR data for these 5 days so they are encoded as -99.9. See question 3 of [Appendix E](#appendixe) for a discussion on the number of missing values allowed by Climpact.
