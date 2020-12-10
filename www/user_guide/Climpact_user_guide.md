@@ -132,7 +132,7 @@ Climpact can be downloaded from the [Github website](https://github.com/ARCCSS-e
 
 ### 3.3 Installing Climpact
 
-Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install the R packages that Climpact requires. This only needs to be completed once. Watch the video below for a demonstration of installing Climpact in Windows 10, or follow the steps outlined below.
+Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install the R packages that Climpact requires. This only needs to be completed once. 
 
 **In Windows** open R and select *File->Change dir...* and select the *climpact-master* directory created in section 3.2. Then at the R command line type ```source('installers/climpact.master.installer.r').```
 
@@ -327,7 +327,7 @@ When calculating indices on station text files Climpact creates six sub-director
 
 ### 6.1 Quality control output (the *qc* directory)
 
-Quality control (QC) diagnostic plots are only calculated for station text files (they are **not** calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors are detected. Furthermore, a separate category of QC, that of homogeneity, is relevant to station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be aware of the quality of their data before using Climpact and that if necessary they perform additional checks for homogeneity after running the QC checks performed by Climpact (as described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and also built on the R programming language. See [section 2.5](#homogeneity) for more insight into the importance of homogeneity. The QC plots described in this section are also described in the video presentation below.
+Quality control (QC) diagnostic plots are only calculated for station text files (they are **not** calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors are detected. Furthermore, a separate category of QC, that of homogeneity, is relevant to station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be aware of the quality of their data before using Climpact and that if necessary they perform additional checks for homogeneity after running the QC checks performed by Climpact (as described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and also built on the R programming language. See [section 2.5](#homogeneity) for more insight into the importance of homogeneity. The QC plots described in this section are also described in the video presentation below (based on a slightly older version of Climpact, but the explanations still apply).
 
 **VIDEO: Presentation on the QC functionality described in this section.**
 <br>
