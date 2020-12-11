@@ -55,13 +55,6 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
    
 <br/>
 
-Video tutorial on how to install R in Windows
--> https://www.youtube.com/watch?v=a-vnLME6hRQ&t=26s
-
-Video tutorial on how to install Climpact in Windows
--> https://www.youtube.com/watch?v=Q7ERKmnpYvo&t=3s
-
-
 ##  How do I start Climpact once I've installed it on my computer?
 
 **In Windows**, open R and select "File->Change dir..." and select the 
@@ -76,10 +69,6 @@ runApp()
 ```
 
 Follow the on-screen instructions to calculate the Climpact indices.
-
-Video tutorial on calculating indices from a station text file.  
--> 
-
 
 ##  ADVANCED: Calculate indices from netCDF data (Linux/MacOS only)
 
