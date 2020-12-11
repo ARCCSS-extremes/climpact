@@ -1,0 +1,113 @@
+{
+  "input": {
+    "process_single_station": "process_single_station_step_1",
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "ui-baseEnd": 2010,
+    "ui-baseEndThresh": 2010,
+    "ui-baseStart": 1991,
+    "ui-baseStartThresh": 1991,
+    "ui-batchData": null,
+    "ui-batchMeta": null,
+    "ui-btn_next_step_1": 0,
+    "ui-btn_next_step_2": 0,
+    "ui-btn_next_step_3": 0,
+    "ui-calculateBatchIndices": 0,
+    "ui-calculateGriddedIndices": 0,
+    "ui-calculateGriddedThresholds": 0,
+    "ui-calculateIndices": 0,
+    "ui-calculateSectorCorrelation": 0,
+    "ui-cdd": 18,
+    "ui-collapseStep3": "Settings",
+    "ui-collapseStep4": "Settings",
+    "ui-csdin": 1,
+    "ui-custOperation": ">",
+    "ui-custThreshold": 0,
+    "ui-custVariable": "TN",
+    "ui-dataFile": null,
+    "ui-dataFiles": null,
+    "ui-dataFilesThresh": null,
+    "ui-detrendCheck": true,
+    "ui-doQualityControl": 0,
+    "ui-ehfDefinition": "PA13",
+    "ui-endYear": 2000,
+    "ui-endYearBatch": 2010,
+    "ui-gdd": 10,
+    "ui-hdd": 18,
+    "ui-indicesToCalculate": "",
+    "ui-instituteID": "",
+    "ui-instituteIDThresh": "",
+    "ui-instituteName": "",
+    "ui-instituteNameThresh": "",
+    "ui-maxVals": "10",
+    "ui-nCores": 1,
+    "ui-nCoresBatch": 1,
+    "ui-nCoresThresh": 1,
+    "ui-outputFileNamePattern": "var_daily_climpact.sample_historical_NA_1991-2010.nc",
+    "ui-outputFileNameThresh": "sample_data.thresholds.1991-2010.nc",
+    "ui-plotTitle": "",
+    "ui-prName": "precip",
+    "ui-prNameThresh": "precip",
+    "ui-rnnmm": 30,
+    "ui-rxnday": 3,
+    "ui-sectorDataFile": null,
+    "ui-sectorPlotTitle": "",
+    "ui-spei": 24,
+    "ui-startYear": 1971,
+    "ui-startYearBatch": 1970,
+    "ui-stationLat": 0,
+    "ui-stationLon": 0,
+    "ui-stationName": "",
+    "ui-thresholdFiles": null,
+    "ui-tnName": "tmin",
+    "ui-tnNameThresh": "tmin",
+    "ui-txName": "tmax",
+    "ui-txNameThresh": "tmax",
+    "ui-txtn": 2,
+    "ui-wsdin": 1,
+    "ui-y_axis_label": ""
+  },
+  "output": {
+    "griddedMenuItem": null,
+    "ui-batchLink": "",
+    "ui-indexCalculationErrors": "",
+    "ui-indexCalculationStatus": "Not Started",
+    "ui-loadDataError": "<div class= 'alert alert-info' role='alert'> <span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'><\/span> <span class='sr-only'>Info<\/span> Please load station data.<\/div>",
+    "ui-ncdfCalculationStatusText": "Not Started",
+    "ui-qcLink": "",
+    "ui-qcStatus": "Not Started",
+    "ui-sectorCorrelationError": "",
+    "ui-sectorCorrelationLink": "",
+    "ui-sectorCorrelationStatus": "Not Started",
+    "ui-slickRQC": {
+      "x": [
+        {
+          "obj": "<div class=\"slickRQCMain_bump_633972520008683\"><\/div>",
+          "divName": "slickRQCMain_bump_633972520008683",
+          "slideh": 600,
+          "slidew": "95%",
+          "slickOpts": {
+            "centerMode": true,
+            "focusOnSelect": true,
+            "initialSlide": 0,
+            "slidesToShow": 1,
+            "slidesToScroll": 1
+          }
+        }
+      ],
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+
+      ]
+    },
+    "ui-thresholdCalculationStatusText": "Not Started"
+  },
+  "export": {
+
+  }
+}
