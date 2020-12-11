@@ -772,15 +772,12 @@ For each of the above three HW definitions there are five HW Aspects that are ca
 * HW Magnitude (HWM): The mean temperature of HW's defined by HWN. Means across the HW days in each HW event are calculated prior to a final mean being taken.
 * HW Amplitude (HWA): The peak daily value in the hottest HW (defined as the HW with the highest mean daily temperature).
 
-### D.2 Notes regarding calculations
+### D.2 Notes regarding interpretation of heatwave indices
 
-When calculating HWs, leap days are ignored and deleted from data.
-
-The year of a HW season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
-
-If there are no HWs in a given year, then HWN and HWF will equal 0 and all other HW aspects will be set to missing.
-
-For netCDF data, any values calculated over ocean grid cells should be ignored by the user.
+* The year of a heatwave season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
+* If there are no heatwaves in a given year, then HWN and HWF will equal 0 and the HWD, HWM and HWA heatwave aspects will be set to missing. If this occurs for all years in station data then no plots will be created for HWD, HWM and HWA since there is no valid data for the entire time-series.
+* For netCDF data, any values calculated over ocean grid cells should be ignored by the user.
+* When calculating heatwaves, leap days are ignored and deleted from data.
 
 ### D.3 The Excess Heat Factor
 
