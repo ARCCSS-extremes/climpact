@@ -12,14 +12,19 @@
 ##  What is Climpact?
   
 Climpact is an R package that calculates [indices of daily climate extremes](https://climpact-sci.org/indices/). It can read 
-data for a single site (e.g. a weather station) in the form of a text file or gridded data (e.g. from a climate model) in the form of netCDF files. This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium ([PCIC](https://www.pacificclimate.org/)). 
+data for a single site (e.g. a weather station) in the form of a text file, or for gridded data (e.g. from a climate model) in the form of netCDF files. This software directly builds off the R packages climdex.pcic and climdex.pcic.ncdf, developed by the Pacific Climate Impacts Consortium ([PCIC](https://www.pacificclimate.org/)). 
 
 *If you want to calculate these indices from text files then you **DO NOT** need to install this software, instead go to the [Climpact website](https://climpact-sci.org/get-started/) to calculate these indices online.*
   
   
 ##  Where can I get Climpact?
   
-When calculating the indices for station data Climpact can be accessed [online](https://climpact-sci.org/get-started/). Climpact is also available for download at [this github site](https://github.com/ARCCSS-extremes/climpact) for users who also wish to calculate the indices on gridded data. The software runs on Windows, Linux and MacOS, though only on Linux and MacOS for gridded calculations.
+When calculating the indices for station data Climpact can be accessed [online](https://climpact-sci.org/get-started/). Climpact is also available for download at [this github site](https://github.com/ARCCSS-extremes/climpact) for users who wish to calculate the indices on gridded data or who wish to process station text files locally. The software runs on Windows, Linux and MacOS, though only on Linux and MacOS for gridded calculations.
+
+
+## Documentation
+
+See the [Climpact user guide](https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md) for detailed instructions on using Climpact.
 
 
 ## How do I install Climpact?
@@ -58,10 +63,9 @@ If you do not wish to use the [online version](https://climpact-sci.org/get-star
 ##  How do I start Climpact once I've installed it on my computer?
 
 **In Windows**, open R and select "File->Change dir..." and select the 
-climpact-master directory created when installing Climpact. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created in
-step 1, then open R (by typing ```R``` at the command line). 
+climpact-master directory created when installing Climpact. **In Linux/MacOS**, open a terminal and navigate to the climpact-master directory created when installing Climpact, then open R (by typing ```R``` at the command line). 
 
-Then run the following two commands:
+Once inside R, run the following commands:
 
 ```
 library(shiny) 
@@ -87,8 +91,8 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 ```
 
    Depending on the size of your data and the number of cores selected, this process
-   can take anywhere from one to effectively an infinite number of hours. As a
-   yard stick, for a 20 year global ~1x1 degree dataset and a computer with 2 cores you should assign ~30 hours to begin with.
+   can take anywhere from one hour to weeks to complete (if you don't have appropriate resources). As a
+   yard stick, for a 20 year global ~1x1 degree dataset and a computer with 2 cores you should assign ~30 hours to begin with. Then adjust your expectations from there.
 
 ### Notes on netCDF file format:
 * Files must be CF compliant.
@@ -120,13 +124,14 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 2) From the terminal run the following command, replacing the flags
    with: the folder where your station text files are kept, a metadata file
    containing the file name of each station text file along with relevant 
-   station information (see the sample provided), the beginning and end years of the base period, and
+   station information (see the [sample](https://github.com/ARCCSS-extremes/climpact/raw/master/www/sample_data/climpact.sample.batch.metadata.txt) provided), the beginning and end years of the base period, and
    the number of cores to use in processing, respectively. See the user guide
    for more information.
 
 ```
    Rscript climpact.batch.stations.r ./www/sample_data/ ./www/sample_data/climpact.sample.batch.metadata.txt 1971 2000 2
 ```
+
 
 ##  Common problems
 
@@ -135,14 +140,11 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 * If you are trying to use the wrapper scripts in Windows anyway, ensure your PATH
   environment variable is changed to include the installation directory of R.
 
-##  Documentation
-
-Documentation exists in the form of this README file, the [Climpact
-user guide](https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md) as well as the source code.
 
 ## Having trouble?
 
 Search and/or submit an [issue](https://github.com/ARCCSS-extremes/climpact/issues).
+
 
 ##  Contact
   
