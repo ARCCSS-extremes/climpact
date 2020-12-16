@@ -1,0 +1,33 @@
+{
+  "input": {
+    "process_single_station": "process_single_station_step_3",
+    "ui-baseEnd": 2010,
+    "ui-baseStart": 1991,
+    "ui-dataFile": {
+      "name": [
+        "sydney_observatory_hill_1936-2015.txt"
+      ],
+      "size": [
+        676451
+      ],
+      "type": [
+        "text/plain"
+      ],
+      "datapath": [
+        "0.txt"
+      ]
+    },
+    "ui-stationLat": 0,
+    "ui-stationLon": 0,
+    "ui-stationName": "sydney_observatory_hill_1936-2015"
+  },
+  "output": {
+    "ui-indexCalculationErrors": "",
+    "ui-indexCalculationStatus": "Not Started",
+    "ui-qcLink": "<b>Evaluate Data Quality<\/b> <p>Please view the quality control output described below and carefully evaluate before continuing. <br />Refer to  <a target=\"_blank\" href=https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md#outputstation>section 6<\/a>  of the  <a target=\"_blank\" href=https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md#toc>Climpact User Guide<\/a>  for help.<br /> <b> Quality control directory: C:/Users/jonat/source/repos/UNSW/climpact/www/output/sydney_observatory_hill_1936-2015/qc<\/b> <\/p>",
+    "ui-qcStatus": "Done",
+    "ui-sectorCorrelationError": "",
+    "ui-sectorCorrelationLink": "",
+    "ui-sectorCorrelationStatus": "Not Started"
+  }
+}
