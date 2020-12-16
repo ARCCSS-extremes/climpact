@@ -1,7 +1,15 @@
-3.0.0		XX December 2020
-* MAJOR UPDATE: Shiny interface is finally released.
+3.0.0		17 December 2020
+* MAJOR UPDATE: Shiny interface finally released and instance deployed to https://ccrc-extremes.shinyapps.io/climpact/.
+* Missing dates allowed in station input files (i.e. rows in text file can be missing). These dates will be treated as missing values.
+* Both comma and tab delimiters allowed in station text files.
+* Column names in station text files are allowed (and will be ignored).
+* CDD/CWD changed to annual only indices.
+* Station trends are now Sens slope and report the 95% confidence intervals.
+* Removed *thres_spei.csv since only station values were being reported.
+* QC plots now stored in a single .pdf file with titles for each plot type.
 * When insufficient data exists for quantile calculations the heatwave aspects HWN and HWF now show up as NA values. Whereas before they were zero which is nonsensical. 
   This means plots are no longer created for these heatwave aspects, which is the correct behaviour. Thanks to Guido from Rome.
+* Thanks to Jorge Vazquez-Aguirre, Enric Aguilar, Tosi NAKAEGAWA for various feedback.
 
 1.2.8		3 February 2020
 * Fixed 2D coordinate variables not always writing out correctly to netCDF.

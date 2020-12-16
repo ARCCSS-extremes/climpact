@@ -41,8 +41,6 @@ Visit the Climpact [website](https://climpact-sci.org/) and [Github repository](
 
 * Commission for Climatology experts Glenn McGregor, Christina Koppe and Sari Kovats supported the application of indices for Climate and Health, in particular for heat waves and health.
 
-* This work has also been historically supported by WMO grant SSA 3876-12/REM/CNS and Australian Research Council grants CE110001028... and through funding from the New South Wales Office of the Environment and Heritage. 
-
 <a name="background"></a>
 ## 2. Background to the ET-SCI
 [RETURN TO TOP](#toc)
@@ -134,7 +132,7 @@ Climpact can be downloaded from the [Github website](https://github.com/ARCCSS-e
 
 ### 3.3 Installing Climpact
 
-Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install the R packages that Climpact requires. This only needs to be completed once. Watch the video below for a demonstration of installing Climpact in Windows 10, or follow the steps outlined below.
+Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install the R packages that Climpact requires. This only needs to be completed once. 
 
 **In Windows** open R and select *File->Change dir...* and select the *climpact-master* directory created in section 3.2. Then at the R command line type ```source('installers/climpact.master.installer.r').```
 
@@ -183,13 +181,13 @@ After selecting your station file, enter the following information:
 * **Base period start year**: the first year of the time period on which you would like percentile thresholds to be calculated (e.g. if the base period is to be 1961-1990, enter 1961). Confused by what this is for? See [Appendix E](#appendixe).
 * **Base period end year**: the last year of the time period on which you would like percentile thresholds to be calculated (e.g. if the base period is to be 1961-1990, enter 1990). Confused by what this is for? See [Appendix E](#appendixe).
 
-Once the above information is entered select the blue *Next* button at the bottom of the screen which will bring you to tab 2.
+Once the above information is entered select the blue *Next* button at the bottom of the screen or select the *2. Check* tab at the top of the screen, both of which will bring you to tab 2.
 
 <img src="images/load_tab1.jpg" alt="drawing" width="1000" height="540"/>
 
 ### 4.3 Check data
 
-Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen which will bring you to tab 3.
+Tab 2 performs quality control (QC) checks on your data. Click the orange *Check data quality* button and wait for the checks to be performed. Once this is done a slideshow of images previewing the QC results is presented and the user may scroll through these. High resolution versions of these images, along with accompanying .csv files, can be downloaded from the blue text box on the right side of the screen. See [section 6](#outputstation) for guidance on how to interpret the QC output. **Once all QC output has been examined, if any changes are required to the station text file these should be made and the modified file reloaded into Climpact (tab 1) and the QC checks performed and checked again (tab 2).** Once this is done and you are satisfied no errors exist in your data, select the *Next* button at the bottom of the screen or select the *3. Calculate* tab at the top of the screen, both of which will bring you to tab 3.
 
 <img src="images/check_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
@@ -217,11 +215,11 @@ These climate index parameters are described below. Review these before precedin
 
 * **Custom a custom threshold index** gives the user the option to create their own index based on the number of days crossing a specified threshold for daily maximum temperature (TX), minimum temperature (TN), daily average temperature (TM), diurnal temperature range (DTR) or precipitation (PR). To calculate a custom index, the user must select one of these variables, an operator (<,<=,>,>=) and a threshold constant. For example, selecting TX, the ‘>=’ operator and specifying ‘40’ as a threshold will calculate the number of days where TX is greater than or equal to 40°C, for each year and month. Climpact will output this index as *TXge40*. Operators are abbreviated in text with lt, le, gt and ge for <, <=, > and >=, respectively.
 
-Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. Users may have to scroll down the screen to see this box (see screenshot below). Preview plots will also be shown on the web page. See [section 6](#outputstation) for a description of the output files.
+Once the above input boxes have been reviewed and changed where necessary, select the orange *Calculate Indices* button. Calculating the indices normally takes 1 - 2 minutes. Once this is done a blue text box will appear on the right with a link to the created files. The settings panel will also be collapsed and preview plots will be shown on the web page. See [section 6](#outputstation) for a description of the output files. If you wish to change any of the settings and calculate the indices again, simply click the grey Settings bar to un-collapse the settings panel.
 
 <img src="images/calculate_tab2.jpg" alt="drawing" width="1000" height="540"/>
 
-**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue "Next" button or tab 4 at the top of the screen to compare the calculated indices to their sector data.
+**This is the final step in calculating the Climpact indices.** However, if the user has sector data in the [appropriate format](#appendixb) then they can select the blue *Next* button or the *4. Compare* tab at the top of the screen, both of which will bring you to tab 4.
 
 ### 4.5 Sector Data Correlation
 
@@ -329,7 +327,7 @@ When calculating indices on station text files Climpact creates six sub-director
 
 ### 6.1 Quality control output (the *qc* directory)
 
-Quality control (QC) diagnostic plots are only calculated for station text files (they are **not** calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors are detected. Furthermore, a separate category of QC, that of homogeneity, is relevant to station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be aware of the quality of their data before using Climpact and that if necessary they perform additional checks for homogeneity after running the QC checks performed by Climpact (as described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and also built on the R programming language. See [section 2.5](#homogeneity) for more insight into the importance of homogeneity. The QC plots described in this section are also described in the video presentation below.
+Quality control (QC) diagnostic plots are only calculated for station text files (they are **not** calculated for netCDF files). While the QC checks performed by Climpact are reasonably extensive, they do not guarantee that all errors are detected. Furthermore, a separate category of QC, that of homogeneity, is relevant to station data and Climpact does not check for this. Thus it is advised that, if the user is analysing observations (as opposed to model data) that they be aware of the quality of their data before using Climpact and that if necessary they perform additional checks for homogeneity after running the QC checks performed by Climpact (as described in this section). [RHtests](http://etccdi.pacificclimate.org/software.shtml) is one program that performs homogeneity tests. It is freely available, easy to use and also built on the R programming language. See [section 2.5](#homogeneity) for more insight into the importance of homogeneity. The QC plots described in this section are also described in the video presentation below (based on a slightly older version of Climpact, but the explanations still apply).
 
 **VIDEO: Presentation on the QC functionality described in this section.**
 <br>
@@ -565,7 +563,7 @@ To calculate all of the Climpact indices time-series of daily minimum temperatur
 |HDDheatn|Heating Degree Days|Annual sum of n - TM (where n is a user-defined location-specific base temperature and TM < n)|A measure of the energy demand needed to heat a building|degree-days|Ann|H|
 |CDDcoldn|Cooling Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of the energy demand needed to cool a building|degree-days|Ann|H|
 |GDDgrown|Growing Degree Days|Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)|A measure of heat accumulation to predict plant and animal developmental rates|degree-days|Ann|H, AFS|
-|CDD|Consecutive Dry Days|Maximum number of consecutive dry days (when PR < 1.0 mm)|Longest dry spell|days|Mon/Ann|H, AFS, WRH|
+|CDD|Consecutive Dry Days|Maximum number of consecutive dry days (when PR < 1.0 mm)|Longest dry spell|days|Ann|H, AFS, WRH|
 |R20mm|Number of very heavy rain days|Number of days when PR >= 20 mm|Days when rainfall is at least 20mm|days|Mon/Ann|AFS, WRH|
 |PRCPTOT|Annual total wet-day PR|Sum of daily PR >= 1.0 mm|Total wet-day rainfall|mm|Mon/Ann|AFS, WRH|
 |R95pTOT|Contribution from very wet days|100*r95p / PRCPTOT|Fraction of total wet-day rainfall that comes from very wet days|%|Ann|AFS, WRH|
@@ -626,11 +624,14 @@ Zhang X, Alexander L, Hegerl G C, Jones P, Tank A K, Peterson T C, Trewin B and 
 Users should use the sample input file provided with Climpact as a template for preparing their own data (sydney_observatory_hill_1936-2015.txt). Station text files have the following requirements:
 
 1. They must be an ASCII text file.
-1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. NOTE: PR units are in millimeters and TX/TN units are degrees Celsius.
-1. There should be one row for each day in the record.
-1. Days must be in chronological order and no missing dates are allowed.
+1. They must consist of the following six columns only: Year, Month, Day, PR, TX, TN. *Year*, *Month* and *Day* must be integers.
+1. PR units are in millimeters and TX/TN units are degrees Celsius.
+1. Column headings can be present but must be strings (i.e. not numbers).
+1. There should be a separate row for each day in the record.
 1. Any missing data must be coded as -99.9 and not left blank.
-1. The data must be space delimited (e.g. each element separated by one or more spaces).
+1. Days must be in chronological order.
+1. Missing days are allowed, their corresponding temperature and precipitation values will be assumed missing (i.e. -99.9).
+1. The data must be tab or comma delimited.
 1. Decimal places must be denoted by the period character, not a comma (i.e. "32.4" not "32,4").
 
 See below for an example of 5 days from a station text file. There is no PR data for these 5 days so they are encoded as -99.9. See question 3 of [Appendix E](#appendixe) for a discussion on the number of missing values allowed by Climpact.
@@ -760,15 +761,12 @@ For each of the above three HW definitions there are five HW Aspects that are ca
 * HW Magnitude (HWM): The mean temperature of HW's defined by HWN. Means across the HW days in each HW event are calculated prior to a final mean being taken.
 * HW Amplitude (HWA): The peak daily value in the hottest HW (defined as the HW with the highest mean daily temperature).
 
-### D.2 Notes regarding calculations
+### D.2 Notes regarding interpretation of heatwave indices
 
-When calculating HWs, leap days are ignored and deleted from data.
-
-The year of a HW season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
-
-If there are no HWs in a given year, then HWN and HWF will equal 0 and all other HW aspects will be set to missing.
-
-For netCDF data, any values calculated over ocean grid cells should be ignored by the user.
+* The year of a heatwave season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
+* If there are no heatwaves in a given year, then HWN and HWF will equal 0 and the HWD, HWM and HWA heatwave aspects will be set to missing. If this occurs for all years in station data then no plots will be created for HWD, HWM and HWA since there is no valid data for the entire time-series.
+* For netCDF data, any values calculated over ocean grid cells should be ignored by the user.
+* When calculating heatwaves, leap days are ignored and deleted from data.
 
 ### D.3 The Excess Heat Factor
 

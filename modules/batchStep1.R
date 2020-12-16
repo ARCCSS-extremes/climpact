@@ -129,7 +129,7 @@ batchStep1 <- function(input, output, session, climpactUI) {
     if (batchZipFileLink() != "") {
       if (isLocal) {
         HTML("<b>Batch output</b>",
-        "<p>Please view the output in the following directory: <br /><b>", file.path(getwd(), "www", "output"), "</b></p>")
+        "<p>Please view the output in the following directory: <br /><b>", folderToZip(), "</b></p>")
       } else {
         HTML("<b>Batch output</b>",
         "<p>Batch output available: ", batchZipFileLink(), "</p>")

@@ -11,7 +11,7 @@ input.files=c("./www/sample_data/climpact.sampledata.gridded.1991-2010.nc")
 vars=c(tmax="tmax", tmin="tmin", prec="precip")
 
 # output file name
-output.file="./www/output/thresholds.1991-1997.nc"
+output.file="./www/output/gridded/thresholds.1991-2010.nc"
 
 # author data
 author.data=list(institution="My University", institution_id="MU")

@@ -33,13 +33,9 @@ singleStationStep4UI <- function(id) {
     conditionalPanel(
       condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == ''",
       ns = ns,
-      h4("4. Calculate and plot sector correlations"),        
-      conditionalPanel(
-          condition = "output.sectorCorrelationStatus == 'Done' && output.sectorCorrelationError == '' && output.sectorCorrelationLink != ''",
-          ns = ns,
-          uiOutput(ns("sectorCorrelationLinkTop"))
-      ),
-      wellPanel(
+      h4("4. Calculate and plot sector correlations"),
+      bsCollapse(id = ns("collapseStep4"), open = "Settings", multiple = TRUE,
+      bsCollapsePanel("Settings",
         h4("Sector data"),
         fileInput(ns("sectorDataFile"), NULL, accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
         HTML(climpactUI$sampleText,
@@ -48,7 +44,7 @@ singleStationStep4UI <- function(id) {
         textInput(ns("sectorPlotTitle"), "Title:"),
         textInput(ns("y_axis_label"), "Label for y axis:"),
         checkboxInput(ns("detrendCheck"), "Detrend data", value = TRUE, width = NULL)
-      ),
+      )),
       div(style = "margin-top: 3em; display: block;"),
       actionBttn(ns("calculateSectorCorrelation"),
                 label = "Calculate Correlations", style = "jelly", color = "warning", icon = icon("play-circle", "fa-2x"))

@@ -12,7 +12,7 @@ infiles="./www/sample_data/climpact.sampledata.gridded.1991-2010.nc"
 vars=c(prec="precip",tmax="tmax", tmin="tmin")
 
 # output directory. Will be created if it does not exist.
-outdir="./www/output/"
+outdir="./www/output/gridded/"
 
 # Output filename format. Must use CMIP5 filename convention. i.e. "var_timeresolution_model_scenario_run_starttime-endtime.nc"
 file.template="var_daily_climpact.sample_historical_NA_1991-2010.nc"
@@ -30,7 +30,7 @@ cores=FALSE
 indices=NULL	#c("hw","tnn")
 
 # input threshold file to use, or NULL for none.
-thresholds.files=NULL#"thresholds.test.1991-1997.nc"
+thresholds.files=NULL#"./www/output/gridded/thresholds.test.1991-1997.nc"
 
 # Directory where Climpact is stored. Use full pathname. Leave as NULL if you are running this script from the Climpact directory (where this script was initially stored).
 root.dir=NULL
