@@ -1,0 +1,20 @@
+{
+  "input": {
+    "process_single_station": "process_single_station_step_1",
+    "ui-baseEnd": 2010,
+    "ui-baseStart": 1991,
+    "ui-dataFile": null,
+    "ui-stationLat": 0,
+    "ui-stationLon": 0,
+    "ui-stationName": ""
+  },
+  "output": {
+    "ui-indexCalculationErrors": "",
+    "ui-indexCalculationStatus": "Not Started",
+    "ui-qcLink": "",
+    "ui-qcStatus": "Not Started",
+    "ui-sectorCorrelationError": "",
+    "ui-sectorCorrelationLink": "",
+    "ui-sectorCorrelationStatus": "Not Started"
+  }
+}

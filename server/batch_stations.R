@@ -45,7 +45,7 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
     # set error log file name remove if present from a past run of climpact
-    errorfile <- file.path("www","output",paste0(strip_file_extension(batch_metadata$station_file[file.number]),".error.txt"))
+    errorfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".error.txt"))
 
     if(file_test("-f",errorfile)) { file.remove(errorfile) }
 
@@ -58,7 +58,7 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
     if (!is.na(currentFilePath)) {
       fileName <- batch_metadata$station_file[file.number]
       stationName <- strip_file_extension(fileName)
-      outputFolders <- outputFolders(file.path("www","output"),stationName)
+      outputFolders <- outputFolders(batchOutputFolder,stationName)
       qcResult <- suppressWarnings(checkStation(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, base.start, base.end, outputFolders))
       if (qcResult$errors == "") {
         # do index calculations
@@ -78,7 +78,6 @@ checkStation <- function(progress, prog_int, batch_metadata, file.number, curren
 
   lat <- as.numeric(batch_metadata$latitude[file.number])
   lon <- as.numeric(batch_metadata$longitude[file.number])
-
   qcResult <- load_data_qc(progress, prog_int, currentFilePath, lat, lon, stationName, base.start, base.end, outputFolders)
   # qcResult now has $errors, $cio, $metadata
 

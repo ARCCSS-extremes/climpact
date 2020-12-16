@@ -2,7 +2,7 @@ source("services/create_climdex_input.R", local = TRUE)
 
 merge_data <- function(user_data, metadata) {
   date.seq <- data.frame(list(time = seq(metadata$dates[1], metadata$dates[length(metadata$dates)], by = "day")))
-  data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user_data[, 4], tmax = user_data[, 5], tmin = user_data[, 6]))
+  data_raw = data.frame(list(time = as.Date(metadata$dates, format = "%Y-%m-%d"), prec = user_data$precp, tmax = user_data$tmax, tmin = user_data$tmin))
   return(merge(data_raw, date.seq, all = TRUE))
 }
 
@@ -35,42 +35,32 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
     if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
-      return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct.")))
+	return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct by refreshing this web page and entering a new base period in step 1.")))
     }
   }
 
-  # Check there are no missing dates by constructing a time series based on the first and last date provided by user and see if its length
-  # is longer than the length of the user's data.
+  # Fill in missing values. Some legacy lines here from when missing dates weren't filled in for the user.
   user_data_length <- length(user_data$year)
   first.date <- as.Date(paste(user_data$year[1], user_data$month[1], user_data$day[1], sep = "-"), "%Y-%m-%d")
   last.date <- as.Date(paste(user_data$year[user_data_length], user_data$month[user_data_length], user_data$day[user_data_length], sep = "-"), "%Y-%m-%d")
   date.series <- seq(first.date, last.date, "day")
   user.date.series <- as.Date(paste(user_data$year, user_data$month, user_data$day, sep = "-"))
   missing.dates <- date.series[!date.series %in% user.date.series]
+
+  # ... and remake the date related columns in the metadata
+  dffull=data.frame(dates=date.series)
+  l=merge(dffull,user_data,by="dates",all.x=TRUE)
+  user_data=l
+  user_data$year=as.numeric(format(user_data$dates,"%Y"))
+  user_data$month=as.numeric(format(user_data$dates,"%m"))
+  user_data$day=as.numeric(format(user_data$dates,"%d"))
+  metadata$dates=user_data$dates
+
   # Write out the missing.dates to a text file. Report the filename to the user.
   missingDatesFileName <- paste0(metadata$stationName, ".missing_dates.txt")
   missingDatesFilePath <- file.path(outputFolders$outqcdir, missingDatesFileName)
 
   if (file_test("-f", missingDatesFilePath)) { file.remove(missingDatesFilePath) }
-  if (length(date.series[!date.series %in% user.date.series]) > 0) {
-    write.table(date.series[!date.series %in% user.date.series],
-      sep = ",",
-      file = missingDatesFilePath,
-      append = FALSE,
-      row.names = FALSE,
-      col.names = FALSE)
-
-    error_msg <- paste0("You seem to have missing dates. See <a href='output/",
-      metadata$stationName,
-      "/qc/",
-      missingDatesFileName,
-      "' target='_blank'>here</a> for a list of missing dates. ",
-      "Fill these with observations or missing values (-99.9) before continuing with quality control.")
-
-    # skip <- TRUE
-    warning(error_msg)
-    return(list(errors = error_msg))
-  }
 
   # Check for ascending order of years
   if (!all(user_data$year == cummax(user_data$year))) {
@@ -146,9 +136,11 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   ##############################
   # Call the ExtraQC functions.
   print("TESTING DATA, PLEASE WAIT...", quote = FALSE)
-
   temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
-  file.copy(user_file, temp.file)
+
+  # This is a bit silly. We are writing out data to a file for temporary reading by the QC functions, when really the QC functions should just be passed the 
+  # already "cleaned" data as a variable. This will do for now.
+  write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
 
   errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
 
