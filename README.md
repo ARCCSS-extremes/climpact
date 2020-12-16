@@ -1,12 +1,3 @@
-
-
-# ****
-# PRE-RELEASE: DO NOT USE THIS VERSION OF CLIMPACT. 
-# Use [this version](https://github.com/ARCCSS-extremes/climpact2)
-# ****
-
- 
- 
 # <p align="center">Climpact</p>
 
 ##  What is Climpact?
