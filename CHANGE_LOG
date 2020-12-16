@@ -1,6 +1,6 @@
-3.0.0		18 December 2020
+3.0.0		17 December 2020
 * MAJOR UPDATE: Shiny interface finally released and instance deployed to https://ccrc-extremes.shinyapps.io/climpact/.
-* Missing dates allowed in station input files (i.e. rows in text file can be missing).
+* Missing dates allowed in station input files (i.e. rows in text file can be missing). These dates will be treated as missing values.
 * Both comma and tab delimiters allowed in station text files.
 * Column names in station text files are allowed (and will be ignored).
 * CDD/CWD changed to annual only indices.
