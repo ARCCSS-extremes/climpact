@@ -52,7 +52,7 @@ ui <- tagList(
       div(
         id = "sitemap",
         h4("Climpact"),
-        p("Copyright © 2012–2020"),
+        p("Copyright 2012–2020"),
         p("All Rights Reserved.")
       ),
       div(
