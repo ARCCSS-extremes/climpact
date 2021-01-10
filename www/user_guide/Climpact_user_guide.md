@@ -134,9 +134,9 @@ Climpact can be downloaded from the [Github website](https://github.com/ARCCSS-e
 
 Once you have installed R and downloaded and extracted Climpact onto your computer you will need to install the R packages that Climpact requires. This only needs to be completed once. 
 
-**In Windows** open R and select *File->Change dir...* and select the *climpact-master* directory created in section 3.2. Then at the R command line type ```source('installers/climpact.master.installer.r').```
+**In Windows** open R and select *File->Change dir...* and select the *climpact-master* directory created in section 3.2. Then at the R command line type ```source('server/climpact.master.installer.r').```
 
-**In Linux and MacOS** open a terminal window and change to the *climpact-master* directory created in section 3.2, then open R in the terminal window by typing ```R``` and then type ```source('installers/climpact.master.installer.r').```
+**In Linux and MacOS** open a terminal window and change to the *climpact-master* directory created in section 3.2, then open R in the terminal window by typing ```R``` and then type ```source('server/climpact.master.installer.r').```
 
 The above process will start downloading and installing the R packages that Climpact requires. This process will take several minutes but will only need to be completed once. If this is the first time you are installing R packages you will be prompted to select a "mirror", these are the geographical locations of servers around the world (see figure below). You can select any location, though the closest location will usually offer the fastest download speed. Once complete, you should see a message in the R console saying ```Checking complete.```
 

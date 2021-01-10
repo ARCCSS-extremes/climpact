@@ -1,3 +1,6 @@
+3.0.1       10 January 2021
+* Correct user guide install instructions and remove a problem-causing symbol from user interface (thanks J. Ding).
+
 3.0.0		17 December 2020
 * MAJOR UPDATE: Shiny interface finally released and instance deployed to https://ccrc-extremes.shinyapps.io/climpact/.
 * Missing dates allowed in station input files (i.e. rows in text file can be missing). These dates will be treated as missing values.
