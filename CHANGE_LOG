@@ -1,3 +1,6 @@
+3.0.2	22 January 2021
+* Corrected a bug causing the SPI and SPEI indices to be recorded with incorrect filenames and with incorrect metadata, when calculating indices for station data (thanks D. Ogier).
+
 3.0.1       10 January 2021
 * Correct user guide install instructions and remove a problem-causing symbol from user interface (thanks J. Ding).
 

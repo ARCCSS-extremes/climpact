@@ -89,7 +89,7 @@ calculate.spei <- function(metadata, cio, outputFolders, pdf.dev, custom_SPEI, i
         index.store[4, 1:(custom_SPEI - 1)] <- NA
         spifactor <- spifactor[(length(spifactor) - length((cio@date.factors$monthly)) + 1):length(spifactor)]
       }
-      spei_row_num <- 82
+      spei_row_num <- match("spei",index.list$Short.name)
       write.precindex.csv(index.store, index.name = index.list$Short.name[spei_row_num], spifactor, header = "Standardised Precipitation-Evapotranspiration Index", metadata, outputFolders, custom_SPEI)
       plot.precindex(index.store, index.name = index.list$Short.name[spei_row_num], index.units = index.list$Units[spei_row_num], x.label = "Years", spifactor, sub = as.character(index.list$Definition[spei_row_num]), times = c(3, 6, 12, custom_SPEI), metadata, outputFolders, pdf.dev, trend_file)
     }
