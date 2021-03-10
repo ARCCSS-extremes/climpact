@@ -227,7 +227,7 @@ Climpact can calculate and plot correlations between annual sector data the user
 
 There are only four inputs on tab 4:
 
-* **Selecting the sector data file**. This is a .csv file containing annual data for a sector of interest. See [Appendix B](#appendixb) for details on the format of this file as well as the sample file wheat_yield_nsw_1922-1999.csv stored in ./www/sample_data/.
+* **Selecting the sector data file**. This is a .csv file containing annual data for a sector of interest. See [Appendix B](#appendixb) for details on the format of this file as well as the sample file wheat_yield_nsw_1922-1999.csv stored in ./www/sample_data/. The first column of your file must be labelled "Year".
 * **Title** to be used in each plot.
 * **Label for y-axis** allows you to set the y-axis label which should represent the name of the data and the units that the values in the .csv file represent.
 * **Detrend data** tells Climpact whether to detrend the sector data and climate indices prior to performing comparisons. Detrending is typically very critical when comparing climate and sector data. For example, agricultural yield has increased over the last several decades in many parts of the world due to improved methods of harvesting and increased water efficiency. Without detrending this increasing signal could be incorrectly correlated with increasing temperatures due to climate change and thus a relationship between global warming and increasing yield could be incorrectly interpreted from this.
@@ -647,7 +647,7 @@ See below for an example of 5 days from a station text file. There is no PR data
 
 Users should use the sample sector data file provided with Climpact as a template for preparing their own data (wheat_yield_nsw_1922-1999.csv). At this stage only annual sector data is supported. Sector data files have the following requirements:
 1. They must be a .csv file.
-1. Must consist of two columns only: a "Year" and "data" column (which can be named as the user likes).
+1. Must consist of two columns only: a "Year" and "data" column (the first column must be labelled "Year", the second can be named as the user likes).
 1. Each row must represent a single year.
 1. Any missing data must be coded as -99.9 and not left blank.
 1. At least 10 years of data must overlap between the calculated indices and the sector data, otherwise the sector data calculations will not be performed.
@@ -837,28 +837,31 @@ For netCDF files, missing data can be any valid real value, so long as the missi
 
 In order to calculate robust statistics of climate extremes strict criteria must be applied to the amount of missing data in a record. This is often underappreciated by users and unfortunately many station records can have significant numbers of missing values, even if the record spans many years. **Climpact permits a maximum of 3 missing days in any month, and a maximum of 15 missing days in any year. If any of these thresholds is exceeded then the month or year in question is not calculated. Further, if a month is missing then the corresponding year is also removed. Lastly, at least 10% of the base period must have valid values in order for percentile-based indices to be calculated.**
 
-### 4. Why do I sometimes see missing values in CDD/CWD when I know there are no missing values?
+### 4. Why am I having trouble running the netCDF wrapper script on multiple nodes?
+Climpact does not support parallelisation across nodes. Thus, if your computer has 32 cores then the maximum number of cores you should specify is 32. Climpact will not 'see' cores on other nodes.
+
+### 5. Why do I sometimes see missing values in CDD/CWD when I know there are no missing values?
 CDD and CWD count the number of consecutive dry or wet days per year. By default the values reported can be longer than the number of days in a year if there is a span of dry or wet days that extends over multiple years. In these cases, the total number of dry or wet days is recorded in the final year of the dry or wet stretch, and the preceding years or months are reported as missing values. For example, if a location did not experience rain from January 1st in the year 2000 until December 31st 2002, then the year 2002 will record 1095 days (365 times 3) and 2000 and 2001 will be reported as missing values. This ensures double counting of dry or wet days does not occur, however, can also confuse the interpretation of data that does include genuine missing values. **Users should interpret CDD extremely cautiously in dry regions (e.g. in the middle latitude dry zones).**
 
-### 5. Why do the SPI/SPEI output produce so much missing data when my input files do not contain missing data?
+### 6. Why do the SPI/SPEI output produce so much missing data when my input files do not contain missing data?
 
 If you observe numerous missing data in your SPI or SPEI output when calculated on gridded indices, despite your input not having a corresponding amount of missing data, it is likely that you have specified a base period that is too short. Try and specify a base period of at least 30 years when possible. The R package used to calculate SPI and SPEI has been known to produce numerous missing data when a base period of ~10 years or less is specified.
 
-### 6. Are the SPI and SPEI the best or only drought indices?
+### 7. Are the SPI and SPEI the best or only drought indices?
 
 There is no best index for drought nor any other climate extreme. What may be considered best in one situation may not apply to another and therefore which index is most appropriate is context-dependent. The SPI and SPEI are also not the only drought indices available and the user is referred to the [WMO Handbook on drought indicators](#appendixe_refs) for an overview of other indices. However, the SPI is recommended by the WMO as a measure of meteorological drought ([Hayes et al., 2011](#appendixe_refs)). It is widely used due to its simplicity and ability to span multiple time scales. The SPEI extends the SPI by taking into account evapotranspiration. We encourage you to read the original SPI and SPEI documentation ([Mckee et al., 1993; Vicente-Serrano et al., 2010](#appendixe_refs)), as well as [this excellent online resource](https://spei.csic.es/) by Vicente-Serrano and Begueria on the SPEI, its history and application. A good example of the responsible use of the SPI/SPEI can be seen in work by the Global Precipitation Climatology Centre ([Ziese et al., 2014](#appendixe_refs)).
 
-### 7. How can the Climpact indices be analysed in greater detail or used to create custom plots in other popular software?
+### 8. How can the Climpact indices be analysed in greater detail or used to create custom plots in other popular software?
 
 Climpact produces its own plots of each index (in the “plots” folder) for station text files. However, all of the indices output data are stored in the “indices” directory in .csv format. Many software packages can read this file format so users can produce their own customised plots easily. The simplest would be spreadsheet software such as Microsoft Excel or Libre Office Calc.
 
 For the gridded netCDF files that Climpact creates, any netCDF viewer can be used to view this data. We recommend using [Panoply](https://www.giss.nasa.gov/tools/panoply/) or [Ncview](http://meteora.ucsd.edu/~pierce/ncview_home_page.html) for viewing netCDF output. The former will allow you to produce publication-ready plots. Numerous programming language also allow you to manipulate and plot netCDF data (e.g. R, Python, Ferret, Matlab).
 
-### 8. Can I add additional indices to Climpact myself?
+### 9. Can I add additional indices to Climpact myself?
 
 [Section 4](#calculatesingle) describes how a custom day count index can be created via the web interface. Besides this process, there is no *easy* way to add indices. However, if you are familiar with the R programming language you can amend the code to add additional indices. The code is open source. This may be a good solution if you have very specific sector requirements that are not covered by the current suite of indices. 
 
-### 9. Can I recommend additional indices to be added to the ET-SCI core set?
+### 10. Can I recommend additional indices to be added to the ET-SCI core set?
 
 You can always send feedback and suggestions to the Climpact team, but any indices added to the core set have to be agreed by the members of the ET-SCI.
 
