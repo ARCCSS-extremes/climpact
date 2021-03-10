@@ -32,12 +32,20 @@
 
  print("",quote=FALSE)
 
- cat("A modified version of climdex.pcic.ncdf needs to be installed. If a version is already installed it will be overwritten. 
- If you do not install this modified version you will not be able to calculate the indices on netCDF data (but will still
- be able to use the GUI).\n\n")
- readline(prompt="Press [enter] to continue")
+ # If a *nix system then install netcdf modules (these don't install well under Windows)
+ if(.Platform$OS.type == "unix") {
+	 if(!"ncdf4.helpers" %in% installed.packages()[,"Package"]) {
+	         print("ncdf4.helpers... not installed. Installing...",quote=FALSE)
+	         install.packages("./server/pcic_packages/ncdf4.helpers_0.3-3.tar.gz",repos=NULL,type="source")
+	 } else print("ncdf4.helpers... installed.",quote=FALSE)
 
- install.packages("./server/pcic_packages/climdex.pcic.ncdf.climpact.tar.gz",repos=NULL,type="source")
+	 cat("A modified version of climdex.pcic.ncdf needs to be installed. If a version is already installed it will be overwritten. 
+	 If you do not install this modified version you will not be able to calculate the indices on netCDF data (but will still
+	 be able to use the GUI).\n\n")
+	 readline(prompt="Press [enter] to continue")
+	
+	 install.packages("./server/pcic_packages/climdex.pcic.ncdf.climpact.tar.gz",repos=NULL,type="source")
+ }
 
  print("",quote=FALSE)
  print("******************************",quote=FALSE)
