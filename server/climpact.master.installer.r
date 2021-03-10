@@ -32,7 +32,7 @@
 
  print("",quote=FALSE)
 
- # If a *nix system then install netcdf modules
+ # If a *nix system then install netcdf modules (these don't install well under Windows)
  if(.Platform$OS.type == "unix") {
 	 if(!"ncdf4.helpers" %in% installed.packages()[,"Package"]) {
 	         print("ncdf4.helpers... not installed. Installing...",quote=FALSE)
