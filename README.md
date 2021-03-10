@@ -134,7 +134,7 @@ correct for gridded data IF your data contain missing values (e.g. they are base
 
 ## Having trouble?
 
-Search and/or submit an [issue](https://github.com/ARCCSS-extremes/climpact/issues).
+Make sure you read the relevant part of the [user guide](https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md). Otherwise, search and/or submit an [issue](https://github.com/ARCCSS-extremes/climpact/issues).
 
 
 ##  Contact

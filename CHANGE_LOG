@@ -1,3 +1,6 @@
+3.0.3	10 March 2021
+* Removed erroneous reference to "Runit" package, minor documentation updates.
+
 3.0.2	22 January 2021
 * Corrected a bug causing the SPI and SPEI indices to be recorded with incorrect filenames and with incorrect metadata, when calculating indices for station data (thanks D. Ogier).
 
