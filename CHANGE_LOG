@@ -1,3 +1,6 @@
+3.0.4   09 April 2021
+* Improve error exception handling and push errors to Shiny. This should reduce the frequency of "Disconnected from server" messages that aren't accompanied by R error messages.
+
 3.0.3	10 March 2021
 * Removed erroneous reference to "Runit" package, minor documentation updates.
 
