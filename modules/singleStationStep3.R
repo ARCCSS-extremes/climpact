@@ -88,27 +88,36 @@ singleStationStep3 <- function(input, output, session, parentSession, climpactUI
     singleStationState$climdexInputParams(params)
 
     progress <- shiny::Progress$new()
-    on.exit(progress$close())
+#    on.exit(progress$close())
     progress$set(message = "Calculating indices", value = 0)
 
-    updateCollapse(session, "collapseStep3", close = "Settings")
-
-    singleStationState$indexCalculationStatus("In Progress")
-
-    index.calc(progress, 2, singleStationState$metadata(),
-      singleStationState$climdexInput(), singleStationState$outputFolders(),
-      singleStationState$climdexInputParams())
-
-    # Create a zip file containing all of the results.
-    folderToZip(singleStationState$outputFolders()$outputdir)
-    pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip",
-      destinationFolder = singleStationState$outputFolders()$baseFolder,
-      destinationFileName = paste0(singleStationState$stationName(), ".zip"))
-    indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
-
-    enable("calculateIndices")
-    # singleStationState$indexCalculationErrors("")
-    singleStationState$indexCalculationStatus("Done")
+    out <- tryCatch({
+       updateCollapse(session, "collapseStep3", close = "Settings")
+   
+       singleStationState$indexCalculationStatus("In Progress")
+   
+       index.calc(progress, 2, singleStationState$metadata(),
+         singleStationState$climdexInput(), singleStationState$outputFolders(),
+         singleStationState$climdexInputParams())
+   
+       # Create a zip file containing all of the results.
+       folderToZip(singleStationState$outputFolders()$outputdir)
+       pathToZipFile <- zipFiles(folderToZip(), excludePattern = "*.zip",
+         destinationFolder = singleStationState$outputFolders()$baseFolder,
+         destinationFileName = paste0(singleStationState$stationName(), ".zip"))
+       indicesZipLink(getLinkFromPath(pathToZipFile, "here"))
+   
+       enable("calculateIndices")
+       # singleStationState$indexCalculationErrors("")
+       singleStationState$indexCalculationStatus("Done")
+       on.exit(progress$close())       # place on.exit here so that errors that aren't manually caught by QC (like base periods larger than the data) are left on-screen for users to see.
+    },
+    error = function(cond) {
+          progress$set(message=cond$message, value=0, detail = paste("ERROR: ",cond$message))
+          print(paste("Error:", cond$message))
+          return(paste("Error:", cond$message))
+    })
+    return(out)
   })
 
   # output$indicesLinkTop <- renderText(getLinkTextTopMiddle())

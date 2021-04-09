@@ -18,8 +18,10 @@ read_and_qc_check <- function(progress,
                               outputFolders) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
+
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
   qcResult <- qualityControlCheck(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL)
+
   return(qcResult)
 }
 

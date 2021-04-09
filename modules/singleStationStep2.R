@@ -86,7 +86,7 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     qcProgressStatus("In Progress")
 
     progress <- shiny::Progress$new()
-    on.exit(progress$close())
+#    on.exit(progress$close())
     progress$set(message="Quality Control checks", value=0, detail = "Starting...")
     singleStationState$isQCCompleted(FALSE)
 
@@ -109,18 +109,23 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         singleStationState$metadata(qcResult$metadata)
         # qualityControlCheckResult(qcResult$errors)
         # capture climdex input object created
+	print(paste0("qcResult$errors: ",qcResult$errors))
         if (qcResult$errors == "") {
           singleStationState$climdexInput(qcResult$cio)
         } else {
           print(qcResult$errors)
         }
-
+	on.exit(progress$close()) 	# place on.exit here so that errors that aren't manually caught by QC (like base periods larger than the data) are left on-screen for users to see.
         return(qcResult$errors)
       },
       readUserFileError = function(cond) {
+	progress$set(message=cond$message, value=0, detail = paste("ERROR: ",cond$message))
+	print(paste("Error:", cond$message))
         return(paste("Error:", cond$message))
       },
       error = function(cond) {
+	  progress$set(message=cond$message, value=0, detail = paste("ERROR: ",cond$message))
+          print(paste("Error:", cond$message))
           return(paste("Error:", cond$message))
       },
       finally = {

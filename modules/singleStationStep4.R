@@ -60,10 +60,10 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
     singleStationState$sectorInputParams(params)
 
     progress <- shiny::Progress$new()
-    on.exit(progress$close())
     progress$set(message="Calculating correlation", value=0)
 
-    errors <- draw.correlation(progress,
+    outcorr <- tryCatch({
+        	errors <- draw.correlation(progress,
                               singleStationState$dataFile()$datapath,
                               params$sectorDataFile()$datapath,
                               singleStationState$stationName(),
@@ -72,44 +72,52 @@ singleStationStep4 <- function(input, output, session, climpactUI, singleStation
                               params$y_axis_label(),
                               singleStationState$outputFolders()$corrdir,
                               singleStationState$outputFolders()$outinddir)
+        },
+    	error=function(cond) {
+            print(paste0("ERROR: ",cond))
+            progress$set(message=cond, value=0, detail = paste("ERROR: ",cond))
+	    return(NA)
+    })
 
     if (errors == "") {
+      on.exit(progress$close()) 	# put this after try catch so any error will remain on-screen for users
       # zip files and get link
       folderToZip(singleStationState$outputFolders()$corrdir)
       pathToZipFile <- zipFiles(folderToZip(), destinationFolder = singleStationState$outputFolders()$baseFolder)
       corrZipLink(getLinkFromPath(pathToZipFile, "here"))
     }
+
     singleStationState$correlationCalculationErrors(errors)
     singleStationState$correlationCalculationStatus("Done")
-  })
 
-  output$sectorCorrelationLinkTop <- renderText(getLinkForTopMiddle())
-  output$sectorCorrelationLinkMiddle <- renderText(getLinkForTopMiddle())
-
-  getLinkForTopMiddle <- function() {
-    if (singleStationState$correlationCalculationStatus() == "Done") {
-      if (isLocal) {
-        HTML("<h5>Please view the output in the following directory: <b>", folderToZip(), "</b></h5>")
+    output$sectorCorrelationLinkTop <- renderText(getLinkForTopMiddle())
+    output$sectorCorrelationLinkMiddle <- renderText(getLinkForTopMiddle())
+  
+    getLinkForTopMiddle <- function() {
+      if (singleStationState$correlationCalculationStatus() == "Done") {
+        if (isLocal) {
+          HTML("<h5>Please view the output in the following directory: <b>", folderToZip(), "</b></h5>")
+        } else {
+          HTML("<h5>Correlation output files ", corrZipLink(), "</h5>")
+        }
       } else {
-        HTML("<h5>Correlation output files ", corrZipLink(), "</h5>")
+        ""
       }
-    } else {
-      ""
     }
-  }
-
-  output$sectorCorrelationLink <- renderText({
-    if (singleStationState$correlationCalculationStatus() == "Done") {
-      if (isLocal) {
-        HTML("<b>Correlation output</b><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+  
+    output$sectorCorrelationLink <- renderText({
+      if (singleStationState$correlationCalculationStatus() == "Done") {
+        if (isLocal) {
+          HTML("<b>Correlation output</b><p>Please view the output in the following directory: <b>", folderToZip(), "</b></p>")
+        } else {
+          HTML("<b>Correlation output</b><p>Correlation output files ", corrZipLink(), "</p>")
+        }
       } else {
-        HTML("<b>Correlation output</b><p>Correlation output files ", corrZipLink(), "</p>")
+        ""
       }
-    } else {
-      ""
-    }
+    })
+    outputOptions(output, "sectorCorrelationLink", suspendWhenHidden = FALSE)
+  
+    observe(toggleState("calculateSectorCorrelation", !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
   })
-  outputOptions(output, "sectorCorrelationLink", suspendWhenHidden = FALSE)
-
-  observe(toggleState("calculateSectorCorrelation", !is.null(input$dataFile) & !is.null(input$sectorDataFile)))
 }
