@@ -1,3 +1,6 @@
+3.0.5   11 March 2021
+* Add check to skip Sens slope calculation when there is limited valid values for SPI/SPEI (this was causing "Replacement has length zero"/"IFAULT" errors).
+
 3.0.4   09 April 2021
 * Improve error exception handling and push errors to Shiny. This should reduce the frequency of "Disconnected from server" messages that aren't accompanied by R error messages.
 
