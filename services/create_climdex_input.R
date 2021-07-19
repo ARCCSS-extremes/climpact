@@ -13,7 +13,7 @@ create_climdex_input <- function(merge_data, metadata) {
   cio <- climdexInput.raw(tmin = merge_data[, 4], tmax = merge_data[, 3], prec = merge_data[, 2], 
                           tmin.dates = pcict.dates, tmax.dates = pcict.dates, prec.dates = pcict.dates, 
                           base.range = c(metadata$base.start, metadata$base.end), prec.qtiles = prec.quantiles,
-                          temp.qtiles = temp.quantiles, quantiles = NULL)
+                          temp.qtiles = temp.quantiles, quantiles = NULL,northern.hemisphere=metadata$lat>0)
 
   # add diurnal temperature range
   cio@data$dtr <- cio@data$tmax - cio@data$tmin
