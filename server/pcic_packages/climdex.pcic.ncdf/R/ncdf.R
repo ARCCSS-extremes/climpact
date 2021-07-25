@@ -678,6 +678,8 @@ get.data <- function(f, v, subset, src.units, dest.units, dim.axes) {
 #' @param f The NetCDF file to use; an object of class \code{ncdf4}.
 #' @param v The variable in question.
 #' @param projection The proj4 string to use; NULL if the data is not in a projected coordinate space.
+#' @param project.lat2d.coords whether to follow the original method of determing subset latitudes (TRUE) where each point is projected, or if FALSE then use the
+#'                       two dimensional coordinate variable associated with latitude.
 #' @return An array of booleans corresponding to the subset containing TRUE if the point is within the northern hemisphere, and FALSE otherwise.
 #'
 #' @examples
@@ -690,7 +692,7 @@ get.data <- function(f, v, subset, src.units, dest.units, dim.axes) {
 #' }
 #'
 #' @export
-get.northern.hemisphere.booleans <- function(subset, f, v, projection) {
+get.northern.hemisphere.booleans <- function(subset, f, v, projection,project.lat2d.coords=TRUE) {
   y.dim <- ncdf4.helpers::nc.get.dim.for.axis(f, v, "Y")
   x.dim <- ncdf4.helpers::nc.get.dim.for.axis(f, v, "X")
   y.subset.vals <- rep(y.dim$vals[if(is.null(subset$Y)) 1:y.dim$len else subset$Y],
@@ -699,6 +701,19 @@ get.northern.hemisphere.booleans <- function(subset, f, v, projection) {
     x.subset.vals <- rep(x.dim$vals[if(is.null(subset$X)) 1:x.dim$len else subset$X],
                          (if(is.null(subset$Y)) y.dim$len else length(subset$Y)))
     dat <- proj4::project(list(x=x.subset.vals, y=y.subset.vals), projection, inverse=TRUE, ellps.default=NA)
+    
+    # Nick's bit to retrieve the latitude of each grid cell from the 2D latitude array in the netcdf file, instead of re-projecting using proj4.
+    # This was done for problems with NARCliM.
+    if(!project.lat2d.coords) {
+		# get names of coordinate variables
+		coordinate.var.names <- ncdf4.helpers::nc.get.coordinate.axes(f,v)
+		# get name of the latitude coordinate variable, that has axis "Y"
+		lat.name <- names(coordinate.var.names[coordinate.var.names=="Y"])
+		# get the latitude values of current subset
+		latitudes.of.subset <- ncdf4.helpers::nc.get.var.subset.by.axes(f, lat.name, subset)
+		# replace dat$y with these latitudes
+		dat$y <- as.vector(latitudes.of.subset)
+	}
     assign("y.subset.vals",dat$y,envir=.GlobalEnv)
     return(dat$y >= 0)
   } else
@@ -828,7 +843,7 @@ get.quantiles.object <- function(thresholds, idx) {
 #' }
 #'
 #' @export
-compute.indices.for.stripe <- function(subset, cdx.funcs, ts, base.range, dim.axes, v.f.idx, variable.name.map, src.units, dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible=TRUE, projection=NULL, f, thresholds.netcdf) {
+compute.indices.for.stripe <- function(subset, cdx.funcs, ts, base.range, dim.axes, v.f.idx, variable.name.map, src.units, dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible=TRUE, projection=NULL, f, thresholds.netcdf,project.lat2d.coords=TRUE) {
   f <- if(missing(f)) get("f", .GlobalEnv) else f
   thresholds.netcdf <- if(missing(thresholds.netcdf)) get("thresholds.netcdf", .GlobalEnv) else thresholds.netcdf
   
@@ -836,7 +851,7 @@ compute.indices.for.stripe <- function(subset, cdx.funcs, ts, base.range, dim.ax
   data.list <- sapply(names(v.f.idx), function(x) { gc(); get.data(f[[v.f.idx[x]]], variable.name.map[x], subset, src.units[x], dest.units[x], dim.axes) }, simplify=FALSE)
   gc()
 
-  northern.hemisphere <- get.northern.hemisphere.booleans(subset, f[[v.f.idx[1]]], variable.name.map[names(v.f.idx)[1]], projection)
+  northern.hemisphere <- get.northern.hemisphere.booleans(subset, f[[v.f.idx[1]]], variable.name.map[names(v.f.idx)[1]], projection, project.lat2d.coords)
 
   thresholds <- if(is.null(thresholds.netcdf)) NULL else get.thresholds.chunk(subset, cdx.funcs, thresholds.netcdf, t.f.idx, thresholds.name.map)
 
@@ -1651,6 +1666,8 @@ get.thresholds.f.idx <- function(thresholds.files, thresholds.name.map) {
 #' }
 #' @param max.vals.millions The number of data values to process at one time (length of time dim * number of values * number of variables).
 #' @param cluster.type The cluster type, as used by the \code{snow} library.
+#' @param project.lat2d.coords whether to follow the original method of determing subset latitudes (TRUE) where each point is projected, or if FALSE then use the
+#'                       two dimensional coordinate variable associated with latitude.
 #'
 #' @note NetCDF input files may contain one or more variables, named as per \code{variable.name.map}. The code will search the files for the named variables. The same is true of thresholds files; one file may be supplied, or multiple files may be supplied, via the \code{thresholds.files} argument; and the name mapping may be supplied via the \code{thresholds.name.map} argument.
 #'
@@ -1674,7 +1691,7 @@ get.thresholds.f.idx <- function(thresholds.files, thresholds.name.map) {
 #' }
 #'
 #' @export
-create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output.filename.template, author.data, climdex.vars.subset=NULL, climdex.time.resolution=c("all", "annual", "monthly"), variable.name.map=c(tmax="tasmax", tmin="tasmin", prec="pr", tavg="tas"), axis.to.split.on="Y", fclimdex.compatible=TRUE, base.range=c(1961, 1990), parallel=4, verbose=FALSE, thresholds.files=NULL, thresholds.name.map=c(tx10thresh="tx10thresh", tn10thresh="tn10thresh", tx90thresh="tx90thresh", tn90thresh="tn90thresh", r95thresh="r95thresh", r99thresh="r99thresh"), max.vals.millions=10, cluster.type="SOCK",rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="PA13",wsdin_n=5,csdin_n=5,hddheatn_n=18,cddcoldn_n=18,gddgrown_n=10) {
+create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output.filename.template, author.data, climdex.vars.subset=NULL, climdex.time.resolution=c("all", "annual", "monthly"), variable.name.map=c(tmax="tasmax", tmin="tasmin", prec="pr", tavg="tas"), axis.to.split.on="Y", fclimdex.compatible=TRUE, base.range=c(1961, 1990), parallel=4, verbose=FALSE, thresholds.files=NULL, thresholds.name.map=c(tx10thresh="tx10thresh", tn10thresh="tn10thresh", tx90thresh="tx90thresh", tn90thresh="tn90thresh", r95thresh="r95thresh", r99thresh="r99thresh"), max.vals.millions=10, cluster.type="SOCK",rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="PA13",wsdin_n=5,csdin_n=5,hddheatn_n=18,cddcoldn_n=18,gddgrown_n=10,project.lat2d.coords=TRUE) {
   if (is.null(root.dir)) { root.dir <- getwd() } 
   assign("root.dir",root.dir,envir=.GlobalEnv)
 
@@ -1770,7 +1787,7 @@ create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output
     snow::clusterEvalQ(cluster, thresholds.netcdf <<- thresholds.open(thresholds.files))
 
     ## Meat...
-    parLapplyLBFiltered(cluster, subsets, compute.indices.for.stripe, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, local.filter.func=function(x, x.sub) {
+    parLapplyLBFiltered(cluster, subsets, compute.indices.for.stripe, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, project.lat2d.coords=project.lat2d.coords, local.filter.func=function(x, x.sub) {
       write.climdex.results(x, x.sub, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name,f.meta=f.meta)
     })
 
@@ -1782,7 +1799,7 @@ create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output
     ##try(getFromNamespace('nc_set_chunk_cache', 'ncdf4')(1024 * 2048, 1009), silent=TRUE)
     
     ## Meat...
-    lapply(subsets, function(x) { write.climdex.results(compute.indices.for.stripe(x, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, f, thresholds.netcdf), x, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name,f.meta=f.meta) })
+    lapply(subsets, function(x) { write.climdex.results(compute.indices.for.stripe(x, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, f, thresholds.netcdf, project.lat2d.coords=project.lat2d.coords), x, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name,f.meta=f.meta) })
 
     ## Clean-up.
     thresholds.close(thresholds.netcdf)
