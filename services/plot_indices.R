@@ -36,7 +36,7 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       x1 = seq(1, length(index[def, asp,]), 1) #as.numeric(names(index))
       y1 = unname(index[def, asp,])
       zsen = zyp.sen(y1 ~ x1)
-      ci = confint(zsen, level = 0.95)
+      ci = confint.zyp(zsen, level = 0.95)
       mktrend <<- list(stat = array(NA, 5))
       mktrend$stat[1] <<- unname(ci[2, 1])
       mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
@@ -196,7 +196,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   x1 = seq(1, length(index), 1) #as.numeric(names(index))
   y1 = unname(index)
   zsen = zyp.sen(y1 ~ x1)
-  ci = confint(zsen, level = 0.95)
+  ci = confint.zyp(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
   mktrend$stat[1] <<- unname(ci[2, 1])
   mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
@@ -214,33 +214,40 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     df = data.frame(months, years, unname(index))
     names(df) = c("months", "years", "values")
 
-    # assign function based on index
+    # assign function based on index and only apply function if there are a full 3 months per season (otherwise make missing)
     if (index.name %in% c("txx", "tnx", "rx1day", "rx5day", "rxnday", "cwd", "cdd")) {
-      f <- get("max", mode = "function")
+#      f <- get("max", mode = "function")
+	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,max(x,na.rm=FALSE)) }
     } else if (index.name %in% c("tnn", "txn")) {
-      f <- get("min", mode = "function")
+#      f <- get("min", mode = "function")
+	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,min(x,na.rm=FALSE)) }
     } else if (index.name %in% c("su", "tr", "txge30", "txge35", "r10mm", "r20mm", "rnnmm", "prcptot")) {
-      f <- get("sum", mode = "function")
+#      f <- get("sum", mode = "function")
+	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,sum(x,na.rm=FALSE)) }
     } else {
-      f <- get("mean", mode = "function")
+#      f <- get("mean", mode = "function")
+	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,mean(x,na.rm=FALSE)) }
     }
     ym <- as.yearmon(paste(months, years), "%m %Y")
     yq <- as.yearqtr(head(ym + 1 / 12, -1))
-    Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f)
+#    Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f)
+    Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f,na.action=NULL)
 
     names(Ag) = c("yq", "values")
-    DJF = Ag[seq(1, length(Ag$yq), 4),]
-    MAM = Ag[seq(2, length(Ag$yq), 4),]
-    JJA = Ag[seq(3, length(Ag$yq), 4),]
-    SON = Ag[seq(4, length(Ag$yq), 4),]
-
+    DJF = Ag[grepl("Q1",Ag$yq),] #Ag[seq(1, length(Ag$yq), 4),]
+    MAM = Ag[grepl("Q2",Ag$yq),] #Ag[seq(2, length(Ag$yq), 4),]
+    JJA = Ag[grepl("Q3",Ag$yq),] #Ag[seq(3, length(Ag$yq), 4),]
+    SON = Ag[grepl("Q4",Ag$yq),] #Ag[seq(4, length(Ag$yq), 4),]
+#if (index.name == "tmm") { browser() }
     # remove first DJF value since it isn't complete (no December of preceeding year). The last DJF value is already excluded.
-    DJF$values[1] = NA
+    # DON'T include this line since it makes the assumption a user's data starts in January. Better just to note that trends include
+    # incomplete seasons at beginning/end (and whenever months are missing).
+    #DJF$values[1] = NA
 
     x1 = seq(1, length(DJF$values), 1) #as.numeric(names(index))
     y1 = unname(DJF$values)
     zsen = zyp.sen(y1 ~ x1)
-    ci = confint(zsen, level = 0.95)
+    ci = confint.zyp(zsen, level = 0.95)
     DJFtrend <<- list(stat = array(NA, 5))
     DJFtrend$stat[1] <<- unname(ci[2, 1])
     DJFtrend$stat[2] <<- unname(zsen[[1]][2])
@@ -249,7 +256,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
     y1 = unname(MAM$values)
     zsen = zyp.sen(y1 ~ x1)
-    ci = confint(zsen, level = 0.95)
+    ci = confint.zyp(zsen, level = 0.95)
     MAMtrend <<- list(stat = array(NA, 5))
     MAMtrend$stat[1] <<- unname(ci[2, 1])
     MAMtrend$stat[2] <<- unname(zsen[[1]][2])
@@ -258,7 +265,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
     y1 = unname(JJA$values)
     zsen = zyp.sen(y1 ~ x1)
-    ci = confint(zsen, level = 0.95)
+    ci = confint.zyp(zsen, level = 0.95)
     JJAtrend <<- list(stat = array(NA, 5))
     JJAtrend$stat[1] <<- unname(ci[2, 1])
     JJAtrend$stat[2] <<- unname(zsen[[1]][2])
@@ -267,7 +274,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
     y1 = unname(SON$values)
     zsen = zyp.sen(y1 ~ x1)
-    ci = confint(zsen, level = 0.95)
+    ci = confint.zyp(zsen, level = 0.95)
     SONtrend <<- list(stat = array(NA, 5))
     SONtrend$stat[1] <<- unname(ci[2, 1])
     SONtrend$stat[2] <<- unname(zsen[[1]][2])

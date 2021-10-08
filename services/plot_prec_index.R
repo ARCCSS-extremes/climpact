@@ -20,11 +20,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
     x1   <- seq(1, length(index[time, ]), 1) #as.numeric(names(index))
     y1   <- unname(index[time, ])
     mktrend <<- list(stat = array(NA, 5))
-    if(sum(!is.na(y1)) < 10) {
+    if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
     } else {
 	    zsen <- zyp.sen(y1 ~ x1)
-	    ci   <- confint(zsen, level = 0.95)
+	    ci   <- confint.zyp(zsen, level = 0.95)
 	    mktrend$stat[1] <<- unname(ci[2, 1])
 	    mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 	    mktrend$stat[3] <<- unname(ci[2, 2])
@@ -55,11 +55,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       y1 = unname(DJF$values)
 
       DJFtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
 	      print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      DJFtrend$stat[1] <<- unname(ci[2, 1])
 	      DJFtrend$stat[2] <<- unname(zsen[[1]][2])
 	      DJFtrend$stat[3] <<- unname(ci[2, 2])
@@ -68,11 +68,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
       y1 = unname(MAM$values)
       MAMtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      MAMtrend$stat[1] <<- unname(ci[2, 1])
 	      MAMtrend$stat[2] <<- unname(zsen[[1]][2])
 	      MAMtrend$stat[3] <<- unname(ci[2, 2])
@@ -81,11 +81,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
       y1 = unname(JJA$values)
       JJAtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      JJAtrend$stat[1] <<- unname(ci[2, 1])
 	      JJAtrend$stat[2] <<- unname(zsen[[1]][2])
 	      JJAtrend$stat[3] <<- unname(ci[2, 2])
@@ -95,11 +95,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       y1 = unname(SON$values)
       SONtrend <<- list(stat = array(NA, 5))
 
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      SONtrend$stat[1] <<- unname(ci[2, 1])
 	      SONtrend$stat[2] <<- unname(zsen[[1]][2])
 	      SONtrend$stat[3] <<- unname(ci[2, 2])
@@ -121,11 +121,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(A$values), 1) #as.numeric(names(index))
       y1 = unname(A$values)
       Atrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      Atrend$stat[1] <<- unname(ci[2, 1])
 	      Atrend$stat[2] <<- unname(zsen[[1]][2])
 	      Atrend$stat[3] <<- unname(ci[2, 2])
@@ -134,11 +134,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(O$values), 1) #as.numeric(names(index))
       y1 = unname(O$values)
       Otrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      Otrend$stat[1] <<- unname(ci[2, 1])
 	      Otrend$stat[2] <<- unname(zsen[[1]][2])
 	      Otrend$stat[3] <<- unname(ci[2, 2])
@@ -157,11 +157,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(D$values), 1) #as.numeric(names(index))
       y1 = unname(D$values)
       Dtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      Dtrend$stat[1] <<- unname(ci[2, 1])
 	      Dtrend$stat[2] <<- unname(zsen[[1]][2])
 	      Dtrend$stat[3] <<- unname(ci[2, 2])
@@ -170,11 +170,11 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(J$values), 1) #as.numeric(names(index))
       y1 = unname(J$values)
       Jtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < 10) {
+      if(sum(!is.na(y1)) < min_trend) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
-	      ci = confint(zsen, level = 0.95)
+	      ci = confint.zyp(zsen, level = 0.95)
 	      Jtrend$stat[1] <<- unname(ci[2, 1])
 	      Jtrend$stat[2] <<- unname(zsen[[1]][2])
 	      Jtrend$stat[3] <<- unname(ci[2, 2])
