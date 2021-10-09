@@ -38,10 +38,12 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       zsen = zyp.sen(y1 ~ x1)
       ci = confint.zyp(zsen, level = 0.95)
       mktrend <<- list(stat = array(NA, 5))
-      mktrend$stat[1] <<- unname(ci[2, 1])
-      mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
-      mktrend$stat[3] <<- unname(ci[2, 2])
-      mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+      if (min_trend_data(y1)) {
+	      mktrend$stat[1] <<- unname(ci[2, 1])
+	      mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
+	      mktrend$stat[3] <<- unname(ci[2, 2])
+	      mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+      }
 
       plotx((metadata$date.years), index[def, asp,], main = gsub('\\*', unit, plot.title), ylab = unit, xlab = x.label, index.name = index.name, sub = sub)
 
@@ -139,12 +141,13 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
 
   # NOTE by nherold. The zyp.sen function in some cases returns an intercept of NA even though there is a valid slope. This seems erroneous and results in slopes being
   # printed but prevents a trend line from being plotted! Must fix. If this is a bug in the zyp package then need to try another package.
-  if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
+#  if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
+  if (min_trend_data(y) && (!is.null(mktrend$stat[2])))
   {
     subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
     #abline(mktrend$stat[4],mktrend$stat[2])
   } else {
-    subtit <- paste0("No linear trend due to insufficient valid data points (", min_trend, ").")
+    subtit <- paste0("NO LINEAR TREND: requires at least ", min_trend, " data points and ", min_trend_proportion*100, "% of time-series to be valid.")
   }
 
   #	tmp_lowess=lowess(tmp_seq[!is.na(y)], y[!is.na(y)])   #xy[,2])
@@ -167,6 +170,17 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
   suppressWarnings(par(old.par)) # restore previous par settings. Suppress warnings regarding parameters that cannot be set.
 }
 # end of plotx
+
+# function to check if minimum data requirements are met for trend calculation
+#  - input is an array of numbers (e.g. seasonal or annual values of a climate variable)
+#  - output is a boolean indicating whether the minimum requirements have been met (TRUE) or not (FALSE)
+min_trend_data <- function(climate_data) {
+	total_points = length(climate_data)
+	#num_na = sum(is.na(climate_data))
+	num_valid = sum(!is.na(climate_data))
+
+	if(num_valid/total_points >= min_trend_proportion && num_valid >= min_trend) { return(TRUE) } else { return(FALSE) }
+}
 
 # plot.index
 plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL) {
@@ -198,11 +212,16 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   zsen = zyp.sen(y1 ~ x1)
   ci = confint.zyp(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
-  mktrend$stat[1] <<- unname(ci[2, 1])
-  mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
-  mktrend$stat[3] <<- unname(ci[2, 2])
-  mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+#  if (index.name == "tmm") { browser() }
+  # calculate trends if minimum data requirements are met
+  if (min_trend_data(as.numeric(index))) {
+    mktrend$stat[1] <<- unname(ci[2, 1])
+    mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
+    mktrend$stat[3] <<- unname(ci[2, 2])
+    mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+  }
 
+  # Create seasonal trends if this is a monthly index
   years = as.numeric(substr(names(index), 1, 4))
   firstyear = years[1]
   if (sum(years == firstyear) > 1) {
@@ -215,22 +234,18 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     names(df) = c("months", "years", "values")
 
     # assign function based on index and only apply function if there are a full 3 months per season (otherwise make missing)
+    min_months = 3 # minimum months needed for each season to be included
     if (index.name %in% c("txx", "tnx", "rx1day", "rx5day", "rxnday", "cwd", "cdd")) {
-#      f <- get("max", mode = "function")
-	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,max(x,na.rm=FALSE)) }
+	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,max(x,na.rm=FALSE)) }
     } else if (index.name %in% c("tnn", "txn")) {
-#      f <- get("min", mode = "function")
-	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,min(x,na.rm=FALSE)) }
+	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,min(x,na.rm=FALSE)) }
     } else if (index.name %in% c("su", "tr", "txge30", "txge35", "r10mm", "r20mm", "rnnmm", "prcptot")) {
-#      f <- get("sum", mode = "function")
-	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,sum(x,na.rm=FALSE)) }
+	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,sum(x,na.rm=FALSE)) }
     } else {
-#      f <- get("mean", mode = "function")
-	f <-function(x)  { ifelse(sum(!is.na(x))<3,NA,mean(x,na.rm=FALSE)) }
+	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,mean(x,na.rm=FALSE)) }
     }
     ym <- as.yearmon(paste(months, years), "%m %Y")
     yq <- as.yearqtr(head(ym + 1 / 12, -1))
-#    Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f)
     Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f,na.action=NULL)
 
     names(Ag) = c("yq", "values")
@@ -238,47 +253,56 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     MAM = Ag[grepl("Q2",Ag$yq),] #Ag[seq(2, length(Ag$yq), 4),]
     JJA = Ag[grepl("Q3",Ag$yq),] #Ag[seq(3, length(Ag$yq), 4),]
     SON = Ag[grepl("Q4",Ag$yq),] #Ag[seq(4, length(Ag$yq), 4),]
-#if (index.name == "tmm") { browser() }
+
     # remove first DJF value since it isn't complete (no December of preceeding year). The last DJF value is already excluded.
     # DON'T include this line since it makes the assumption a user's data starts in January. Better just to note that trends include
     # incomplete seasons at beginning/end (and whenever months are missing).
     #DJF$values[1] = NA
 
-    x1 = seq(1, length(DJF$values), 1) #as.numeric(names(index))
-    y1 = unname(DJF$values)
-    zsen = zyp.sen(y1 ~ x1)
-    ci = confint.zyp(zsen, level = 0.95)
+    # check minimum data requirements are met
     DJFtrend <<- list(stat = array(NA, 5))
-    DJFtrend$stat[1] <<- unname(ci[2, 1])
-    DJFtrend$stat[2] <<- unname(zsen[[1]][2])
-    DJFtrend$stat[3] <<- unname(ci[2, 2])
+    if (min_trend_data(DJF[[2]])) {
+        x1 = seq(1, length(DJF$values), 1) #as.numeric(names(index))
+        y1 = unname(DJF$values)
+        zsen = zyp.sen(y1 ~ x1)
+        ci = confint.zyp(zsen, level = 0.95)
+        DJFtrend$stat[1] <<- unname(ci[2, 1])
+        DJFtrend$stat[2] <<- unname(zsen[[1]][2])
+        DJFtrend$stat[3] <<- unname(ci[2, 2])
+    }
 
-    x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
-    y1 = unname(MAM$values)
-    zsen = zyp.sen(y1 ~ x1)
-    ci = confint.zyp(zsen, level = 0.95)
     MAMtrend <<- list(stat = array(NA, 5))
-    MAMtrend$stat[1] <<- unname(ci[2, 1])
-    MAMtrend$stat[2] <<- unname(zsen[[1]][2])
-    MAMtrend$stat[3] <<- unname(ci[2, 2])
+    if (min_trend_data(MAM[[2]])) {
+        x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
+        y1 = unname(MAM$values)
+        zsen = zyp.sen(y1 ~ x1)
+        ci = confint.zyp(zsen, level = 0.95)
+        MAMtrend$stat[1] <<- unname(ci[2, 1])
+        MAMtrend$stat[2] <<- unname(zsen[[1]][2])
+        MAMtrend$stat[3] <<- unname(ci[2, 2])
+    }
 
-    x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
-    y1 = unname(JJA$values)
-    zsen = zyp.sen(y1 ~ x1)
-    ci = confint.zyp(zsen, level = 0.95)
     JJAtrend <<- list(stat = array(NA, 5))
-    JJAtrend$stat[1] <<- unname(ci[2, 1])
-    JJAtrend$stat[2] <<- unname(zsen[[1]][2])
-    JJAtrend$stat[3] <<- unname(ci[2, 2])
+    if (min_trend_data(JJA[[2]])) {
+        x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
+        y1 = unname(JJA$values)
+        zsen = zyp.sen(y1 ~ x1)
+        ci = confint.zyp(zsen, level = 0.95)
+        JJAtrend$stat[1] <<- unname(ci[2, 1])
+        JJAtrend$stat[2] <<- unname(zsen[[1]][2])
+        JJAtrend$stat[3] <<- unname(ci[2, 2])
+    }
 
-    x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
-    y1 = unname(SON$values)
-    zsen = zyp.sen(y1 ~ x1)
-    ci = confint.zyp(zsen, level = 0.95)
     SONtrend <<- list(stat = array(NA, 5))
-    SONtrend$stat[1] <<- unname(ci[2, 1])
-    SONtrend$stat[2] <<- unname(zsen[[1]][2])
-    SONtrend$stat[3] <<- unname(ci[2, 2])
+    if (min_trend_data(SON[[2]])) {
+        x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
+        y1 = unname(SON$values)
+        zsen = zyp.sen(y1 ~ x1)
+        ci = confint.zyp(zsen, level = 0.95)
+        SONtrend$stat[1] <<- unname(ci[2, 1])
+        SONtrend$stat[2] <<- unname(zsen[[1]][2])
+        SONtrend$stat[3] <<- unname(ci[2, 2])
+    }
   }
 
   namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".png"))

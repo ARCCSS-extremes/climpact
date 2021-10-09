@@ -20,7 +20,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
     x1   <- seq(1, length(index[time, ]), 1) #as.numeric(names(index))
     y1   <- unname(index[time, ])
     mktrend <<- list(stat = array(NA, 5))
-    if(sum(!is.na(y1)) < min_trend) {
+    if(!min_trend_data(y1)) {
               print("Skipping trend calculation due to insufficient data.")
     } else {
 	    zsen <- zyp.sen(y1 ~ x1)
@@ -43,19 +43,22 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
     df <- data.frame(monthsGLOB, yearsGLOB, y)
     names(df) <- c("months", "years", "values")
 
+    # function to apply across SPI/SPEI months to get seasonal values
+    f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,mean(x,na.rm=FALSE)) }
+
     # if SPI/SPEI 3 month then calculate the trend and write out.
     if (times[time] == 3) {
       # extract every Feb, May, Aug and Nov month to represent DJF, MAM, JJA and SON respectively.
-      DJF = df[seq(2, length(y), 12),]
-      MAM = df[seq(5, length(y), 12),]
-      JJA = df[seq(8, length(y), 12),]
-      SON = df[seq(11, length(y), 12),]
+      DJF = df[df$months==2,,]
+      MAM = df[df$months==5,,]
+      JJA = df[df$months==8,,]
+      SON = df[df$months==11,,]
 
-      x1 = seq(1, length(DJF$values), 1) #as.numeric(names(index))
+      x1 = seq(1, length(DJF$values), 1)
       y1 = unname(DJF$values)
 
       DJFtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
 	      print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -68,7 +71,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
       y1 = unname(MAM$values)
       MAMtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -81,7 +84,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
       y1 = unname(JJA$values)
       JJAtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -94,8 +97,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
       y1 = unname(SON$values)
       SONtrend <<- list(stat = array(NA, 5))
-
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -115,13 +117,14 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       cat(file = trend_file, paste(paste(index.name, times[time], sep = ""), "AUG", metadata$year.start, metadata$year.end, JJAtrend[[1]][1], JJAtrend[[1]][2], JJAtrend[[1]][3], sep = ","), fill = 180, append = T)
       cat(file = trend_file, paste(paste(index.name, times[time], sep = ""), "NOV", metadata$year.start, metadata$year.end, SONtrend[[1]][1], SONtrend[[1]][2], SONtrend[[1]][3], sep = ","), fill = 180, append = T)
     } else if (times[time] == 6) {
-      A = df[seq(4, length(y), 12),]
-      O = df[seq(10, length(y), 12),]
+      # extract August and October months for 6 month SPI/SPEI values
+      A = df[df$months==8,,] 
+      O = df[df$months==10,,]  
 
       x1 = seq(1, length(A$values), 1) #as.numeric(names(index))
       y1 = unname(A$values)
       Atrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -134,7 +137,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(O$values), 1) #as.numeric(names(index))
       y1 = unname(O$values)
       Otrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -151,13 +154,14 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       cat(file = trend_file, paste(paste(index.name, times[time], sep = ""), "OCT", metadata$year.start, metadata$year.end, Otrend[[1]][1], Otrend[[1]][2], Otrend[[1]][3], sep = ","), fill = 180, append = T)
 
     } else if (times[time] == 12) {
-      J = df[seq(6, length(y), 12),]
-      D = df[seq(12, length(y), 12),]
+      # extract January and December for SPI/SPEI 12 month values
+      J = df[df$months==1,,]
+      D = df[df$months==12,,]
 
       x1 = seq(1, length(D$values), 1) #as.numeric(names(index))
       y1 = unname(D$values)
       Dtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
@@ -170,7 +174,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       x1 = seq(1, length(J$values), 1) #as.numeric(names(index))
       y1 = unname(J$values)
       Jtrend <<- list(stat = array(NA, 5))
-      if(sum(!is.na(y1)) < min_trend) {
+      if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
 	      zsen = zyp.sen(y1 ~ x1)
