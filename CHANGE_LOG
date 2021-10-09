@@ -1,3 +1,8 @@
+3.1.1   9 October 2021
+* Fixed a bug for station-based calculations where seasonal trends in the trends CSV file would be incorrect if there were missing months in the user data.
+  Thanks to S. McGree.
+* Better enforcing of minimum data requirements for trend calculations and added requirement of at least 70% of time series to be present.
+
 3.1.0   19 July 2021
 * Fixed a bug affecting station-based calculations of growing season length (GSL) and the heatwave indices (Tx90, Tn90 and EHF-PA13) which assumed stations were in the northern hemisphere even if 
   the provided latitude was in the southern hemisphere.
