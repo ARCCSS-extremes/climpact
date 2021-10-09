@@ -551,7 +551,7 @@ To calculate all of the Climpact indices time-series of daily minimum temperatur
 |WSDId|User-defined WSDI|Annual number of days contributing to events where d or more consecutive days experience TX > 90th percentile|Number of days contributing to a warm period (where the minimum length is user-specified)|days|Ann|H, AFS, WRH|
 |CSDI|Cold spell duration indicator|Annual number of days contributing to events where 6 or more consecutive days experience TN < 10th percentile|Number of days contributing to a cold period (where the period has to be at least 6 days long)|days|Ann|H, AFS|
 |CSDId|User-defined CSDI|Annual number of days contributing to events where d or more consecutive days experience TN < 10th percentile|Number of days contributing to a cold period (where the minimum length is user-specified)|days|Ann|H, AFS, WRH|
-|TXgt50p|Fraction of days with above average temperature|Percentage of days where TX > 50th percentile|Fraction of days with above average temperature|%|Mon/Ann|H, AFS, WRH|
+|TXgt50p|Fraction of days with temperatures above the median|Percentage of days where TX > 50th percentile|Fraction of days with above-median temperature|%|Mon/Ann|H, AFS, WRH|
 |TX95t|Very warm day threshold|Value of 95th percentile of TX|A threshold where days above this temperature would be classified as very warm|°C|Daily|H, AFS|
 |TMge5|TM of at least 5°C|Number of days when TM >= 5 °C|Days when average temperature is at least 5°C|days|Mon/Ann|AFS|
 |TMlt5|TM below 5°C|Number of days when TM < 5 °C|Days when average temperature is below 5°C|days|Mon/Ann|AFS|
