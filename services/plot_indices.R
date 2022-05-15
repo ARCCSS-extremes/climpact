@@ -33,9 +33,12 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       if ((definitions[def] == "EHF" || definitions[def] == "ECF") && any(aspects[asp] == "HWM", aspects[asp] == "HWA")) { unit = "°C^2"; Encoding(unit) <- "UTF-8" } else unit = units[asp]
 
       #mktrend <<- autotrend(index[def,asp,],icor=1)
-      x1 = seq(1, length(index[def, asp,]), 1) #as.numeric(names(index))
+      x1 = seq(0, length(index[def, asp,])-1, 1) #as.numeric(names(index))
       y1 = unname(index[def, asp,])
-      zsen = zyp.sen(y1 ~ x1)
+      x2 = x1[!is.na(y1)]
+      y2 = y1[!is.na(y1)]
+
+      zsen = zyp.sen(y2 ~ x2)
       ci = confint.zyp(zsen, level = 0.95)
       mktrend <<- list(stat = array(NA, 5))
       if (min_trend_data(y1)) {
@@ -43,6 +46,7 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
 	      mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 	      mktrend$stat[3] <<- unname(ci[2, 2])
 	      mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+	      mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
       plotx((metadata$date.years), index[def, asp,], main = gsub('\\*', unit, plot.title), ylab = unit, xlab = x.label, index.name = index.name, sub = sub)
@@ -63,7 +67,7 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
 
 # plotx
 # make plots, this is called twice to make image and pdf files.
-plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = NULL, sub = "") {
+plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 1, index.name = NULL, sub = "") {
   if (all(is.na(y))) { print("NO DATA TO PLOT", quote = FALSE); return() }
   Encoding(main) <- "UTF-8"
   Encoding(sub) <- "UTF-8"
@@ -127,36 +131,20 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 0, index.name = N
     #			xy <- cbind(x, y)
   }
   
-  if (opt == 1) return() # no need to plot trend/fitting curve.
-  if (opt == 2) {
-    abline(h = 0.)
-    return()
-  }
-  # for spei & spi only!
-  # xtmp = x[!is.na(xy)]
-  # xy <- na.omit(xy)
-  tmp_seq = 1:length(x)
-
-
 
   # NOTE by nherold. The zyp.sen function in some cases returns an intercept of NA even though there is a valid slope. This seems erroneous and results in slopes being
   # printed but prevents a trend line from being plotted! Must fix. If this is a bug in the zyp package then need to try another package.
-#  if ((sum(is.na(y) == FALSE) >= min_trend) && (!is.null(mktrend$stat[2]))) # && (!is.na(mktrend$stat[4])))
-  if (min_trend_data(y) && (!is.null(mktrend$stat[2])))
-  {
-    subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3)) # least squares regression
-    #abline(mktrend$stat[4],mktrend$stat[2])
-  } else {
-    subtit <- paste0("NO LINEAR TREND: requires at least ", min_trend, " data points and ", min_trend_proportion*100, "% of time-series to be valid.")
-  }
-
-  #	tmp_lowess=lowess(tmp_seq[!is.na(y)], y[!is.na(y)])   #xy[,2])
-  #	lines(tmp_lowess, lwd = 3, lty = 2, col = "red")  # add fitting curve
-
-  # add mktrend line. nherold.
-  #	if(!is.na(mktrend$stat[4]) && !is.na(mktrend$stat[2])) {
-  #		abline(mktrend$stat[4],mktrend$stat[2])
-  #	}
+  # 	JAN-2022: Have implemented a workaround that simply involves manually removing NA values from 'y' and the corresponding values from 'x'.
+  if (opt==1) {
+	if (min_trend_data(y) && (!is.null(mktrend$stat[2])))
+	{
+	  subtit <- paste0("Sen's slope = ", round(mktrend$stat[2], 3), "   lower bound = ", round(mktrend$stat[1], 3), ",   upper bound = ", round(mktrend$stat[3], 3),",   p-value = ",
+			   round(mktrend$stat[5],3))
+	  abline(mktrend$stat[4],mktrend$stat[2],col='darkred',lwd=2)
+	} else {
+	  subtit <- paste0("NO LINEAR TREND: requires at least ", min_trend, " data points and ", min_trend_proportion*100, "% of time-series to be valid.")
+	}
+  } else { subtit <- '' }
 
 
 
@@ -207,11 +195,14 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     else if (freq == "annual") { freq = "ANN" }
   }
 
-  x1 = seq(1, length(index), 1) #as.numeric(names(index))
+  x1 = seq(0, length(index)-1, 1) #as.numeric(names(index))
   y1 = unname(index)
-  zsen = zyp.sen(y1 ~ x1)
+  x2 = x1[!is.na(y1)]
+  y2 = y1[!is.na(y1)]
+  zsen = zyp.sen(y2 ~ x2)
   ci = confint.zyp(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
+
 #  if (index.name == "tmm") { browser() }
   # calculate trends if minimum data requirements are met
   if (min_trend_data(as.numeric(index))) {
@@ -219,6 +210,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
     mktrend$stat[3] <<- unname(ci[2, 2])
     mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+    mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
   }
 
   # Create seasonal trends if this is a monthly index
@@ -262,46 +254,58 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     # check minimum data requirements are met
     DJFtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(DJF[[2]])) {
-        x1 = seq(1, length(DJF$values), 1) #as.numeric(names(index))
+        x1 = seq(0, length(DJF$values)-1, 1) #as.numeric(names(index))
         y1 = unname(DJF$values)
-        zsen = zyp.sen(y1 ~ x1)
+	x2 = x1[!is.na(y1)]
+	y2 = y1[!is.na(y1)]
+        zsen = zyp.sen(y2 ~ x2)
         ci = confint.zyp(zsen, level = 0.95)
         DJFtrend$stat[1] <<- unname(ci[2, 1])
         DJFtrend$stat[2] <<- unname(zsen[[1]][2])
         DJFtrend$stat[3] <<- unname(ci[2, 2])
+	DJFtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
     }
 
     MAMtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(MAM[[2]])) {
-        x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
+        x1 = seq(0, length(MAM$values)-1, 1) #as.numeric(names(index))
         y1 = unname(MAM$values)
-        zsen = zyp.sen(y1 ~ x1)
+        x2 = x1[!is.na(y1)]
+        y2 = y1[!is.na(y1)]
+        zsen = zyp.sen(y2 ~ x2)
         ci = confint.zyp(zsen, level = 0.95)
         MAMtrend$stat[1] <<- unname(ci[2, 1])
         MAMtrend$stat[2] <<- unname(zsen[[1]][2])
         MAMtrend$stat[3] <<- unname(ci[2, 2])
+	MAMtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
     }
 
     JJAtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(JJA[[2]])) {
-        x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
+        x1 = seq(0, length(JJA$values)-1, 1) #as.numeric(names(index))
         y1 = unname(JJA$values)
-        zsen = zyp.sen(y1 ~ x1)
+        x2 = x1[!is.na(y1)]
+        y2 = y1[!is.na(y1)]
+        zsen = zyp.sen(y2 ~ x2)
         ci = confint.zyp(zsen, level = 0.95)
         JJAtrend$stat[1] <<- unname(ci[2, 1])
         JJAtrend$stat[2] <<- unname(zsen[[1]][2])
         JJAtrend$stat[3] <<- unname(ci[2, 2])
+	JJAtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
     }
 
     SONtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(SON[[2]])) {
-        x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
+        x1 = seq(0, length(SON$values)-1, 1) #as.numeric(names(index))
         y1 = unname(SON$values)
-        zsen = zyp.sen(y1 ~ x1)
+        x2 = x1[!is.na(y1)]
+        y2 = y1[!is.na(y1)]
+        zsen = zyp.sen(y2 ~ x2)
         ci = confint.zyp(zsen, level = 0.95)
         SONtrend$stat[1] <<- unname(ci[2, 1])
         SONtrend$stat[2] <<- unname(zsen[[1]][2])
         SONtrend$stat[3] <<- unname(ci[2, 2])
+	SONtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
     }
   }
 
@@ -309,16 +313,21 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   png(file = namp, width = 800, height = 600)
 
   dev0 = dev.cur()
-  if (index.name == "tx95t") { xdata <- 1:length(index) }
-  else xdata <- names(index)
+  if (index.name == "tx95t") { 
+	  xdata <- 1:length(index) 
+  	  plotopt = 0 
+  } else { 
+	  plotopt = 1
+  	  xdata <- names(index)
+  }
 
   plot.title <- paste0("Station: ", metadata$title.station)
   plotx(xdata, index, main = gsub('\\*', tmp.name, plot.title),
-    ylab = index.units, xlab = x.label, index.name = index.name, sub = sub)
+    ylab = index.units, xlab = x.label, index.name = index.name, sub = sub, opt=plotopt)
 
   dev.set(which = pdf.dev)
   plotx(xdata, index, main = gsub('\\*', tmp.name, plot.title),
-    ylab = index.units, xlab = x.label, index.name = index.name, sub = sub)
+    ylab = index.units, xlab = x.label, index.name = index.name, sub = sub, opt=plotopt)
   #	dev.copy()
   dev.off(dev0)
 }

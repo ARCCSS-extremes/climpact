@@ -23,12 +23,15 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
     if(!min_trend_data(y1)) {
               print("Skipping trend calculation due to insufficient data.")
     } else {
-	    zsen <- zyp.sen(y1 ~ x1)
+            x2 = x1[!is.na(y1)]
+	    y2 = y1[!is.na(y1)]
+	    zsen <- zyp.sen(y2 ~ x2)
 	    ci   <- confint.zyp(zsen, level = 0.95)
 	    mktrend$stat[1] <<- unname(ci[2, 1])
 	    mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
 	    mktrend$stat[3] <<- unname(ci[2, 2])
 	    mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+	    mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
     }
 
     dev0 <- dev.cur()
@@ -54,57 +57,69 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       JJA = df[df$months==8,,]
       SON = df[df$months==11,,]
 
-      x1 = seq(1, length(DJF$values), 1)
+      x1 = seq(0, length(DJF$values)-1, 1)
       y1 = unname(DJF$values)
 
       DJFtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
 	      print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      DJFtrend$stat[1] <<- unname(ci[2, 1])
 	      DJFtrend$stat[2] <<- unname(zsen[[1]][2])
 	      DJFtrend$stat[3] <<- unname(ci[2, 2])
+	      DJFtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
-      x1 = seq(1, length(MAM$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(MAM$values)-1, 1) #as.numeric(names(index))
       y1 = unname(MAM$values)
       MAMtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      MAMtrend$stat[1] <<- unname(ci[2, 1])
 	      MAMtrend$stat[2] <<- unname(zsen[[1]][2])
 	      MAMtrend$stat[3] <<- unname(ci[2, 2])
+	      MAMtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
-      x1 = seq(1, length(JJA$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(JJA$values)-1, 1) #as.numeric(names(index))
       y1 = unname(JJA$values)
       JJAtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      JJAtrend$stat[1] <<- unname(ci[2, 1])
 	      JJAtrend$stat[2] <<- unname(zsen[[1]][2])
 	      JJAtrend$stat[3] <<- unname(ci[2, 2])
+	      JJAtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
-      x1 = seq(1, length(SON$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(SON$values)-1, 1) #as.numeric(names(index))
       y1 = unname(SON$values)
       SONtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      SONtrend$stat[1] <<- unname(ci[2, 1])
 	      SONtrend$stat[2] <<- unname(zsen[[1]][2])
 	      SONtrend$stat[3] <<- unname(ci[2, 2])
+	      SONtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
       # DJFtrend<<-autotrend(DJF$values,icor=1)
@@ -121,30 +136,36 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       A = df[df$months==8,,] 
       O = df[df$months==10,,]  
 
-      x1 = seq(1, length(A$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(A$values)-1, 1) #as.numeric(names(index))
       y1 = unname(A$values)
       Atrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      Atrend$stat[1] <<- unname(ci[2, 1])
 	      Atrend$stat[2] <<- unname(zsen[[1]][2])
 	      Atrend$stat[3] <<- unname(ci[2, 2])
+	      Atrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
-      x1 = seq(1, length(O$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(O$values)-1, 1) #as.numeric(names(index))
       y1 = unname(O$values)
       Otrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      Otrend$stat[1] <<- unname(ci[2, 1])
 	      Otrend$stat[2] <<- unname(zsen[[1]][2])
 	      Otrend$stat[3] <<- unname(ci[2, 2])
+	      Otrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
       # Atrend = autotrend(A$values,icor=1)
@@ -158,30 +179,36 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       J = df[df$months==1,,]
       D = df[df$months==12,,]
 
-      x1 = seq(1, length(D$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(D$values)-1, 1) #as.numeric(names(index))
       y1 = unname(D$values)
       Dtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      Dtrend$stat[1] <<- unname(ci[2, 1])
 	      Dtrend$stat[2] <<- unname(zsen[[1]][2])
 	      Dtrend$stat[3] <<- unname(ci[2, 2])
+	      Dtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
-      x1 = seq(1, length(J$values), 1) #as.numeric(names(index))
+      x1 = seq(0, length(J$values)-1, 1) #as.numeric(names(index))
       y1 = unname(J$values)
       Jtrend <<- list(stat = array(NA, 5))
       if(!min_trend_data(as.numeric(y1))) {
               print("Skipping trend calculation due to insufficient data.")
       } else {
-	      zsen = zyp.sen(y1 ~ x1)
+	      x2 = x1[!is.na(y1)]
+              y2 = y1[!is.na(y1)]
+	      zsen = zyp.sen(y2 ~ x2)
 	      ci = confint.zyp(zsen, level = 0.95)
 	      Jtrend$stat[1] <<- unname(ci[2, 1])
 	      Jtrend$stat[2] <<- unname(zsen[[1]][2])
 	      Jtrend$stat[3] <<- unname(ci[2, 2])
+	      Jtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
       }
 
       # Jtrend = autotrend(J$values,icor=1)
