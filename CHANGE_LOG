@@ -1,3 +1,7 @@
+3.1.2   2 April 2022
+* Added linear trend line to plots.
+* Added the Mann-Kendall p-value to plots.
+
 3.1.1   9 October 2021
 * Fixed a bug for station-based calculations where seasonal trends in the trends CSV file would be incorrect if there were missing months in the user data.
   Thanks to S. McGree.
