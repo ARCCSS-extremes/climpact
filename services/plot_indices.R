@@ -38,16 +38,25 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       x2 = x1[!is.na(y1)]
       y2 = y1[!is.na(y1)]
 
-      zsen = zyp.sen(y2 ~ x2)
-      ci = confint.zyp(zsen, level = 0.95)
       mktrend <<- list(stat = array(NA, 5))
-      if (min_trend_data(y1)) {
-	      mktrend$stat[1] <<- unname(ci[2, 1])
-	      mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
-	      mktrend$stat[3] <<- unname(ci[2, 2])
-	      mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
-	      mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-      }
+      zsen = zyp.sen(y2 ~ x2)
+      out = tryCatch(
+            {
+                    ci = confint.zyp(zsen, level = 0.95)
+                    if (min_trend_data(y1)) {
+                             mktrend$stat[1] <<- unname(ci[2, 1])
+                             mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
+                             mktrend$stat[3] <<- unname(ci[2, 2])
+                             mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+                             mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+                     }
+            },error=function(cond) {
+                             mktrend$stat[1] <<- NA
+                             mktrend$stat[2] <<- NA
+                             mktrend$stat[3] <<- NA
+                             mktrend$stat[4] <<- NA
+                             mktrend$stat[5] <<- NA
+            })
 
       plotx((metadata$date.years), index[def, asp,], main = gsub('\\*', unit, plot.title), ylab = unit, xlab = x.label, index.name = index.name, sub = sub)
 
@@ -200,18 +209,24 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   x2 = x1[!is.na(y1)]
   y2 = y1[!is.na(y1)]
   zsen = zyp.sen(y2 ~ x2)
-  ci = confint.zyp(zsen, level = 0.95)
   mktrend <<- list(stat = array(NA, 5))
-
-#  if (index.name == "tmm") { browser() }
-  # calculate trends if minimum data requirements are met
-  if (min_trend_data(as.numeric(index))) {
-    mktrend$stat[1] <<- unname(ci[2, 1])
-    mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
-    mktrend$stat[3] <<- unname(ci[2, 2])
-    mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
-    mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-  }
+  out = tryCatch(
+        {
+                ci = confint.zyp(zsen, level = 0.95)
+                if (min_trend_data(y1)) {
+                         mktrend$stat[1] <<- unname(ci[2, 1])
+                         mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
+                         mktrend$stat[3] <<- unname(ci[2, 2])
+                         mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+                         mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+                 }
+        },error=function(cond) {
+                         mktrend$stat[1] <<- NA
+                         mktrend$stat[2] <<- NA
+                         mktrend$stat[3] <<- NA
+                         mktrend$stat[4] <<- NA
+                         mktrend$stat[5] <<- NA
+        })
 
   # Create seasonal trends if this is a monthly index
   years = as.numeric(substr(names(index), 1, 4))
