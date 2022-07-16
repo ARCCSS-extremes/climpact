@@ -1,5 +1,5 @@
 3.1.3   16 July 2022
-* Prevent crashing due to problematic MK trend fitting.
+* Prevent crashing due to problematic MK tests.
 
 3.1.2   2 April 2022
 * Added linear trend line to plots.
