@@ -25,6 +25,13 @@ read_and_qc_check <- function(progress,
   return(qcResult)
 }
 
+warningDialog_baseperiod <- function(msg) {
+  modalDialog(title = "Warning",
+    HTML(print(msg)),
+    footer = tagList(modalButton("I understand"))
+  )
+}
+
 # This function runs QC functionality on the user specified input data. It requres as input;
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
@@ -36,9 +43,35 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # Check base period is valid when no thresholds loaded
   # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
-    if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
-	return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct by refreshing this web page and entering a new base period in step 1.")))
+    firstyr = as.numeric(format(metadata$dates[1], format = "%Y"))
+    lastyr = as.numeric(format(metadata$dates[length(metadata$dates)], format = "%Y"))
+    firstyr_valid = ifelse(metadata$base.start < firstyr,firstyr,metadata$base.start)
+    lastyr_valid = ifelse(metadata$base.end > lastyr,lastyr,metadata$base.end)
+    ideal_duration = metadata$base.end - metadata$base.start + 1
+    valid_duration = lastyr_valid - firstyr_valid + 1
+
+    # if user has entered a base period start year that is earlier than the base period end year
+    if (metadata$base.start > metadata$base.end) {
+      return(list(errors = paste("The start year of your base period is later than the end year, did you mean to have these the other way around? 
+      Please correct by refreshing this web page and re-entering a new base period in step 1.")))
     }
+
+    # If the user has enetered a base period that is not a complete subset of the provided data (this can happen for batch processing) then we
+    # do not calculate percentile indices.
+    # TODO: Could allow percentile indices to be calculated if a minimum percent of the ideal base period duration is present, but this is complicated
+    # by the fact that there could still be missing data. e.g. if only 90% of the ideal duration exists in the provided data, but only 95% of 
+    # THAT data is valid (which can only be checked later in the code), meaning there really is only 86% valid data in the base period.
+    if (metadata$base.start < firstyr | metadata$base.end > lastyr) {
+      warning_text = "WARNING: You have specified a base period that does not completely overlap with your data, if this was deliberate you can ignore this message. Otherwise, please refresh this webpage and enter a valid base period in Step 1."
+      showModal(warningDialog_baseperiod(warning_text))
+
+      # set flag to turn off computing of percentile indices.
+      calculate_pctl_indices = FALSE
+    } else { calculate_pctl_indices = TRUE }
+
+    # TODO: this shouldn't be a global variable, but the code needs refactoring to make it simple to feed this information back up 
+    # and into the index calculations.
+    assign("calculate_pctl_indices",calculate_pctl_indices,envir=.GlobalEnv)
   }
 
   # Fill in missing values. Some legacy lines here from when missing dates weren't filled in for the user.
