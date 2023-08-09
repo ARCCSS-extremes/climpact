@@ -129,13 +129,24 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     # Climdex functions only check if cio data are NULL.
     index.stored[index.stored == -Inf] <- NA
     write.index.csv(index.stored, index.name = tmp.index.name, freq = frequency, header = tmp.index.def, metadata, climdexInputParams, outputFolders)
-    plot.call(index.stored,
-      index.name = tmp.index.name,
-      index.units = as.character(index.list$Units[i]),
-      x.label = "Years",
-      sub = tmp.index.def,
-      freq = frequency,
-      metadata, outputFolders, pdf.dev)
+
+    tryCatch({
+      plot.call(index.stored,
+        index.name = tmp.index.name,
+        index.units = as.character(index.list$Units[i]),
+        x.label = "Years",
+        sub = tmp.index.def,
+        freq = frequency,
+        metadata, outputFolders, pdf.dev)
+        },error=function(error){
+          message('An error occurred while tryring to plot an index, here is the error message:')
+          print(error)
+          return(NA)
+        },warning=function(warning){
+          message('A warning occurred while tryring to plot an index, here is the warning:')
+          print(warning)
+          return(NA)
+        })
 
     if (exists("mktrend")) {
       cat(file = trend_file, paste(tmp.index.name, frequency, metadata$year.start, metadata$year.end, mktrend[[1]][1], mktrend[[1]][2], mktrend[[1]][3], sep = ","), fill = 180, append = T)
