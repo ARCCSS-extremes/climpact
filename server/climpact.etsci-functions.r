@@ -5,6 +5,8 @@
 
 library(climdex.pcic)
 library(SPEI)
+library(lmomco)
+library(LMoFit)
 
 software_id <- "3.1.4"
 
