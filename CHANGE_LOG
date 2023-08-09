@@ -1,3 +1,7 @@
+3.1.5   9 August 2023
+* Updated a reference to parameter distributions that was breaking the SPEI calculation (likely due to changes in the lmomco package).
+* Updated pacakge loading for SPEI dependencies.
+
 3.1.4   20 July 2023
 * Install climdex.pcic from a local file during installation.
 
