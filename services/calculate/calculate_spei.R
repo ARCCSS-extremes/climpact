@@ -46,7 +46,7 @@ calculate.spei <- function(metadata, cio, outputFolders, pdf.dev, custom_SPEI, i
       # Calculate evapotranspiration estimate and create time-series object.
       pet = as.numeric(hargreaves(tmin_monthly, tmax_monthly, lat = metadata$lat, Pre = prec_sum, na.rm = TRUE))
       dat = ts(prec_sum - pet, freq = 12, start = ts.start, end = ts.end)
-      index.store <- array(c(cspei(dat, na.rm = T, scale = c(3), ref.start = c(metadata$base.start, 1), ref.end = c(metadata$base.end, 12), basetmin = tnraw, basetmax = txraw, baseprec = praw, basetime = btime)$fitted,
+      index.store <- array(c(cspei(dat, na.rm = T, scale = c(3), ref.start = c(metadata$base.start, 1), ref.end = c(metadata$base.end, 12))$fitted,
           cspei(dat, na.rm = T, scale = c(6), ref.start = c(metadata$base.start, 1), ref.end = c(metadata$base.end, 12))$fitted,
           cspei(dat, na.rm = T, scale = c(12), ref.start = c(metadata$base.start, 1), ref.end = c(metadata$base.end, 12))$fitted,
           cspei(dat, na.rm = T, scale = c(custom_SPEI), ref.start = c(metadata$base.start, 1), ref.end = c(metadata$base.end, 12))$fitted),
