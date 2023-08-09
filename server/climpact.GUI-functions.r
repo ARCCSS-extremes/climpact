@@ -97,7 +97,6 @@ read_user_file <- function(user_file_path) {
 
     # Replace -99.9 data with NA
     if (!is.null(data)) {
-      print(str(data))
       data$prcp[data$prcp == -99.9] = NA
       data$tmax[data$tmax == -99.9] = NA
       data$tmin[data$tmin == -99.9] = NA

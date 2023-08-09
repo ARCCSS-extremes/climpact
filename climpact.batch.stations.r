@@ -43,7 +43,6 @@ read.file.list.metadata <- function(metadata_filepath) {
 strip_file_extension <- function(fileName) {
   file_parts <- strsplit(fileName, "\\.")[[1]]
   stripped <- substr(fileName, start = 1, stop = nchar(fileName) - nchar(file_parts[length(file_parts)]) - 1)
-#  print(paste0("input: ", fileName, " output: ", stripped))
   return(stripped)
 }
 
