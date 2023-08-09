@@ -102,7 +102,7 @@ cspei <- function(data, scale, kernel = list(type = 'rectangular', shift = 0),
           llpar <- parglo.maxlik(month, llpar$para)
         }
         # Compute standardized values
-        std[ff, s] <- qnorm(pglo(acu.pred[ff], llpar))
+        std[ff, s] <- qnorm(pglo(acu.pred[ff], llpar$para))
         coef[, s, c] <- llpar$para
       } else {
         # Probability of monthly precipitation = 0 (pze)
