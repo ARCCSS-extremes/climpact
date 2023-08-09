@@ -300,7 +300,6 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
 
   func <- lapply(1:length(func.names), function(n) do.call(functional::Curry, c(list(eval(parse(text=func.names[n]))), options[[n]])))
 
-#print(str(all.data)) # why is there no row.names in all.data anymore?
   names.func <- paste(index.data$Short.name,time_suffix,sep="_")	#all.data$row.names #paste(index.data$Short.name,index.data$Expert.team,
   names(func) <- names.func
   return(func[vars.list])

@@ -174,8 +174,6 @@ test.thresholds.create.and.indices <- function() {
   test.set <- paste("test", 1:6, "/", sep="")
   lapply(test.set[file.exists(test.set)], function(test) {
     input.file.list <- list.files(test, full.names=TRUE)
-    print(file.exists(input.file.list))
-    print(input.file.list)
     thresh.file <- tempfile()
     indices.dir.thresh <- tempdir()
     indices.dir.nothresh <- tempdir()
@@ -185,7 +183,6 @@ test.thresholds.create.and.indices <- function() {
     ## Compare to base data.
     test.file.list <- list.files(indices.dir.thresh, pattern="ETCCDI")
     lapply(test.file.list, function(fn) {
-      print(fn)
       f.test <- nc_open(paste(indices.dir.thresh, fn, sep="/"))
       f.correct <- nc_open(paste(correct.data.dir, fn, sep="/"))
 
@@ -211,8 +208,6 @@ parallel.thresholds.create.and.indices <- function() {
   test.set <- paste("test", 1:6, "/", sep="")
   lapply(test.set[file.exists(test.set)], function(test) {
     input.file.list <- list.files(test, full.names=TRUE)
-    print(file.exists(input.file.list))
-    print(input.file.list)
     thresh.file <- tempfile()
     indices.dir.thresh <- tempdir()
     indices.dir.nothresh <- tempdir()
