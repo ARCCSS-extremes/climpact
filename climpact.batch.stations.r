@@ -28,6 +28,7 @@ library(qpdf)
 source("models/climdexInputParams.R")
 source("server/climpact.GUI-functions.r")
 source("server/climpact.etsci-functions.r")
+source("server/global_variables.r")
 source("server/batch_stations.R")
 source("services/quality_control_checks.R")
 
