@@ -145,11 +145,11 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
         freq = frequency,
         metadata, outputFolders, pdf.dev)
         },error=function(error){
-          message('An error occurred while tryring to plot an index, here is the error message:')
+          message('An error occurred while trying to plot an index, here is the error message:')
           print(error)
           return(NA)
         },warning=function(warning){
-          message('A warning occurred while tryring to plot an index, here is the warning:')
+          message('A warning occurred while trying to plot an index, here is the warning:')
           print(warning)
           return(NA)
         })
