@@ -43,10 +43,10 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     tmp.index.name <- as.character(index.list$Short.name[i])
 
     # Skip this index if it's a percentile index and calculate_pctl_indices has been set to FALSE
-    if (calculate_pctl_indices == FALSE && index.list$Base.period.flag[i] == TRUE) {
-      print(paste0("Skipping ",tmp.index.name," since percentile indices are being omitted."))
-      next
-    }
+    # if (calculate_pctl_indices == FALSE && index.list$Base.period.flag[i] == TRUE) {
+    #   print(paste0("Skipping ",tmp.index.name," since percentile indices are being omitted."))
+    #   next
+    # }
     print(paste("calculating", tmp.index.name), quote = FALSE)
 
     if (!is.null(progress)) {

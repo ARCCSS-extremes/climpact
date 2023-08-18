@@ -15,10 +15,10 @@ source("services/calculate_indices.R")
 
 # return station metadata
 read.file.list.metadata <- function(metadata_filepath) {
-    metadataTable <- read.table(metadata_filepath,
-    header = TRUE,
-    col.names = c("station_file", "latitude", "longitude", "wsdin",   "csdin",   "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday",  "rnnmm", "txtn", "SPEI"),
-    colClasses = c("character",   "real",     "real",      "integer", "integer", "real",   "real",   "real",   "integer", "real",  "real", "integer"))
+  metadataTable <- read.table(metadata_filepath,
+  header = TRUE,
+  col.names = c("station_file", "latitude", "longitude", "wsdin",   "csdin",   "Tb_HDD", "Tb_CDD", "Tb_GDD", "rxnday",  "rnnmm", "txtn", "SPEI"),
+  colClasses = c("character",   "real",     "real",      "integer", "integer", "real",   "real",   "real",   "integer", "real",  "real", "integer"))
   return(metadataTable)
 }
 
@@ -45,9 +45,11 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
   numfiles <- length(batch_metadata$station_file)
   for (file.number in 1:numfiles) {
     # set error log file name remove if present from a past run of climpact
-    errorfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".error.txt"))
+    errorfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".errors.txt"))
+    warningfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".warnings.txt"))
 
     if(file_test("-f",errorfile)) { file.remove(errorfile) }
+    if(file_test("-f",warningfile)) { file.remove(warningfile) }
 
     currentFileName <- batch_metadata$station_file[file.number]
     msg <- paste("File", file.number, "of", numfiles, ":", currentFileName)
@@ -60,14 +62,24 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
       stationName <- strip_file_extension(fileName)
       outputFolders <- outputFolders(batchOutputFolder,stationName)
       qcResult <- suppressWarnings(checkStation(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, base.start, base.end, outputFolders))
+
+      # Print any QC warnings to file
+      if (qcResult$warnings != "") {
+        print(qcResult$warnings)
+        fileConn_warning<-file(warningfile)
+        writeLines(toString(qcResult$warnings), fileConn_warning)
+        close(fileConn_warning)
+      }
+
+      # Print any QC errors to file, otherwise calculate indices
       if (qcResult$errors == "") {
         # do index calculations
         calculateStationIndices(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, qcResult$metadata, qcResult$cio, outputFolders,errorfile)
       } else {
         # we had an error with this file
-	fileConn<-file(errorfile)
-	writeLines(toString(qcResult$errors), fileConn)
-	close(fileConn)
+        fileConn_error<-file(errorfile)
+        writeLines(toString(qcResult$errors), fileConn_error)
+        close(fileConn_error)
       }
     }
   }
