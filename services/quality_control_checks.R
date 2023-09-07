@@ -226,7 +226,7 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
       hist(prcp,
         main = paste("PRCP (>=1 mm) histogram for ", metadata$stationName, sep = ""),
         breaks = c(seq(0, 40, 2), max(prcp)),
-        xlab = "",
+        xlab = "mm",
         col = "green",
         freq = FALSE)
       lines(density(prcp, bw = 0.2, from = 1), col = "red")

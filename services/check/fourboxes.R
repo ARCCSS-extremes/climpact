@@ -1,3 +1,26 @@
+write_table <- function(variable,var_tag,filename,datos) {
+  write.table("TX low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
+  for (a in 1:12) {
+    BoxError = tryCatch({
+      mon_name = as.numeric(restx$names[a])
+      prov <- subset(datos, datos$month == mon_name & datos$tx < restx$stats[1, a])
+      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+        sep = ",",
+        file = filena,
+        append = TRUE,
+        quote = FALSE,
+        row.names = FALSE,
+        col.names = FALSE)
+      },
+      error=function(e) e
+    )
+    if(inherits(BoxError, "error")) {
+      next
+    }
+  }
+}
+
 # Plots boxplots. Needs only station and save
 # TODO refactor so that calling this function twice (once for PNG and once for PDF)
 # will not write to csv files twice.
@@ -29,9 +52,8 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
   # if no data's available, 'no data available' is printed on a blank panel instead
   write_header(filena, "Outliers shown in *boxseries.pdf", metadata)
   write.table(cbind("Date", "Prec", "TX", "TN", "DTR"), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
-
   if (any(!is.na(prec$pc))) {
-    respc <- boxplot(prec$pc ~ prec$month, main = "NON ZERO PREC", col = "blue", range = outrange + 2)
+    respc <- boxplot(prec$pc ~ prec$month, main = "NON ZERO PREC", col = "blue", range = outrange + 2,xlab="Month",ylab="mm")
 
     # write precip outliers
     write.table("Prec up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
@@ -53,65 +75,97 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
   }
 
   if (any(!is.na(datos$tx))) {
-    restx <- boxplot(datos$tx ~ datos$month, main = "TX", col = "red", range = outrange)
+    restx <- boxplot(datos$tx ~ datos$month, main = "TX", col = "red", range = outrange,xlab="Month",ylab="\u00B0C")
 
     # write tmax outliers
     write.table("TX up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tx > restx$stats[5, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch({
+        mon_name = as.numeric(restx$names[a])
+        prov <- subset(datos, datos$month == mon_name & datos$tx > restx$stats[5, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
+
     write.table("TX low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tx < restx$stats[1, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch({
+        mon_name = as.numeric(restx$names[a])
+        prov <- subset(datos, datos$month == mon_name & datos$tx < restx$stats[1, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
   } else {
     plot.new()
     text(x = 0.5, y = 0.5, "NO DATA AVAILABLE", adj = c(0.5, NA))
   }
 
+
   if (any(!is.na(datos$tn))) {
-    restn <- boxplot(datos$tn ~ datos$month, main = "TN", col = "cyan", range = outrange)
+    restn <- boxplot(datos$tn ~ datos$month, main = "TN", col = "cyan", range = outrange,xlab="Month",ylab="\u00B0C")
 
     # write tmin outliers
     write.table("TN up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tn > restn$stats[5, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch({
+        prov <- subset(datos, datos$month == a & datos$tn > restn$stats[5, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
     write.table("TN low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tn < restn$stats[1, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch({
+        prov <- subset(datos, datos$month == a & datos$tn < restn$stats[1, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
   } else {
     plot.new()
@@ -119,32 +173,46 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
   }
 
   if (any(!is.na(datos$tr))) {
-    restr <- boxplot(datos$tr ~ datos$month, col = "yellow", main = "DTR", range = outrange)
+    restr <- boxplot(datos$tr ~ datos$month, col = "yellow", main = "DTR", range = outrange,xlab="Month",ylab="\u00B0C")
 
     # write dtr outliers
     write.table("DTR up", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tr > restr$stats[5, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch({
+        prov <- subset(datos, datos$month == a & datos$tr > restr$stats[5, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
     write.table("DTR low", sep = ",", file = filena, append = TRUE, row.names = FALSE, col.names = FALSE)
     for (a in 1:12) {
-      prov <- subset(datos, datos$month == a & datos$tr < restr$stats[1, a])
-      date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
-      write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
-        sep = ",",
-        file = filena,
-        append = TRUE,
-        quote = FALSE,
-        row.names = FALSE,
-        col.names = FALSE)
+      BoxError = tryCatch(expr={
+        prov <- subset(datos, datos$month == a & datos$tr < restr$stats[1, a])
+        date.tmp <- paste(prov$year, prov$month, prov$day, sep = "-")
+        write.table(cbind(date.tmp, prov$pc, prov$tx, prov$tn, prov$tr),
+          sep = ",",
+          file = filena,
+          append = TRUE,
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
+        },
+        error=function(e) e
+      )
+      if(inherits(BoxError, "error")) {
+        next
+      }
     }
   } else {
     plot.new()
