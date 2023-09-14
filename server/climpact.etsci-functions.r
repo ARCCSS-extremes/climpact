@@ -385,12 +385,13 @@ climdex.spei <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift
 	tmin_monthly[tmin_monthly=="NaN"] <- NA
 
 # calculate PET
-        pet <- hargreaves(tmin_monthly,tmax_monthly,lat=lat,Pre=prec_sum,na.rm=TRUE)
+        pet <- hargreaves(tmin_monthly,tmax_monthly,lat=lat,Pre=prec_sum,na.rm=TRUE,verbose=FALSE)
 
 # calculate SPEI
         x <- array(NA,c(3,length(unique(factor(format(spidates,format="%Y-%m"))))))
         for (i in 1:length(x[,1])) {
-                spei_col <- spei(ts(prec_sum-pet,freq=12,start=ts.start,end=ts.end),scale=scale[i],ref.start=ref.start,ref.end=ref.end,distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE)
+                spei_col <- spei(ts(prec_sum-pet,freq=12,start=ts.start,end=ts.end),scale=scale[i],ref.start=ref.start,ref.end=ref.end,
+				distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE,verbose=FALSE)
                 tmpvar <- spei_col$fitted
 
         # remove NA, -Inf and Inf values which most likely occur due to unrealistic values in P or PET. This almost entirely occurs in ocean regions and varies depending on the fitting distribution used.
@@ -505,7 +506,8 @@ climdex.spi <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift=
 # calculate spi
         x <- array(NA,c(3,length(unique(factor(format(spidates,format="%Y-%m"))))))
         for (i in 1:3) {
-                spi_col <- spi(ts(prec_sum,freq=12,start=ts.start,end=ts.end),scale=scale[i],ref.start=ref.start,ref.end=ref.end,distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE)
+                spi_col <- spi(ts(prec_sum,freq=12,start=ts.start,end=ts.end),scale=scale[i],ref.start=ref.start,ref.end=ref.end,
+				distribution=distribution,fit=fit,kernal=kernal,na.rm=TRUE,verbose=FALSE)
                 tmpvar <- (spi_col$fitted)
 
         # remove NA, -Inf and Inf values which most likely occur due to unrealistic values in P. This almost entirely occurs in ocean regions and varies depending on the fitting distribution used.
