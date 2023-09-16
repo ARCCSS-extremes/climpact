@@ -8,7 +8,7 @@ library(SPEI)
 library(lmomco)
 library(LMoFit)
 
-software_id <- "3.1.5"
+software_id <- "3.1.6"
 
 # fd
 # Annual count when TN < 0ºC
