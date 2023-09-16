@@ -3,9 +3,9 @@
 # November 2017
 # ------------------------------------------------
 
- packages <- c("abind","bitops","Rcpp","caTools","PCICt","lmomco","SPEI","ncdf4","snow","udunits2","functional","proj4","foreach","doParallel","doSNOW","zoo","zyp","tcltk2",
- 			"shiny","shinythemes","markdown","servr","dplyr","corrplot","ggplot2","shinyjs",
-			"shinydashboard","shinyBS","slickR","xml2","shinyWidgets","qpdf")
+ packages <- c("abind","bitops","Rcpp","caTools","PCICt","lmomco","SPEI","ncdf4","snow","udunits2","functional","proj4",
+ 				"foreach","doParallel","doSNOW","zoo","zyp","tcltk2","shiny","shinythemes","markdown","servr","dplyr",
+				"corrplot","ggplot2","shinyjs","shinydashboard","shinyBS","slickR","xml2","shinyWidgets","qpdf","LMoFit")
 
  # Print Unix-specific messages
  if(.Platform$OS.type == "unix") {
@@ -30,8 +30,12 @@
          install.packages("./server/pcic_packages/ncdf4.helpers_0.3-3.tar.gz",repos=NULL,type="source")
  } else print("ncdf4.helpers... installed.",quote=FALSE)
  if(!"climdex.pcic" %in% installed.packages()[,"Package"]) {
-         print("climdex.pcic... not installed. Installing...",quote=FALSE)
-         install.packages("./server/pcic_packages/climdex.pcic_1.1-11.tar.gz",repos=NULL,type="source")
+		 if(!"devtools" %in% installed.packages()[,"Package"]) {
+			print("devtools... not installed. Installing...",quote=FALSE)
+			install.packages('devtools')
+		 }
+		 print("climdex.pcic... not installed. Installing...",quote=FALSE)
+		 devtools::install_github("pacificclimate/climdex.pcic")
  } else print("climdex.pcic... installed.",quote=FALSE)
 
  print("",quote=FALSE)

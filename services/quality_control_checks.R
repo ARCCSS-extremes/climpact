@@ -33,11 +33,40 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
 
+  warnings = ""
   # Check base period is valid when no thresholds loaded
   # This is always NULL as quantiles is never set...
   if (is.null(quantiles)) {
-    if (metadata$base.start < format(metadata$dates[1], format = "%Y") | metadata$base.end > format(metadata$dates[length(metadata$dates)], format = "%Y") | metadata$base.start > metadata$base.end) {
-	return(list(errors = paste("Base period must be between ", format(metadata$dates[1], format = "%Y"), " and ", format(metadata$dates[length(metadata$dates)], format = "%Y"), ". Please correct by refreshing this web page and entering a new base period in step 1.")))
+    firstyr = as.numeric(format(metadata$dates[1], format = "%Y"))
+    lastyr = as.numeric(format(metadata$dates[length(metadata$dates)], format = "%Y"))
+    firstyr_valid = ifelse(metadata$base.start < firstyr,firstyr,metadata$base.start)
+    lastyr_valid = ifelse(metadata$base.end > lastyr,lastyr,metadata$base.end)
+    ideal_duration = metadata$base.end - metadata$base.start + 1
+    valid_duration = lastyr_valid - firstyr_valid + 1
+
+    # if user has entered a base period start year that is earlier than the base period end year
+    if (metadata$base.start > metadata$base.end) {
+      return(list(errors = paste("The start year of your base period is later than the end year, did you mean to have these the other way around? 
+      Please correct by refreshing this web page and re-entering a new base period in step 1.")))
+    }
+
+    # If user has entered a base period that is wholly outside of the provided time series, then return an error.
+    if ((metadata$base.start < firstyr && metadata$base.end < firstyr) || (metadata$base.start > lastyr && metadata$base.end > lastyr)) {
+	    return(list(errors = paste("Your data covers the years ", firstyr, " to ", lastyr, " and your specified base period must at least partially 
+      cover this, but you have specified a base period of ",metadata$base.start," to ",metadata$base.end,". Please correct by refreshing this web page and 
+      entering a new base period in step 1.")))
+    }
+
+    # If user has entered a base period that is partially outside of the provided time series (this can happen for batch processing) then we
+    # do not calculate percentile indices.
+    # TODO: Could allow percentile indices to be calculated if a minimum percent of the ideal base period duration is present, but this is complicated
+    # by the fact that there could still be missing data. e.g. if only 90% of the ideal duration exists in the provided data, but only 95% of 
+    # THAT data is valid (which can only be checked later in the code), meaning there really is only 86% valid data in the base period.
+    if (metadata$base.start < firstyr | metadata$base.end > lastyr) {
+      warnings = paste(warnings,paste0("WARNING: Base period is only partially covered by provided data. You have specified a base period of ",
+      metadata$base.start,"-",metadata$base.end," but your data covers ",firstyr,"-",lastyr,
+      ". If this was deliberate you can ignore this message and only the overlapping years between your requested base period and the
+       provided data will be used to calculate base period percentiles. Otherwise, please refresh this webpage and enter a valid base period in Step 1."),sep="\n")
     }
   }
 
@@ -161,7 +190,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # Remove temporary file
   file.remove(temp.file)
 
-  return(list(errors = errors, cio = cio, metadata = metadata))
+  return(list(errors = errors, cio = cio, metadata = metadata, warnings = warnings))
 }
 
 
@@ -191,7 +220,7 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
       hist(prcp,
         main = paste("PRCP (>=1 mm) histogram for ", metadata$stationName, sep = ""),
         breaks = c(seq(0, 40, 2), max(prcp)),
-        xlab = "",
+        xlab = "mm",
         col = "green",
         freq = FALSE)
       lines(density(prcp, bw = 0.2, from = 1), col = "red")

@@ -75,6 +75,14 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
       return(localOrRemoteLink(localLink, remoteLink))
     }
   }
+
+  warningDialog_baseperiod <- function(msg) {
+  modalDialog(title = "Warning",
+    HTML(print(msg)),
+    footer = tagList(modalButton("I understand"))
+  )
+}
+
   observeEvent(input$doQualityControl, {
     # input$dataFile will be NULL initially. After the user selects
     # and uploads a file, it will be a data frame with
@@ -109,8 +117,13 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         singleStationState$metadata(qcResult$metadata)
         # qualityControlCheckResult(qcResult$errors)
         # capture climdex input object created
-	print(paste0("qcResult$errors: ",qcResult$errors))
+	#print(paste0("qcResult$errors: ",qcResult$errors))
+  	#print(paste0("qcResult$wawrnings: ",qcResult$warnings))
+
         if (qcResult$errors == "") {
+          if (qcResult$warnings != "") {
+            showModal(warningDialog_baseperiod(qcResult$warnings))
+          }
           singleStationState$climdexInput(qcResult$cio)
         } else {
           print(qcResult$errors)
