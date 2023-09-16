@@ -1,9 +1,9 @@
 3.1.6   16 September 2023
 * Better error handling for QC box plots, to handle time-series that don't have any data for certain calendar months.
-* Non percentile indices are calculated when no base period data exist.
+* Non percentile indices are still calculated when insufficient base period data exist.
 * Code cleaning, make package loading work with updated dependencies.
 * Change default txtn value to '2' in sample batch script.
-* Install latest climdex.pcic from github.
+* Install latest climdex.pcic from github instead of CRAN.
 
 3.1.5   9 August 2023
 * Updated a reference to parameter distributions that was breaking the SPEI calculation (likely due to changes in the lmomco package).
