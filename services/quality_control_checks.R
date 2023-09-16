@@ -52,8 +52,8 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
 
     # If user has entered a base period that is wholly outside of the provided time series, then return an error.
     if ((metadata$base.start < firstyr && metadata$base.end < firstyr) || (metadata$base.start > lastyr && metadata$base.end > lastyr)) {
-	    return(list(errors = paste("Your provided data covers the years ", firstyr, " to ", lastyr, " and your specified base period must at least partially 
-      cover this. You have specified a base period of ",metadata$base.start," to ",metadata$base.end,". Please correct by refreshing this web page and 
+	    return(list(errors = paste("Your data covers the years ", firstyr, " to ", lastyr, " and your specified base period must at least partially 
+      cover this, but you have specified a base period of ",metadata$base.start," to ",metadata$base.end,". Please correct by refreshing this web page and 
       entering a new base period in step 1.")))
     }
 
