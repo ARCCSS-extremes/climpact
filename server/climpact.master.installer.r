@@ -30,11 +30,11 @@
          install.packages("./server/pcic_packages/ncdf4.helpers_0.3-3.tar.gz",repos=NULL,type="source")
  } else print("ncdf4.helpers... installed.",quote=FALSE)
  if(!"climdex.pcic" %in% installed.packages()[,"Package"]) {
-         print("climdex.pcic... not installed. Installing...",quote=FALSE)
 		 if(!"devtools" %in% installed.packages()[,"Package"]) {
 			print("devtools... not installed. Installing...",quote=FALSE)
 			install.packages('devtools')
 		 }
+		 print("climdex.pcic... not installed. Installing...",quote=FALSE)
 		 devtools::install_github("pacificclimate/climdex.pcic")
  } else print("climdex.pcic... installed.",quote=FALSE)
 
