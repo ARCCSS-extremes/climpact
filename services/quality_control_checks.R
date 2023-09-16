@@ -25,13 +25,6 @@ read_and_qc_check <- function(progress,
   return(qcResult)
 }
 
-# warningDialog_baseperiod <- function(msg) {
-#   modalDialog(title = "Warning",
-#     HTML(print(msg)),
-#     footer = tagList(modalButton("I understand"))
-#   )
-# }
-
 # This function runs QC functionality on the user specified input data. It requres as input;
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
@@ -57,23 +50,23 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       Please correct by refreshing this web page and re-entering a new base period in step 1.")))
     }
 
-    # If the user has enetered a base period that is not a complete subset of the provided data (this can happen for batch processing) then we
+    # If user has entered a base period that is wholly outside of the provided time series, then return an error.
+    if ((metadata$base.start < firstyr && metadata$base.end < firstyr) || (metadata$base.start > lastyr && metadata$base.end > lastyr)) {
+	    return(list(errors = paste("Base period must at least partially cover ", firstyr, " to ", lastyr, ". You have specified a base period of ",
+      metadata$base.start,"-",metadata$base.end,". Please correct by refreshing this web page and entering a new base period in step 1.")))
+    }
+
+    # If user has entered a base period that is partially outside of the provided time series (this can happen for batch processing) then we
     # do not calculate percentile indices.
     # TODO: Could allow percentile indices to be calculated if a minimum percent of the ideal base period duration is present, but this is complicated
     # by the fact that there could still be missing data. e.g. if only 90% of the ideal duration exists in the provided data, but only 95% of 
     # THAT data is valid (which can only be checked later in the code), meaning there really is only 86% valid data in the base period.
     if (metadata$base.start < firstyr | metadata$base.end > lastyr) {
-      warnings = paste(warnings,paste0("WARNING: Base period is not a subset of available data. You have specified a base period of ",metadata$base.start,"-",metadata$base.end,
-      " but your data only covers ",firstyr,"-",lastyr,
-      ". If this was deliberate you can ignore this message. Otherwise, please refresh this webpage and enter a valid base period in Step 1."),sep="\n")
-
-      # set flag to turn off computing of percentile indices.
-      #calculate_pctl_indices = FALSE
-    } #else { calculate_pctl_indices = TRUE }
-
-    # TODO: this shouldn't be a global variable, but the code needs refactoring to make it simple to feed this information back up 
-    # and into the index calculations.
-    #assign("calculate_pctl_indices",calculate_pctl_indices,envir=.GlobalEnv)
+      warnings = paste(warnings,paste0("WARNING: Base period is only partially covered by provided data. You have specified a base period of ",
+      metadata$base.start,"-",metadata$base.end," but your data covers ",firstyr,"-",lastyr,
+      ". If this was deliberate you can ignore this message and only the overlapping years between your requested base period and the
+       provided data will be used to calculate base period percentiles. Otherwise, please refresh this webpage and enter a valid base period in Step 1."),sep="\n")
+    }
   }
 
   # Fill in missing values. Some legacy lines here from when missing dates weren't filled in for the user.
