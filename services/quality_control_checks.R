@@ -217,9 +217,10 @@ plotToFile <- function(plotFileName, mediaType, var, type, title, cio, metadata)
   if (var == "prcp") {
     prcp <- cio@data$prec[cio@data$prec >= 1 & !is.na(cio@data$prec)]
     if (length(prcp) > 30) {
+	  if (max(prcp) > 40) breaks = c(seq(0, 40, 2), max(prcp)) else breaks = c(seq(0, 40, 2))
       hist(prcp,
         main = paste("PRCP (>=1 mm) histogram for ", metadata$stationName, sep = ""),
-        breaks = c(seq(0, 40, 2), max(prcp)),
+        breaks = breaks,
         xlab = "mm",
         col = "green",
         freq = FALSE)

@@ -1,3 +1,6 @@
+3.1.7   29 December 2023
+* Fixed problem where QC histograms were failing to plot for stations with maximum daily rainfall < 40 mm.
+
 3.1.6   16 September 2023
 * Better error handling for QC box plots, to handle time-series that don't have any data for certain calendar months.
 * Non percentile indices are still calculated when insufficient base period data exist.
