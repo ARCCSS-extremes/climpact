@@ -1,3 +1,6 @@
+3.1.8   16 March 2024
+* Fixed Climpact crashing at the heatwave calculations, caused by an ostensibly breaking change to base R (somewhere around R 4.3).
+
 3.1.7   29 December 2023
 * Fixed problem where QC histograms were failing to plot for stations with maximum daily rainfall < 40 mm.
 

@@ -105,8 +105,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Creating climdex object...")
 
   merge_data <- merge_data(user_data, metadata)
-  # unused date.months <- unique(format(as.character((merge_data[, 1]), format = "%Y-%m")))
-  metadata$date.years <- unique(format(as.character((merge_data[, 1]), format = "%Y")))
+  metadata$date.years <- unique(format(as.Date(merge_data[, 1]), "%Y"))
   cio <- create_climdex_input(merge_data, metadata)
   print("climdex input object created.", quote = FALSE)
 
