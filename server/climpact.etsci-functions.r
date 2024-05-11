@@ -6,9 +6,8 @@
 library(climdex.pcic)
 library(SPEI)
 library(lmomco)
-library(LMoFit)
 
-software_id <- "3.1.8"
+software_id <- "3.1.9"
 
 # fd
 # Annual count when TN < 0ºC
