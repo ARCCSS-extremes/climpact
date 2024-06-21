@@ -1,4 +1,12 @@
 singleStationStep2 <- function (input, output, session, parentSession, climpactUI, singleStationState) {
+
+  singleStationState$iqr_threshold_temp <- reactive({ input$iqr_threshold_temp })
+  singleStationState$iqr_threshold_prec <- reactive({ input$iqr_threshold_prec })
+  singleStationState$prec_threshold <- reactive({ input$prec_threshold })
+  singleStationState$temp_threshold <- reactive({ input$temp_threshold })
+  singleStationState$no_variability_threshold <- reactive({ input$no_variability_threshold })
+  singleStationState$temp_change_threshold <- reactive({ input$temp_change_threshold })
+
   output$slickRQC <- renderSlickR({
     imgs(list())
     if (qcProgressStatus() == "Done" && (!is.null(singleStationState$outputFolders()))) {
@@ -92,9 +100,9 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     disable("doQualityControl")
 
     qcProgressStatus("In Progress")
+    print(singleStationState$iqr_threshold_temp())
 
     progress <- shiny::Progress$new()
-#    on.exit(progress$close())
     progress$set(message="Quality Control checks", value=0, detail = "Starting...")
     singleStationState$isQCCompleted(FALSE)
 
@@ -110,7 +118,10 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         qcResult <- load_data_qc(progress, 1, singleStationState$dataFile()$datapath,
           singleStationState$latitude(), singleStationState$longitude(),
           singleStationState$stationName(), singleStationState$startYear(),
-          singleStationState$endYear(), singleStationState$outputFolders())
+          singleStationState$endYear(), singleStationState$outputFolders(),
+          singleStationState$iqr_threshold_temp(), singleStationState$iqr_threshold_prec(),
+          singleStationState$prec_threshold(), singleStationState$temp_threshold(), 
+          singleStationState$no_variability_threshold(), singleStationState$temp_change_threshold())
 
         # capture any errors
         singleStationState$qualityControlErrors(qcResult$errors)

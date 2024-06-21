@@ -1,3 +1,6 @@
+3.2     21 June 2024
+* Added adjustable QC parameters.
+
 3.1.9   11 May 2024
 * Removed LMoFit as a dependency (lmomco had required functionality).
 

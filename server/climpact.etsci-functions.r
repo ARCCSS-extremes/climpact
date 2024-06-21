@@ -7,7 +7,7 @@ library(climdex.pcic)
 library(SPEI)
 library(lmomco)
 
-software_id <- "3.1.9"
+software_id <- "3.2.0"
 
 # fd
 # Annual count when TN < 0ºC

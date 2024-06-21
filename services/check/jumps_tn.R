@@ -1,4 +1,4 @@
-jumps_tn <- function(station, output, metadata) {
+jumps_tn <- function(station, output, metadata, temp_change_threshold) {
   filena = paste(output, '_tn_jumps.csv', sep = '')
   datos <- read.table(station, col.names = c("year", "month", "day", "pc", "tx", "tn"), na.strings = '-99.9')
   diftn <- abs(round(diff(datos$tn, lag = 1, differences = 1), digits = 1))
@@ -9,11 +9,11 @@ jumps_tn <- function(station, output, metadata) {
   Z <- z[, 6:10]
   names(z) <- c("id", "year", "month", "day", "tn")
   jumps <- merge(z, x, by = "id", all.x = F, all.y = T)
-  jumps <- subset(jumps, (jumps$val >= 20))
+  jumps <- subset(jumps, (jumps$val >= temp_change_threshold))
   jumps <- jumps[, 7:10]
   names(jumps) = c("year", "month", "day", "tn")
   date.tmp = paste(jumps$year, jumps$month, jumps$day, sep = "-")
-  write_header(filena, "Dates where the change in TN is > 20 degrees.", metadata)
+  write_header(filena, paste0("Dates where the change in TN is > ",temp_change_threshold," degrees."), metadata)
   write.table(cbind("Date", "TN"), sep = ",", append = TRUE, file = filena, quote = FALSE, row.names = FALSE, col.names = FALSE)
   write.table(cbind(date.tmp, jumps$tn), sep = ",", append = TRUE, file = filena, quote = FALSE, row.names = FALSE, col.names = FALSE)
 

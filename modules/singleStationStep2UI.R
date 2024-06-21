@@ -34,6 +34,22 @@ singleStationStep2UI <- function (id) {
           htmlOutput(ns("qualityControlError")),
           slickROutput(ns("slickRQC"), width = "850px")
         )
+      ),
+      wellPanel(
+        h4("Quality control parameters"),
+        numericInput(ns("iqr_threshold_temp"), "Interquartile range (IQR) threshold for temperature outliers:", 3, min = 1, max = 10),
+        bsTooltip(id = paste0(id, "-", "iqr_threshold_temp"), title = "The number of interquartile ranges used to identify temperature outliers", placement = "left", trigger = "hover"),
+        numericInput(ns("iqr_threshold_prec"), "Interquartile range (IQR) threshold for precipitation outliers:", 5, min = 1, max = 10),
+        bsTooltip(id = paste0(id, "-", "iqr_threshold_prec"), title = "The number of interquartile ranges used to identify precipitation outliers", placement = "left", trigger = "hover"),
+        numericInput(ns("prec_threshold"), "Maximum daily rainfall threshold (mm):", 200, min = 0, max = 1500),
+        bsTooltip(id = paste0(id, "-", "prec_threshold"), title = "Daily rainfall above this amount will be flagged for checking", placement = "left", trigger = "hover"),
+        numericInput(ns("temp_threshold"), "Maximum absolute temperature threshold (°C):", 50, min = 0, max = 60),
+        bsTooltip(id = paste0(id, "-", "temp_threshold"), title = "An absolute temperature above this value will be flagged for checking", placement = "left", trigger = "hover"),
+        numericInput(ns("no_variability_threshold"), "Threshold number of days of no temperature variability:", 5, min = 3, max = 10),
+        bsTooltip(id = paste0(id, "-", "no_variability_threshold"), title = "If minimum or maximum temperature remains the same for this many days in a row, it will be flagged for checking", placement = "left", trigger = "hover"),
+        numericInput(ns("temp_change_threshold"), "Temperature change threshold (°C):", 20, min = 5, max = 30),
+        bsTooltip(id = paste0(id, "-", "temp_change_threshold"), title = "If minimum or maximum temperature changes by this amount (or more) it will be flagged for checking", placement = "left", trigger = "hover"),
+        br(),
       )
     ),
     column(4, class = "instructions",
@@ -43,6 +59,8 @@ singleStationStep2UI <- function (id) {
         tags$p("Once processing is complete you can view quality control plots and you will be provided with a link to ",
           "the quality control output that Climpact has produced."),
         tags$p("It is necessary for you to inspect the output to ensure no errors are present in your station data."),
+#        tags$p("Certain QC parameters are adjustable:"),
+#        tags$p("
         conditionalPanel(
           condition = "output.qcLink != ''",
           ns = ns,

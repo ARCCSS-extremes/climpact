@@ -15,12 +15,18 @@ read_and_qc_check <- function(progress,
                               stationName,
                               base.year.start,
                               base.year.end,
-                              outputFolders) {
+                              outputFolders,
+                              iqr_threshold_temp,
+                              iqr_threshold_prec,
+                              prec_threshold,
+                              temp_threshold,
+                              no_variability_threshold, 
+                              temp_change_threshold) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
   user_data_ts <- create_user_data_ts(user_data)
 
   metadata <- create_metadata(latitude, longitude, base.year.start, base.year.end, user_data_ts$dates, stationName)
-  qcResult <- qualityControlCheck(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL)
+  qcResult <- qualityControlCheck(progress, prog_int, metadata, user_data_ts, user_file, outputFolders, NULL,iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
 
   return(qcResult)
 }
@@ -29,7 +35,7 @@ read_and_qc_check <- function(progress,
 #    - metadata: output of create_metadata()
 #    - user_data: output of convert.user.file
 # Error checking on inputs has already been complete by the GUI.
-qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_file, outputFolders, quantiles) {
+qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_file, outputFolders, quantiles,iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Checking dates...")
 
@@ -172,7 +178,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # already "cleaned" data as a variable. This will do for now.
   write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
 
-  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3) #stddev.crit)
+  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
 
   # Concatenate all of the QC PDF's into one file
   outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_QC_PLOTS.pdf"))
@@ -259,7 +265,7 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders) {
+load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
   detail <- paste("Reading data file...", user.file)
   if (!is.null(progress)) progress$inc(0.01 * prog_int, detail = detail)
   print(detail)
@@ -273,22 +279,28 @@ load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, sta
                                 stationName,
                                 base.year.start,
                                 base.year.end,
-                                outputFolders)
+                                outputFolders,
+                                iqr_threshold_temp,
+                                iqr_threshold_prec,
+                                prec_threshold,
+                                temp_threshold,
+                                no_variability_threshold,
+                                temp_change_threshold)
   return(qcResult)
 }
 
 # extraQC code, taken from the "rclimdex_extraqc.r" package,
 # Quality Control procedures programed by Enric Aguilar (C3, URV, Tarragona, Spain) and
 # and Marc Prohom, (Servei Meteorologic de Catalunya). Edited by nherold to output to .csv (Jan 2016).
-allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
+allqc <- function(progress, prog_int, master, output, metadata, outrange = 3, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
   output <- file.path(output, metadata$stationName)
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting outliers...")
   # fourboxes will produce boxplots for non-zero precip, tx, tn, dtr using the IQR entered previously
   # the plot will go to series.name_boxes.pdf
   # outliers will be also listed on a file (series.name_outliers.txt)
-  fourboxes(master, output, save = 1, outrange, metadata, mediaType="pdf")
-  fourboxes(master, output, save = 1, outrange, metadata, mediaType="png")
+  fourboxes(master, output, save = 1, iqr_threshold_temp, iqr_threshold_prec, metadata, mediaType="pdf")
+  fourboxes(master, output, save = 1, iqr_threshold_temp, iqr_threshold_prec, metadata, mediaType="png")
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting rounding problems...")
   # Will plot a histogram of the decimal point to see rounding problems, for prec, tx, tn
@@ -303,7 +315,7 @@ allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting excessively large values...")
   # will list values exceeding 200 mm or temperatures with absolute values over 50. Output goes to
   # series.name_toolarge.txt
-  humongous(master, output, metadata)
+  humongous(master, output, metadata, prec_threshold, temp_threshold)
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting annual time series...")
   # 'Annual Time series' constructed with boxplots. Helps to identify years with very bad values
@@ -318,15 +330,15 @@ allqc <- function(progress, prog_int, master, output, metadata, outrange = 4) {
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding large jumps...")
   # The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya) identify consecutive tx and tn values with differences larger than 20
   # Output goes to series.name_tx_jumps.txt and series.name_tn_jumps.txt. The first date is listed.
-  jumps_tx(master, output, metadata)
-  jumps_tn(master, output, metadata)
+  jumps_tx(master, output, metadata, temp_change_threshold)
+  jumps_tn(master, output, metadata, temp_change_threshold)
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Finding repeated values...")
   # The next two functions (by Marc Prohom, Servei Meteorologic de Catalunya)
   # identify series of 3 or more consecutive identical values. The first date is listed.
   # Output goes to series.name_tx_flatline.txt  and series.name_tx_flatline.txt
-  flatline_tx(master, output, metadata)
-  flatline_tn(master, output, metadata)
+  flatline_tx(master, output, metadata, no_variability_threshold)
+  flatline_tn(master, output, metadata, no_variability_threshold)
 
   return("")
 }

@@ -35,7 +35,7 @@ write_table <- function(variable,boxplot,var_tag,filename,datos,operator,stat_in
 # combo of if (file.exists(filena)) and
 # an eg 'overwrite' function parameter -
 # to ensure we can update csv files on subsequent QC checks)
-fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType = "pdf") {
+fourboxes <- function(station, output, save = 0, iqr_threshold_temp, iqr_threshold_prec, metadata, mediaType = "pdf") {
   if (save == 1) {
     fileName <- paste0(output, "_boxes.", mediaType)
     if (mediaType == "pdf") {
@@ -58,12 +58,12 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
   #     can be entered as parameter when calling the function. Precip will always be 2 units more than temp
   #   write outliers out
   # if no data's available, 'no data available' is printed on a blank panel instead
-  write_header(filena, "Outliers shown in *boxseries.pdf", metadata)
+  write_header(filena, paste0("Outliers shown in *boxes.png. IQR thresholds of ",iqr_threshold_prec," and ",iqr_threshold_temp," were used for precipitation and temperature variables, respectively."), metadata)
   write.table(cbind("Date", "Prec", "TX", "TN", "DTR"), sep = ",", file = filena, append = TRUE, quote = FALSE, row.names = FALSE, col.names = FALSE)
 
   # Precipitation boxplot and outliers table
   if (any(!is.na(prec$pc))) {
-    respc <- boxplot(prec$pc ~ prec$month, main = "NON ZERO PREC", col = "blue", range = outrange + 2,xlab="Month",ylab="mm")
+    respc <- boxplot(prec$pc ~ prec$month, main = "NON ZERO PREC", col = "blue", range = iqr_threshold_prec,xlab="Month",ylab="mm")
 
     write_table(variable="pc",boxplot=respc,var_tag="Prec up",filename=filena,datos=datos,operator=">",stat_index=5)
   } else {
@@ -73,7 +73,7 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
 
   # TX boxplot and outliers table
   if (any(!is.na(datos$tx))) {
-    restx <- boxplot(datos$tx ~ datos$month, main = "TX", col = "red", range = outrange,xlab="Month",ylab="\u00B0C")
+    restx <- boxplot(datos$tx ~ datos$month, main = "TX", col = "red", range = iqr_threshold_temp,xlab="Month",ylab="\u00B0C")
 
     write_table(variable="tx",boxplot=restx,var_tag="TX up",filename=filena,datos=datos,operator=">",stat_index=5)
     write_table(variable="tx",boxplot=restx,var_tag="TX low",filename=filena,datos=datos,operator="<",stat_index=1)
@@ -84,7 +84,7 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
 
   # TN boxplot and outliers table
   if (any(!is.na(datos$tn))) {
-    restn <- boxplot(datos$tn ~ datos$month, main = "TN", col = "cyan", range = outrange,xlab="Month",ylab="\u00B0C")
+    restn <- boxplot(datos$tn ~ datos$month, main = "TN", col = "cyan", range = iqr_threshold_temp,xlab="Month",ylab="\u00B0C")
 
     write_table(variable="tn",boxplot=restn,var_tag="TN up",filename=filena,datos=datos,operator=">",stat_index=5)
     write_table(variable="tn",boxplot=restn,var_tag="TN low",filename=filena,datos=datos,operator="<",stat_index=1)
@@ -95,7 +95,7 @@ fourboxes <- function(station, output, save = 0, outrange, metadata, mediaType =
 
   # DTR boxplot and outliers table
   if (any(!is.na(datos$tr))) {
-    restr <- boxplot(datos$tr ~ datos$month, col = "yellow", main = "DTR", range = outrange,xlab="Month",ylab="\u00B0C")
+    restr <- boxplot(datos$tr ~ datos$month, col = "yellow", main = "DTR", range = iqr_threshold_temp,xlab="Month",ylab="\u00B0C")
 
     write_table(variable="tr",boxplot=restr,var_tag="DTR up",filename=filena,datos=datos,operator=">",stat_index=5)
     write_table(variable="tr",boxplot=restr,var_tag="DTR low",filename=filena,datos=datos,operator="<",stat_index=1)
