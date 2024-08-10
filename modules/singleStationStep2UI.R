@@ -35,7 +35,9 @@ singleStationStep2UI <- function (id) {
           slickROutput(ns("slickRQC"), width = "850px")
         )
       ),
-      wellPanel(
+      conditionalPanel(
+        condition = "output.qcStatus != 'Done'",
+        ns = ns,
         h4("Quality control parameters"),
         numericInput(ns("iqr_threshold_temp"), "Interquartile range (IQR) threshold for temperature outliers:", 3, min = 1, max = 10),
         bsTooltip(id = paste0(id, "-", "iqr_threshold_temp"), title = "The number of interquartile ranges used to identify temperature outliers", placement = "left", trigger = "hover"),
