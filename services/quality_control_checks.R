@@ -178,7 +178,7 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # already "cleaned" data as a variable. This will do for now.
   write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
 
-  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, outrange = 3, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
+  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
 
   # Concatenate all of the QC PDF's into one file
   outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_QC_PLOTS.pdf"))
@@ -265,7 +265,7 @@ create_metadata <- function(latitude, longitude, base.year.start, base.year.end,
 }
 
 # This function calls the major routines involved in reading the user's file, creating the climdex object and running quality control
-load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
+load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, stationName, base.year.start, base.year.end, outputFolders, iqr_threshold_temp=3, iqr_threshold_prec=5, prec_threshold=200, temp_threshold=50, no_variability_threshold=5, temp_change_threshold=20) {
   detail <- paste("Reading data file...", user.file)
   if (!is.null(progress)) progress$inc(0.01 * prog_int, detail = detail)
   print(detail)
@@ -292,7 +292,7 @@ load_data_qc <- function(progress, prog_int, user.file, latitude, longitude, sta
 # extraQC code, taken from the "rclimdex_extraqc.r" package,
 # Quality Control procedures programed by Enric Aguilar (C3, URV, Tarragona, Spain) and
 # and Marc Prohom, (Servei Meteorologic de Catalunya). Edited by nherold to output to .csv (Jan 2016).
-allqc <- function(progress, prog_int, master, output, metadata, outrange = 3, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
+allqc <- function(progress, prog_int, master, output, metadata, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold) {
   output <- file.path(output, metadata$stationName)
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Plotting outliers...")
