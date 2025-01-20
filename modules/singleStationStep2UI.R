@@ -47,7 +47,7 @@ singleStationStep2UI <- function (id) {
         bsTooltip(id = paste0(id, "-", "prec_threshold"), title = "Daily rainfall above this amount will be flagged for checking", placement = "left", trigger = "hover"),
         numericInput(ns("temp_threshold"), "Maximum absolute temperature threshold (°C):", 50, min = 0, max = 60),
         bsTooltip(id = paste0(id, "-", "temp_threshold"), title = "An absolute temperature above this value will be flagged for checking", placement = "left", trigger = "hover"),
-        numericInput(ns("no_variability_threshold"), "Threshold number of days of no temperature variability:", 5, min = 3, max = 10),
+        numericInput(ns("no_variability_threshold"), "Threshold number of days of no temperature variability:", 5, min = 3, max = 15),
         bsTooltip(id = paste0(id, "-", "no_variability_threshold"), title = "If minimum or maximum temperature remains the same for this many days in a row, it will be flagged for checking", placement = "left", trigger = "hover"),
         numericInput(ns("temp_change_threshold"), "Temperature change threshold (°C):", 20, min = 5, max = 30),
         bsTooltip(id = paste0(id, "-", "temp_change_threshold"), title = "If minimum or maximum temperature changes by this amount (or more) it will be flagged for checking", placement = "left", trigger = "hover"),
