@@ -23,7 +23,7 @@ singleStationStep3UI <- function(id) {
           <span class='sr-only'>Info</span> Please check data quality.</div>"
         )
       ),
-      # User specified parameters
+      # # User specified parameters
     conditionalPanel(# show if quality control done and no errors
       condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
       ns = ns,
@@ -48,11 +48,8 @@ singleStationStep3UI <- function(id) {
             bsTooltip(id = paste0(id, "-", "csdin"), title = "Number of days contributing to a cold period (where the period has to be at least 6 days long) - value is the number of consecutive days", placement = "left", trigger = "hover"),
             numericInput(ns("rxnday"), "d for Rxdday (d >= 1):", 3, min = 1),
             bsTooltip(id = paste0(id, "-", "rxnday"), title = "Maximum amount of rain that falls in a user-specified period - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            numericInput(ns("rnnmm"), "Number of days precip >= nn (Rnnmm; nn >= 0):", 30, min = 0),
-            bsTooltip(id = paste0(id, "-", "rnnmm"), title = "Rnnmm: Number of customised rain days (when rainfall is at least user-specified number of millimetres)", placement = "left", trigger = "hover"),
             numericInput(ns("txtn"), "d for TXdTNd and TXbdTNbd (d >= 1):", 2, min = 1),
-            bsTooltip(id = paste0(id, "-", "txtn"), title = "Total consecutive hot days and hot nights (TXdTNd) or cold days and cold nights (TXbdTNbd) - value is the number of consecutive days", placement = "left", trigger = "hover"),
-            checkboxInput(ns("previewplots"), "Show preview plots (high bandwidth requirement)", TRUE)
+            bsTooltip(id = paste0(id, "-", "txtn"), title = "Total consecutive hot days and hot nights (TXdTNd) or cold days and cold nights (TXbdTNbd) - value is the number of consecutive days", placement = "left", trigger = "hover")
           ),
           column(4,
             numericInput(ns("hdd"), "Base temperature for HDDheat (°C):", 18),
@@ -61,8 +58,10 @@ singleStationStep3UI <- function(id) {
             bsTooltip(id = paste0(id, "-", "cdd"), title = "CDDcold: Cooling Degree Days", placement = "left", trigger = "hover"),
             numericInput(ns("gdd"), "Base temperature for GDDgrow (°C):", 10),
             bsTooltip(id = paste0(id, "-", "gdd"), title = "GDDgrow: Growing Degree Days", placement = "left", trigger = "hover"),
+            numericInput(ns("rnnmm"), "Number of days precip >= nn (Rnnmm; nn >= 0):", 30, min = 0),
+            bsTooltip(id = paste0(id, "-", "rnnmm"), title = "Rnnmm: Number of customised rain days (when rainfall is at least user-specified number of millimetres)", placement = "left", trigger = "hover"),
             numericInput(ns("spei"), "SPEI/SPI custom monthly time scale (must be a positive number):", 24, min = 1),
-            bsTooltip(id = paste0(id, "-", "spei"), title = "SPEI:Standardised Precipitation-Evapotranspiration Index. SPI:Standardized Precipitation Index ", placement = "left", trigger = "hover"),
+            bsTooltip(id = paste0(id, "-", "spei"), title = "SPEI:Standardised Precipitation-Evapotranspiration Index. SPI:Standardized Precipitation Index ", placement = "left", trigger = "hover")
           ),
           column(4,
             wellPanel(
@@ -104,11 +103,8 @@ singleStationStep3UI <- function(id) {
         div(
           h4("Plots of calculated indices"),
           uiOutput(ns("indicesLinkMiddle")),
+          p("Plots are displayed below and available for download on this page using the link in the blue info box under Instructions.")
         ),
-      ),
-      conditionalPanel(
-        condition = "output.indexCalculationStatus == 'Done' && output.indexCalculationErrors == '' && input.previewplots === true",
-        ns = ns,
         fluidRow(
           column(12, slickROutput(ns("slickRIndices"), width = "850px"))
         )
