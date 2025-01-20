@@ -39,8 +39,8 @@ root.dir=NULL
 #######################################################
 # Esoterics below, do not modify without a good reason.
 
-# definition used for Excess Heat Factor (EHF). "PA13" for Perkins and Alexander (2013), this is the default. "NF13" for Nairn and Fawcett (2013).
-EHF_DEF = "PA13"
+# definition used for Excess Heat Factor (EHF). "PA13" for Perkins and Alexander (2013). "NF13" for Nairn and Fawcett (2013), this is the default.
+EHF_DEF = "NF13"
 
 # axis to split data on. For chunking up of grid, leave this.
 axis.name="Y"

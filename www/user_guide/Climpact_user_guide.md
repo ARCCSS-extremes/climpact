@@ -737,33 +737,29 @@ Zhang X, Hegerl G, Zwiers F W and Kenyon J 2005 Avoiding Inhomogeneity in Percen
 
 ### D.1 Heatwave (HW) definitions and aspects
 
-The HW calculations used in Climpact are based on [Perkins and Alexander (2013)](#appendixd_refs), hereafter PA13, with minor modifications to the Excess Heat Factor (EHF; Perkins personal comms 2015). See PA13 for background information on the heatwave indices calculated in Climpact.
+There are three heatwave definitions calculated by Climpact:
 
-Corresponding to the framework of PA13, three HW definitions are used in Climpact. Neither is more correct than the other, and all are provided for the user to interpret with the appropriate discretion. These definitions are based on the 90th percentile of TN (minimum daily temperature) which are designated Tn90 heatwaves, the 90th percentile of TX (maximum daily temperature) which are designated Tx90 heatwaves, and the EHF which are designated EHF heatwaves (see D.3 below).
+* Maximum temperature heatwaves (Tx90): defined as any period of three or more days when daily maximum temperature (TX) exceeds the 90th percentile for the corresponding calendar days.
 
-According to these three heatwave definitions (Tn90, Tx90 and EHF heatwaves) a HW event is defined as any length of three or more days where the corresponding following condition is met. A day where these conditions are met (for at least three consecutive days) are referred to as HW days.
+* Minimum temperature heatwaves (Tn90): defined as any period of three or more days when daily minimum temperature (TN) exceeds the 90th percentile for the corresponding calendar days.
 
-* TN > 90th percentile of TN, for Tn90 heatwaves.
+* Excees Heat Factor (EHF) heatwaves: based on the work of [Nairn and Fawcett (2013)](#appendixd_refs). EHF heatwaves are defined as any period of three or more days when the EHF is positive (see D.3 below for more details).
 
-* TX > 90th percentile of TX, for Tx90 heatwaves.
+For Tx90 and Tn90 heatwaves, 90th percentile thresholds are calculated for each calendar day using a 15-day moving window over the user-specified base period. The Tx90 and Tn90 heatwaves are calculated over the extended summer of the relevant hemisphere (i.e. only "summer" heatwaves are detected). In the southern hemisphere the extended summer season runs from November to March inclusive, in the northern hemisphere it runs from May to September inclusive. For more information on the Tx90 and Tn90 heatwaves see [Perkins and Alexander (2013)](#appendixd_refs)
 
-* the EHF is positive, for EHF heatwaves.
+For EHF heatwaves a single 95th percentile threshold is calculated using all days in the year over the user-specified base period (see D.3 below for more details). EHF heatwaves are calculated for the entire year.
 
-The percentiles for Tn90 and Tx90 are calculated for a user-specified base period and for each calendar day using a 15 day running window (to increase sample size).
+For each of the above three heatwave definitions (Tx90, Tn90 and EHF) there are five heatwave aspects that are calculated for each year or extended summer (for the Tx90 and Tn90 heatwaves).
 
-All HW definitions in Climpact are calculated over the extended summer period with the exceptions of the Excess Heat Factor (EHF) and Excess Cold Factor (ECF) when using the [Nairn and Fawcett (2013)](#appendixd_refs) definition (ECF can only be calculated following Nairn and Fawcett, 2013). In the southern hemisphere the extended summer season includes November to March, in the northern hemisphere it includes May to September.
-
-For each of the above three HW definitions there are five HW Aspects that are calculated for each year or summer.
-
-* HW Number (HWN): The number of HW events (>= 3 HW days) that begin in the period of interest in addition to those that start prior to but continue into the period of interest.
-* HW Frequency (HWF): The number of days that contribute to HWs defined by HWN (these are termed 'HW days'). For HW’s that begin prior to the period of interest, only the HW days within the period of interest are counted. For HW’s that extend beyond the period of interest, a maximum of 14 days beyond the period of interest is counted.
-* HW Duration (HWD): Length in days of the longest heatwave defined by HWN.
-* HW Magnitude (HWM): The mean temperature of HW's defined by HWN. Means across the HW days in each HW event are calculated prior to a final mean being taken.
-* HW Amplitude (HWA): The peak daily value in the hottest HW (defined as the HW with the highest mean daily temperature).
+* Heatwave Number (HWN): The number of heatwave events (>= 3 continuous heatwave days) that begin in the period of interest (the current year or current extended summer) in addition to those that start prior to but continue into the period of interest.
+* Heatwave Frequency (HWF): The number of days that contribute to heatwaves defined by HWN (these are termed 'heatwave days'). For heatwave’s that begin prior to the period of interest, only the heatwave days within the period of interest are counted. For heatwave’s that extend beyond the period of interest, a maximum of 14 days beyond the period of interest is counted.
+* Heatwave Duration (HWD): Length in days of the longest heatwave defined by HWN.
+* Heatwave Magnitude (HWM): The mean temperature of heatwave's defined by HWN. Means across the heatwave days in each heatwave event are calculated prior to a final mean being calculated.
+* Heatwave Amplitude (HWA): The peak daily temperature of the hottest heatwave (defined as the heatwave with the highest mean temperature).
 
 ### D.2 Notes regarding interpretation of heatwave indices
 
-* The year of a heatwave season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
+* For Tx90 and Tn90 heatwaves, the year of a heatwave season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
 * If there are no heatwaves in a given year, then HWN and HWF will equal 0 and the HWD, HWM and HWA heatwave aspects will be set to missing. If this occurs for all years in station data then no plots will be created for HWD, HWM and HWA since there is no valid data for the entire time-series.
 * For netCDF data, any values calculated over ocean grid cells should be ignored by the user.
 * When calculating heatwaves, leap days are ignored and deleted from data.
@@ -774,18 +770,15 @@ See [Nairn and Fawcett (2013)](#appendixd_refs) for background information on th
 
 EHI(accl.) = [(TM<sub>i</sub> + TM<sub>i</sub>-1 + TM<sub>i</sub>-2)/3] – [(TM<sub>i</sub>-3 + … + TM<sub>i</sub>-32)/30]
 
-EHI(sig.) = [(TM<sub>i</sub> + TM<sub>i</sub>-1 + TM<sub>i</sub>-2)/3] – TM90<sub>i</sub>
+EHI(sig.) = [(TM<sub>i</sub> + TM<sub>i</sub>-1 + TM<sub>i</sub>-2)/3] – TM95<sub>i</sub>
 
-
-Where TM<sub>i</sub> represents the average daily temperature for day i and TM90<sub>i</sub> is the 90th percentile of TM over all calendar day i within the user-specified base period, using a 15 day running window. TM is calculated via TM = (TX + TN)/2. The EHF is subsequently defined from the above two definitions as:
+Where TM<sub>i</sub> represents the average daily temperature for day i and TM95 is the 95th percentile of TM over all days within the user-specified base period. TM is calculated as TM = (TX + TN)/2. The EHF is subsequently defined from the above two definitions as:
 
 EHF = EHI(sig.) x max(1,EHI(accl.))
 
-The above definition of the EHF differs to that in PA13 in several key areas. In PA13 the EHF was defined as in Nairn and Fawcett (2013), using the climatological 95th percentile of TM over the base period (i.e. one percentile for the entire base period, not a unique percentile for each calendar day). Whereas in the above specification the EHF has been updated (Perkins personal comms 2015) and uses the 90th percentile of TM for each calendar day and a 15 day running window and over the summer season only. For users calculating the indices on netCDF data, an option exists to change the definition of the EHF calculation to the original [Nairn and Fawcett (2013)](#appendixd_refs) definition. To do this, change the "EHF_DEF" variable in *climpact.ncdf.wrapper.r* to "NF13", instead of the default "PA13", which refers to the updated method described above. In the web interface (see [Section 4](#calculatesingle)) the EHF is calculated using the updated "PA13" method.
-
 ### D.4 The Excess Cold Factor
 
-Coldwaves (periods of uncharacteristically cold temperatures) are calculated in Climpact via the ECF that was developed by [Nairn and Fawcett (2013)](#appendixd_refs) and is directly analogous to the EHF as defined by these authors.
+Coldwaves (periods of uncharacteristically cold temperatures) are calculated in Climpact via the Excess Cold Factor (ECF) that was developed by [Nairn and Fawcett (2013)](#appendixd_refs) and is directly analogous to the EHF as defined by these authors.
 
 The ECF is calculated daily and is a combination of two excess cold indices (ECI) representing the potential to acclimatise to and the climatological significance of the cold on a particular day:
 
@@ -797,7 +790,7 @@ And thus the ECF is defined as:
 
 ECF = -ECI(sig.) x min(-1,ECI(accl.))
 
-Where TM<sub>i</sub> represents the average daily temperature for day i and TM<sub>05</sub> is the 5th percentile of TM which is calculated within a user-specified base period annually. TM is calculated via TM = (TX + TN)/2.
+Where TM<sub>i</sub> represents the average daily temperature for day i and TM<sub>05</sub> is the 5th percentile of TM which is calculated within a user-specified base period annually. TM is calculated as TM = (TX + TN)/2.
  
 <a name="appendixd_refs"></a>
 ### Appendix D References
