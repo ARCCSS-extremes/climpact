@@ -1,3 +1,8 @@
+3.21    21 January 2025
+* SCIENCE CHANGE: Default Excess Heat Factor (EHF) calculation changed from "PA13" to "NF13" (i.e. daily EHF values are now calculated
+  according to the original Nairn and Fawcett (2013) definition).
+* QC checks are now repeatable if QC thresholds need to be changed.
+
 3.2     21 June 2024
 * Added adjustable QC parameters.
 

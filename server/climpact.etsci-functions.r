@@ -541,7 +541,6 @@ climdex.spi <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift=
 #
 # INPUT:
 #    - climdex input object
-#    - pwindow: number of days to apply a moving window for calculating percentiles. Hard-coded to 15 currently to ensure user does not deviate from definitions.
 #    - min.base.data.fraction.present: minimum fraction of data required to calculate percentiles.
 #    - ehfdef: Calculate the Excess Heat Factor (EHF) using either "PA13" for Perkins and Alexander (2013) with slight modifications (personal comms Perkins 2016),
 #	       or using "NF13" for Nairn and Fawcett (2013).
@@ -559,7 +558,7 @@ climdex.spi <- function(ci,scale=c(3,6,12),kernal=list(type='rectangular',shift=
 #    - HWN: heat wave number
 #    - HWD: heat wave duration
 #    - HWF: heat wave frequency
-climdex.hw <- function(ci,pwindow=15,min.base.data.fraction.present,ehfdef="PA13") {
+climdex.hw <- function(ci,min.base.data.fraction.present,ehfdef="NF13") {
 	stopifnot(!is.null(ci@data$tmin),!is.null(ci@data$tmax))
 	ts.origin = ("1850-01-01")      # arbitrarily chosen origin for time-series object
 	
