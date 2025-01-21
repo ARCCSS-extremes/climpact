@@ -6,7 +6,7 @@
 
     index.stored <- climdex.hw(cio) #,tavg90p=tavg90p,tn90p=tn90p,tx90p=tx90p)
 
-    write.hw.csv(index.stored, index.name = as.character(shortName), header = "Heatwave definitions and aspects", metadata, outputFolders)
-    plot.hw(index.stored, index.name = as.character(shortName), index.units = as.character(units), x.label = "Years", metadata = metadata, outputFolders, pdf.dev)
+    write.hw.csv(index.stored, cio, index.name = as.character(shortName), header = "Heatwave definitions and aspects", metadata, outputFolders)
+    plot.hw(index.stored[['hw_indices']], index.name = as.character(shortName), index.units = as.character(units), x.label = "Years", metadata = metadata, outputFolders, pdf.dev)
 
   }

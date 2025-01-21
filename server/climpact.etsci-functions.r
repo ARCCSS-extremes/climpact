@@ -755,6 +755,7 @@ climdex.hw <- function(ci, min.base.data.fraction.present, ehfdef = "NF13") {
         tavg <- tavg[!fact2 %in% as.factor("02-29")]
         monthly.factors <- ci@date.factors$monthly[!fact2 %in% as.factor("02-29")]
         annual.factors <- ci@date.factors$annual[!fact2 %in% as.factor("02-29")]
+        hw_dates = ci@dates[!fact2 %in% as.factor("02-29")]
         fact2 <- fact2[!fact2 %in% as.factor("02-29")]
     } else {
         tmax <- ci@data$tmax
@@ -762,6 +763,7 @@ climdex.hw <- function(ci, min.base.data.fraction.present, ehfdef = "NF13") {
         tavg <- tavg
         monthly.factors <- ci@date.factors$monthly
         annual.factors <- ci@date.factors$annual
+        hw_dates = ci@dates
     }
 
     # get shells for the following three variables and duplicate
@@ -820,8 +822,8 @@ climdex.hw <- function(ci, min.base.data.fraction.present, ehfdef = "NF13") {
     hw_index[3, , ] <- get.hw.aspects(hw3_index, EHF_boolean, annual.factors, monthly.factors, EHF, ci@northern.hemisphere, ehfdef, ehf = TRUE, namask = ci@namasks$annual$tmin * ci@namasks$annual$tmax)
     hw_index[4, , ] <- get.hw.aspects(hw4_index, ECF_boolean, annual.factors, monthly.factors, ECF, ci@northern.hemisphere, ehfdef, ecf = TRUE, namask = ci@namasks$annual$tmin * ci@namasks$annual$tmax)
 
-    rm(tavg, tavg90p, EHIaccl, EHIsig, EHF, tx90p_boolean, tn90p_boolean, EHF_boolean, tx90p_arr, tn90p_arr, hw1_index, hw2_index, hw3_index, tn90p, tx90p, beg, end, beg2, end2, dat.seq, dat.seq2, fact, fact2, ECIaccl, ECIsig, ECF)
-    return(hw_index)
+    rm(tavg, tavg90p, EHIaccl, EHIsig, tx90p_boolean, tn90p_boolean, EHF_boolean, tx90p_arr, tn90p_arr, hw1_index, hw2_index, hw3_index, tn90p, tx90p, beg, end, beg2, end2, dat.seq, dat.seq2, fact, ECIaccl, ECIsig)
+    return(list(hw_indices=hw_index, EHF_daily_values=EHF, ECF_daily_values=ECF,hw_dates=hw_dates))
 }
 
 # get.hw.aspects

@@ -1023,15 +1023,16 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
 
         # Find special cases of an entire slab missing values... repeat such that we have full data.
         for(i in 1:length(climdex.results)) {
-                if(length(climdex.results[[i]][[ind]])!=(4*5*t.dim.len)) {
-                        climdex.results[[i]][[ind]] = array(NA,c(4,5,t.dim.len))
+                # for heatwaves, climdex.results dimensinos correspond to [gridcell,index,hw_list (and we want the first element, which contains the HW indices]
+                if(length(climdex.results[[i]][[ind]][[1]])!=(4*5*t.dim.len)) {
+                        climdex.results[[i]][[ind]][[1]] = array(NA,c(4,5,t.dim.len))
                 }
         }
 
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         for (asp in 1:5) {
                 for (def in 1:4) {
-                        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][def,asp,] })))
+                        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]][def,asp,] })))
                         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
                         tmp[,,def,asp,] = dat
                 }

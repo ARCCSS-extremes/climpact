@@ -42,7 +42,7 @@ write.index.csv <- function(index = NULL,
 
 # write.hw.csv
 # takes a time series of hw and writes to file
-write.hw.csv <- function(index = NULL, index.name = NULL, header = "", metadata, outputFolders) {
+write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
   if (is.null(index)) stop("Need heatwave data to write CSV file.")
 
   # print each definition in a separate .csv. Thus each .csv will have columns of time, HWA, HWM, HWF, HWD, HWN.
@@ -53,23 +53,33 @@ write.hw.csv <- function(index = NULL, index.name = NULL, header = "", metadata,
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_tx90_heatwave_ANN.csv"))
   write_header(nam1, header, metadata)
   write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[1,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][1,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 
   # write Tn90 heatwave data
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_tn90_heatwave_ANN.csv"))
   write_header(nam1, header, metadata)
   write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[2,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][2,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 
   # write EHF heatwave data
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ehf_heatwave_ANN.csv"))
   write_header(nam1, header, metadata)
   write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[3,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][3,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 
   # write ECF coldwave data
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ecf_heatwave_ANN.csv"))
   write_header(nam1, header, metadata)
   write.table(aspect.names.ECF, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[4,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][4,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+  # write daily EHF values
+  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ehf_daily_data.csv"))
+  write_header(nam1, "EHF daily values", metadata)
+  write.table(cbind(as.character(index[['hw_dates']]), index[["EHF_daily_values"]]), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Heat Factor"))
+
+  # write daily ECF values
+  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ecf_daily_data.csv"))
+  write_header(nam1, "ECF daily values", metadata)
+  write.table(cbind(as.character(index[['hw_dates']]), index[["ECF_daily_values"]]), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Cold Factor"))
 }
