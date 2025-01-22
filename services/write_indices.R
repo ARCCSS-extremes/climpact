@@ -32,7 +32,7 @@ write.index.csv <- function(index = NULL,
   avg = mean(as.numeric(index[2:length(index)]), na.rm = TRUE)
   stddev = sd(as.numeric(index[2:length(index)]), na.rm = TRUE)
   for (i in 2:length(index)) { norm[i - 1] = (as.numeric(index[i]) - avg) / stddev }
-  norm = c("normalised (all years)", norm)
+  norm = c("standardised values (all years)", norm)
   norm[norm == "NaN"] <- NA # "NaN" is returned, instead of NA, when there is no data in a month at all. Change these.
   index[index == "NaN"] <- NA
   new.index = cbind(index, norm)
