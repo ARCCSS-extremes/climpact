@@ -183,15 +183,15 @@ create.climdex.cmip5.filenames <- function(fn.split, vars.list) {
 get.climdex.variable.list <- function(source.data.present, time.resolution=c("all", "annual", "monthly"), climdex.vars.subset=NULL) {
   time.res <- match.arg(time.resolution)
   annual.only <- c("txdtnd","txbdtnbd","gsl","wsdi","wsdid","csdi","csdid","hw",
-		"hddheatn","cddcoldn","gddgrown","sdii","r95p","r99p","r95ptot","r99ptot","tx95t","cwd","cdd")
+        "hddheatn","cddcoldn","gddgrown","sdii","r95p","r99p","r95ptot","r99ptot","tx95t","cwd","cdd")
   monthly.only <- c("spei","spi")
 
   vars.by.src.data.reqd <- list(tmax=c("su", "id", "txx", "txn", "tx10p", "tx90p", "wsdi", "wsdid","txge30","txge35","txm","txgt50p","tx95t"),
                                 tmin=c("fd", "tr", "tnx", "tnn", "tn10p", "tn90p", "csdi", "tnlt2","tnltm2","tnltm20","csdid","tnm"),
                                 prec=c("rx1day", "rx5day", "sdii", "r10mm", "r20mm", "cdd", "cwd", "r95p", "r99p", "prcptot",
-					"rxdday","rnnmm","r95ptot","r99ptot","spei","spi"),
+                    "rxdday","rnnmm","r95ptot","r99ptot","spei","spi"),
                                 tavg=c("gsl", "dtr","tmge5","tmlt5","tmge10","tmlt10","hddheatn","cddcoldn","gddgrown","txbdtnbd","txdtnd","tmm",
-					"hw") )
+                    "hw") )
 
   if(any(!(source.data.present %in% c("tmin", "tmax", "tavg", "prec"))))
     stop("Invalid variable listed in source.data.present.")
@@ -206,8 +206,8 @@ get.climdex.variable.list <- function(source.data.present, time.resolution=c("al
 
   freq.lists <- list(c("MON", "ANN"), c("ANN"))
   dat <- switch(time.res,
-                all=unlist(lapply(climdex.vars, function(x) { if(x=="tx95t") { paste(x,"DAY",sep="_") } else { if(x %in% annual.only) { paste(x,"ANN",sep="_") } else if (x %in% monthly.only) { paste(x,"MON",sep="_") } else { paste(x,c("MON","ANN"),sep="_") } } } )),	
-					#{ paste(x, freq.lists[[(x %in% annual.only) + 1]], sep="_") })),
+                all=unlist(lapply(climdex.vars, function(x) { if(x=="tx95t") { paste(x,"DAY",sep="_") } else { if(x %in% annual.only) { paste(x,"ANN",sep="_") } else if (x %in% monthly.only) { paste(x,"MON",sep="_") } else { paste(x,c("MON","ANN"),sep="_") } } } )),  
+                    #{ paste(x, freq.lists[[(x %in% annual.only) + 1]], sep="_") })),
                 annual=paste(climdex.vars, "ANN", sep="_"),
                 monthly=paste(climdex.vars[!(climdex.vars %in% annual.only)], "MON", sep="_"))
 
@@ -265,28 +265,28 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
 
   options <- vector("list",length(index.data$Annual.flag))
   for (i in 1:length(index.data$Annual.flag)) {
-	if(is.na(index.data$Annual.flag[i])) options[[i]] = el else { if(index.data$Annual.flag[i]==TRUE) { options[[i]] = af } else { options[[i]] = mf } } }
+    if(is.na(index.data$Annual.flag[i])) options[[i]] = el else { if(index.data$Annual.flag[i]==TRUE) { options[[i]] = af } else { options[[i]] = mf } } }
 
   options = lapply(1:length(options), function(x) {
-	if(index.data$Short.name[x]=="hw") options[[x]] = hw.opts
-	if(index.data$Short.name[x]=="spei") options[[x]] = spei.opts
-	if(index.data$Short.name[x]=="rxdday") options[[x]] = c(options[[x]],rxnday.opts)
-	if(index.data$Short.name[x]=="rnnmm") options[[x]] = c(options[[x]],rnnmm.opts)
-	if(index.data$Short.name[x]=="txdtnd") options[[x]] = ntxntn.opts
-	if(index.data$Short.name[x]=="txbdtnbd") options[[x]] = ntxbntnb.opts
+    if(index.data$Short.name[x]=="hw") options[[x]] = hw.opts
+    if(index.data$Short.name[x]=="spei") options[[x]] = spei.opts
+    if(index.data$Short.name[x]=="rxdday") options[[x]] = c(options[[x]],rxnday.opts)
+    if(index.data$Short.name[x]=="rnnmm") options[[x]] = c(options[[x]],rnnmm.opts)
+    if(index.data$Short.name[x]=="txdtnd") options[[x]] = ntxntn.opts
+    if(index.data$Short.name[x]=="txbdtnbd") options[[x]] = ntxbntnb.opts
 
-	if(index.data$Short.name[x]=="csdi") options[[x]] = wcsdi.opts
-	if(index.data$Short.name[x]=="wsdi") options[[x]] = wcsdi.opts
-	if(index.data$Short.name[x]=="csdid") options[[x]] = csdin.opts
-	if(index.data$Short.name[x]=="wsdid") options[[x]] = wsdin.opts
-	if(index.data$Short.name[x]=="cwd") options[[x]] = c(options[[x]],cwdd.opts)
-	if(index.data$Short.name[x]=="cdd") options[[x]] = c(options[[x]],cwdd.opts)
-	if(index.data$Short.name[x]=="rx5day") options[[x]] = c(options[[x]],rx5day.opts)
+    if(index.data$Short.name[x]=="csdi") options[[x]] = wcsdi.opts
+    if(index.data$Short.name[x]=="wsdi") options[[x]] = wcsdi.opts
+    if(index.data$Short.name[x]=="csdid") options[[x]] = csdin.opts
+    if(index.data$Short.name[x]=="wsdid") options[[x]] = wsdin.opts
+    if(index.data$Short.name[x]=="cwd") options[[x]] = c(options[[x]],cwdd.opts)
+    if(index.data$Short.name[x]=="cdd") options[[x]] = c(options[[x]],cwdd.opts)
+    if(index.data$Short.name[x]=="rx5day") options[[x]] = c(options[[x]],rx5day.opts)
         if(index.data$Short.name[x]=="cddcoldn") options[[x]] = cddcoldn.opts
         if(index.data$Short.name[x]=="hddheatn") options[[x]] = hddheatn.opts
         if(index.data$Short.name[x]=="gddgrown") options[[x]] = gddgrow.opts
 
-	return(options[[x]])
+    return(options[[x]])
   })
 
 # list indices which cannot accept a frequency flag and don't have custom options specified above, nherold.
@@ -300,7 +300,7 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
 
   func <- lapply(1:length(func.names), function(n) do.call(functional::Curry, c(list(eval(parse(text=func.names[n]))), options[[n]])))
 
-  names.func <- paste(index.data$Short.name,time_suffix,sep="_")	#all.data$row.names #paste(index.data$Short.name,index.data$Expert.team,
+  names.func <- paste(index.data$Short.name,time_suffix,sep="_")    #all.data$row.names #paste(index.data$Short.name,index.data$Expert.team,
   names(func) <- names.func
   return(func[vars.list])
 }
@@ -344,14 +344,14 @@ get.climdex.variable.metadata <- function(vars.list, template.filename) {
   assign("time_suffix",time_suffix,envir=.GlobalEnv)
 
   all.data <- data.frame(long.name=index.data$Long.name,
-			var.name=index.data$Short.name,
-			definition=index.data$Definition,
-			expert.team=index.data$Expert.team,
-			units=index.data$Units,
-			annual=index.data$Annual.flag,
-			base.period.attr=index.data$Base.period.flag,
-			row.names=paste(index.data$Short.name,time_suffix,sep="_"),
-			stringsAsFactors=FALSE)
+            var.name=index.data$Short.name,
+            definition=index.data$Definition,
+            expert.team=index.data$Expert.team,
+            units=index.data$Units,
+            annual=index.data$Annual.flag,
+            base.period.attr=index.data$Base.period.flag,
+            row.names=paste(index.data$Short.name,time_suffix,sep="_"),
+            stringsAsFactors=FALSE)
 
   all.data$filename <- create.climdex.cmip5.filenames(ncdf4.helpers::get.split.filename.cmip5(template.filename), rownames(all.data))
   assign("all.data",all.data,envir=.GlobalEnv)
@@ -439,16 +439,17 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
     if(cdx.dat$var.name[x]=="spi" || cdx.dat$var.name[x]=="spei") {
         scale.dim <- ncdim_def("scale","3,6,12 months",1:3)
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim),list(scale.dim)),
-			missval=1e20, longname=cdx.dat$long.name[x])))
+                        missval=1e20, longname=cdx.dat$long.name[x])))
     } else if (cdx.dat$var.name[x]=="tx95t") {
-                if(attr(ts, "cal")=="360_day" || attr(ts, "cal")=="360") last_calday = 360
-                else last_calday = 365
-		day.dim <- ncdim_def("time","calendar day",1:last_calday,calendar="365_day")
-		nc.var.list <- c(vars.ncvars, list(ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2],list(day.dim)),
-			missval=1e20, longname=cdx.dat$long.name[x])))
+        if(attr(ts, "cal")=="360_day" || attr(ts, "cal")=="360") last_calday = 360
+        else last_calday = 365
+
+        day.dim <- ncdim_def(time.dim.name,"calendar day",1:last_calday,calendar="365_day")
+        nc.var.list <- c(vars.ncvars, list(ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2],list(day.dim)),
+                        missval=1e20, longname=cdx.dat$long.name[x])))
     } else if (cdx.dat$var.name[x]=="hw") {
-		missingval=1e20
-		lonlatdim=f.example$var[[v.example]]$dim[1:2]
+        missingval=1e20
+        lonlatdim=f.example$var[[v.example]]$dim[1:2]
         hwmcdf_tx90 <- ncvar_def("hwm_tx90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwmcdf_tn90 <- ncvar_def("hwm_tn90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for Tn90 heatwaves, see user guide for definition.",prec="float")
         hwmcdf_EHF <- ncvar_def("hwm_ehf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for EHF heatwaves, see user guide for definition.",prec="float")
@@ -474,19 +475,23 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
         hwfcdf_EHF <- ncvar_def("hwf_ehf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave frequency for EHF heatwaves, see user guide for definition.",prec="float")
         hwfcdf_ECF <- ncvar_def("cwf_ecf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave frequency for ECF coldwaves, see user guide for definition.",prec="float")
 
+#        # daily EHF and ECF values
+#        day.dim <- ncdim_def(time.dim.name,paste0("days since ",as.character(ts[1])),1:length(ts),calendar=attr(ts, "cal"))
+#        daily_EHF <- ncvar_def(name="EHF",units="degC^2",dim=list(lonlatdim[[1]],lonlatdim[[2]],day.dim),missval=1e20, longname=paste0("Daily Excess Heat Factor (EHF) values defined by ",ehfdef),prec="float")
+
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var,hwmcdf_tx90,hwmcdf_tn90,hwmcdf_EHF,hwmcdf_ECF,
-									hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,
-									hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
-									hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,
-									hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF))
+                                    hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,
+                                    hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
+                                    hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,
+                                    hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF))
     } else {
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim)), missval=1e20, longname=cdx.dat$long.name[x])))
     }
 
     new.file <- ncdf4::nc_create(paste(out.dir, cdx.dat$filename[x], sep="/"), nc.var.list, force_v4=TRUE)
 
-	# add heat wave EHF definition as global attribute
-	if (cdx.dat$var.name[x]=="hw") { ncdf4::ncatt_put(new.file, 0, "EHF_definition", ehfdef, definemode=TRUE) }
+    # add heat wave EHF definition as global attribute
+    if (cdx.dat$var.name[x]=="hw") { ncdf4::ncatt_put(new.file, 0, "EHF_definition", ehfdef, definemode=TRUE) }
 
     ## Copy attributes for all variables plus global attributes
     att.rename <- c("frequency"="input_frequency", "creation_date"="input_creation_date", "title"="input_title", "tracking_id"="input_tracking_id")
@@ -504,15 +509,15 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
       ncdf4.helpers::nc.copy.atts(f.example, v, new.file, v, definemode=TRUE)
     }
     ncdf4::ncatt_put(new.file, time.dim.name, "units", time.units, definemode=TRUE)
-	if(!cdx.dat$var.name[x]=="hw") { 
-		ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"definition",cdx.dat$definition[x],definemode=TRUE)
-		ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"expert_team",cdx.dat$expert.team[x],definemode=TRUE)
-	} else {
-		for(i in list(hwmcdf_tx90,hwmcdf_tn90,hwmcdf_EHF,hwmcdf_ECF,hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
-									hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF)) {
-			ncdf4::ncatt_put(new.file, i,"expert_team","ETSCI",definemode=TRUE)
-		}
-	}
+    if(!cdx.dat$var.name[x]=="hw") { 
+        ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"definition",cdx.dat$definition[x],definemode=TRUE)
+        ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"expert_team",cdx.dat$expert.team[x],definemode=TRUE)
+    } else {
+        for(i in list(hwmcdf_tx90,hwmcdf_tn90,hwmcdf_EHF,hwmcdf_ECF,hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
+                                    hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF)) {
+            ncdf4::ncatt_put(new.file, i,"expert_team","ETSCI",definemode=TRUE)
+        }
+    }
 
     ## Put additional attributes.
 # Don't add history att since some variables are climdex.pcic and some aren't, nherold.
@@ -522,10 +527,9 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
 
     ## Copy data from vars.to.copy and put time bounds (no time bounds for variables calculated on calendar days)
     if (!cdx.dat$var.name[x]=="tx95t") ncdf4::ncvar_put(new.file, time.bnds.name, time.for.file$time.bnds.data)
-#    for(v in 1:length(vars.to.copy))
     for(v in vars.to.copy)
       if(!is.null(vars.data[[v]]))
-	 ncdf4::ncvar_put(new.file, v, vars.data[[v]])
+        ncdf4::ncvar_put(new.file, v, vars.data[[v]])
     
     new.file
   }))
@@ -589,14 +593,14 @@ compute.climdex.indices <- function(in.dat, cdx.funcs, ts, base.range, fclimdex.
                         if(is.null(in.dat$prec)) NULL else ts,
                         tavg=in.dat$tavg, tavg.dates=if(is.null(in.dat$tavg)) NULL else ts,
                         base.range=base.range, northern.hemisphere=in.dat$northern.hemisphere,
-			# added temperature quantiles needed for new indices, nherold.
-                        quantiles=in.dat$quantiles,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))	
+            # added temperature quantiles needed for new indices, nherold.
+                        quantiles=in.dat$quantiles,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))  
 
 # If SPEI is to be calculated, adjust the parameters sent to climdex.spei to include the latitude of the current grid cell 
 # (couldn't find a more appropriate place to inject latitude into the function call).
   if(any(names(cdx.funcs)=="spei_MON")) {
-  	spei.opts$lat = in.dat$lat
-  	cdx.funcs[[which(names(cdx.funcs)=="spei_MON")]] <- do.call(functional::Curry, c(list(eval(parse(text="climdex.spei"))), spei.opts))
+    spei.opts$lat = in.dat$lat
+    cdx.funcs[[which(names(cdx.funcs)=="spei_MON")]] <- do.call(functional::Curry, c(list(eval(parse(text="climdex.spei"))), spei.opts))
   }
 
   ## NOTE: Names must be stripped here because it increases memory usage on the head by a factor of 8-9x (!)
@@ -704,15 +708,15 @@ get.northern.hemisphere.booleans <- function(subset, f, v, projection,project.la
     # Nick's bit to retrieve the latitude of each grid cell from the 2D latitude array in the netcdf file, instead of re-projecting using proj4.
     # This was done for problems with NARCliM.
     if(!project.lat2d.coords) {
-		# get names of coordinate variables
-		coordinate.var.names <- ncdf4.helpers::nc.get.coordinate.axes(f,v)
-		# get name of the latitude coordinate variable, that has axis "Y"
-		lat.name <- names(coordinate.var.names[coordinate.var.names=="Y"])
-		# get the latitude values of current subset
-		latitudes.of.subset <- ncdf4.helpers::nc.get.var.subset.by.axes(f, lat.name, subset)
-		# replace dat$y with these latitudes
-		dat$y <- as.vector(latitudes.of.subset)
-	}
+        # get names of coordinate variables
+        coordinate.var.names <- ncdf4.helpers::nc.get.coordinate.axes(f,v)
+        # get name of the latitude coordinate variable, that has axis "Y"
+        lat.name <- names(coordinate.var.names[coordinate.var.names=="Y"])
+        # get the latitude values of current subset
+        latitudes.of.subset <- ncdf4.helpers::nc.get.var.subset.by.axes(f, lat.name, subset)
+        # replace dat$y with these latitudes
+        dat$y <- as.vector(latitudes.of.subset)
+    }
     assign("y.subset.vals",dat$y,envir=.GlobalEnv)
     return(dat$y >= 0)
   } else
@@ -756,27 +760,27 @@ get.quantiles.object <- function(thresholds, idx) {
     return(NULL)
   
   thresh.path.2d <- list(tx05thresh=c("tmax", "outbase", "q5"),
-			tx10thresh=c("tmax", "outbase", "q10"),
-			tx50thresh=c("tmax", "outbase", "q50"),
-			tx90thresh=c("tmax", "outbase", "q90"),
-			tx95thresh=c("tmax", "outbase", "q95"),
-			tn05thresh=c("tmin", "outbase", "q5"),
-			tn10thresh=c("tmin", "outbase", "q10"),
-			tn50thresh=c("tmin", "outbase", "q50"),
-			tn90thresh=c("tmin", "outbase", "q90"),
-			tn95thresh=c("tmin", "outbase", "q95"),
+            tx10thresh=c("tmax", "outbase", "q10"),
+            tx50thresh=c("tmax", "outbase", "q50"),
+            tx90thresh=c("tmax", "outbase", "q90"),
+            tx95thresh=c("tmax", "outbase", "q95"),
+            tn05thresh=c("tmin", "outbase", "q5"),
+            tn10thresh=c("tmin", "outbase", "q10"),
+            tn50thresh=c("tmin", "outbase", "q50"),
+            tn90thresh=c("tmin", "outbase", "q90"),
+            tn95thresh=c("tmin", "outbase", "q95"),
 
-			tx90thresh_15days=c("tmax","outbase","q90_15days"),
-			tn90thresh_15days=c("tmin","outbase","q90_15days"),
-			tavg90thresh_15days=c("tavg","outbase","q90_15days"),
+            tx90thresh_15days=c("tmax","outbase","q90_15days"),
+            tn90thresh_15days=c("tmin","outbase","q90_15days"),
+            tavg90thresh_15days=c("tavg","outbase","q90_15days"),
 
-			txraw=c("raw","tmax"),
-			tnraw=c("raw","tmin"),
-			precraw=c("raw","prec"))
+            txraw=c("raw","tmax"),
+            tnraw=c("raw","tmin"),
+            precraw=c("raw","prec"))
 
   thresh.path.1d <- list(tavg05thresh=c("tavg","q5"),
-			tavg95thresh=c("tavg","q95"),
-			r95thresh=c("prec", "q95"),
+            tavg95thresh=c("tavg","q95"),
+            r95thresh=c("prec", "q95"),
             r99thresh=c("prec", "q99"))
   result <- list()
 
@@ -899,19 +903,19 @@ compute.indices.for.stripe <- function(subset, cdx.funcs, ts, base.range, dim.ax
 #' @export
 get.thresholds.chunk <- function(subset, cdx.funcs, thresholds.netcdf, t.f.idx, thresholds.name.map) {
 #  var.thresh.map <- list(tx05thresh=c("ntxbntnb"),tx10thresh=c("tx10p"),tx50thresh=c("tx50p"),tx90thresh=c("tx90p", "WSDI","hw"),tx95thresh=c("ntxntn"),
-#			tn05thresh=c("ntxbntnb"),tn10thresh=c("tn10p", "CSDI"),tn90thresh=c("tn90p","hw"),tn95thresh=c("ntxntn"),
-#			r95thresh=c("r95p","r95ptot"), r99thresh=c("r99p","r99ptot"))
+#           tn05thresh=c("ntxbntnb"),tn10thresh=c("tn10p", "CSDI"),tn90thresh=c("tn90p","hw"),tn95thresh=c("ntxntn"),
+#           r95thresh=c("r95p","r95ptot"), r99thresh=c("r99p","r99ptot"))
 
 # nherold: assigned all indices to each threshold. Done because originally when loading thresholds from a file only the thresholds needed for the requested
 #          indices would be loaded. However, if more data was passed to climdexInput.raw than the requested index needed (e.g. tmax, tmin and prec, when only 
 #          tmin is needed) then the 'check.quantile.validity' would force an error. Thus to prevent this pull in all quantiles all the time. May be a 
 #          performance hit but not deal-breakingly so.
 var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Short.name,tx50thresh=index.data$Short.name,tx90thresh=index.data$Short.name,tx95thresh=index.data$Short.name,
-			tn05thresh=index.data$Short.name,tn10thresh=index.data$Short.name,tn90thresh=index.data$Short.name,tn95thresh=index.data$Short.name,
-			tavg05thresh=index.data$Short.name,tavg95thresh=index.data$Short.name,
-			tx90thresh_15days=index.data$Short.name,tn90thresh_15days=index.data$Short.name,tavg90thresh_15days=index.data$Short.name,
-			txraw=index.data$Short.name,tnraw=index.data$Short.name,precraw=index.data$Short.name,
-			r95thresh=index.data$Short.name,r99thresh=index.data$Short.name)
+            tn05thresh=index.data$Short.name,tn10thresh=index.data$Short.name,tn90thresh=index.data$Short.name,tn95thresh=index.data$Short.name,
+            tavg05thresh=index.data$Short.name,tavg95thresh=index.data$Short.name,
+            tx90thresh_15days=index.data$Short.name,tn90thresh_15days=index.data$Short.name,tavg90thresh_15days=index.data$Short.name,
+            txraw=index.data$Short.name,tnraw=index.data$Short.name,precraw=index.data$Short.name,
+            r95thresh=index.data$Short.name,r99thresh=index.data$Short.name)
   
   cdx.names <- names(cdx.funcs)
   thresh.var.needed <- names(var.thresh.map)[sapply(var.thresh.map, function(x) { any(unlist(lapply(x, function(substr) { any(grepl(substr, cdx.names)) }))) })]
@@ -982,18 +986,18 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),t.dim.len,3))
         ind=which(names(climdex.results[[1]])=="spi_MON")
 
-	# Find special cases of an entire slab missing values... repeat such that we have full data.
-	for(i in 1:length(climdex.results)) {
-		if(length(climdex.results[[i]][[ind]])!=(3*t.dim.len)) {
-			climdex.results[[i]][[ind]] = array(NA,c(3,t.dim.len))
-		}
-	}
+    # Find special cases of an entire slab missing values... repeat such that we have full data.
+    for(i in 1:length(climdex.results)) {
+        if(length(climdex.results[[i]][[ind]])!=(3*t.dim.len)) {
+            climdex.results[[i]][[ind]] = array(NA,c(3,t.dim.len))
+        }
+    }
 
         for (scale in 1:3) {    # loop over the three month-scales SPI is calculated at.
                 dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][scale,] })))
                 dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
                 tmp[,,,scale] = dat }
-	ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp, chunk.subset)
+    ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp, chunk.subset)
     } else if(cdx.varname[v] == "spei") {
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
@@ -1013,7 +1017,8 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
                 tmp[,,,scale] = dat }
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp, chunk.subset)
     } else if(cdx.varname[v] == "hw") {
-        t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "hwd_tn90", "T")$len	# choose a heat wave variable to get the time dimension, identical across all heat wave variables
+        t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "hwd_tn90", "T")$len   # choose a heat wave variable to get the time dimension, identical across all heat wave variables
+        t.dim.len_daily <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "hwd_tn90", "T")$len
 
         # Make an empty array to fill according to the conventions of climdex.pcic.ncdf
         tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),4,5,t.dim.len))
@@ -1063,18 +1068,18 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_EHF"), tmp[,,3,5,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWF_ECF"), tmp[,,4,5,], chunk.subset)
     } else {
-		dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[v]] })))
-		t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
-		## If data is of length 1, it's an error.
-		if(length(dat) == 1)
-			stop(dat)
-	
-		## Special case of an entire slab missing values... repeat such that we have full data.
-		if(prod(dim(dat)) != prod(c(xy.dims, t.dim.len)))
-			dat <- rep(dat, t.dim.len)
-	
-		dim(dat) <- c(xy.dims, t.dim.len)
-		ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], dat, chunk.subset)
+        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[v]] })))
+        t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
+        ## If data is of length 1, it's an error.
+        if(length(dat) == 1)
+            stop(dat)
+    
+        ## Special case of an entire slab missing values... repeat such that we have full data.
+        if(prod(dim(dat)) != prod(c(xy.dims, t.dim.len)))
+            dat <- rep(dat, t.dim.len)
+    
+        dim(dat) <- c(xy.dims, t.dim.len)
+        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], dat, chunk.subset)
     }
   }) 
   invisible(0)
@@ -1140,25 +1145,25 @@ get.quantiles.for.stripe <- function(subset, ts, base.range, dim.axes, v.f.idx, 
     if(!is.null(data.list$tmin)) {
       if(!is.null(data.list$prec)) {
         return(lapply(r, function(x) { quant.tmp <- climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], data.list$prec[,x], ts, ts, ts, base.range,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))
-					ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
-					tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
+                    ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
+                    tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
 
-					# record non-running percentiles
-					quant.tmp$tavg$q5 <- quantile(tavg[ind],0.05,na.rm=TRUE)  
+                    # record non-running percentiles
+                    quant.tmp$tavg$q5 <- quantile(tavg[ind],0.05,na.rm=TRUE)  
                                         quant.tmp$tavg$q95 <- quantile(tavg[ind],0.95,na.rm=TRUE)
-					# record running percentiles for HW indices, using 15 day window
-					outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
-					quant.tmp$tmax$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
+                    # record running percentiles for HW indices, using 15 day window
+                    outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
+                    quant.tmp$tmax$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
                                         quant.tmp$tmin$outbase$q90_15days <- outofbase.tmp$tmin$outbase$q90
-					outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(tavg, NULL, NULL, ts, NULL, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
-					quant.tmp$tavg$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
+                    outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(tavg, NULL, NULL, ts, NULL, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
+                    quant.tmp$tavg$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
 
-					# record raw data for SPI/SPEI
-					quant.tmp$raw$tmin <- data.list$tmin[ind,x]
+                    # record raw data for SPI/SPEI
+                    quant.tmp$raw$tmin <- data.list$tmin[ind,x]
                                         quant.tmp$raw$tmax <- data.list$tmax[ind,x]
                                         quant.tmp$raw$prec <- data.list$prec[ind,x]
 
-					return(quant.tmp)} ))
+                    return(quant.tmp)} ))
       } else {
         return(lapply(r, function(x) { quant.tmp <- climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))
                                         ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
@@ -1430,7 +1435,7 @@ create.file.metadata <- function(f, variable.name.map) {
 #' @export
 get.thresholds.metadata <- function(var.names) {
   threshold.dat <- list(tx05thresh=list(units="degrees_C", longname="05th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q5")),
-						tx10thresh=list(units="degrees_C", longname="10th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q10")),
+                        tx10thresh=list(units="degrees_C", longname="10th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q10")),
                         tx50thresh=list(units="degrees_C", longname="50th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q50")),
                         tx90thresh=list(units="degrees_C", longname="90th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q90")),
                         tx95thresh=list(units="degrees_C", longname="95th_percentile_running_baseline_tasmax", has.time=TRUE, q.path=c("tmax", "outbase", "q95")),
@@ -1449,12 +1454,12 @@ get.thresholds.metadata <- function(var.names) {
                         r95thresh=list(units="kg m-2 d-1", longname="95th_percentile_baseline_wet_day_pr", has.time=FALSE, q.path=c("prec", "q95")),
                         r99thresh=list(units="kg m-2 d-1", longname="99th_percentile_baseline_wet_day_pr", has.time=FALSE, q.path=c("prec", "q99")),
 
-						txraw=list(units="degrees_C",longname="tasmax_baseline",has.time=FALSE,q.path=c("raw","tmax")),
+                        txraw=list(units="degrees_C",longname="tasmax_baseline",has.time=FALSE,q.path=c("raw","tmax")),
                         tnraw=list(units="degrees_C",longname="tasmin_baseline",has.time=FALSE,q.path=c("raw","tmin")),
                         precraw=list(units="kg m-2 d-1",longname="prec_baseline",has.time=FALSE,q.path=c("raw","prec")))
 
 #  return(threshold.dat[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
-  return(threshold.dat)	#[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
+  return(threshold.dat) #[sapply(threshold.dat, function(x) { x$q.path[1] %in% var.names })])
 }
 
 unsquash.dims <- function(dat.dim, subset, f, n) {
@@ -1722,50 +1727,50 @@ create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output
 
   # change index variable names for custom indices (e.g. rxnday, rnnmm) to use their actual custom integers (e.g. rx7day, r30mm)
   for (i in 1:length(cdx.meta$var.name)) {
-	freq.tmp <- c("monthly", "annual")[1 + cdx.meta$annual[i]]
-	if(cdx.meta$var.name[i]=="rxdday") { 
-		cdx.meta$var.name[i] = paste("rx",rxnday_n,"day","",sep="") 
-		cdx.meta$filename[i] = gsub("rxdday",paste("rx",rxnday_n,"day",sep=""),cdx.meta$filename[i]) 
-		cdx.meta$definition[i] = paste("Maximum ",freq.tmp," ",rxnday_n,"-day precipitation total",sep="")
-	} else if(cdx.meta$var.name[i]=="rnnmm") { 
-		cdx.meta$var.name[i] = paste("r",rnnmm_n,"mm","",sep="")
-		cdx.meta$filename[i] = gsub("rnnmm",paste("r",rnnmm_n,"mm",sep=""),cdx.meta$filename[i])
-		cdx.meta$definition[i] = paste(freq.tmp," number of days when precipitation >= ",rnnmm_n," mm",sep="")
-	} else if(cdx.meta$var.name[i]=="txdtnd") { 
-		cdx.meta$var.name[i] = paste("tx",ntxntn_n,"tn",ntxntn_n,"",sep="")
-		cdx.meta$filename[i] = gsub("txdtnd",paste("tx",ntxntn_n,"tn",ntxntn_n,sep=""),cdx.meta$filename[i]) 
-		cdx.meta$definition[i] = paste(freq.tmp," number of ",ntxntn_n," consecutive days where both TX > 95th percentile and TN > 95th percentile",sep="")
-	}
-	if(cdx.meta$var.name[i]=="txbdtnbd") {
-		cdx.meta$var.name[i] = paste("txb",ntxbntnb_n,"tnb",ntxbntnb_n,"",sep="")
-		cdx.meta$filename[i] = gsub("txbdtnbd",paste("txb",ntxbntnb_n,"tnb",ntxbntnb_n,sep=""),cdx.meta$filename[i])
-		cdx.meta$definition[i] = paste(freq.tmp," number of ",ntxbntnb_n," consecutive days where both TX < 5th percentile and TN < 5th percentile",sep="")
-	}
-	if(cdx.meta$var.name[i]=="wsdid") { 
-		cdx.meta$var.name[i] = paste("wsdi",wsdin_n,"",sep="") 
-		cdx.meta$filename[i] = gsub("wsdid",paste("wsdi",wsdin_n,sep=""),cdx.meta$filename[i])
-		cdx.meta$definition[i] = paste("Annual number of days contributing to events where ",wsdin_n," or more consecutive days experience TX > 90th percentile",sep="")
-	}
-	if(cdx.meta$var.name[i]=="csdid") {
-		cdx.meta$var.name[i] = paste("csdi",csdin_n,"",sep="") 
-		cdx.meta$filename[i] = gsub("csdid",paste("csdi",csdin_n,sep=""),cdx.meta$filename[i]) 
-		cdx.meta$definition[i] = paste("Annual number of days contributing to events where ",csdin_n," or more consecutive days experience TN < 10th percentile",sep="")
-	}
-	if(cdx.meta$var.name[i]=="hddheatn") {
-		cdx.meta$var.name[i] = paste("hddheat",hddheatn_n,"",sep="") 
-		cdx.meta$filename[i] = gsub("hddheatn",paste("hddheat",hddheatn_n,sep=""),cdx.meta$filename[i]) 
-		cdx.meta$definition[i] = paste("Annual sum of ",hddheatn_n," - TM (where ",hddheatn_n," is a user-defined location-specific base temperature and TM < ",hddheatn_n,")",sep="")
-	}
-	if(cdx.meta$var.name[i]=="cddcoldn") {
-		cdx.meta$var.name[i] = paste("cddcold",cddcoldn_n,"",sep="") 
-		cdx.meta$filename[i] = gsub("cddcoldn",paste("cddcold",cddcoldn_n,sep=""),cdx.meta$filename[i]) 
-		cdx.meta$definition[i] = paste("Annual sum of TM - ",cddcoldn_n," (where ",cddcoldn_n," is a user-defined location-specific base temperature and TM > ",cddcoldn_n,")",sep="")
-	}
-	if(cdx.meta$var.name[i]=="gddgrown") {
-		cdx.meta$var.name[i] = paste("gddgrow",gddgrown_n,"",sep="")
-		cdx.meta$filename[i] = gsub("gddgrown",paste("gddgrow",gddgrown_n,sep=""),cdx.meta$filename[i])
-		cdx.meta$definition[i] = paste("Annual sum of TM - ",gddgrown_n," (where ",gddgrown_n," is a user-defined location-specific base temperature and TM > ",gddgrown_n,")",sep="")
-	}
+    freq.tmp <- c("monthly", "annual")[1 + cdx.meta$annual[i]]
+    if(cdx.meta$var.name[i]=="rxdday") { 
+        cdx.meta$var.name[i] = paste("rx",rxnday_n,"day","",sep="") 
+        cdx.meta$filename[i] = gsub("rxdday",paste("rx",rxnday_n,"day",sep=""),cdx.meta$filename[i]) 
+        cdx.meta$definition[i] = paste("Maximum ",freq.tmp," ",rxnday_n,"-day precipitation total",sep="")
+    } else if(cdx.meta$var.name[i]=="rnnmm") { 
+        cdx.meta$var.name[i] = paste("r",rnnmm_n,"mm","",sep="")
+        cdx.meta$filename[i] = gsub("rnnmm",paste("r",rnnmm_n,"mm",sep=""),cdx.meta$filename[i])
+        cdx.meta$definition[i] = paste(freq.tmp," number of days when precipitation >= ",rnnmm_n," mm",sep="")
+    } else if(cdx.meta$var.name[i]=="txdtnd") { 
+        cdx.meta$var.name[i] = paste("tx",ntxntn_n,"tn",ntxntn_n,"",sep="")
+        cdx.meta$filename[i] = gsub("txdtnd",paste("tx",ntxntn_n,"tn",ntxntn_n,sep=""),cdx.meta$filename[i]) 
+        cdx.meta$definition[i] = paste(freq.tmp," number of ",ntxntn_n," consecutive days where both TX > 95th percentile and TN > 95th percentile",sep="")
+    }
+    if(cdx.meta$var.name[i]=="txbdtnbd") {
+        cdx.meta$var.name[i] = paste("txb",ntxbntnb_n,"tnb",ntxbntnb_n,"",sep="")
+        cdx.meta$filename[i] = gsub("txbdtnbd",paste("txb",ntxbntnb_n,"tnb",ntxbntnb_n,sep=""),cdx.meta$filename[i])
+        cdx.meta$definition[i] = paste(freq.tmp," number of ",ntxbntnb_n," consecutive days where both TX < 5th percentile and TN < 5th percentile",sep="")
+    }
+    if(cdx.meta$var.name[i]=="wsdid") { 
+        cdx.meta$var.name[i] = paste("wsdi",wsdin_n,"",sep="") 
+        cdx.meta$filename[i] = gsub("wsdid",paste("wsdi",wsdin_n,sep=""),cdx.meta$filename[i])
+        cdx.meta$definition[i] = paste("Annual number of days contributing to events where ",wsdin_n," or more consecutive days experience TX > 90th percentile",sep="")
+    }
+    if(cdx.meta$var.name[i]=="csdid") {
+        cdx.meta$var.name[i] = paste("csdi",csdin_n,"",sep="") 
+        cdx.meta$filename[i] = gsub("csdid",paste("csdi",csdin_n,sep=""),cdx.meta$filename[i]) 
+        cdx.meta$definition[i] = paste("Annual number of days contributing to events where ",csdin_n," or more consecutive days experience TN < 10th percentile",sep="")
+    }
+    if(cdx.meta$var.name[i]=="hddheatn") {
+        cdx.meta$var.name[i] = paste("hddheat",hddheatn_n,"",sep="") 
+        cdx.meta$filename[i] = gsub("hddheatn",paste("hddheat",hddheatn_n,sep=""),cdx.meta$filename[i]) 
+        cdx.meta$definition[i] = paste("Annual sum of ",hddheatn_n," - TM (where ",hddheatn_n," is a user-defined location-specific base temperature and TM < ",hddheatn_n,")",sep="")
+    }
+    if(cdx.meta$var.name[i]=="cddcoldn") {
+        cdx.meta$var.name[i] = paste("cddcold",cddcoldn_n,"",sep="") 
+        cdx.meta$filename[i] = gsub("cddcoldn",paste("cddcold",cddcoldn_n,sep=""),cdx.meta$filename[i]) 
+        cdx.meta$definition[i] = paste("Annual sum of TM - ",cddcoldn_n," (where ",cddcoldn_n," is a user-defined location-specific base temperature and TM > ",cddcoldn_n,")",sep="")
+    }
+    if(cdx.meta$var.name[i]=="gddgrown") {
+        cdx.meta$var.name[i] = paste("gddgrow",gddgrown_n,"",sep="")
+        cdx.meta$filename[i] = gsub("gddgrown",paste("gddgrow",gddgrown_n,sep=""),cdx.meta$filename[i])
+        cdx.meta$definition[i] = paste("Annual sum of TM - ",gddgrown_n," (where ",gddgrown_n," is a user-defined location-specific base temperature and TM > ",gddgrown_n,")",sep="")
+    }
   }
   cdx.funcs <- get.climdex.functions(climdex.var.list,rxnday_n=rxnday_n,rnnmm_n=rnnmm_n,ntxntn_n=ntxntn_n,ntxbntnb_n=ntxbntnb_n,fclimdex.compatible=fclimdex.compatible,ehfdef=ehfdef,wsdin_n=wsdin_n,csdin_n=csdin_n,cddcoldn_n=cddcoldn_n,hddheatn_n=hddheatn_n,gddgrown_n=gddgrown_n)
   cdx.ncfile <- create.ncdf.output.files(cdx.meta, f, f.meta$v.f.idx, variable.name.map, f.meta$ts, get.time.origin(f, f.meta$dim.axes), base.range, out.dir, author.data,ehfdef) #,rxnday_n,rnnmm_n,ntxntn_n,ntxbntnb_n,ehfdef,wsdin_n,csdin_n)
