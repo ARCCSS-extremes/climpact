@@ -165,25 +165,24 @@ climdex.gddgrown <- function(ci, Tb = 10) {
 # cdd
 # number of consecutive dry days (when precipitation < 1.0 mm)
 # same as climdex.cdd in climdex.pcic package except allows monthly and annual calculation
-climdex.cdd <- function(ci, spells.can.span.years = TRUE, freq = c("monthly", "annual")) {
-    stopifnot(!is.null(ci@data$prec))
-    return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, "<", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$prec)
+climdex.cdd <- function(ci, spells.can.span.years = T, include.exact.dates = FALSE, freq = c("monthly", "annual")) {
+  stopifnot(!is.null(ci@data$prec))
+  return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, "<", spells.can.span.years, include.exact.dates, ci@namasks$annual$prec, attr(ci@dates, "cal")))
 }
 
 # cwd
 # number of consecutive wet days (when precipitation >= 1.0 mm)
 # same as climdex.cwd in climdex.pcic package except allows monthly and annual calculation
-climdex.cwd <- function(ci, spells.can.span.years = TRUE, freq = c("monthly", "annual")) {
-    stopifnot(!is.null(ci@data$prec))
-    return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=", spells.can.span.years) * ci@namasks[[match.arg(freq)]]$prec)
+climdex.cwd <- function(ci, spells.can.span.years = T, include.exact.dates = FALSE, freq = c("monthly", "annual")) {
+  stopifnot(!is.null(ci@data$prec))
+  return(spell.length.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=", spells.can.span.years, include.exact.dates, ci@namasks$annual$prec, attr(ci@dates, "cal")))
 }
 
 # Rxnday
 # Monthly maximum consecutive n-day precipitation (up to a maximum of 10)
-# Same as rx5day except specifying a monthly frequency and accepting user specified number of consecutive days
-climdex.rxdday <- function(ci, center.mean.on.last.day = FALSE, n = 7, freq = c("monthly", "annual")) {
-    stopifnot(!is.null(ci@data$prec), is.numeric(n), is.logical(center.mean.on.last.day))
-    return(nday.consec.prec.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], n, center.mean.on.last.day) * ci@namasks[[match.arg(freq)]]$prec)
+# Similar to rx5day except specifying a monthly frequency and accepting user specified number of consecutive days
+climdex.rxdday <- function(ci, center.mean.on.last.day = FALSE, n = 7, freq = c("monthly", "annual"), include.exact.dates = FALSE) {
+  return(nday.consec.prec.max(ci@data$prec, ci@date.factors[[match.arg(freq)]], ndays = n, include.exact.dates = include.exact.dates,  mask = ci@namasks[[match.arg(freq)]]$prec, freq = freq, cal = attr(ci@dates,"cal")))
 }
 
 # r95p as per Donat et al. (2013). This is the same as r95ptot in climdex and will need correcting in that package

@@ -41,6 +41,8 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
 
   for (i in 1:length(index.list$Short.name)) {
     tmp.index.name <- as.character(index.list$Short.name[i])
+    # we are not writing date information to output CSV file
+    return_dates = FALSE
 
     # Skip this index if it's a percentile index and calculate_pctl_indices has been set to FALSE
     # if (calculate_pctl_indices == FALSE && index.list$Base.period.flag[i] == TRUE) {
@@ -53,6 +55,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       progress$inc(0.005 * prog_int, detail = paste("Calculating", index.list$Short.name[i], "..."))
     }
     tmp.index.def <- as.character(index.list$Definition[i])
+
     # Set frequency if relevant to current index
     if (is.na(index.list$Annual.flag[i])) {
       frequency <- NA
@@ -110,7 +113,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     else if (index.list$Short.name[i] == "rxdday") {
       tmp.index.name <- paste0("rx", climdexInputParams$rx_ud, "day")
       index.parameter <- paste0(index.parameter, ",n=", climdexInputParams$rx_ud)
-      tmp.index.def <- paste0("Maximum ", climdexInputParams$rx_ud, "-day precipitation total")
+      tmp.index.def <- paste0("Maximum ", frequency, " ", climdexInputParams$rx_ud, "-day precipitation total")
     }
     else if (index.list$Short.name[i] == "hddheatn") {
       tmp.index.name <- paste0("hddheat", climdexInputParams$Tb_HDD)
@@ -128,16 +131,25 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       tmp.index.def <- paste0("Annual sum of TM - ", climdexInputParams$Tb_GDD)
     }
 
-    #index.function(cio)
+    if (index.list$Short.name[i] %in% names(exact_date_indices)) {
+      # indices that return dates of occurrence
+      index.parameter <- paste0(index.parameter,",include.exact.dates=TRUE")
+      return_dates = TRUE
+    }
+
     index.stored <- eval(parse(text = paste0("climdex.", as.character(index.list$Short.name[i]), "(", index.parameter, ")")))
+
     # Because climdex functions (called in above line) will still calculate
     # even if all data are NA, resulting in -Inf values being inserted into index.stored.
     # Climdex functions only check if cio data are NULL.
     index.stored[index.stored == -Inf] <- NA
-    write.index.csv(index.stored, index.name = tmp.index.name, freq = frequency, header = tmp.index.def, metadata, climdexInputParams, outputFolders)
+    write.index.csv(index.stored, index.name=tmp.index.name, freq=frequency, header=tmp.index.def, metadata=metadata, climdexInputParams=climdexInputParams, outputFolders=outputFolders, return_dates=return_dates)
 
     tryCatch({
-      plot.call(index.stored,
+      if (return_dates == TRUE) { index.plot = index.stored[[exact_date_indices[[index.list$Short.name[i]]]]] ; names(index.plot) = rownames(index.stored) }
+      else { index.plot = index.stored }
+
+      plot.call(index.plot,
         index.name = tmp.index.name,
         index.units = as.character(index.list$Units[i]),
         x.label = "Years",
@@ -164,7 +176,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
         cat(file = trend_file, paste(tmp.index.name, "JJA", metadata$year.start, metadata$year.end, JJAtrend[[1]][1], JJAtrend[[1]][2], JJAtrend[[1]][3], sep = ","), fill = 180, append = T)
         cat(file = trend_file, paste(tmp.index.name, "SON", metadata$year.start, metadata$year.end, SONtrend[[1]][1], SONtrend[[1]][2], SONtrend[[1]][3], sep = ","), fill = 180, append = T)
       }
-    # TODO remove globalvars
+      # TODO remove globalvars
       remove(mktrend, envir = .GlobalEnv)
     }
 
