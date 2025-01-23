@@ -110,7 +110,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 1, index.name = N
     axis(1, at = xind, labels = c(xtmp.int))
 
     box()
-    #			xy <- cbind(bp,y)
   } else {
     op <- par(mar = c(5, 4, 5, 2) + 0.1)
     plot(1:length(x), unname(y), cex.main = 2, ylim = range(unname(y), na.rm = TRUE), xaxt = "n", xlab = "", ylab = ylab, type = "b", cex.lab = 1.5, cex.axis = 1.5, col = "black")
@@ -135,10 +134,8 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 1, index.name = N
     na.y[is.na(y)] <- min(y, na.rm = TRUE)
 
     points(1:length(na.x), na.y, pch = 17, col = "blue", cex = 1.5)
-    #			xy <- cbind(x, y)
   }
   
-
   # NOTE by nherold. The zyp.sen function in some cases returns an intercept of NA even though there is a valid slope. This seems erroneous and results in slopes being
   # printed but prevents a trend line from being plotted! Must fix. If this is a bug in the zyp package then need to try another package.
   # 	JAN-2022: Have implemented a workaround that simply involves manually removing NA values from 'y' and the corresponding values from 'x'.
@@ -152,8 +149,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 1, index.name = N
 	  subtit <- paste0("NO LINEAR TREND: requires at least ", min_trend, " data points and ", min_trend_proportion*100, "% of time-series to be valid.")
 	}
   } else { subtit <- '' }
-
-
 
   title(sub = subtit, cex.sub = 1.5)
 
@@ -171,7 +166,6 @@ plotx <- function(x, y, main = "", xlab = "", ylab = "", opt = 1, index.name = N
 #  - output is a boolean indicating whether the minimum requirements have been met (TRUE) or not (FALSE)
 min_trend_data <- function(climate_data) {
 	total_points = length(climate_data)
-	#num_na = sum(is.na(climate_data))
 	num_valid = sum(!is.na(climate_data))
 
 	if(num_valid/total_points >= min_trend_proportion && num_valid >= min_trend) { return(TRUE) } else { return(FALSE) }
@@ -184,7 +178,6 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
 
   Encoding(sub) <- "UTF-8"
   Encoding(index.units) <- "UTF-8"
-  #	plot.title <- paste(title.station,index.name,sep=", ")
   if (index.name == "wsdin") { tmp.name = paste("wsdi", wsdi_ud, sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of days with at least ", wsdi_ud, " consecutive days when TX > 90th percentile", sep = "") }
   else if (index.name == "csdin") { tmp.name = paste("csdi", csdi_ud, sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of days with at least ", csdi_ud, " consecutive days when TN < 10th percentile", sep = "") }
   else if (index.name == "rxnday") { tmp.name = paste("rx", rx_ud, "day", sep = ""); sub = paste("Index: ", tmp.name, ". Maximum ", freq, " ", rx_ud, "-day precipitation total", sep = "") }
@@ -202,7 +195,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     else if (freq == "annual") { freq = "ANN" }
   }
 
-  x1 = seq(0, length(index)-1, 1) #as.numeric(names(index))
+  x1 = seq(0, length(index)-1, 1)
   y1 = unname(index)
   x2 = x1[!is.na(y1)]
   y2 = y1[!is.na(y1)]
@@ -254,10 +247,10 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f,na.action=NULL)
 
     names(Ag) = c("yq", "values")
-    DJF = Ag[grepl("Q1",Ag$yq),] #Ag[seq(1, length(Ag$yq), 4),]
-    MAM = Ag[grepl("Q2",Ag$yq),] #Ag[seq(2, length(Ag$yq), 4),]
-    JJA = Ag[grepl("Q3",Ag$yq),] #Ag[seq(3, length(Ag$yq), 4),]
-    SON = Ag[grepl("Q4",Ag$yq),] #Ag[seq(4, length(Ag$yq), 4),]
+    DJF = Ag[grepl("Q1",Ag$yq),]
+    MAM = Ag[grepl("Q2",Ag$yq),]
+    JJA = Ag[grepl("Q3",Ag$yq),]
+    SON = Ag[grepl("Q4",Ag$yq),]
 
     # remove first DJF value since it isn't complete (no December of preceeding year). The last DJF value is already excluded.
     # DON'T include this line since it makes the assumption a user's data starts in January. Better just to note that trends include
@@ -267,10 +260,10 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
     # check minimum data requirements are met
     DJFtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(DJF[[2]])) {
-        x1 = seq(0, length(DJF$values)-1, 1) #as.numeric(names(index))
+        x1 = seq(0, length(DJF$values)-1, 1)
         y1 = unname(DJF$values)
-	x2 = x1[!is.na(y1)]
-	y2 = y1[!is.na(y1)]
+        x2 = x1[!is.na(y1)]
+        y2 = y1[!is.na(y1)]
         zsen = zyp.sen(y2 ~ x2)
         ci = confint.zyp(zsen, level = 0.95)
         DJFtrend$stat[1] <<- unname(ci[2, 1])
@@ -281,7 +274,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
 
     MAMtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(MAM[[2]])) {
-        x1 = seq(0, length(MAM$values)-1, 1) #as.numeric(names(index))
+        x1 = seq(0, length(MAM$values)-1, 1)
         y1 = unname(MAM$values)
         x2 = x1[!is.na(y1)]
         y2 = y1[!is.na(y1)]
@@ -295,7 +288,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
 
     JJAtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(JJA[[2]])) {
-        x1 = seq(0, length(JJA$values)-1, 1) #as.numeric(names(index))
+        x1 = seq(0, length(JJA$values)-1, 1)
         y1 = unname(JJA$values)
         x2 = x1[!is.na(y1)]
         y2 = y1[!is.na(y1)]
@@ -309,7 +302,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
 
     SONtrend <<- list(stat = array(NA, 5))
     if (min_trend_data(SON[[2]])) {
-        x1 = seq(0, length(SON$values)-1, 1) #as.numeric(names(index))
+        x1 = seq(0, length(SON$values)-1, 1)
         y1 = unname(SON$values)
         x2 = x1[!is.na(y1)]
         y2 = y1[!is.na(y1)]
@@ -341,6 +334,5 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   dev.set(which = pdf.dev)
   plotx(xdata, index, main = gsub('\\*', tmp.name, plot.title),
     ylab = index.units, xlab = x.label, index.name = index.name, sub = sub, opt=plotopt)
-  #	dev.copy()
   dev.off(dev0)
 }

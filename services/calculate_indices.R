@@ -131,8 +131,8 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       tmp.index.def <- paste0("Annual sum of TM - ", climdexInputParams$Tb_GDD)
     }
 
+    # Check if current index can return date of occurrence
     if (index.list$Short.name[i] %in% names(exact_date_indices)) {
-      # indices that return dates of occurrence
       index.parameter <- paste0(index.parameter,",include.exact.dates=TRUE")
       return_dates = TRUE
     }
@@ -146,25 +146,36 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     write.index.csv(index.stored, index.name=tmp.index.name, freq=frequency, header=tmp.index.def, metadata=metadata, climdexInputParams=climdexInputParams, outputFolders=outputFolders, return_dates=return_dates)
 
     tryCatch({
-      if (return_dates == TRUE) { index.plot = index.stored[[exact_date_indices[[index.list$Short.name[i]]]]] ; names(index.plot) = rownames(index.stored) }
-      else { index.plot = index.stored }
+      # if this index has exact dates returned then plots these as well (in separate plots)
+      if (return_dates == TRUE) { 
+        index.plot = index.stored[[exact_date_indices[[index.list$Short.name[i]]]]] 
+        names(index.plot) = rownames(index.stored) 
+        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = tmp.index.def,freq = frequency,metadata, outputFolders, pdf.dev)
 
-      plot.call(index.plot,
-        index.name = tmp.index.name,
-        index.units = as.character(index.list$Units[i]),
-        x.label = "Years",
-        sub = tmp.index.def,
-        freq = frequency,
-        metadata, outputFolders, pdf.dev)
-        },error=function(error){
-          message('An error occurred while trying to plot an index, here is the error message:')
-          print(error)
-          return(NA)
-        },warning=function(warning){
-          message('A warning occurred while trying to plot an index, here is the warning:')
-          print(warning)
-          return(NA)
-        })
+        if (!index.list$Short.name[i] %in% c("cwd","cdd","gsl")) {
+            # convert dates to date object then get day of year
+            tmpdate = as.Date(index.stored[['ymd']], format = "%Y-%m-%d")
+            if (frequency == "monthly") { index.plot = as.integer(format(tmpdate, "%d")) }
+            else if (frequency == "annual") { index.plot = as.integer(format(tmpdate, "%j")) }
+            names(index.plot) = rownames(index.stored)
+            plot.call(index.plot,index.name = paste0("day_of_",tmp.index.name),index.units = "Calendar day",x.label = "Years",sub = paste0("The calendar day of occurrence of ",tolower(tmp.index.def)),
+                    freq = frequency,metadata, outputFolders, pdf.dev)
+        }
+      } else { 
+        index.plot = index.stored
+        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = tmp.index.def,freq = frequency,metadata, outputFolders, pdf.dev)
+      }
+      },
+      error=function(error){
+        message('An error occurred while trying to plot an index, here is the error message:')
+        print(error)
+        return(NA)
+      },warning=function(warning){
+        message('A warning occurred while trying to plot an index, here is the warning:')
+        print(warning)
+        return(NA)
+      }
+    )
 
     if (exists("mktrend")) {
       cat(file = trend_file, paste(tmp.index.name, frequency, metadata$year.start, metadata$year.end, mktrend[[1]][1], mktrend[[1]][2], mktrend[[1]][3], sep = ","), fill = 180, append = T)
