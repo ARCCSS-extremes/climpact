@@ -220,8 +220,6 @@ get.climdex.variable.list <- function(source.data.present, time.resolution=c("al
 
 #' Returns a list of Climdex functions, with parameters curried in.
 #'
-#' Returns a list of Climdex functions, with parameters curried in.
-#'
 #' This function takes a variable list (as created by \code{\link{get.climdex.variable.list}}) and creates a list of functions corresponding to the specified indices, with parameters such as time resolution curried in. This allows for these functions to be called with just the \code{climdexInput} object as an argument, easing the automation of computing indices.
 #'
 #' @param vars.list The variable list, as created by \code{\link{get.climdex.variable.list}}.
@@ -236,6 +234,13 @@ get.climdex.variable.list <- function(source.data.present, time.resolution=c("al
 #' @export
 get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="PA13",wsdin_n=7,csdin_n=7,hddheatn_n,cddcoldn_n,gddgrown_n) {
   func.names <- paste("climdex",index.data$Short.name,sep=".")
+
+  # source file containing ET-SCI functions - best place for this? nherold.
+  source(paste0(root.dir,"/server/climpact.etsci-functions.r"))
+  source(paste0(root.dir,"/server/global_variables.r"))
+  assign("software_id",software_id,envir = .GlobalEnv)
+
+  # set up index options
   el <- list()
   af <- list(freq="annual")
   mf <- list(freq="monthly")
@@ -265,7 +270,11 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
 
   options <- vector("list",length(index.data$Annual.flag))
   for (i in 1:length(index.data$Annual.flag)) {
-    if(is.na(index.data$Annual.flag[i])) options[[i]] = el else { if(index.data$Annual.flag[i]==TRUE) { options[[i]] = af } else { options[[i]] = mf } } }
+    if(is.na(index.data$Annual.flag[i])) options[[i]] = el else { if(index.data$Annual.flag[i]==TRUE) { options[[i]] = af } else { options[[i]] = mf } } 
+    if((index.data$Short.name[i] %in% names(exact_date_indices)) && (!index.data$Short.name[i] %in% c("cwd","cdd","gsl"))) {
+        options[[i]] = append(options[[i]], list(include.exact.dates=TRUE))
+    }
+  }
 
   options = lapply(1:length(options), function(x) {
     if(index.data$Short.name[x]=="hw") options[[x]] = hw.opts
@@ -282,25 +291,20 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
     if(index.data$Short.name[x]=="cwd") options[[x]] = c(options[[x]],cwdd.opts)
     if(index.data$Short.name[x]=="cdd") options[[x]] = c(options[[x]],cwdd.opts)
     if(index.data$Short.name[x]=="rx5day") options[[x]] = c(options[[x]],rx5day.opts)
-        if(index.data$Short.name[x]=="cddcoldn") options[[x]] = cddcoldn.opts
-        if(index.data$Short.name[x]=="hddheatn") options[[x]] = hddheatn.opts
-        if(index.data$Short.name[x]=="gddgrown") options[[x]] = gddgrow.opts
+    if(index.data$Short.name[x]=="cddcoldn") options[[x]] = cddcoldn.opts
+    if(index.data$Short.name[x]=="hddheatn") options[[x]] = hddheatn.opts
+    if(index.data$Short.name[x]=="gddgrown") options[[x]] = gddgrow.opts
 
     return(options[[x]])
   })
 
 # list indices which cannot accept a frequency flag and don't have custom options specified above, nherold.
-#  el_list = c("r95ptot","r99ptot","sdii","hddheatn","cddcoldn","gddgrown","r95p","r99p","gsl","spi")
   el_list = c("r95ptot","r99ptot","sdii","r95p","r99p","gsl","spi")
   options[which(index.data$Short.name %in% el_list)] = array(el,length(el_list))
 
-# source file containing ET-SCI functions - best place for this? nherold.
-  source(paste0(root.dir,"/server/climpact.etsci-functions.r"))
-  assign("software_id",software_id,envir = .GlobalEnv)
-
   func <- lapply(1:length(func.names), function(n) do.call(functional::Curry, c(list(eval(parse(text=func.names[n]))), options[[n]])))
 
-  names.func <- paste(index.data$Short.name,time_suffix,sep="_")    #all.data$row.names #paste(index.data$Short.name,index.data$Expert.team,
+  names.func <- paste(index.data$Short.name,time_suffix,sep="_")
   names(func) <- names.func
   return(func[vars.list])
 }
@@ -484,6 +488,11 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
                                     hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
                                     hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,
                                     hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF))
+    } else if ((cdx.dat$var.name[x] %in% names(exact_date_indices)) && (!cdx.dat$var.name[x] %in% c("cwd","cdd","gsl"))) {
+        # here we write the index data as well as the calendar day of the event
+        nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, 
+                        ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim)), missval=1e20, longname=cdx.dat$long.name[x]),
+                        ncdf4::ncvar_def(name=paste0("day_of_",cdx.dat$var.name[x]), units="calendar day", dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim)), missval=1e20, longname=cdx.dat$long.name[x])))
     } else {
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, ncdf4::ncvar_def(name=cdx.dat$var.name[x], units=cdx.dat$units[x], dim=c(f.example$var[[v.example]]$dim[1:2], list(time.for.file$time.dim)), missval=1e20, longname=cdx.dat$long.name[x])))
     }
@@ -969,7 +978,6 @@ var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Sh
 #'
 #' @export
 write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim.size, cdx.varname,f.meta) {
-# nherold insert stop if f or f.meta are NULL
   missingval = 1e20
 
   xy.dims <- dim.size[1:2]
@@ -986,18 +994,18 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),t.dim.len,3))
         ind=which(names(climdex.results[[1]])=="spi_MON")
 
-    # Find special cases of an entire slab missing values... repeat such that we have full data.
-    for(i in 1:length(climdex.results)) {
-        if(length(climdex.results[[i]][[ind]])!=(3*t.dim.len)) {
-            climdex.results[[i]][[ind]] = array(NA,c(3,t.dim.len))
+        # Find special cases of an entire slab missing values... repeat such that we have full data.
+        for(i in 1:length(climdex.results)) {
+            if(length(climdex.results[[i]][[ind]])!=(3*t.dim.len)) {
+                climdex.results[[i]][[ind]] = array(NA,c(3,t.dim.len))
+            }
         }
-    }
-
+    
         for (scale in 1:3) {    # loop over the three month-scales SPI is calculated at.
                 dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][scale,] })))
                 dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
                 tmp[,,,scale] = dat }
-    ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp, chunk.subset)
+        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp, chunk.subset)
     } else if(cdx.varname[v] == "spei") {
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
@@ -1037,7 +1045,10 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         for (asp in 1:5) {
                 for (def in 1:4) {
+                        check = tryCatch({
                         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]][def,asp,] })))
+                        },error = function(e) { print(e) ; browser() })
+
                         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
                         tmp[,,def,asp,] = dat
                 }
@@ -1067,6 +1078,45 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_Tn90"), tmp[,,2,5,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_EHF"), tmp[,,3,5,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWF_ECF"), tmp[,,4,5,], chunk.subset)
+    } else if ((cdx.varname[v] %in% names(exact_date_indices)) && (!cdx.varname[v] %in% c("cwd","cdd","gsl"))) {
+        t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
+
+        # Make an empty array to fill according to the conventions of climdex.pcic.ncdf
+        tmp_day = array(NA,c(xy.dims[1],length(chunk.subset[[1]]),t.dim.len))
+        tmp_data = array(NA,c(xy.dims[1],length(chunk.subset[[1]]),t.dim.len))
+
+        # find element that contains current index
+        fname = cdx.ncfile[v][[1]]$filename
+        name_split = strsplit(fname, "[_/\\]")
+        freq = unlist(name_split)[which(name_split[[1]] == cdx.varname[v]) + 1]
+        if (cdx.varname[v] != "rx1day" && cdx.varname[v] != "rx5day" && grepl("^rx.*day", cdx.varname[v])) { varname_check = "rxdday" } else { varname_check = cdx.varname[v] }
+        ind=which(names(climdex.results[[1]])==paste0(varname_check,"_",freq))
+
+        ## If data is of length 1, it's an error.
+#        if(length(dat) == 1)
+#            stop(dat)
+
+        # Fill in arrays for writing out
+        check = tryCatch({
+
+        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]] })))
+        dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
+        tmp_data = dat 
+
+        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[2]] })))
+#        dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
+        # convert dates to day number
+        tmpdate = as.Date(dat, format = "%Y-%m-%d")
+        if (freq == "MON") { tmp_day = as.integer(format(tmpdate, "%d")) }
+        else if (freq == "ANN") { tmp_day = as.integer(format(tmpdate, "%j")) }
+        dim(tmp_day) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
+
+        },error = function(e) { print(e) ; browser() })
+
+#        if (varname_check == "rxdday") { browser() }
+
+        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp_data, chunk.subset)
+        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], paste0("day_of_",cdx.varname[v]), tmp_day, chunk.subset)
     } else {
         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[v]] })))
         t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
@@ -1772,8 +1822,13 @@ create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output
         cdx.meta$definition[i] = paste("Annual sum of TM - ",gddgrown_n," (where ",gddgrown_n," is a user-defined location-specific base temperature and TM > ",gddgrown_n,")",sep="")
     }
   }
+
   cdx.funcs <- get.climdex.functions(climdex.var.list,rxnday_n=rxnday_n,rnnmm_n=rnnmm_n,ntxntn_n=ntxntn_n,ntxbntnb_n=ntxbntnb_n,fclimdex.compatible=fclimdex.compatible,ehfdef=ehfdef,wsdin_n=wsdin_n,csdin_n=csdin_n,cddcoldn_n=cddcoldn_n,hddheatn_n=hddheatn_n,gddgrown_n=gddgrown_n)
-  cdx.ncfile <- create.ncdf.output.files(cdx.meta, f, f.meta$v.f.idx, variable.name.map, f.meta$ts, get.time.origin(f, f.meta$dim.axes), base.range, out.dir, author.data,ehfdef) #,rxnday_n,rnnmm_n,ntxntn_n,ntxbntnb_n,ehfdef,wsdin_n,csdin_n)
+
+  # add rxdday to exact_date_indices
+  exact_date_indices[[paste0("rx",rxnday_n,"day")]] <<- "val"
+
+  cdx.ncfile <- create.ncdf.output.files(cdx.meta, f, f.meta$v.f.idx, variable.name.map, f.meta$ts, get.time.origin(f, f.meta$dim.axes), base.range, out.dir, author.data,ehfdef)
 
   ## Compute indices, either single process or multi-process using 'parallel'
   subsets <- ncdf4.helpers::get.cluster.worker.subsets(max.vals.millions * 1000000, f.meta$dim.size, f.meta$dim.axes, axis.to.split.on)
@@ -1793,7 +1848,10 @@ create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output
 
     ## Meat...
     parLapplyLBFiltered(cluster, subsets, compute.indices.for.stripe, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, project.lat2d.coords=project.lat2d.coords, local.filter.func=function(x, x.sub) {
-      write.climdex.results(x, x.sub, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name,f.meta=f.meta)
+#      names(x[[1]])[names(x[[1]])=="rxdday_MON"] = paste0("rx",rxnday_n,"day_MON")
+#      names(x[[1]])[names(x[[1]])=="rxdday_ANN"] = paste0("rx",rxnday_n,"day_ANN")
+
+      write.climdex.results(x, x.sub, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name, f.meta=f.meta)
     })
 
     ## Clean-up.

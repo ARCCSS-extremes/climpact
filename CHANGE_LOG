@@ -1,6 +1,9 @@
-3.21    21 January 2025
+3.3    21 January 2025
 * SCIENCE CHANGE: Default Excess Heat Factor (EHF) calculation changed from "PA13" to "NF13" (i.e. daily EHF values are now calculated
   according to the original Nairn and Fawcett (2013) definition).
+* Daily EHF and ECF values are written to file (GUI only right now, not written out to netcdf).
+* Following the update of climdex.pcic to v1.2 the dates of events are now calculated for the following indices: 
+    tnn, tnx, txn, txx, rxdday, rx1day, rx5day
 * QC checks are now repeatable if QC thresholds need to be changed.
 
 3.2     21 June 2024
