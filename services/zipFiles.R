@@ -42,8 +42,10 @@ zipFiles <- function (folderToZip, excludePattern = "", destinationFolder = "", 
     if (isLocal) {
       zipFilePath <- file.path(folderName, fileName)
     } else {
-      # strip shinyapps.io path
-      zipFilePath <- paste0("output/", fileName)
+      # manually setting the output folder is needed for remote because... shinyapps.io/R/web does not deal with the absolute path...
+      start_index <- regexpr("output", folderName)
+      sub_path <- substr(folderName, start_index, nchar(folderName))
+      zipFilePath <- file.path(sub_path, fileName)
     }
     cat("isLocal", isLocal)
     cat("zipFilePath returned to page: ", zipFilePath, "\n")

@@ -109,7 +109,13 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
     # Call into Climpact to do the quality control.
     out <- tryCatch({
         # create output folders to hold files for quality control and index output and plots
-        baseFolder <- file.path(getwd(), "www", "output")
+        # if this is a remote instance then put output in a randomly named folder to avoid overwriting among users
+        if (isLocal == FALSE) {
+          random_dir <- paste0(sample(LETTERS, 10, TRUE),collapse="")
+          baseFolder <- file.path(getwd(), "www", "output", random_dir)
+        } else {
+          baseFolder <- file.path(getwd(), "www", "output")
+        }
 
         # assign new outputFolders object to reactive singleStationState$outputFolders attribute
         singleStationState$outputFolders(outputFolders(baseFolder, singleStationState$stationName()))
@@ -126,10 +132,6 @@ singleStationStep2 <- function (input, output, session, parentSession, climpactU
         # capture any errors
         singleStationState$qualityControlErrors(qcResult$errors)
         singleStationState$metadata(qcResult$metadata)
-        # qualityControlCheckResult(qcResult$errors)
-        # capture climdex input object created
-	#print(paste0("qcResult$errors: ",qcResult$errors))
-  	#print(paste0("qcResult$wawrnings: ",qcResult$warnings))
 
         if (qcResult$errors == "") {
           if (qcResult$warnings != "") {
