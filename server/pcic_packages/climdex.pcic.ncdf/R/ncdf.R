@@ -1045,9 +1045,7 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         for (asp in 1:5) {
                 for (def in 1:4) {
-                        check = tryCatch({
                         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]][def,asp,] })))
-                        },error = function(e) { print(e) ; browser() })
 
                         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
                         tmp[,,def,asp,] = dat
@@ -1092,28 +1090,20 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         if (cdx.varname[v] != "rx1day" && cdx.varname[v] != "rx5day" && grepl("^rx.*day", cdx.varname[v])) { varname_check = "rxdday" } else { varname_check = cdx.varname[v] }
         ind=which(names(climdex.results[[1]])==paste0(varname_check,"_",freq))
 
-        ## If data is of length 1, it's an error.
-#        if(length(dat) == 1)
-#            stop(dat)
-
-        # Fill in arrays for writing out
-        check = tryCatch({
-
         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]] })))
-        dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
+        # If data is of length 1, it's an error.
+        if(length(dat) == 1)
+            stop(dat)
+
+        dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
         tmp_data = dat 
 
         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[2]] })))
-#        dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)        #c(c(londim$len,latdim$len),t.dim.len)
         # convert dates to day number
         tmpdate = as.Date(dat, format = "%Y-%m-%d")
         if (freq == "MON") { tmp_day = as.integer(format(tmpdate, "%d")) }
         else if (freq == "ANN") { tmp_day = as.integer(format(tmpdate, "%j")) }
         dim(tmp_day) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
-
-        },error = function(e) { print(e) ; browser() })
-
-#        if (varname_check == "rxdday") { browser() }
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp_data, chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], paste0("day_of_",cdx.varname[v]), tmp_day, chunk.subset)
