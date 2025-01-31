@@ -78,12 +78,12 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
   # create scatter plot of indice value (not normalized) vs sector data
   # this really needs a better method to account for user specified index values, hw, etc and category (temperature/precipition)
   # and a better way to create df for indices and category (temperature/precipitation)
-  tempCoreIndices         <- c("fd", "tnlt2", "tnltm2", "tnltm20", "su", "tr", "gsl", "txx", "tnn", "wsdi", "wsdi1")
-  tempCoreIndices         <- c(tempCoreIndices, "csdi", "csdi1", "txgt50p", "tmge5", "tmlt5", "tmge10", "tmlt10", "txge30", "txge35")
+  tempCoreIndices         <- c("fd", "tnlt2", "tnltm2", "tnltm20", "su", "tr", "gsl", "txx", "tnn", "wsdi")
+  tempCoreIndices         <- c(tempCoreIndices, "csdi", "txgt50p", "tmge5", "tmlt5", "tmge10", "tmlt10", "txge30", "txge35")
   tempCoreIndices         <- c(tempCoreIndices, "tx2tn2", "hddheat18", "cddcold18", "gddgrow10")
-  precipCoreIndices       <- c("cdd", "r20mm", "r95ptot", "rx3day")
+  precipCoreIndices       <- c("cdd", "r20mm", "r95ptot")
   tempNonCoreIndices      <- c("txb2tnb2", "dtr", "tnx", "txn", "tmm", "txm", "tnm", "tx10p", "tx90p", "tn10p", "tn90p")
-  precipNonCoreIndices    <- c("cwd", "r10mm", "r30mm", "sdii", "r95p", "rx1day", "rx5day")
+  precipNonCoreIndices    <- c("cwd", "r10mm", "sdii", "r95p", "rx1day", "rx5day")
 
   tempCoreCategories      <- rep("temperature", length(tempCoreIndices))
   precipCoreCategories    <- rep("precipitation", length(precipCoreIndices))
@@ -104,29 +104,37 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
     indice.file <- filenames[i]
 
     if (file.exists(indice.file)){
-      indice.data <- read.csv(indice.file, skip = 8, header = FALSE) # skip first 8 lines since they contain some header text
-      colnames(indice.data) <- c("year", "value", "value.norm")
+      indice.data.full <- read.csv(indice.file, skip = 6, header = TRUE) # skip first 6 lines since they contain some header text
+      if (indices[i] %in% names(exact_date_indices)) {
+        varcol = exact_date_indices[[indices[i]]]
+      } else {
+        varcol = indices[i]
+      }
+      indice.data <- indice.data.full[c("time",varcol)]
+      colnames(indice.data)[colnames(indice.data) == "time"] <- "year"
+
       common_years <- intersect(indice.data$year, sector.data$Year)
       if (length(common_years) == 0){
         return("Error: not able to make a correlation, since there is no data in common!")
       }
+
       # selection
       sector.common <- sector.data %>% filter(Year %in% common_years)
       indice.data <- indice.data %>% filter(year %in% common_years)
-      sector_indices <- cbind(sector.common, indice.data$value, indice.data$value.norm)
+      sector_indices <- cbind(sector.common, indice.data[varcol])#, indice.data$value.norm)
 
       correlation <- round(cor(sector_indices[,-1]),2) # skip year and round correlation value by 2 decimals
 
       # add data
       df[i,"indice"] <- indices[i]
-      df[i,"cor"] <-  ifelse(grepl("Detrended", sectorCol), correlation[7], correlation[3])
-      # df[i, "category"] <- ifelse(indices[i] %in% indices[1:4], "temperature", "precipitation")
+      df[i,"cor"] <-  ifelse(grepl("Detrended", sectorCol), correlation[6], correlation[3])
       df[i, "category"] <- categories[i]
       found.indices <- append(found.indices, indices[i])
     } else{
       print(paste("File does not exist:", indice.file))
     }
   }
+
   df <- df[df$indice != "",]
   df$indice <- factor(df$indice, levels = found.indices)
   create_bar_plot(paste0(stationName, "_index-sector_correlation_",sectorColumnFilePart), df, "indice", "cor", "category", plot.title, "", "")

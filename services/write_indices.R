@@ -40,7 +40,7 @@ write.index.csv <- function(index = NULL,
     norm = c("standardised values (using all years)", norm)
     norm[norm == "NaN"] <- NA # "NaN" is returned, instead of NA, when there is no data in a month at all. Change these.
     index[index == "NaN"] <- NA
-    new.index = cbind(index, norm)
+    new.index = cbind(names(index),index, norm)
   } else {
     index[index == "NaN"] <- NA
     index = rbind(NA,index)
