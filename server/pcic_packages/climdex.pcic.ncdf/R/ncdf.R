@@ -1038,6 +1038,7 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         for(i in 1:length(climdex.results)) {
                 # for heatwaves, climdex.results dimensinos correspond to [gridcell,index,hw_list (and we want the first element, which contains the HW indices]
                 if(length(climdex.results[[i]][[ind]][[1]])!=(4*5*t.dim.len)) {
+                        climdex.results[[i]][[ind]] = list()
                         climdex.results[[i]][[ind]][[1]] = array(NA,c(4,5,t.dim.len))
                 }
         }
@@ -1046,7 +1047,6 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         for (asp in 1:5) {
                 for (def in 1:4) {
                         dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]][def,asp,] })))
-
                         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
                         tmp[,,def,asp,] = dat
                 }
@@ -1095,15 +1095,39 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         if(length(dat) == 1)
             stop(dat)
 
+        ## Special case of an entire slab missing values... repeat such that we have full data.
+        if(prod(dim(dat)) != prod(c(xy.dims, t.dim.len))) {
+            miss_slab = TRUE
+            dat <- rep(dat, t.dim.len)
+        } else { miss_slab = FALSE }
+
         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
         tmp_data = dat 
 
-        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[2]] })))
-        # convert dates to day number
-        tmpdate = as.Date(dat, format = "%Y-%m-%d")
-        if (freq == "MON") { tmp_day = as.integer(format(tmpdate, "%d")) }
-        else if (freq == "ANN") { tmp_day = as.integer(format(tmpdate, "%j")) }
-        dim(tmp_day) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
+        ## if entire slab was missing then set "day of" data to NA as well
+        if(miss_slab == TRUE) {
+            tmp_day = dat
+            miss_slab = FALSE
+        } else {
+            # modified this cbind statement to be able to handle some grid cells having no data and thus having no second list containing dates of extreme events.
+            dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { if (length(cr[[ind]])==2) cr[[ind]][[2]] else rep(NA,t.dim.len)}))) #     ifelse(length(cr[[ind]])==2,cr[[ind]][[2]],rep(NA,t.dim.len)) })))
+
+            # If data is of length 1, it's an error.
+            if(length(dat) == 1)
+                stop(dat)
+    
+            ## Special case of an entire slab missing values... repeat such that we have full data.
+            if(prod(dim(dat)) != prod(c(xy.dims, t.dim.len)))
+                dat <- rep(dat, t.dim.len)
+    
+            dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
+    
+            # convert dates to day number
+            tmpdate = as.Date(dat, format = "%Y-%m-%d")
+            if (freq == "MON") { tmp_day = as.integer(format(tmpdate, "%d")) }
+            else if (freq == "ANN") { tmp_day = as.integer(format(tmpdate, "%j")) }
+            dim(tmp_day) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
+        }
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], cdx.varname[v], tmp_data, chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], paste0("day_of_",cdx.varname[v]), tmp_day, chunk.subset)
