@@ -43,7 +43,8 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
   row.names(batchFiles) <- batchFiles$name
   batchFiles[1] <- NULL
   numfiles <- length(batch_metadata$station_file)
-  for (file.number in 1:numfiles) {
+#  for (file.number in 1:numfiles) {
+  foreach(file.number = 1:numfiles, .combine = rbind) %dopar% {
     # set error log file name remove if present from a past run of climpact
     errorfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".errors.txt"))
     warningfile <- file.path(batchOutputFolder,paste0(strip_file_extension(batch_metadata$station_file[file.number]),".warnings.txt"))

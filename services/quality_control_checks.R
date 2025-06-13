@@ -164,37 +164,38 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   Encoding(lat_text) <- "UTF-8"
   metadata$title.station <- paste0(metadata$stationName, " [", metadata$lat, lat_text, ", ", metadata$lon, lon_text, "]")
 
-  createPlots(progress, prog_int, outputFolders, metadata, "prcp", cio, "h")
-  createPlots(progress, prog_int, outputFolders, metadata, "tmax", cio, "l")
-  createPlots(progress, prog_int, outputFolders, metadata, "tmin", cio, "l")
-  createPlots(progress, prog_int, outputFolders, metadata, "dtr", cio, "l")
+#  createPlots(progress, prog_int, outputFolders, metadata, "prcp", cio, "h")
+#  createPlots(progress, prog_int, outputFolders, metadata, "tmax", cio, "l")
+#  createPlots(progress, prog_int, outputFolders, metadata, "tmin", cio, "l")
+#  createPlots(progress, prog_int, outputFolders, metadata, "dtr", cio, "l")
+#
+#  ##############################
+#  # Call the ExtraQC functions.
+#  print("TESTING DATA, PLEASE WAIT...", quote = FALSE)
+#  temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
+#
+#  # This is a bit silly. We are writing out data to a file for temporary reading by the QC functions, when really the QC functions should just be passed the 
+#  # already "cleaned" data as a variable. This will do for now.
+#  write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
+#
+#  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
+#
+#  # Concatenate all of the QC PDF's into one file
+#  outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_QC_PLOTS.pdf"))
+#  if(file.exists(outqcfile)) {file.remove(outqcfile)} # remove any previous version of this file so it's not included in the concatenation.
+#  tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
+#  pdf_combine(c(tmplist[1],tmplist[2],tmplist[5],tmplist[4],tmplist[6],tmplist[7],tmplist[3]),outqcfile)
+#  file.remove(tmplist)
+#
+#  ##############################
+#  # Write out NA statistics.
+#  write.NA.statistics(cio, outputFolders, metadata)
+#
+#  ##############################
+#  # Remove temporary file
+#  file.remove(temp.file)
 
-  ##############################
-  # Call the ExtraQC functions.
-  print("TESTING DATA, PLEASE WAIT...", quote = FALSE)
-  temp.file <- paste0(user_file, ".temporary") #"test.tmp"#tempfile()
-
-  # This is a bit silly. We are writing out data to a file for temporary reading by the QC functions, when really the QC functions should just be passed the 
-  # already "cleaned" data as a variable. This will do for now.
-  write.table(user_data[,!names(user_data) %in% "dates"], file = temp.file, sep = "\t",col.names=FALSE,row.names=FALSE,na="-99.9")
-
-  errors <- allqc(progress, prog_int, master = temp.file, output = outputFolders$outqcdir, metadata = metadata, iqr_threshold_temp, iqr_threshold_prec, prec_threshold, temp_threshold, no_variability_threshold, temp_change_threshold)
-
-  # Concatenate all of the QC PDF's into one file
-  outqcfile = file.path(outputFolders$outqcdir,paste0(metadata$stationName,"_QC_PLOTS.pdf"))
-  if(file.exists(outqcfile)) {file.remove(outqcfile)} # remove any previous version of this file so it's not included in the concatenation.
-  tmplist = list.files(outputFolders$outqcdir,pattern="*.pdf",full.names=TRUE)
-  pdf_combine(c(tmplist[1],tmplist[2],tmplist[5],tmplist[4],tmplist[6],tmplist[7],tmplist[3]),outqcfile)
-  file.remove(tmplist)
-
-  ##############################
-  # Write out NA statistics.
-  write.NA.statistics(cio, outputFolders, metadata)
-
-  ##############################
-  # Remove temporary file
-  file.remove(temp.file)
-
+  errors = ""
   return(list(errors = errors, cio = cio, metadata = metadata, warnings = warnings))
 }
 

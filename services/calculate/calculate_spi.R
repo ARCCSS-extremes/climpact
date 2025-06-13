@@ -63,6 +63,6 @@
       }
       spi_row_num <- match("spi",index.list$Short.name)
       write.precindex.csv(index.store, index.name = index.list$Short.name[spi_row_num], spifactor, header = "Standardised Precipitation Index", metadata, outputFolders, custom_SPEI)
-      plot.precindex(index.store, index.name = index.list$Short.name[spi_row_num], index.units = index.list$Units[spi_row_num], x.label = "Years", spifactor, sub = as.character(index.list$Definition[spi_row_num]), times = c(3, 6, 12, custom_SPEI), metadata, outputFolders, pdf.dev, trend_file)
+#      plot.precindex(index.store, index.name = index.list$Short.name[spi_row_num], index.units = index.list$Units[spi_row_num], x.label = "Years", spifactor, sub = as.character(index.list$Definition[spi_row_num]), times = c(3, 6, 12, custom_SPEI), metadata, outputFolders, pdf.dev, trend_file)
     }
   }

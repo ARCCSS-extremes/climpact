@@ -1,14 +1,4 @@
 Short.name	Units	Long.name	Definition	Expert.team	Annual.flag	Base.period.flag
-fd	days	Frost Days	Annual number of days when TN < 0 degrees_C	ETCCDI	T	F
-fd	days	Frost Days	Monthly number of days when TN < 0 degrees_C	ETCCDI	F	F
-tnlt2	days	TN below 2 degrees_C	Annual number of days when TN < 2 degrees_C	ETSCI	T	F
-tnlt2	days	TN below 2 degrees_C	Monthly number of days when TN < 2 degrees_C	ETSCI	F	F
-tnltm2	days	TN below -2 degrees_C	Annual number of days when TN < -2 degrees_C	ETSCI	T	F
-tnltm2	days	TN below -2 degrees_C	Monthly number of days when TN < -2 degrees_C	ETSCI	F	F
-tnltm20	days	TN below -20 degrees_C	Annual number of days when TN < -20 degrees_C	ETSCI	T	F
-tnltm20	days	TN below -20 degrees_C	Monthly number of days when TN < -20 degrees_C	ETSCI	F	F
-id	days	Ice Days	Annual number of days when TX < 0 degrees_C	ETCCDI	T	F
-id	days	Ice Days	Monthly number of days when TX < 0 degrees_C	ETCCDI	F	F
 su	days	Summer days	Annual number of days when TX > 25 degrees_C	ETCCDI	T	F
 su	days	Summer days	Monthly number of days when TX > 25 degrees_C	ETCCDI	F	F
 tr	days	Tropical nights	Annual number of days when TN > 20 degrees_C	ETCCDI	T	F
@@ -38,14 +28,6 @@ tn10p	%	Amount of cold nights	Annual percentage of days when TN < 10th percentil
 tn10p	%	Amount of cold nights	Monthly percentage of days when TN < 10th percentile	ETCCDI	F	T
 tn90p	%	Amount of warm nights	Annual percentage of days when TN > 90th percentile	ETCCDI	T	T
 tn90p	%	Amount of warm nights	Monthly percentage of days when TN > 90th percentile	ETCCDI	F	T
-tmge5	days	TM of at least 5 degrees_C	Annual number of days when TM >= 5 degrees_C	ETSCI	T	F
-tmge5	days	TM of at least 5 degrees_C	Monthly number of days when TM >= 5 degrees_C	ETSCI	F	F
-tmlt5	days	TM below 5 degrees_C	Annual number of days when TM < 5 degrees_C	ETSCI	T	F
-tmlt5	days	TM below 5 degrees_C	Monthly number of days when TM < 5 degrees_C	ETSCI	F	F
-tmge10	days	TX of at least 10 degrees_C	Annual number of days when TM >= 10 degrees_C	ETSCI	T	F
-tmge10	days	TX of at least 10 degrees_C	Monthly number of days when TM >= 10 degrees_C	ETSCI	F	F
-tmlt10	days	TM below 10 degrees_C	Annual number of days when TM < 10 degrees_C	ETSCI	T	F
-tmlt10	days	TM below 10 degrees_C	Monthly number of days when TM < 10 degrees_C	ETSCI	F	F
 txge30	days	TX of at least 30 degrees_C	Annual number of days when TX >= 30 degrees_C	ETSCI	T	F
 txge30	days	TX of at least 30 degrees_C	Monthly number of days when TX >= 30 degrees_C	ETSCI	F	F
 txge35	days	TX of at least 35 degrees_C	Annual number of days when TX >= 35 degrees_C	ETSCI	T	F
