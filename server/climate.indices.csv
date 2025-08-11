@@ -9,10 +9,10 @@ tnltm20	days	TN below -20 degrees_C	Annual number of days when TN < -20 degrees_
 tnltm20	days	TN below -20 degrees_C	Monthly number of days when TN < -20 degrees_C	ETSCI	F	F
 id	days	Ice Days	Annual number of days when TX < 0 degrees_C	ETCCDI	T	F
 id	days	Ice Days	Monthly number of days when TX < 0 degrees_C	ETCCDI	F	F
-su	days	Summer days	Annual number of days when TX > 25 degrees_C	ETCCDI	T	F
-su	days	Summer days	Monthly number of days when TX > 25 degrees_C	ETCCDI	F	F
-tr	days	Tropical nights	Annual number of days when TN > 20 degrees_C	ETCCDI	T	F
-tr	days	Tropical nights	Monthly number of days when TN > 20 degrees_C	ETCCDI	F	F
+txgt25	days	Warm days	Annual number of days when TX > 25 degrees_C	ETCCDI	T	F
+txgt25	days	Warm days	Monthly number of days when TX > 25 degrees_C	ETCCDI	F	F
+tngt20	days	Warm Nights	Annual number of days when TN > 20 degrees_C	ETCCDI	T	F
+tngt20	days	Warm Nights	Monthly number of days when TN > 20 degrees_C	ETCCDI	F	F
 gsl	days	Growing Season Length	Annual number of days between the first occurrence of 6 consecutive days with TM > 5 degrees_C and the first occurrence of 6 consecutive days with TM < 5 degrees_C	ETCCDI	T	F
 txx	degrees_C	Max TX	Annual warmest daily TX	ETCCDI	T	F
 txx	degrees_C	Max TX	Monthly warmest daily TX	ETCCDI	F	F
