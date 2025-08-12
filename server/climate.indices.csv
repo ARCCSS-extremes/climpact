@@ -9,10 +9,6 @@ tnltm20	days	TN below -20 degrees_C	Annual number of days when TN < -20 degrees_
 tnltm20	days	TN below -20 degrees_C	Monthly number of days when TN < -20 degrees_C	ETSCI	F	F
 id	days	Ice Days	Annual number of days when TX < 0 degrees_C	ETCCDI	T	F
 id	days	Ice Days	Monthly number of days when TX < 0 degrees_C	ETCCDI	F	F
-su	days	Summer days	Annual number of days when TX > 25 degrees_C	ETCCDI	T	F
-su	days	Summer days	Monthly number of days when TX > 25 degrees_C	ETCCDI	F	F
-tr	days	Tropical nights	Annual number of days when TN > 20 degrees_C	ETCCDI	T	F
-tr	days	Tropical nights	Monthly number of days when TN > 20 degrees_C	ETCCDI	F	F
 gsl	days	Growing Season Length	Annual number of days between the first occurrence of 6 consecutive days with TM > 5 degrees_C and the first occurrence of 6 consecutive days with TM < 5 degrees_C	ETCCDI	T	F
 txx	degrees_C	Max TX	Annual warmest daily TX	ETCCDI	T	F
 txx	degrees_C	Max TX	Monthly warmest daily TX	ETCCDI	F	F
@@ -56,10 +52,6 @@ cddcoldn	degree-days	Cooling Degree Days	Annual sum of TM - n (where n is a user
 gddgrown	degree-days	Growing Degree Days	Annual sum of TM - n (where n is a user-defined location-specific base temperature and TM > n)	ETSCI	T	F
 cdd	days	Consecutive Dry Days	Maximum annual number of consecutive dry days (when precipitation < 1.0 mm)	ETCCDI	T	F
 cwd	days	Consecutive Wet Days	Maximum annual number of consecutive wet days (when precipitation >= 1.0 mm)	ETCCDI	T	F
-r10mm	days	Number of heavy rain days	Annual number of days when precipitation >= 10 mm	ETCCDI	T	F
-r10mm	days	Number of heavy rain days	Monthly number of days when precipitation >= 10 mm	ETCCDI	F	F
-r20mm	days	Number of very heavy rain days	Annual number of days when precipitation >= 20 mm	ETCCDI	T	F
-r20mm	days	Number of very heavy rain days	Monthly number of days when precipitation >= 20 mm	ETCCDI	F	F
 rx1day	mm	Max 1-day PR	Maximum annual 1-day precipitation total	ETCCDI	T	F
 rx1day	mm	Max 1-day PR	Maximum monthly 1-day precipitation total	ETCCDI	F	F
 rx5day	mm	Max 5-day PR	Maximum annual 5-day precipitation total	ETCCDI	T	F
@@ -73,8 +65,6 @@ r95ptot	%	Contribution from very wet days	100*r95p / PRCPTOT	ETCCDI	T	T
 r99ptot	%	Contribution from extremely wet days	100*r99p / PRCPTOT	ETCCDI	T	T
 rxdday	mm	User-defined consecutive days PR amount	Maximum annual d-day precipitation total	ETSCI	T	F
 rxdday	mm	User-defined consecutive days PR amount	Maximum monthly d-day precipitation total	ETSCI	F	F
-rnnmm	days	Number of customised rain days	Annual number of days when precipitation >= nn	ETSCI	T	F
-rnnmm	days	Number of customised rain days	Monthly number of days when precipitation >= nn	ETSCI	F	F
 txdtnd	events	User-defined consecutive number of hot days and nights	Annual number of d consecutive days where both TX > 95th percentile and TN > 95th percentile, where 10 >= d >= 2	ETSCI	T	T
 txbdtnbd	events	User-defined consecutive number of cold days and Nights	Annual number of d consecutive days where both TX < 5th percentile and TN < 5th percentile, where 10 >= d >=2	ETSCI	T	T
 hw	NA	Heatwave aspects and definitions	Heat wave magnitude amplitude number duration and frequency calculated for the three definitions of TX90, TN90 and EHF	ETSCI	T	T
@@ -86,3 +76,127 @@ txm	degrees_C	Mean TX	Annual mean daily maximum temperature	ETSCI	T	F
 txm	degrees_C	Mean TX	Monthly mean daily maximum temperature	ETSCI	F	F
 tnm	degrees_C	Mean TN	Annual mean daily minimum temperature	ETSCI	T	F
 tnm	degrees_C	Mean TN	Monthly mean daily minimum temperature	ETSCI	F	F
+tnlt13	days	Cool Nights (TN<13°C) 	Number of days when TN < 13°C 	COSPPac	F	F
+tnlt13	days	Cool Nights (TN<13°C) 	Number of days when TN < 13°C 	COSPPac	T	F
+tnlt14	days	Cool Nights (TN<14°C) 	Number of days when TN < 14°C 	COSPPac	F	F
+tnlt14	days	Cool Nights (TN<14°C) 	Number of days when TN < 14°C 	COSPPac	T	F
+tnlt15	days	Cool Nights (TN<15°C) 	Number of days when TN < 15°C 	COSPPac	F	F
+tnlt15	days	Cool Nights (TN<15°C) 	Number of days when TN < 15°C 	COSPPac	T	F
+tnlt16	days	Cool Nights (TN<16°C) 	Number of days when TN < 16°C 	COSPPac	F	F
+tnlt16	days	Cool Nights (TN<16°C) 	Number of days when TN < 16°C 	COSPPac	T	F
+tnlt17	days	Cool Nights (TN<17°C) 	Number of days when TN < 17°C 	COSPPac	F	F
+tnlt17	days	Cool Nights (TN<17°C) 	Number of days when TN < 17°C 	COSPPac	T	F
+tnlt18	days	Cool Nights (TN<18°C) 	Number of days when TN < 18°C 	COSPPac	F	F
+tnlt18	days	Cool Nights (TN<18°C) 	Number of days when TN < 18°C 	COSPPac	T	F
+tnlt19	days	Cool Nights (TN<19°C) 	Number of days when TN < 19°C 	COSPPac	F	F
+tnlt19	days	Cool Nights (TN<19°C) 	Number of days when TN < 19°C 	COSPPac	T	F
+tnlt20	days	Cool Nights (TN<20°C) 	Number of days when TN < 20°C 	COSPPac	F	F
+tnlt20	days	Cool Nights (TN<20°C) 	Number of days when TN < 20°C 	COSPPac	T	F
+tnlt21	days	Cool Nights (TN<21°C) 	Number of days when TN < 21°C 	COSPPac	F	F
+tnlt21	days	Cool Nights (TN<21°C) 	Number of days when TN < 21°C 	COSPPac	T	F
+tnlt22	days	Cool Nights (TN<22°C) 	Number of days when TN < 22°C 	COSPPac	F	F
+tnlt22	days	Cool Nights (TN<22°C) 	Number of days when TN < 22°C 	COSPPac	T	F
+tnlt23	days	Cool Nights (TN<23°C) 	Number of days when TN < 23°C 	COSPPac	F	F
+tnlt23	days	Cool Nights (TN<23°C) 	Number of days when TN < 23°C 	COSPPac	T	F
+tnlt24	days	Cool Nights (TN<24°C) 	Number of days when TN < 24°C 	COSPPac	F	F
+tnlt24	days	Cool Nights (TN<24°C) 	Number of days when TN < 24°C 	COSPPac	T	F
+tngt20	days	Warm Nights (TN>20°C)	Number of days when TN > 20°C	ETCCDI	T	F
+tngt20	days	Warm Nights (TN>20°C)	Number of days when TN > 20°C	ETCCDI	F	F
+tngt21	days	Warm Nights (TN>21°C)	Number of days when TN > 21°C	COSPPac	T	F
+tngt21	days	Warm Nights (TN>21°C)	Number of days when TN > 21°C	COSPPac	F	F
+tngt22	days	Warm Nights (TN>22°C)	Number of days when TN > 22°C	COSPPac	T	F
+tngt22	days	Warm Nights (TN>22°C)	Number of days when TN > 22°C	COSPPac	F	F
+tngt23	days	Warm Nights (TN>23°C)	Number of days when TN > 23°C	COSPPac	T	F
+tngt23	days	Warm Nights (TN>23°C)	Number of days when TN > 23°C	COSPPac	F	F
+tngt24	days	Warm Nights (TN>24°C)	Number of days when TN > 24°C	COSPPac	T	F
+tngt24	days	Warm Nights (TN>24°C)	Number of days when TN > 24°C	COSPPac	F	F
+tngt25	days	Warm Nights (TN>25°C)	Number of days when TN > 25°C	COSPPac	T	F
+tngt25	days	Warm Nights (TN>25°C)	Number of days when TN > 25°C	COSPPac	F	F
+tngt26	days	Warm Nights (TN>26°C)	Number of days when TN > 26°C	COSPPac	T	F
+tngt26	days	Warm Nights (TN>26°C)	Number of days when TN > 26°C	COSPPac	F	F
+tngt27	days	Warm Nights (TN>27°C)	Number of days when TN > 27°C	COSPPac	T	F
+tngt27	days	Warm Nights (TN>27°C)	Number of days when TN > 27°C	COSPPac	F	F
+tngt28	days	Warm Nights (TN>28°C)	Number of days when TN > 28°C	COSPPac	T	F
+tngt28	days	Warm Nights (TN>28°C)	Number of days when TN > 28°C	COSPPac	F	F
+tngt29	days	Warm Nights (TN>29°C)	Number of days when TN > 29°C	COSPPac	T	F
+tngt29	days	Warm Nights (TN>29°C)	Number of days when TN > 29°C	COSPPac	F	F
+tngt30	days	Warm Nights (TN>30°C)	Number of days when TN > 30°C	COSPPac	T	F
+tngt30	days	Warm Nights (TN>30°C)	Number of days when TN > 30°C	COSPPac	F	F
+tngt31	days	Warm Nights (TN>31°C)	Number of days when TN > 31°C	COSPPac	T	F
+tngt31	days	Warm Nights (TN>31°C)	Number of days when TN > 31°C	COSPPac	F	F
+tngt32	days	Warm Nights (TN>32°C)	Number of days when TN > 32°C	COSPPac	T	F
+tngt32	days	Warm Nights (TN>32°C)	Number of days when TN > 32°C	COSPPac	F	F
+txlt16	days	Cool Days (TX<16°C)	Number of days when TX < 16°C	COSPPac	T	F
+txlt16	days	Cool Days (TX<16°C)	Number of days when TX < 16°C	COSPPac	F	F
+txlt17	days	Cool Days (TX<17°C)	Number of days when TX < 17°C	COSPPac	T	F
+txlt17	days	Cool Days (TX<17°C)	Number of days when TX < 17°C	COSPPac	F	F
+txlt18	days	Cool Days (TX<18°C)	Number of days when TX < 18°C	COSPPac	T	F
+txlt18	days	Cool Days (TX<18°C)	Number of days when TX < 18°C	COSPPac	F	F
+txlt19	days	Cool Days (TX<19°C)	Number of days when TX < 19°C	COSPPac	T	F
+txlt19	days	Cool Days (TX<19°C)	Number of days when TX < 19°C	COSPPac	F	F
+txlt20	days	Cool Days (TX<20°C)	Number of days when TX < 20°C	COSPPac	T	F
+txlt20	days	Cool Days (TX<20°C)	Number of days when TX < 20°C	COSPPac	F	F
+txlt21	days	Cool Days (TX<21°C)	Number of days when TX < 21°C	COSPPac	T	F
+txlt21	days	Cool Days (TX<21°C)	Number of days when TX < 21°C	COSPPac	F	F
+txlt22	days	Cool Days (TX<22°C)	Number of days when TX < 22°C	COSPPac	T	F
+txlt22	days	Cool Days (TX<22°C)	Number of days when TX < 22°C	COSPPac	F	F
+txlt23	days	Cool Days (TX<23°C)	Number of days when TX < 23°C	COSPPac	T	F
+txlt23	days	Cool Days (TX<23°C)	Number of days when TX < 23°C	COSPPac	F	F
+txlt24	days	Cool Days (TX<24°C)	Number of days when TX < 24°C	COSPPac	T	F
+txlt24	days	Cool Days (TX<24°C)	Number of days when TX < 24°C	COSPPac	F	F
+txlt25	days	Cool Days (TX<25°C)	Number of days when TX < 25°C	COSPPac	T	F
+txlt25	days	Cool Days (TX<25°C)	Number of days when TX < 25°C	COSPPac	F	F
+txlt26	days	Cool Days (TX<26°C)	Number of days when TX < 26°C	COSPPac	T	F
+txlt26	days	Cool Days (TX<26°C)	Number of days when TX < 26°C	COSPPac	F	F
+txlt27	days	Cool Days (TX<27°C)	Number of days when TX < 27°C	COSPPac	T	F
+txlt27	days	Cool Days (TX<27°C)	Number of days when TX < 27°C	COSPPac	F	F
+txgt25	days	Warm Days (TX>25°C)	Number of days when TX > 25°C	ETCCDI	T	F
+txgt25	days	Warm Days (TX>25°C)	Number of days when TX > 25°C	ETCCDI	F	F
+txgt26	days	Warm Days (TX>26°C)	Number of days when TX > 26°C	COSPPac	T	F
+txgt26	days	Warm Days (TX>26°C)	Number of days when TX > 26°C	COSPPac	F	F
+txgt27	days	Warm Days (TX>27°C)	Number of days when TX > 27°C	COSPPac	T	F
+txgt27	days	Warm Days (TX>27°C)	Number of days when TX > 27°C	COSPPac	F	F
+txgt28	days	Warm Days (TX>28°C)	Number of days when TX > 28°C	COSPPac	T	F
+txgt28	days	Warm Days (TX>28°C)	Number of days when TX > 28°C	COSPPac	F	F
+txgt29	days	Warm Days (TX>29°C)	Number of days when TX > 29°C	COSPPac	T	F
+txgt29	days	Warm Days (TX>29°C)	Number of days when TX > 29°C	COSPPac	F	F
+txgt30	days	Warm Days (TX>30°C)	Number of days when TX > 30°C	COSPPac	T	F
+txgt30	days	Warm Days (TX>30°C)	Number of days when TX > 30°C	COSPPac	F	F
+txgt31	days	Warm Days (TX>31°C)	Number of days when TX > 31°C	COSPPac	T	F
+txgt31	days	Warm Days (TX>31°C)	Number of days when TX > 31°C	COSPPac	F	F
+txgt32	days	Warm Days (TX>32°C)	Number of days when TX > 32°C	COSPPac	T	F
+txgt32	days	Warm Days (TX>32°C)	Number of days when TX > 32°C	COSPPac	F	F
+txgt33	days	Warm Days (TX>33°C)	Number of days when TX > 33°C	COSPPac	T	F
+txgt33	days	Warm Days (TX>33°C)	Number of days when TX > 33°C	COSPPac	F	F
+txgt34	days	Warm Days (TX>34°C)	Number of days when TX > 34°C	COSPPac	T	F
+txgt34	days	Warm Days (TX>34°C)	Number of days when TX > 34°C	COSPPac	F	F
+txgt35	days	Warm Days (TX>35°C)	Number of days when TX > 35°C	COSPPac	T	F
+txgt35	days	Warm Days (TX>35°C)	Number of days when TX > 35°C	COSPPac	F	F
+txgt36	days	Warm Days (TX>36°C)	Number of days when TX > 36°C	COSPPac	T	F
+txgt36	days	Warm Days (TX>36°C)	Number of days when TX > 36°C	COSPPac	F	F
+txgt37	days	Warm Days (TX>37°C)	Number of days when TX > 37°C	COSPPac	T	F
+txgt37	days	Warm Days (TX>37°C)	Number of days when TX > 37°C	COSPPac	F	F
+r1mm	days	Number of rainy days (PR>=1 mm)	Number of days when PR >= 1 mm	COSPPac	T	F
+r1mm	days	Number of rainy days (PR>=1 mm)	Number of days when PR >= 1 mm	COSPPac	F	F
+r5mm	days	Number of rainy days (PR>=5 mm)	Number of days when PR >= 5 mm	COSPPac	T	F
+r5mm	days	Number of rainy days (PR>=5 mm)	Number of days when PR >= 5 mm	COSPPac	F	F
+r10mm	days	Number of rainy days (PR>=10 mm)	Number of days when PR >= 10 mm	ETCCDI	T	F
+r10mm	days	Number of rainy days (PR>=10 mm)	Number of days when PR >= 10 mm	ETCCDI	F	F
+r20mm	days	Number of rainy days (PR>=20 mm)	Number of days when PR >= 20 mm	ETCCDI	T	F
+r20mm	days	Number of rainy days (PR>=20 mm)	Number of days when PR >= 20 mm	ETCCDI	F	F
+r30mm	days	Number of rainy days (PR>=30 mm)	Number of days when PR >= 30 mm	COSPPac	T	F
+r30mm	days	Number of rainy days (PR>=30 mm)	Number of days when PR >= 30 mm	COSPPac	F	F
+r40mm	days	Number of rainy days (PR>=40 mm)	Number of days when PR >= 40 mm	COSPPac	T	F
+r40mm	days	Number of rainy days (PR>=40 mm)	Number of days when PR >= 40 mm	COSPPac	F	F
+r50mm	days	Number of rainy days (PR>=50 mm)	Number of days when PR >= 50 mm	COSPPac	T	F
+r50mm	days	Number of rainy days (PR>=50 mm)	Number of days when PR >= 50 mm	COSPPac	F	F
+r60mm	days	Number of rainy days (PR>=60 mm)	Number of days when PR >= 60 mm	COSPPac	T	F
+r60mm	days	Number of rainy days (PR>=60 mm)	Number of days when PR >= 60 mm	COSPPac	F	F
+r70mm	days	Number of rainy days (PR>=70 mm)	Number of days when PR >= 70 mm	COSPPac	T	F
+r70mm	days	Number of rainy days (PR>=70 mm)	Number of days when PR >= 70 mm	COSPPac	F	F
+r80mm	days	Number of rainy days (PR>=80 mm)	Number of days when PR >= 80 mm	COSPPac	T	F
+r80mm	days	Number of rainy days (PR>=80 mm)	Number of days when PR >= 80 mm	COSPPac	F	F
+r90mm	days	Number of rainy days (PR>=90 mm)	Number of days when PR >= 90 mm	COSPPac	T	F
+r90mm	days	Number of rainy days (PR>=90 mm)	Number of days when PR >= 90 mm	COSPPac	F	F
+r100mm	days	Number of rainy days (PR>=100 mm)	Number of days when PR >= 100 mm	COSPPac	T	F
+r100mm	days	Number of rainy days (PR>=100 mm)	Number of days when PR >= 100 mm	COSPPac	F	F

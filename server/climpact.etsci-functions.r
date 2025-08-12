@@ -17,6 +17,20 @@ climdex.fd <- function(ci, freq = c("monthly", "annual")) {
     return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 0, "<") * ci@namasks[[match.arg(freq)]]$tmin)
 }
 
+climdex.tnlt13 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 13, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt14 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 14, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt15 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 15, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt16 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 16, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt17 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 17, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt18 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 18, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt19 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 19, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt20 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 20, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt21 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 21, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt22 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 22, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt23 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 23, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tnlt24 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 24, "<") * ci@namasks[[match.arg(freq)]]$tmin)}
+
+
 # fd2
 # Annual count when TN < 2<U+00BA>C
 # same as climdex.fd except < 2
@@ -65,6 +79,20 @@ climdex.tr <- function(ci, freq = c("monthly", "annual")) {
     return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 20, ">") * ci@namasks[[match.arg(freq)]]$tmin)
 }
 
+climdex.tngt20 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 20, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt21 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 21, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt22 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 22, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt23 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 23, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt24 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 24, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt25 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 25, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt26 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 26, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt27 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 27, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt28 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 28, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt29 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 29, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt30 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 30, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt31 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 31, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+climdex.tngt32 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmin)) ; return(number.days.op.threshold(ci@data$tmin, ci@date.factors[[match.arg(freq)]], 32, ">") * ci@namasks[[match.arg(freq)]]$tmin)}
+
 # tm5a
 # Annual count when TM >= 5<U+00BA>C
 # same as climdex.tr except >= 5C
@@ -105,6 +133,20 @@ climdex.id <- function(ci, freq = c("monthly", "annual")) {
     return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 0, "<") * ci@namasks[[match.arg(freq)]]$tmax)
 }
 
+climdex.txlt16 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 16, "<") * ci@namasks[[match.arg(freq)]]$tmax)}  
+climdex.txlt17 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 17, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt18 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 18, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt19 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 19, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt20 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 20, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt21 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 21, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt22 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 22, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt23 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 23, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt24 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 24, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt25 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 25, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt26 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 26, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txlt27 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 27, "<") * ci@namasks[[match.arg(freq)]]$tmax)}
+
+
 # su
 # Annual count when TX >= 25<U+00BA>C
 # same as climdex.su in climdex.pcic package except allows monthly and annual calculation
@@ -112,6 +154,20 @@ climdex.su <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$tmax))
     return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 25, ">") * ci@namasks[[match.arg(freq)]]$tmax)
 }
+
+climdex.txgt25 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 25, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt26 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 26, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt27 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 27, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt28 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 28, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt29 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 29, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt30 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 30, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt31 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 31, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt32 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 32, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt33 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 33, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt34 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 34, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt35 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 35, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt36 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 36, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
+climdex.txgt37 <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$tmax)) ; return(number.days.op.threshold(ci@data$tmax, ci@date.factors[[match.arg(freq)]], 37, ">") * ci@namasks[[match.arg(freq)]]$tmax)}
 
 # su30
 # Annual count when TX >= 30<U+00BA>C
@@ -230,6 +286,17 @@ climdex.r20mm <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$prec))
     return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 20, ">=") * ci@namasks[[match.arg(freq)]]$prec)
 }
+
+climdex.r1mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 1, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r5mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 5, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r30mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 30, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r40mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 40, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r50mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 50, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r60mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 60, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r70mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 70, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r80mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 80, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r90mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 90, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
+climdex.r100mm <- function(ci, freq = c("monthly", "annual")) {stopifnot(!is.null(ci@data$prec)) ; return(number.days.op.threshold(ci@data$prec, ci@date.factors[[match.arg(freq)]], 100, ">=") * ci@namasks[[match.arg(freq)]]$prec)}
 
 # rnnmm
 # Count of days with precip > nn mm
