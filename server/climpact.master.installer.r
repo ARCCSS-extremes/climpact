@@ -14,7 +14,7 @@
  	print("",quote=FALSE)
  	cat("Calculating the Climpact indices on netCDF data requires that PROJ4 and UDUNITS2 be installed on your opreating system
  prior to running this script. If the following R packages fail to install ensure that these two packages are installed.\n\n")
- 	readline(prompt="Press [enter] to continue")
+ 	#readline(prompt="Press [enter] to continue")
  } 
 
  print("",quote=FALSE)
@@ -50,7 +50,7 @@
 	 cat("A modified version of climdex.pcic.ncdf needs to be installed. If a version is already installed it will be overwritten. 
 	 If you do not install this modified version you will not be able to calculate the indices on netCDF data (but will still
 	 be able to use the GUI).\n\n")
-	 readline(prompt="Press [enter] to continue")
+	 #readline(prompt="Press [enter] to continue")
 	
 	 install.packages("./server/pcic_packages/climdex.pcic.ncdf.climpact.tar.gz",repos=NULL,type="source")
  }
