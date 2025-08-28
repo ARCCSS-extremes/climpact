@@ -26,14 +26,14 @@ csdi	days	Cold spell duration indicator	Annual number of days contributing to ev
 csdid	days	User-defined CSDI	Annual number of days contributing to events where d or more consecutive days experience TN < 10th percentile	ETSCI	T	T
 txgt50p	%	Fraction of days with above average temperature	Annual percentage of days when TX > 50th percentile	 ETSCI	T	T
 txgt50p	%	Fraction of days with above average temperature	Monthly percentage of days when TX > 50th percentile	 ETSCI	F	T
-tx10p	%	Amount of cool days	Annual percentage of days when TX < 10th percentile	ETCCDI	T	T
-tx10p	%	Amount of cool days	Monthly percentage of days when TX < 10th percentile	ETCCDI	F	T
-tx90p	%	Amount of hot days	Annual percentage of days when TX > 90th percentile	ETCCDI	T	T
-tx90p	%	Amount of hot days	Monthly percentage of days when TX > 90th percentile	ETCCDI	F	T
-tn10p	%	Amount of cold nights	Annual percentage of days when TN < 10th percentile	ETCCDI	T	T
-tn10p	%	Amount of cold nights	Monthly percentage of days when TN < 10th percentile	ETCCDI	F	T
-tn90p	%	Amount of warm nights	Annual percentage of days when TN > 90th percentile	ETCCDI	T	T
-tn90p	%	Amount of warm nights	Monthly percentage of days when TN > 90th percentile	ETCCDI	F	T
+tx10p	days	Number of cool days	Annual number of days when TX < 10th percentile	ETCCDI	T	T
+tx10p	days	Number of cool days	Monthly number of days when TX < 10th percentile	ETCCDI	F	T
+tx90p	days	Number of hot days	Annual number of days when TX > 90th percentile	ETCCDI	T	T
+tx90p	days	Number of hot days	Monthly number of days when TX > 90th percentile	ETCCDI	F	T
+tn10p	days	Number of cold nights	Annual number of days when TN < 10th percentile	ETCCDI	T	T
+tn10p	days	Number of cold nights	Monthly number of days when TN < 10th percentile	ETCCDI	F	T
+tn90p	days	Number of warm nights	Annual number of days when TN > 90th percentile	ETCCDI	T	T
+tn90p	days	Number of warm nights	Monthly number of days when TN > 90th percentile	ETCCDI	F	T
 tmge5	days	TM of at least 5°C	Annual number of days when TM >= 5°C	ETSCI	T	F
 tmge5	days	TM of at least 5°C	Monthly number of days when TM >= 5°C	ETSCI	F	F
 tmlt5	days	TM below 5°C	Annual number of days when TM < 5°C	ETSCI	T	F

@@ -350,7 +350,7 @@ percent.days.op.threshold <- function(temp, dates, jdays, date.factor, threshold
         dim(f.result) <- c(length(yday.byr.indices), bdim[3])
 
         ## Chop up data along the 2nd dim into a list; sum elements of the list
-        #    dat[inset] <- rowSums(f.result, na.rm=TRUE) / (byrs - 1)
+        #dat[inset] <- rowSums(f.result, na.rm=TRUE) / (byrs - 1)
         # Replace above line to properly return NA when all values are NA (problem was occurring because sum(c(Na,NA)) = 0, when it should equal NA).
         dat[inset] <- apply(f.result, 1, function(x) if (all(is.na(x))) x[NA_integer_] else sum(x, na.rm = TRUE) / (byrs - 1))
     }
@@ -365,24 +365,71 @@ percent.days.op.threshold <- function(temp, dates, jdays, date.factor, threshold
     return(ret)
 }
 
+# Take a daily date timeseries and return a monthly or annual series (depending on freq) of the number of days in each month/year.
+# Used to convert tx90p, tx10p, tn90p, tn10p from % to days.
+numdays_series <- function(date_series, freq) {
+  # Check if the frequency is valid
+  if (!freq %in% c("monthly", "annual")) {
+    stop("Invalid frequency. Please use 'monthly' or 'annual'.")
+  }
+  
+  # Check if the input is of class PCICt
+  if (!inherits(date_series, "PCICt")) {
+    stop("Input date series must be of class 'PCICt'.")
+  }
+  
+  # Convert PCICt to Date for easier manipulation
+  dates <- date_series #as.Date(date_series)
+  
+  # Calculate days for monthly frequency
+  if (freq == "monthly") {
+    # Create a data frame to count days in each month
+    month_days <- table(format(dates, "%Y-%m"))
+    return(month_days)
+  } 
+  
+  # Calculate days for annual frequency
+  else if (freq == "annual") {
+    # Create a data frame to count days in each year
+    year_days <- table(format(dates, "%Y"))
+    return(year_days)
+  }
+}
+
 climdex.tn10p <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin))
-    return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q10, ci@quantiles$tmin$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin)
+    result = percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q10, ci@quantiles$tmin$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)])
+    numdays = numdays_series(ci@dates,freq=freq)
+    missdays = tapply(is.na(ci@data$tmin), ci@date.factors[[match.arg(freq)]], sum)
+    validdays = numdays - missdays
+    return(result * .01 * validdays * ci@namasks[[match.arg(freq)]]$tmin)
 }
 
 climdex.tx10p <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax))
-    return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q10, ci@quantiles$tmax$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax)
+    result = percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q10, ci@quantiles$tmax$inbase$q10, ci@base.range, "<", ci@max.missing.days[match.arg(freq)])
+    numdays = numdays_series(ci@dates,freq=freq)
+    missdays = tapply(is.na(ci@data$tmax), ci@date.factors[[match.arg(freq)]], sum)
+    validdays = numdays - missdays
+    return(result * .01 * validdays * ci@namasks[[match.arg(freq)]]$tmax)
 }
 
 climdex.tn90p <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$tmin) && !is.null(ci@quantiles$tmin))
-    return(percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q90, ci@quantiles$tmin$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmin)
+    result = percent.days.op.threshold(ci@data$tmin, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmin$outbase$q90, ci@quantiles$tmin$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)])
+    numdays = numdays_series(ci@dates,freq=freq)
+    missdays = tapply(is.na(ci@data$tmin), ci@date.factors[[match.arg(freq)]], sum)
+    validdays = numdays - missdays
+    return(result * .01 * validdays * ci@namasks[[match.arg(freq)]]$tmin)
 }
 
 climdex.tx90p <- function(ci, freq = c("monthly", "annual")) {
     stopifnot(!is.null(ci@data$tmax) && !is.null(ci@quantiles$tmax))
-    return(percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q90, ci@quantiles$tmax$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)]) * ci@namasks[[match.arg(freq)]]$tmax)
+    result = percent.days.op.threshold(ci@data$tmax, ci@dates, ci@jdays, ci@date.factors[[match.arg(freq)]], ci@quantiles$tmax$outbase$q90, ci@quantiles$tmax$inbase$q90, ci@base.range, ">", ci@max.missing.days[match.arg(freq)])
+    numdays = numdays_series(ci@dates,freq=freq)
+    missdays = tapply(is.na(ci@data$tmax), ci@date.factors[[match.arg(freq)]], sum)
+    validdays = numdays - missdays
+    return(result * .01 * validdays * ci@namasks[[match.arg(freq)]]$tmax)
 }
 
 ################# END TEMPORARY INCLUSION FROM CLIMDEX.PCIC
