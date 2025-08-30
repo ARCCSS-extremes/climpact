@@ -1,6 +1,11 @@
 library(testthat)
 library(dplyr)
 
+# USAGE:
+# > library(testthat)
+# > test_file("test_output.R")
+
+
 compare_csv_files <- function(file1, file2, n=0) {
   df1 <- read.csv(file1)
   df2 <- read.csv(file2)
