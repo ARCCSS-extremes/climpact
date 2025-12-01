@@ -152,6 +152,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
         names(index.plot) = rownames(index.stored) 
         plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = tmp.index.def,freq = frequency,metadata, outputFolders, pdf.dev)
 
+        # plot day of occurrence
         if (!index.list$Short.name[i] %in% c("cwd","cdd","gsl")) {
             # convert dates to date object then get day of year
             tmpdate = as.Date(index.stored[['ymd']], format = "%Y-%m-%d")
@@ -159,7 +160,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
             else if (frequency == "annual") { index.plot = as.integer(format(tmpdate, "%j")) }
             names(index.plot) = rownames(index.stored)
             plot.call(index.plot,index.name = paste0("day_of_",tmp.index.name),index.units = "Calendar day",x.label = "Years",sub = paste0("The calendar day of occurrence of ",tolower(tmp.index.def)),
-                    freq = frequency,metadata, outputFolders, pdf.dev)
+                    freq = frequency,metadata, outputFolders, pdf.dev, FALSE)
         }
       } else { 
         index.plot = index.stored
@@ -178,6 +179,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     )
 
     if (exists("mktrend")) {
+
       cat(file = trend_file, paste(tmp.index.name, frequency, metadata$year.start, metadata$year.end, mktrend[[1]][1], mktrend[[1]][2], mktrend[[1]][3], sep = ","), fill = 180, append = T)
 
       if (index.list$Short.name[i] != "tx95t" && frequency == "monthly") {

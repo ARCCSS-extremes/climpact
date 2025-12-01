@@ -172,7 +172,7 @@ min_trend_data <- function(climate_data) {
 }
 
 # plot.index
-plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL) {
+plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL, calculate_trends = TRUE) {
   if (is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
   if (all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT PLOTTING."), quote = FALSE); return() }
 
@@ -189,133 +189,136 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   else if (index.name == "gddgrow") { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". Annual sum of TM - ", Tb_GDD, "°C (where ", Tb_GDD, "°C is a user-defined base temperature and should be smaller than TM)", sep = "") }
   else { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". ", sub, sep = "") }
 
-  if (index.name == "tx95t") { freq = "DAY" }
+  if (calculate_trends) {
+      x1 = seq(0, length(index)-1, 1)
+      y1 = unname(index)
+      x2 = x1[!is.na(y1)]
+      y2 = y1[!is.na(y1)]
+      zsen = zyp.sen(y2 ~ x2)
+    
+      mktrend <<- list(stat = array(NA, 5))
+      out = tryCatch(
+            {
+                    ci = confint.zyp(zsen, level = 0.95)
+                    if (min_trend_data(y1)) {
+                             mktrend$stat[1] <<- unname(ci[2, 1])
+                             mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
+                             mktrend$stat[3] <<- unname(ci[2, 2])
+                             mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
+                             mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+                     }
+            },error=function(cond) {
+                             mktrend$stat[1] <<- NA
+                             mktrend$stat[2] <<- NA
+                             mktrend$stat[3] <<- NA
+                             mktrend$stat[4] <<- NA
+                             mktrend$stat[5] <<- NA
+            })
+    
+      # Create seasonal trends if this is a monthly index
+      years = as.numeric(substr(names(index), 1, 4))
+      firstyear = years[1]
+      if (sum(years == firstyear) > 1) {
+        monthsGLOB <<- as.numeric(substr(names(index), 6, 7))
+        yearsGLOB <<- as.numeric(substr(names(index), 1, 4))
+        months = monthsGLOB
+        years = yearsGLOB
+    
+        df = data.frame(months, years, unname(index))
+        names(df) = c("months", "years", "values")
+    
+        # assign function based on index and only apply function if there are a full 3 months per season (otherwise make missing)
+        min_months = 3 # minimum months needed for each season to be included
+        if (index.name %in% c("txx", "tnx", "rx1day", "rx5day", "rxnday", "cwd", "cdd")) {
+    	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,max(x,na.rm=FALSE)) }
+        } else if (index.name %in% c("tnn", "txn")) {
+    	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,min(x,na.rm=FALSE)) }
+        } else if (index.name %in% c("su", "tr", "txge30", "txge35", "r10mm", "r20mm", "rnnmm", "prcptot")) {
+    	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,sum(x,na.rm=FALSE)) }
+        } else {
+    	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,mean(x,na.rm=FALSE)) }
+        }
+        ym <- as.yearmon(paste(months, years), "%m %Y")
+        yq <- as.yearqtr(head(ym + 1 / 12, -1))
+        Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f,na.action=NULL)
+    
+        names(Ag) = c("yq", "values")
+        DJF = Ag[grepl("Q1",Ag$yq),]
+        MAM = Ag[grepl("Q2",Ag$yq),]
+        JJA = Ag[grepl("Q3",Ag$yq),]
+        SON = Ag[grepl("Q4",Ag$yq),]
+    
+        # remove first DJF value since it isn't complete (no December of preceeding year). The last DJF value is already excluded.
+        # DON'T include this line since it makes the assumption a user's data starts in January. Better just to note that trends include
+        # incomplete seasons at beginning/end (and whenever months are missing).
+        #DJF$values[1] = NA
+    
+        # check minimum data requirements are met
+        DJFtrend <<- list(stat = array(NA, 5))
+        if (min_trend_data(DJF[[2]])) {
+            x1 = seq(0, length(DJF$values)-1, 1)
+            y1 = unname(DJF$values)
+            x2 = x1[!is.na(y1)]
+            y2 = y1[!is.na(y1)]
+            zsen = zyp.sen(y2 ~ x2)
+            ci = confint.zyp(zsen, level = 0.95)
+            DJFtrend$stat[1] <<- unname(ci[2, 1])
+            DJFtrend$stat[2] <<- unname(zsen[[1]][2])
+            DJFtrend$stat[3] <<- unname(ci[2, 2])
+    	DJFtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+        }
+    
+        MAMtrend <<- list(stat = array(NA, 5))
+        if (min_trend_data(MAM[[2]])) {
+            x1 = seq(0, length(MAM$values)-1, 1)
+            y1 = unname(MAM$values)
+            x2 = x1[!is.na(y1)]
+            y2 = y1[!is.na(y1)]
+            zsen = zyp.sen(y2 ~ x2)
+            ci = confint.zyp(zsen, level = 0.95)
+            MAMtrend$stat[1] <<- unname(ci[2, 1])
+            MAMtrend$stat[2] <<- unname(zsen[[1]][2])
+            MAMtrend$stat[3] <<- unname(ci[2, 2])
+    	MAMtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+        }
+    
+        JJAtrend <<- list(stat = array(NA, 5))
+        if (min_trend_data(JJA[[2]])) {
+            x1 = seq(0, length(JJA$values)-1, 1)
+            y1 = unname(JJA$values)
+            x2 = x1[!is.na(y1)]
+            y2 = y1[!is.na(y1)]
+            zsen = zyp.sen(y2 ~ x2)
+            ci = confint.zyp(zsen, level = 0.95)
+            JJAtrend$stat[1] <<- unname(ci[2, 1])
+            JJAtrend$stat[2] <<- unname(zsen[[1]][2])
+            JJAtrend$stat[3] <<- unname(ci[2, 2])
+    	JJAtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+        }
+    
+        SONtrend <<- list(stat = array(NA, 5))
+        if (min_trend_data(SON[[2]])) {
+            x1 = seq(0, length(SON$values)-1, 1)
+            y1 = unname(SON$values)
+            x2 = x1[!is.na(y1)]
+            y2 = y1[!is.na(y1)]
+            zsen = zyp.sen(y2 ~ x2)
+            ci = confint.zyp(zsen, level = 0.95)
+            SONtrend$stat[1] <<- unname(ci[2, 1])
+            SONtrend$stat[2] <<- unname(zsen[[1]][2])
+            SONtrend$stat[3] <<- unname(ci[2, 2])
+    	SONtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
+        }
+      }
+  }
+
+  if (index.name == "tx95t") { freq_outfile = "DAY" }
   else {
-    if (freq == "monthly") { freq = "MON" }
-    else if (freq == "annual") { freq = "ANN" }
-  }
+    if (freq == "monthly") { freq_outfile = "MON" }
+    else if (freq == "annual") { freq_outfile = "ANN" }
+  } 
 
-  x1 = seq(0, length(index)-1, 1)
-  y1 = unname(index)
-  x2 = x1[!is.na(y1)]
-  y2 = y1[!is.na(y1)]
-  zsen = zyp.sen(y2 ~ x2)
-  mktrend <<- list(stat = array(NA, 5))
-  out = tryCatch(
-        {
-                ci = confint.zyp(zsen, level = 0.95)
-                if (min_trend_data(y1)) {
-                         mktrend$stat[1] <<- unname(ci[2, 1])
-                         mktrend$stat[2] <<- unname(zsen[[1]][2]) # slope
-                         mktrend$stat[3] <<- unname(ci[2, 2])
-                         mktrend$stat[4] <<- unname(zsen[[1]][1]) # y-intercept
-                         mktrend$stat[5] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-                 }
-        },error=function(cond) {
-                         mktrend$stat[1] <<- NA
-                         mktrend$stat[2] <<- NA
-                         mktrend$stat[3] <<- NA
-                         mktrend$stat[4] <<- NA
-                         mktrend$stat[5] <<- NA
-        })
-
-  # Create seasonal trends if this is a monthly index
-  years = as.numeric(substr(names(index), 1, 4))
-  firstyear = years[1]
-  if (sum(years == firstyear) > 1) {
-    monthsGLOB <<- as.numeric(substr(names(index), 6, 7))
-    yearsGLOB <<- as.numeric(substr(names(index), 1, 4))
-    months = monthsGLOB
-    years = yearsGLOB
-
-    df = data.frame(months, years, unname(index))
-    names(df) = c("months", "years", "values")
-
-    # assign function based on index and only apply function if there are a full 3 months per season (otherwise make missing)
-    min_months = 3 # minimum months needed for each season to be included
-    if (index.name %in% c("txx", "tnx", "rx1day", "rx5day", "rxnday", "cwd", "cdd")) {
-	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,max(x,na.rm=FALSE)) }
-    } else if (index.name %in% c("tnn", "txn")) {
-	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,min(x,na.rm=FALSE)) }
-    } else if (index.name %in% c("su", "tr", "txge30", "txge35", "r10mm", "r20mm", "rnnmm", "prcptot")) {
-	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,sum(x,na.rm=FALSE)) }
-    } else {
-	f <-function(x)  { ifelse(sum(!is.na(x))<min_months,NA,mean(x,na.rm=FALSE)) }
-    }
-    ym <- as.yearmon(paste(months, years), "%m %Y")
-    yq <- as.yearqtr(head(ym + 1 / 12, -1))
-    Ag <- aggregate(head(df$values, -1) ~ yq, head(df, -1), f,na.action=NULL)
-
-    names(Ag) = c("yq", "values")
-    DJF = Ag[grepl("Q1",Ag$yq),]
-    MAM = Ag[grepl("Q2",Ag$yq),]
-    JJA = Ag[grepl("Q3",Ag$yq),]
-    SON = Ag[grepl("Q4",Ag$yq),]
-
-    # remove first DJF value since it isn't complete (no December of preceeding year). The last DJF value is already excluded.
-    # DON'T include this line since it makes the assumption a user's data starts in January. Better just to note that trends include
-    # incomplete seasons at beginning/end (and whenever months are missing).
-    #DJF$values[1] = NA
-
-    # check minimum data requirements are met
-    DJFtrend <<- list(stat = array(NA, 5))
-    if (min_trend_data(DJF[[2]])) {
-        x1 = seq(0, length(DJF$values)-1, 1)
-        y1 = unname(DJF$values)
-        x2 = x1[!is.na(y1)]
-        y2 = y1[!is.na(y1)]
-        zsen = zyp.sen(y2 ~ x2)
-        ci = confint.zyp(zsen, level = 0.95)
-        DJFtrend$stat[1] <<- unname(ci[2, 1])
-        DJFtrend$stat[2] <<- unname(zsen[[1]][2])
-        DJFtrend$stat[3] <<- unname(ci[2, 2])
-	DJFtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-    }
-
-    MAMtrend <<- list(stat = array(NA, 5))
-    if (min_trend_data(MAM[[2]])) {
-        x1 = seq(0, length(MAM$values)-1, 1)
-        y1 = unname(MAM$values)
-        x2 = x1[!is.na(y1)]
-        y2 = y1[!is.na(y1)]
-        zsen = zyp.sen(y2 ~ x2)
-        ci = confint.zyp(zsen, level = 0.95)
-        MAMtrend$stat[1] <<- unname(ci[2, 1])
-        MAMtrend$stat[2] <<- unname(zsen[[1]][2])
-        MAMtrend$stat[3] <<- unname(ci[2, 2])
-	MAMtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-    }
-
-    JJAtrend <<- list(stat = array(NA, 5))
-    if (min_trend_data(JJA[[2]])) {
-        x1 = seq(0, length(JJA$values)-1, 1)
-        y1 = unname(JJA$values)
-        x2 = x1[!is.na(y1)]
-        y2 = y1[!is.na(y1)]
-        zsen = zyp.sen(y2 ~ x2)
-        ci = confint.zyp(zsen, level = 0.95)
-        JJAtrend$stat[1] <<- unname(ci[2, 1])
-        JJAtrend$stat[2] <<- unname(zsen[[1]][2])
-        JJAtrend$stat[3] <<- unname(ci[2, 2])
-	JJAtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-    }
-
-    SONtrend <<- list(stat = array(NA, 5))
-    if (min_trend_data(SON[[2]])) {
-        x1 = seq(0, length(SON$values)-1, 1)
-        y1 = unname(SON$values)
-        x2 = x1[!is.na(y1)]
-        y2 = y1[!is.na(y1)]
-        zsen = zyp.sen(y2 ~ x2)
-        ci = confint.zyp(zsen, level = 0.95)
-        SONtrend$stat[1] <<- unname(ci[2, 1])
-        SONtrend$stat[2] <<- unname(zsen[[1]][2])
-        SONtrend$stat[3] <<- unname(ci[2, 2])
-	SONtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-    }
-  }
-
-  namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq, ".png"))
+  namp <- file.path(outputFolders$outplotsdir, paste0(outputFolders$stationName, "_", tmp.name, "_", freq_outfile, ".png"))
   png(file = namp, width = 800, height = 600)
 
   dev0 = dev.cur()

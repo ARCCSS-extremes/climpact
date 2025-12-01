@@ -1,3 +1,8 @@
+3.3.2  1 December 2025
+* Fixed trend values written to *_trend.csv. Only applies to indices where dates of events are calculated (see January update). The January update introduced
+  this error where trend values written to the above CSV file for these indices mistakenly corresponded to trends in the day of occurrence, and not trends 
+  in the actual index. Thanks to A Peltier.
+
 3.3.1  4 June 2025
 * Fixed the modified climdex.pcic.ncdf module that wasn't working correctly for files with missing data following the v3.3 update. Thanks E Tam and AR Sharma for debug.
 
