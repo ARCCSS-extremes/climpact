@@ -612,8 +612,14 @@ compute.climdex.indices <- function(in.dat, cdx.funcs, ts, base.range, fclimdex.
     cdx.funcs[[which(names(cdx.funcs)=="spei_MON")]] <- do.call(functional::Curry, c(list(eval(parse(text="climdex.spei"))), spei.opts))
   }
 
-  ## NOTE: Names must be stripped here because it increases memory usage on the head by a factor of 8-9x (!)
-  return(lapply(cdx.funcs, function(f) { d <- f(ci=ci); names(d) <- NULL; d }))
+  # If hw is being calculated then update the climdex object as daily EHF and ECF values will have been added to ci@data.
+  if(any(names(cdx.funcs)=="hw")) {
+    ## NOTE: Names must be stripped here because it increases memory usage on the head by a factor of 8-9x (!)
+    return(lapply(cdx.funcs, function(f) { d <- f(ci=ci); ci = d$ci; names(d) <- NULL; d }))
+  } else {
+    ## NOTE: Names must be stripped here because it increases memory usage on the head by a factor of 8-9x (!)
+    return(lapply(cdx.funcs, function(f) { d <- f(ci=ci); names(d) <- NULL; d }))
+  }
 }
 
 #' Flatten the X and Y dimensions down to a space dimension.

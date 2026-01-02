@@ -3,6 +3,7 @@ source("services/plot_prec_index.R", local = TRUE)
 source("services/write_indices.R", local = TRUE)
 source("services/write_prec_index.R", local = TRUE)
 source("services/calculate/calculate_hw.R", local = TRUE)
+source("services/calculate/calculate_hw_ehf.R", local = TRUE)
 source("services/calculate/calculate_spei.R", local = TRUE)
 source("services/calculate/calculate_spi.R", local = TRUE)
 source("services/calculate/custom_cspei.R", local = TRUE)
@@ -74,7 +75,11 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     }
 
     if (index.list$Short.name[i] == "hw") {
-      calculate.hw(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+      cio = calculate.hw(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+      next
+    }
+	if (index.list$Short.name[i] == "hw_ehf") {
+      calculate.hw_ehf(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
       next
     }
     else if (index.list$Short.name[i] == "spei") {

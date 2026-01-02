@@ -89,10 +89,47 @@ write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "",
   # write daily EHF values
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ehf_daily_data.csv"))
   write_header(nam1, "EHF daily values. Note that 29th February is omitted from this calculation.", metadata)
-  write.table(cbind(as.character(index[['hw_dates']]), index[["EHF_daily_values"]]), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Heat Factor"))
+  write.table(cbind(as.character(cio@data$hw_dates), cio@data$ehf), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Heat Factor"))
 
   # write daily ECF values
   nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ecf_daily_data.csv"))
   write_header(nam1, "ECF daily values. Note that 29th February is omitted from this calculation.", metadata)
-  write.table(cbind(as.character(index[['hw_dates']]), index[["ECF_daily_values"]]), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Cold Factor"))
+  write.table(cbind(as.character(cio@data$hw_dates), cio@data$ecf), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Cold Factor"))
+}
+
+
+# write.hw_ehf.csv
+# takes a time series of hw data related to EHF strictly as per Nairn and Fawcett (2015), and writes to file
+write.hw_ehf.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
+	if (is.null(index)) stop("Need EHF heatwave data to write CSV file.")
+	
+	# write EHF severity data
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFseverity_ANN.csv"))
+	write_header(nam1, header, metadata)
+	write.table(list("time", "EHFseverity"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(cbind((metadata$date.years), index[['severity']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF MaxValue data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFmax_ANN.csv"))
+    write_header(nam1, header, metadata)
+    write.table(list("time", "maxEHF"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['max']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF Duration data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFduration_ANN.csv"))
+    write_header(nam1, header, metadata)
+    write.table(list("time", "EHFduration"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['duration']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF Heatwave number data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFheatwavenumber_ANN.csv"))
+    write_header(nam1, header, metadata)
+    write.table(list("time", "EHFnumber"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['heatwave_number']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF Heatwave number data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFheatwavedays_ANN.csv"))
+    write_header(nam1, header, metadata)
+    write.table(list("time", "EHFdays"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['heatwave_days']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 }

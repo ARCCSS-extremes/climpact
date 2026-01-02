@@ -248,10 +248,6 @@ climdex.tx95t <- function(ci, freq = c("monthly", "annual")) {
     return(ci@quantiles$tmax$outbase$q95)
 }
 
-
-
-
-
 ################# TEMPORARY INCLUSION FROM CLIMDEX.PCIC
 # The following functions have been copied from climdex.pcic while a bug in percent.days.op.threshold is present.
 # Once/if this is fixed in climdex.pcic then the following lines can be deleted. Issue has been logged on their github page.
@@ -319,9 +315,6 @@ climdex.tx90p <- function(ci, freq = c("monthly", "annual")) {
 }
 
 ################# END TEMPORARY INCLUSION FROM CLIMDEX.PCIC
-
-
-
 
 # tx50p
 # Percentage of days of days where TX>50th percentile
@@ -790,6 +783,11 @@ climdex.hw <- function(ci, min.base.data.fraction.present, ehfdef = "NF13") {
         ECF[a] <- min(-1, ECIaccl[a]) * (-1 * ECIsig[a])
     }
 
+	# Test if modified ci holds outside function
+	ci@data$ehf = as.vector(EHF)
+	ci@data$ecf = as.vector(ECF)
+	ci@data$hw_dates = hw_dates
+
     # step 2. Determine if tx90p, tn90p or EHF conditions have persisted for >= 3 days. If so, count number of summer heat waves.
     # assign the 365 percentiles to the entire time series based on date factors (so as to account for leap years) - February 29 days will be NA.
     tx90p_arr <- array(NA, length(tmax))
@@ -822,7 +820,7 @@ climdex.hw <- function(ci, min.base.data.fraction.present, ehfdef = "NF13") {
     hw_index[4, , ] <- get.hw.aspects(hw4_index, ECF_boolean, annual.factors, monthly.factors, ECF, ci@northern.hemisphere, ehfdef, ecf = TRUE, namask = ci@namasks$annual$tmin * ci@namasks$annual$tmax)
 
     rm(tavg, tavg90p, EHIaccl, EHIsig, tx90p_boolean, tn90p_boolean, EHF_boolean, tx90p_arr, tn90p_arr, hw1_index, hw2_index, hw3_index, tn90p, tx90p, beg, end, beg2, end2, dat.seq, dat.seq2, fact, ECIaccl, ECIsig)
-    return(list(hw_indices=hw_index, EHF_daily_values=EHF, ECF_daily_values=ECF,hw_dates=hw_dates))
+    return(list(ci=ci, hw_indices=hw_index)) #, EHF_daily_values=EHF, ECF_daily_values=ECF,hw_dates=hw_dates))
 }
 
 # get.hw.aspects
@@ -1004,11 +1002,122 @@ get.hw.aspects <- function(aspect.array, boolean.str, yearly.date.factors, month
     return(aspect.array)
 }
 
+# climdex.hw_ehf
+# Calculates heatwave number, days, duration and severity according to Nairn and Fawcett (2015). Specifically, annual values of the following are returned:
+#  - number of heatwaves: 
+#  - number of heatwave days: number of days contributing to heatwaves. Heatwave days are defined (according to the reference above) as any day included in a three day period where EHF is positive.
+#  - mean heatwave duration:
+#  - mean heatwave severity: mean of the maximum value of EHF/EHF85 calculated for each heatwave (EHF85 = 85th percentile of positive EHF values within the base period).
+#
+# Nairn, J.R. and Fawcett, R.J., 2015. The excess heat factor: a metric for heatwave intensity and its use in classifying heatwave severity. 
+# International journal of environmental research and public health, 12(1), pp.227-253.
+climdex.hw_ehf <- function(ci, min.base.data.fraction.present, ehfdef) {
+	stopifnot(!is.null(ci@data$ehf), !is.null(ci@data$ecf), !is.null(ci@data$hw_dates))
 
+	if (ehfdef != "NF13") {
+		stop("EHF definition must be 'NF13'")
+	}
 
+	# TODO: implement missing days criteria.
+	# TODO: check heatwave day and duration calculations include preceeding days that are part of the TDP.
+	# TODO: heatwaves that cross December 31st need consistent treatment with other heatwave definitions.
 
+	ehf = ci@data$ehf
+	hw_dates = ci@data$hw_dates
 
+	# get base period values
+    b1 <- as.numeric(format(ci@base.range[1], format = "%Y"))
+    b2 <- as.numeric(format(ci@base.range[2], format = "%Y"))
+	factor.numeric <- as.numeric(levels(ci@date.factors$annual))[ci@date.factors$annual]
+	ind <- which(factor.numeric >= b1 & factor.numeric <= b2)
+	ehf_base = ehf[ind]
 
+	# calculate 85th percentile of base period values
+	ehf85 = quantile(ehf_base[ehf_base>0], 0.85, na.rm = TRUE)
+
+	# identify heatwaves
+	ehf_days = ehf > 0
+	ehf_rle = rle(ehf_days)
+
+	# Identify heatwaves as those periods with positive EHF
+	heatwave_indices <- which(ehf_rle$values) # & ehf_rle$lengths >= 3)
+	
+	# Initialize a list to store heatwave statistics
+	heatwave_stats <- list()
+	duration_annual <- list()
+	severity_annual <- list()
+	max_annual <- list()
+	heatwaves_annual <- list()
+	heatwavedays_annual <- list()
+
+	# Process each heatwave identified
+	for (i in heatwave_indices) {
+		start_index <- sum(ehf_rle$lengths[1:(i - 1)]) + 1
+		end_index <- start_index + ehf_rle$lengths[i] - 1
+		
+		# Get the relevant dates and values for this heatwave
+		heatwave_dates <- hw_dates[start_index:end_index]
+		heatwave_values <- ehf[start_index:end_index]
+		
+		maxehf = max(heatwave_values, na.rm = TRUE)
+
+		# Calculate required statistics
+		heatwave_stats[[i]] <- list(
+			StartDate = min(heatwave_dates),
+			EndDate = max(heatwave_dates),
+			Duration = length(heatwave_values) + 2,
+			MaxValue = maxehf,
+			Severity = maxehf/unname(ehf85)
+		)
+
+		# add stats for this heatwave to the relevant year
+		year = format(heatwave_stats[[i]]$EndDate,"%Y")
+		if (year %in% names(duration_annual)) {
+			duration_annual[[year]] = c(duration_annual[[year]],heatwave_stats[[i]]$Duration)
+			severity_annual[[year]] = c(severity_annual[[year]],heatwave_stats[[i]]$Severity)
+			max_annual[[year]] = c(max_annual[[year]],heatwave_stats[[i]]$MaxValue)
+			heatwaves_annual[[year]] = heatwaves_annual[[year]] + 1
+			heatwavedays_annual[[year]] = heatwavedays_annual[[year]] + heatwave_stats[[i]]$Duration
+		} else {
+			duration_annual[year] = list(heatwave_stats[[i]]$Duration)
+			severity_annual[year] = list(heatwave_stats[[i]]$Severity)
+			max_annual[[year]] = list(heatwave_stats[[i]]$MaxValue)
+			heatwaves_annual[[year]] = 1
+			heatwavedays_annual[[year]] = heatwave_stats[[i]]$Duration
+		}
+		max_annual[[year]] = unlist(max_annual[[year]])
+		names(severity_annual[[year]]) = NULL
+	}
+
+	# fill empty years
+	years = unique(format(hw_dates,"%Y"))
+	for (year in years) {
+		if (!year %in% names(duration_annual)) {
+			duration_annual[[year]] <- c(NA)
+			severity_annual[[year]] <- c(NA)
+			max_annual[[year]] <- c(NA)
+			heatwaves_annual[[year]] <- c(NA)
+			heatwavedays_annual[[year]] <- c(NA)
+		}
+	}
+
+	# sort years in numeric order
+	duration_annual <- duration_annual[as.character(sort(as.numeric(names(duration_annual))))]
+	severity_annual <- severity_annual[as.character(sort(as.numeric(names(severity_annual))))]
+	max_annual <- max_annual[as.character(sort(as.numeric(names(max_annual))))]
+	heatwaves_annual <- heatwaves_annual[as.character(sort(as.numeric(names(heatwaves_annual))))]
+	heatwavedays_annual <- heatwavedays_annual[as.character(sort(as.numeric(names(heatwavedays_annual))))]
+
+	# mean all values for each year where relevant
+	duration_out = sapply(duration_annual, function(x) mean(x, na.rm=TRUE))
+	severity_out = sapply(severity_annual, function(x) mean(x, na.rm=TRUE))
+	max_out = sapply(max_annual, function(x) mean(x, na.rm=TRUE))
+	heatwaves_out = sapply(heatwaves_annual,function(x) x)
+	heatwavedays_out = sapply(heatwavedays_annual,function(x) x)
+	browser()
+
+	return(list(duration=duration_out, severity=severity_out, max=max_out, heatwave_number=heatwaves_out, heatwave_days=heatwavedays_out, ehf85=ehf85))
+}
 
 ###############################
 # Due seemingly to a bug in R or improper handling in this code these functions are copied from climdex.pcic so that they can be properly referenced by workers when running in parallel.
