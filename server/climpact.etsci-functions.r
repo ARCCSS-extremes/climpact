@@ -1003,11 +1003,11 @@ get.hw.aspects <- function(aspect.array, boolean.str, yearly.date.factors, month
 }
 
 # climdex.hw_ehf
-# Calculates heatwave number, days, duration and severity according to Nairn and Fawcett (2015). Specifically, annual values of the following are returned:
-#  - number of heatwaves: 
+# Calculates following metrics on an annual scale based off Nairn and Fawcett (2015). 
+#  - number of heatwaves
 #  - number of heatwave days: number of days contributing to heatwaves. Heatwave days are defined (according to the reference above) as any day included in a three day period where EHF is positive.
-#  - mean heatwave duration:
-#  - mean heatwave severity: mean of the maximum value of EHF/EHF85 calculated for each heatwave (EHF85 = 85th percentile of positive EHF values within the base period).
+#  - mean heatwave duration: 
+#  - mean heatwave severity: mean of each heatwave's [max EHF]/EHF85 value (where EHF85 = 85th percentile of positive EHF values within the base period).
 #
 # Nairn, J.R. and Fawcett, R.J., 2015. The excess heat factor: a metric for heatwave intensity and its use in classifying heatwave severity. 
 # International journal of environmental research and public health, 12(1), pp.227-253.
@@ -1021,9 +1021,15 @@ climdex.hw_ehf <- function(ci, min.base.data.fraction.present, ehfdef) {
 	# TODO: implement missing days criteria.
 	# TODO: check heatwave day and duration calculations include preceeding days that are part of the TDP.
 	# TODO: heatwaves that cross December 31st need consistent treatment with other heatwave definitions.
+	# TODO: deal with heatwaves separated by two or less days. Should it be one long heatwave?
 
+	# get daily timeseries of EHF values and corresponding dates, calculated in climdex.hw
 	ehf = ci@data$ehf
 	hw_dates = ci@data$hw_dates
+
+	# TEMPORARY TEST DATA FOR HEATWAVES 1, 2 AND 3 DAYS APART
+#	ehf[1:400] = -1 # remove all heatwaves from first year
+#	ehf[41:55] = c(1,1,-1,2,2,-1,-1,2,-1,-1,-1,2,2,2,2) # set some test heatwaves
 
 	# get base period values
     b1 <- as.numeric(format(ci@base.range[1], format = "%Y"))
@@ -1032,46 +1038,81 @@ climdex.hw_ehf <- function(ci, min.base.data.fraction.present, ehfdef) {
 	ind <- which(factor.numeric >= b1 & factor.numeric <= b2)
 	ehf_base = ehf[ind]
 
-	# calculate 85th percentile of base period values
+	# calculate 85th percentile of base period EHF values
 	ehf85 = quantile(ehf_base[ehf_base>0], 0.85, na.rm = TRUE)
 
-	# identify heatwaves
+	# identify all heatwaves
 	ehf_days = ehf > 0
 	ehf_rle = rle(ehf_days)
 
-	# Identify heatwaves as those periods with positive EHF
-	heatwave_indices <- which(ehf_rle$values) # & ehf_rle$lengths >= 3)
+	# array indices in ehf_rle that correspond to positive EHF values
+	heatwave_indices <- which(ehf_rle$values)
 	
-	# Initialize a list to store heatwave statistics
+	# Initialize list to store heatwave statistics
 	heatwave_stats <- list()
+
+	# Initialize lists with an element for each year containing: duration, severity, max EHF, count of heatwaves and count of heatwave days.
 	duration_annual <- list()
 	severity_annual <- list()
 	max_annual <- list()
 	heatwaves_annual <- list()
 	heatwavedays_annual <- list()
 
-	# Process each heatwave identified
+	# Process each individual heatwave identified in heatwave_indices
 	for (i in heatwave_indices) {
-		start_index <- sum(ehf_rle$lengths[1:(i - 1)]) + 1
-		end_index <- start_index + ehf_rle$lengths[i] - 1
+		# get array indices of start and end days of current heatwave
+		# start_index <- sum(ehf_rle$lengths[1:(i - 1)]) + 1
+		start_index <- sum(ehf_rle$lengths[1:(i - 1)]) - 1 # we include the preceeding two days before the first positive EHF day as part of the heatwave, as per Nairn and Fawcett (2015).
+		end_index <- start_index + 1 + ehf_rle$lengths[i]
 		
-		# Get the relevant dates and values for this heatwave
+		# Get the relevant dates and EHF values for this heatwave
 		heatwave_dates <- hw_dates[start_index:end_index]
 		heatwave_values <- ehf[start_index:end_index]
-		
+
+		year = format(max(heatwave_dates),"%Y")
+
+		# if current heatwave connects with previous heatwave then remove previous heatwave and 
+		# combine it with the current one to make a single long heatwave.
+		if (i > heatwave_indices[1]) {
+			# index of current heatwave in the rle
+			j = which(heatwave_indices==i)
+			# index of previous heatwave
+			k = heatwave_indices[j-1]
+			if (year < 1940) {
+#				print("-------------")
+#				print(heatwave_stats[[k]]$EndDate)
+#				print(heatwave_dates[1])
+#				print(heatwave_dates[length(heatwave_dates)])
+			}
+			if (heatwave_dates[1] <= (heatwave_stats[[k]]$EndDate + 86400)) { # add a day to end date to capture when one heatwaves starts the day after another ends (i.e. a continuous run of heatwave days).
+				start_index = which(hw_dates == heatwave_stats[[k]]$StartDate)
+				heatwave_dates <- hw_dates[start_index:end_index]
+				heatwave_values <- ehf[start_index:end_index]
+
+				# year that the previous heatwave is assigned to
+				previous_hw_year = heatwave_stats[[k]]$Year
+				duration_annual[[previous_hw_year]] = duration_annual[[previous_hw_year]][-length(duration_annual[[previous_hw_year]])] # remove previous duration rating
+				severity_annual[[previous_hw_year]] = severity_annual[[previous_hw_year]][-length(severity_annual[[previous_hw_year]])] # remove previous severity rating
+				max_annual[[previous_hw_year]] = max_annual[[previous_hw_year]][-length(max_annual[[previous_hw_year]])] # remove previous MaxValue rating
+				heatwaves_annual[[previous_hw_year]] = heatwaves_annual[[previous_hw_year]] - 1 # reduce count of heatwaves by one
+				heatwavedays_annual[[year]] = heatwavedays_annual[[year]] - heatwave_stats[[k]]$Duration
+				heatwave_stats[[k]] <- NA # now delete previous heatwave
+			}
+		}
+
 		maxehf = max(heatwave_values, na.rm = TRUE)
 
-		# Calculate required statistics
+		# Calculate required statistics for current heatwave
 		heatwave_stats[[i]] <- list(
 			StartDate = min(heatwave_dates),
 			EndDate = max(heatwave_dates),
-			Duration = length(heatwave_values) + 2,
+			Year = year,	# year of the last day of the heatwave
+			Duration = length(heatwave_values),
 			MaxValue = maxehf,
 			Severity = maxehf/unname(ehf85)
 		)
 
-		# add stats for this heatwave to the relevant year
-		year = format(heatwave_stats[[i]]$EndDate,"%Y")
+		# add stats for current heatwave to the relevant year
 		if (year %in% names(duration_annual)) {
 			duration_annual[[year]] = c(duration_annual[[year]],heatwave_stats[[i]]$Duration)
 			severity_annual[[year]] = c(severity_annual[[year]],heatwave_stats[[i]]$Severity)
@@ -1108,15 +1149,24 @@ climdex.hw_ehf <- function(ci, min.base.data.fraction.present, ehfdef) {
 	heatwaves_annual <- heatwaves_annual[as.character(sort(as.numeric(names(heatwaves_annual))))]
 	heatwavedays_annual <- heatwavedays_annual[as.character(sort(as.numeric(names(heatwavedays_annual))))]
 
-	# mean all values for each year where relevant
+	# get mean annual values
 	duration_out = sapply(duration_annual, function(x) mean(x, na.rm=TRUE))
 	severity_out = sapply(severity_annual, function(x) mean(x, na.rm=TRUE))
-	max_out = sapply(max_annual, function(x) mean(x, na.rm=TRUE))
+	maxehf_out = sapply(max_annual, function(x) mean(x, na.rm=TRUE))
 	heatwaves_out = sapply(heatwaves_annual,function(x) x)
 	heatwavedays_out = sapply(heatwavedays_annual,function(x) x)
-	browser()
 
-	return(list(duration=duration_out, severity=severity_out, max=max_out, heatwave_number=heatwaves_out, heatwave_days=heatwavedays_out, ehf85=ehf85))
+	# apply namask to outputs
+	namask = ci@namasks$annual$tmin * ci@namasks$annual$tmax
+	namask[1] = NA # make first year of mask NA since the first month of daily EHF values are missing and this is not taken into account in ci@namasks$annual
+
+	duration_out = duration_out * namask
+	severity_out = severity_out * namask
+	maxehf_out = maxehf_out * namask
+	heatwaves_out = heatwaves_out * namask
+	heatwavedays_out = heatwavedays_out * namask
+
+	return(list(duration=duration_out, severity=severity_out, max=maxehf_out, heatwave_number=heatwaves_out, heatwave_days=heatwavedays_out, ehf85=ehf85))
 }
 
 ###############################
