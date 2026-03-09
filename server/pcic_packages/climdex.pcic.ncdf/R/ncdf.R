@@ -456,38 +456,38 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
         lonlatdim=f.example$var[[v.example]]$dim[1:2]
         hwmcdf_tx90 <- ncvar_def("hwm_tx90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwmcdf_tn90 <- ncvar_def("hwm_tn90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for Tn90 heatwaves, see user guide for definition.",prec="float")
-        hwmcdf_EHF <- ncvar_def("hwm_ehf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for EHF heatwaves, see user guide for definition.",prec="float")
-        hwmcdf_ECF <- ncvar_def("cwm_ecf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave magnitude for ECF coldwaves, see user guide for definition.",prec="float")
+#        hwmcdf_EHF <- ncvar_def("hwm_ehf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave magnitude for EHF heatwaves, see user guide for definition.",prec="float")
+#        hwmcdf_ECF <- ncvar_def("cwm_ecf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave magnitude for ECF coldwaves, see user guide for definition.",prec="float")
 
         hwacdf_tx90 <- ncvar_def("hwa_tx90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave amplitude for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwacdf_tn90 <- ncvar_def("hwa_tn90","degC",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave amplitude for Tn90 heatwaves, see user guide for definition.",prec="float")
-        hwacdf_EHF <- ncvar_def("hwa_ehf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave amplitude for EHF heatwaves, see user guide for definition.",prec="float")
-        hwacdf_ECF <- ncvar_def("cwa_ecf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave amplitude for ECF coldwaves, see user guide for definition.",prec="float")
+#        hwacdf_EHF <- ncvar_def("hwa_ehf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave amplitude for EHF heatwaves, see user guide for definition.",prec="float")
+#        hwacdf_ECF <- ncvar_def("cwa_ecf","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave amplitude for ECF coldwaves, see user guide for definition.",prec="float")
 
         hwncdf_tx90 <- ncvar_def("hwn_tx90","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave number for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwncdf_tn90 <- ncvar_def("hwn_tn90","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave number for Tn90 heatwaves, see user guide for definition.",prec="float")
-        hwncdf_EHF <- ncvar_def("hwn_ehf","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave number for EHF heatwaves, see user guide for definition.",prec="float")
-        hwncdf_ECF <- ncvar_def("cwn_ecf","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave number for ECF coldwaves, see user guide for definition.",prec="float")
+#        hwncdf_EHF <- ncvar_def("hwn_ehf","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave number for EHF heatwaves, see user guide for definition.",prec="float")
+#        hwncdf_ECF <- ncvar_def("cwn_ecf","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave number for ECF coldwaves, see user guide for definition.",prec="float")
 
         hwdcdf_tx90 <- ncvar_def("hwd_tx90","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave duration for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwdcdf_tn90 <- ncvar_def("hwd_tn90","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave duration for Tn90 heatwaves, see user guide for definition.",prec="float")
-        hwdcdf_EHF <- ncvar_def("hwd_ehf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave duration for EHF heatwaves, see user guide for definition.",prec="float")
-        hwdcdf_ECF <- ncvar_def("cwd_ecf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave duration for ECF coldwaves, see user guide for definition.",prec="float")
+#        hwdcdf_EHF <- ncvar_def("hwd_ehf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave duration for EHF heatwaves, see user guide for definition.",prec="float")
+#        hwdcdf_ECF <- ncvar_def("cwd_ecf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave duration for ECF coldwaves, see user guide for definition.",prec="float")
 
         hwfcdf_tx90 <- ncvar_def("hwf_tx90","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave frequency for Tx90 heatwaves, see user guide for definition.",prec="float")
         hwfcdf_tn90 <- ncvar_def("hwf_tn90","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave frequency for Tn90 heatwaves, see user guide for definition.",prec="float")
-        hwfcdf_EHF <- ncvar_def("hwf_ehf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave frequency for EHF heatwaves, see user guide for definition.",prec="float")
-        hwfcdf_ECF <- ncvar_def("cwf_ecf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave frequency for ECF coldwaves, see user guide for definition.",prec="float")
+#        hwfcdf_EHF <- ncvar_def("hwf_ehf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Heatwave frequency for EHF heatwaves, see user guide for definition.",prec="float")
+#        hwfcdf_ECF <- ncvar_def("cwf_ecf","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Coldwave frequency for ECF coldwaves, see user guide for definition.",prec="float")
 
 #        # daily EHF and ECF values
 #        day.dim <- ncdim_def(time.dim.name,paste0("days since ",as.character(ts[1])),1:length(ts),calendar=attr(ts, "cal"))
 #        daily_EHF <- ncvar_def(name="EHF",units="degC^2",dim=list(lonlatdim[[1]],lonlatdim[[2]],day.dim),missval=1e20, longname=paste0("Daily Excess Heat Factor (EHF) values defined by ",ehfdef),prec="float")
 
-        nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var,hwmcdf_tx90,hwmcdf_tn90,hwmcdf_EHF,hwmcdf_ECF,
-                                    hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,
-                                    hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
-                                    hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,
-                                    hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF))
+        nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var,hwmcdf_tx90,hwmcdf_tn90,
+                                    hwacdf_tx90,hwacdf_tn90,
+                                    hwncdf_tx90,hwncdf_tn90,
+                                    hwdcdf_tx90,hwdcdf_tn90,
+                                    hwfcdf_tx90,hwfcdf_tn90))
     } else if ((cdx.dat$var.name[x] %in% names(exact_date_indices)) && (!cdx.dat$var.name[x] %in% c("cwd","cdd","gsl"))) {
         # here we write the index data as well as the calendar day of the event
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, 
@@ -500,7 +500,7 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
     new.file <- ncdf4::nc_create(paste(out.dir, cdx.dat$filename[x], sep="/"), nc.var.list, force_v4=TRUE)
 
     # add heat wave EHF definition as global attribute
-    if (cdx.dat$var.name[x]=="hw") { ncdf4::ncatt_put(new.file, 0, "EHF_definition", ehfdef, definemode=TRUE) }
+#    if (cdx.dat$var.name[x]=="hw") { ncdf4::ncatt_put(new.file, 0, "EHF_definition", ehfdef, definemode=TRUE) }
 
     ## Copy attributes for all variables plus global attributes
     att.rename <- c("frequency"="input_frequency", "creation_date"="input_creation_date", "title"="input_title", "tracking_id"="input_tracking_id")
@@ -522,8 +522,8 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
         ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"definition",cdx.dat$definition[x],definemode=TRUE)
         ncdf4::ncatt_put(new.file, cdx.dat$var.name[x],"expert_team",cdx.dat$expert.team[x],definemode=TRUE)
     } else {
-        for(i in list(hwmcdf_tx90,hwmcdf_tn90,hwmcdf_EHF,hwmcdf_ECF,hwacdf_tx90,hwacdf_tn90,hwacdf_EHF,hwacdf_ECF,hwncdf_tx90,hwncdf_tn90,hwncdf_EHF,hwncdf_ECF,
-                                    hwdcdf_tx90,hwdcdf_tn90,hwdcdf_EHF,hwdcdf_ECF,hwfcdf_tx90,hwfcdf_tn90,hwfcdf_EHF,hwfcdf_ECF)) {
+        for(i in list(hwmcdf_tx90,hwmcdf_tn90,hwacdf_tx90,hwacdf_tn90,hwncdf_tx90,hwncdf_tn90,
+                                    hwdcdf_tx90,hwdcdf_tn90,hwfcdf_tx90,hwfcdf_tn90)) {
             ncdf4::ncatt_put(new.file, i,"expert_team","ETSCI",definemode=TRUE)
         }
     }
@@ -605,8 +605,8 @@ compute.climdex.indices <- function(in.dat, cdx.funcs, ts, base.range, fclimdex.
             # added temperature quantiles needed for new indices, nherold.
                         quantiles=in.dat$quantiles,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))  
 
-# If SPEI is to be calculated, adjust the parameters sent to climdex.spei to include the latitude of the current grid cell 
-# (couldn't find a more appropriate place to inject latitude into the function call).
+  # If SPEI is to be calculated, adjust the parameters sent to climdex.spei to include the latitude of the current grid cell 
+  # (couldn't find a more appropriate place to inject latitude into the function call).
   if(any(names(cdx.funcs)=="spei_MON")) {
     spei.opts$lat = in.dat$lat
     cdx.funcs[[which(names(cdx.funcs)=="spei_MON")]] <- do.call(functional::Curry, c(list(eval(parse(text="climdex.spei"))), spei.opts))
@@ -984,6 +984,9 @@ var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Sh
 #'
 #' @export
 write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim.size, cdx.varname,f.meta) {
+  # number of heatwave definitions to store (besides EHF)
+  n_heatwave_defs = 2
+
   missingval = 1e20
 
   xy.dims <- dim.size[1:2]
@@ -1035,24 +1038,24 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         t.dim.len_daily <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "hwd_tn90", "T")$len
 
         # Make an empty array to fill according to the conventions of climdex.pcic.ncdf
-        tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),4,5,t.dim.len))
+        tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),n_heatwave_defs,5,t.dim.len))
 
         # find element that contains HW indices
         ind=which(names(climdex.results[[1]])=="hw_ANN")
 
         # Find special cases of an entire slab missing values... repeat such that we have full data.
         for(i in 1:length(climdex.results)) {
-                # for heatwaves, climdex.results dimensinos correspond to [gridcell,index,hw_list (and we want the first element, which contains the HW indices]
-                if(length(climdex.results[[i]][[ind]][[1]])!=(4*5*t.dim.len)) {
+                # for heatwaves, climdex.results dimensions correspond to [gridcell,index,hw_list (and we want the first element, which contains the HW indices]
+                if(length(climdex.results[[i]][[ind]][[2]])!=(n_heatwave_defs*5*t.dim.len)) {
                         climdex.results[[i]][[ind]] = list()
-                        climdex.results[[i]][[ind]][[1]] = array(NA,c(4,5,t.dim.len))
+                        climdex.results[[i]][[ind]][[2]] = array(NA,c(n_heatwave_defs,5,t.dim.len))
                 }
         }
 
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
         for (asp in 1:5) {
-                for (def in 1:4) {
-                        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[1]][def,asp,] })))
+                for (def in 1:n_heatwave_defs) {
+                        dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { cr[[ind]][[2]][def,asp,] })))
                         dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
                         tmp[,,def,asp,] = dat
                 }
@@ -1060,28 +1063,28 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWM_Tx90"), tmp[,,1,1,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWM_Tn90"), tmp[,,2,1,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWM_EHF"), tmp[,,3,1,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWM_ECF"), tmp[,,4,1,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWM_EHF"), tmp[,,3,1,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWM_ECF"), tmp[,,4,1,], chunk.subset)
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWA_Tx90"), tmp[,,1,2,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWA_Tn90"), tmp[,,2,2,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWA_EHF"), tmp[,,3,2,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWA_ECF"), tmp[,,4,2,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWA_EHF"), tmp[,,3,2,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWA_ECF"), tmp[,,4,2,], chunk.subset)
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWN_Tx90"), tmp[,,1,3,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWN_Tn90"), tmp[,,2,3,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWN_EHF"), tmp[,,3,3,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWN_ECF"), tmp[,,4,3,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWN_EHF"), tmp[,,3,3,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWN_ECF"), tmp[,,4,3,], chunk.subset)
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWD_Tx90"), tmp[,,1,4,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWD_Tn90"), tmp[,,2,4,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWD_EHF"), tmp[,,3,4,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWD_ECF"), tmp[,,4,4,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWD_EHF"), tmp[,,3,4,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWD_ECF"), tmp[,,4,4,], chunk.subset)
 
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_Tx90"), tmp[,,1,5,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_Tn90"), tmp[,,2,5,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_EHF"), tmp[,,3,5,], chunk.subset)
-        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWF_ECF"), tmp[,,4,5,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_EHF"), tmp[,,3,5,], chunk.subset)
+#        ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("CWF_ECF"), tmp[,,4,5,], chunk.subset)
     } else if ((cdx.varname[v] %in% names(exact_date_indices)) && (!cdx.varname[v] %in% c("cwd","cdd","gsl"))) {
         t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], cdx.varname[v], "T")$len
 
