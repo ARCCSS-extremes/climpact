@@ -20,7 +20,8 @@ write_header <- function(filename, header = "", metadata) {
   # No error checking here, file access is guaranteed because Climpact has own copy.
   write.table(header, sep = ",", file = filename, append = FALSE, row.names = FALSE, col.names = FALSE)
 
-  first_lines <- cbind(c("Station: ", "Latitude: ", "Longitude: ", "Climpact_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, version.climpact, toString(Sys.Date())))
+  first_lines <- cbind(c("Station: ", "Latitude: ", "Longitude: ", "Base_period: ", "Climpact_version: ", "Date_of_calculation: "), c(metadata$stationName, metadata$lat, metadata$lon, 
+																																	  paste0(metadata$base.start,"-",metadata$base.end),version.climpact, toString(Sys.Date())))
   write.table(first_lines, sep = ",", file = filename, append = TRUE, row.names = FALSE, col.names = FALSE)
 
 }

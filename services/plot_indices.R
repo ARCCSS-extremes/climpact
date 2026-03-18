@@ -2,8 +2,9 @@
 plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, metadata, outputFolders, pdf.dev) {
   if (is.null(index)) stop("Need heatwave data to plot.")
 
-  definitions <- c("Tx90", "Tn90", "EHF", "ECF")
+  definitions <- c("TX90", "TN90")#, "EHF", "ECF")
   aspects <- c("HWM", "HWA", "HWN", "HWD", "HWF")
+  aspects_long <- c("magnitude","amplitude","number","duration","frequency")
   units <- c("°C", "°C", "heatwaves", "days", "days")
   Encoding(units) <- "UTF-8"
   for (def in 1:length(definitions)) {
@@ -11,22 +12,22 @@ plot.hw <- function(index = NULL, index.name = NULL, index.units = NULL, x.label
       if (all(is.na(index[def, asp, ]))) { warning(paste("All NA values detected, not plotting ", aspects[asp], ", ", definitions[def], ".", sep = "")); next }
 
       plot.title <- paste0("Station: ", metadata$title.station)
-      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(gsub("H", "C", aspects[asp])), "_", tolower(definitions[def]), "_ANN.png", sep = ""), sep = "/") }
-      else { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", tolower(aspects[asp]), "_", tolower(definitions[def]), "_ANN.png", sep = ""), sep = "/") }
+      if (definitions[def] == "ECF") { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", definitions[def], "-", tolower(gsub("H","C",aspects[asp])), "_ANN.png", sep = ""), sep = "/") }
+      else { namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", definitions[def], "-", aspects[asp], "_ANN.png", sep = ""), sep = "/") }
       png(file = namp, width = 800, height = 600)
       dev0 = dev.cur()
 
-      if (aspects[asp] == "HWM" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Magnitude (mean temperature of all heatwave events)", sep = "") }
-      else if (aspects[asp] == "HWA" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Amplitude (peak temperature of the hottest heatwave event)", sep = "") }
-      else if (aspects[asp] == "HWD" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Duration (length of longest heatwave event)", sep = "") }
-      else if (aspects[asp] == "HWF" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Frequency (number of days contributing to heatwave events)", sep = "") }
-      else if (aspects[asp] == "HWN" && !definitions[def] == "ECF") { sub = paste("Index: ", aspects[asp], "-", definitions[def], ". Heatwave Number (number of discreet heatwave events)", sep = "") }
+      if (aspects[asp] == "HWM" && !definitions[def] == "ECF") { sub = paste(definitions[def], "-", aspects[asp], " (Heatwave Magnitude): mean temperature of all heatwave events", sep = "") }
+      else if (aspects[asp] == "HWA" && !definitions[def] == "ECF") { sub = paste(definitions[def], "-", aspects[asp], " (Heatwave Amplitude): peak temperature of the hottest heatwave event", sep = "") }
+      else if (aspects[asp] == "HWD" && !definitions[def] == "ECF") { sub = paste(definitions[def], "-", aspects[asp], " (Heatwave Duration): length of longest heatwave event", sep = "") }
+      else if (aspects[asp] == "HWF" && !definitions[def] == "ECF") { sub = paste(definitions[def], "-", aspects[asp], " (Heatwave Frequency): number of days contributing to heatwave events", sep = "") }
+      else if (aspects[asp] == "HWN" && !definitions[def] == "ECF") { sub = paste(definitions[def], "-", aspects[asp], " (Heatwave Number): number of discreet heatwave events", sep = "") }
 
-      if (aspects[asp] == "HWM" && definitions[def] == "ECF") { sub = paste("Index: ", gsub("H", "C", aspects[asp]), "-", definitions[def], ". Coldwave Magnitude (mean temperature of all coldwave events)", sep = "") }
-      else if (aspects[asp] == "HWA" && definitions[def] == "ECF") { sub = paste("Index: ", gsub("H", "C", aspects[asp]), "-", definitions[def], ". Coldwave Amplitude (minimum temperature of the coldest coldwave event)", sep = "") }
-      else if (aspects[asp] == "HWD" && definitions[def] == "ECF") { sub = paste("Index: ", gsub("H", "C", aspects[asp]), "-", definitions[def], ". Coldwave Duration (length of longest coldwave event)", sep = "") }
-      else if (aspects[asp] == "HWF" && definitions[def] == "ECF") { sub = paste("Index: ", gsub("H", "C", aspects[asp]), "-", definitions[def], ". Coldwave Frequency (number of days contributing to coldwave events)", sep = "") }
-      else if (aspects[asp] == "HWN" && definitions[def] == "ECF") { sub = paste("Index: ", gsub("H", "C", aspects[asp]), "-", definitions[def], ". Coldwave Number (number of discreet coldwave events)", sep = "") }
+      if (aspects[asp] == "HWM" && definitions[def] == "ECF") { sub = paste(definitions[def], "-", gsub("H", "C", aspects[asp]), " (Coldwave Magnitude): mean temperature of all coldwave events", sep = "") }
+      else if (aspects[asp] == "HWA" && definitions[def] == "ECF") { sub = paste(definitions[def], "-", gsub("H", "C", aspects[asp]), " (Coldwave Amplitude): minimum temperature of the coldest coldwave event", sep = "") }
+      else if (aspects[asp] == "HWD" && definitions[def] == "ECF") { sub = paste(definitions[def], "-", gsub("H", "C", aspects[asp]), " (Coldwave Duration): length of longest coldwave event", sep = "") }
+      else if (aspects[asp] == "HWF" && definitions[def] == "ECF") { sub = paste(definitions[def], "-", gsub("H", "C", aspects[asp]), " (Coldwave Frequency): number of days contributing to coldwave events", sep = "") }
+      else if (aspects[asp] == "HWN" && definitions[def] == "ECF") { sub = paste(definitions[def], "-", gsub("H", "C", aspects[asp]), " (Coldwave Number): number of discreet coldwave events", sep = "") }
 
       if ((definitions[def] == "EHF" || definitions[def] == "ECF") && any(aspects[asp] == "HWM", aspects[asp] == "HWA")) { unit = "°C^2"; Encoding(unit) <- "UTF-8" } else unit = units[asp]
 
@@ -178,16 +179,16 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
 
   Encoding(sub) <- "UTF-8"
   Encoding(index.units) <- "UTF-8"
-  if (index.name == "wsdin") { tmp.name = paste("wsdi", wsdi_ud, sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of days with at least ", wsdi_ud, " consecutive days when TX > 90th percentile", sep = "") }
-  else if (index.name == "csdin") { tmp.name = paste("csdi", csdi_ud, sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of days with at least ", csdi_ud, " consecutive days when TN < 10th percentile", sep = "") }
-  else if (index.name == "rxnday") { tmp.name = paste("rx", rx_ud, "day", sep = ""); sub = paste("Index: ", tmp.name, ". Maximum ", freq, " ", rx_ud, "-day precipitation total", sep = "") }
-  else if (index.name == "rnnmm") { tmp.name = paste("r", rnnmm_ud, "mm", sep = ""); sub = paste("Index: ", tmp.name, ". ", freq, " number of days when precipitation >= ", rnnmm_ud, "mm", sep = "") }
-  else if (index.name == "ntxntn") { tmp.name = paste(txtn_ud, "tx", txtn_ud, "tn", sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of ", txtn_ud, " consecutive days where both TX > 95th percentile and TN > 95th percentile", sep = "") }
-  else if (index.name == "ntxbntnb") { tmp.name = paste(txtn_ud, "txb", txtn_ud, "tnb", sep = ""); sub = paste("Index: ", tmp.name, ". Annual number of ", txtn_ud, " consecutive days where both TX < 5th percentile and TN < 5th percentile", sep = "") }
-  else if (index.name == "cddcold") { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". Annual sum of TM - ", Tb_CDD, "°C (where ", Tb_CDD, "°C is a user-defined base temperature and should be smaller than TM)", sep = "") }
-  else if (index.name == "hddheat") { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". Annual sum of ", Tb_HDD, "°C - TM (where ", Tb_HDD, "°C is a user-defined base temperature and should be larger than TM)", sep = "") }
-  else if (index.name == "gddgrow") { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". Annual sum of TM - ", Tb_GDD, "°C (where ", Tb_GDD, "°C is a user-defined base temperature and should be smaller than TM)", sep = "") }
-  else { tmp.name = index.name; sub = paste("Index: ", tmp.name, ". ", sub, sep = "") }
+  if (index.name == "wsdin") { tmp.name = paste("wsdi", wsdi_ud, sep = ""); sub = paste(tmp.name, ": Annual number of days with at least ", wsdi_ud, " consecutive days when TX > 90th percentile", sep = "") }
+  else if (index.name == "csdin") { tmp.name = paste("csdi", csdi_ud, sep = ""); sub = paste(tmp.name, ": Annual number of days with at least ", csdi_ud, " consecutive days when TN < 10th percentile", sep = "") }
+  else if (index.name == "rxnday") { tmp.name = paste("rx", rx_ud, "day", sep = ""); sub = paste(tmp.name, ": Maximum ", freq, " ", rx_ud, "-day precipitation total", sep = "") }
+  else if (index.name == "rnnmm") { tmp.name = paste("r", rnnmm_ud, "mm", sep = ""); sub = paste(tmp.name, ": ", freq, " number of days when precipitation >= ", rnnmm_ud, "mm", sep = "") }
+  else if (index.name == "ntxntn") { tmp.name = paste(txtn_ud, "tx", txtn_ud, "tn", sep = ""); sub = paste(tmp.name, ": Annual number of ", txtn_ud, " consecutive days where both TX > 95th percentile and TN > 95th percentile", sep = "") }
+  else if (index.name == "ntxbntnb") { tmp.name = paste(txtn_ud, "txb", txtn_ud, "tnb", sep = ""); sub = paste(tmp.name, ": Annual number of ", txtn_ud, " consecutive days where both TX < 5th percentile and TN < 5th percentile", sep = "") }
+  else if (index.name == "cddcold") { tmp.name = index.name; sub = paste(tmp.name, ": Annual sum of TM - ", Tb_CDD, "°C (where ", Tb_CDD, "°C is a user-defined base temperature and should be smaller than TM)", sep = "") }
+  else if (index.name == "hddheat") { tmp.name = index.name; sub = paste(tmp.name, ": Annual sum of ", Tb_HDD, "°C - TM (where ", Tb_HDD, "°C is a user-defined base temperature and should be larger than TM)", sep = "") }
+  else if (index.name == "gddgrow") { tmp.name = index.name; sub = paste(tmp.name, ": Annual sum of TM - ", Tb_GDD, "°C (where ", Tb_GDD, "°C is a user-defined base temperature and should be smaller than TM)", sep = "") }
+  else { tmp.name = index.name; } #sub = paste(tmp.name, ": ", sub, sep = "") }
 
   if (calculate_trends) {
       x1 = seq(0, length(index)-1, 1)

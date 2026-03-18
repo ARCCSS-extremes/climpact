@@ -12,7 +12,7 @@ plot.precindex <- function(index = NULL, index.name = NULL, index.units = NULL, 
       next
     }
 
-    subtmp <- paste("Index: ", index.name, " ", times[time], " month. ", sub, sep = "")
+    subtmp <- paste(times[time], "-month ", index.name, ": ", sub, sep = "")
     namp <- paste(outputFolders$outplotsdir, paste(metadata$stationName, "_", times[time], "month_", index.name, "_MON.png", sep = ""), sep = "/")
     png(file = namp, width = 800, height = 600)
 

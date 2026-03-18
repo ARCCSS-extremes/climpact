@@ -58,78 +58,84 @@ write.index.csv <- function(index = NULL,
 write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
   if (is.null(index)) stop("Need heatwave data to write CSV file.")
 
-  # print each definition in a separate .csv. Thus each .csv will have columns of time, HWA, HWM, HWF, HWD, HWN.
-  aspect.names <- list("time", "HWM", "HWA", "HWN", "HWD", "HWF")
-  aspect.names.ECF <- list("time", "CWM", "CWA", "CWN", "CWD", "CWF")
-
-  # write Tx90 heatwave data
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_tx90_heatwave_ANN.csv"))
-  write_header(nam1, header, metadata)
-  write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][1,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-  # write Tn90 heatwave data
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_tn90_heatwave_ANN.csv"))
-  write_header(nam1, header, metadata)
-  write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][2,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-  # write EHF heatwave data
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ehf_heatwave_ANN.csv"))
-  write_header(nam1, header, metadata)
-  write.table(aspect.names, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][3,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-  # write ECF coldwave data
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ecf_heatwave_ANN.csv"))
-  write_header(nam1, header, metadata)
-  write.table(aspect.names.ECF, file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-  write.table(cbind((metadata$date.years), aperm(index[['hw_indices']][4,,], c(2, 1))), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-  # write daily EHF values
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ehf_daily_data.csv"))
-  write_header(nam1, "EHF daily values. Note that 29th February is omitted from this calculation.", metadata)
-  write.table(cbind(as.character(cio@data$hw_dates), cio@data$ehf), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Heat Factor"))
-
-  # write daily ECF values
-  nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ecf_daily_data.csv"))
-  write_header(nam1, "ECF daily values. Note that 29th February is omitted from this calculation.", metadata)
-  write.table(cbind(as.character(cio@data$hw_dates), cio@data$ecf), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Cold Factor"))
+  aspect.names <- list("magnitude", "amplitude", "number", "duration", "frequency")
+  aspect.shortforms <- list("HWM","HWA","HWN","HWD","HWF")
+  for (asp in 1:length(aspect.names)) {
+	aspect_name = aspect.names[asp]
+    aspect_short = aspect.shortforms[asp]
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TX90",aspect_name,"_ANN.csv"))
+	write_header(nam1, paste0("TX90 heatwave ",aspect_name, " (",aspect_short,")"), metadata)
+	write.table(c("time",aspect_name), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(cbind((metadata$date.years), index[['hw_indices']][1,asp,]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	  
+	# write Tn90 heatwave data 
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TN90",aspect_name,"_ANN.csv"))
+	write_header(nam1, paste0("TN90 heatwave ",aspect_name, " (",aspect_short,")"), metadata)
+	write.table(c("time",aspect_name), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(cbind((metadata$date.years), index[['hw_indices']][2,asp,]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+  }
 }
 
-
-# write.hw_ehf.csv
+# write.hwEHF.csv
 # takes a time series of hw data related to EHF strictly as per Nairn and Fawcett (2015), and writes to file
-write.hw_ehf.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
-	if (is.null(index)) stop("Need EHF heatwave data to write CSV file.")
+write.hwEHF.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
+	if (is.null(index)) stop("Need EHF heatwave data to write CSV files.")
+
+	# write EHF HWPS data
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWPS_ANN.csv"))
+	write_header(nam1, "Heatwave peak severity (HWPS): Mean of the maximum severity of each EHF heatwave.", metadata)
+	write.table(list("time", "HWPS"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(cbind((metadata$date.years), index[['hwps']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF HWPI data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWPI_ANN.csv"))
+    write_header(nam1, "Heatwave peak intensity (HWPI): Mean of the maximum intensity of each EHF heatwave.", metadata)
+    write.table(list("time", "HWPI"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwpi']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+    # write EHF HWLS data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWLS_ANN.csv"))
+    write_header(nam1, "Heatwave load severity (HWLS): Sum of daily EHF heatwave severities.", metadata)
+    write.table(list("time", "HWLS"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwls']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+    # write EHF HWLI data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWLI_ANN.csv"))
+    write_header(nam1, "Heatwave load intensity (HWLI): Sum of daily EHF heatwave intensities.", metadata)
+    write.table(list("time", "HWLI"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwli']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF HWD data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWD_ANN.csv"))
+    write_header(nam1, "Heatwave duration (HWD): Duration of the longest EHF heatwave.", metadata)
+    write.table(list("time", "HWD"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwd']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF HWMD data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWMD_ANN.csv"))
+    write_header(nam1, "Heatwave mean duration (HWMD): Mean EHF heatwave duration.", metadata)
+    write.table(list("time", "HWMD"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwmd']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF HWN data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWN_ANN.csv"))
+    write_header(nam1, "Heatwave number (HWN): Number of EHF heatwaves.", metadata)
+    write.table(list("time", "HWN"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwn']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write EHF HWF data
+    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWF_ANN.csv"))
+    write_header(nam1, "Heatwave frequency (HWF): Number of days contributing to EHF heatwaves.", metadata)
+    write.table(list("time", "HWF"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+    write.table(cbind((metadata$date.years), index[['hwf']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+
+	# write daily EHF values
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFdaily.csv"))
+	write_header(nam1, "EHF daily values. Note that 29th February is omitted from this calculation.", metadata)
+	write.table(cbind(as.character(index$hw_dates), index$EHF_daily_values), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Heat Factor"))
 	
-	# write EHF severity data
-	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFseverity_ANN.csv"))
-	write_header(nam1, header, metadata)
-	write.table(list("time", "EHFseverity"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-	write.table(cbind((metadata$date.years), index[['severity']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-	# write EHF MaxValue data
-    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFmax_ANN.csv"))
-    write_header(nam1, header, metadata)
-    write.table(list("time", "maxEHF"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-    write.table(cbind((metadata$date.years), index[['max']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-	# write EHF Duration data
-    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFduration_ANN.csv"))
-    write_header(nam1, header, metadata)
-    write.table(list("time", "EHFduration"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-    write.table(cbind((metadata$date.years), index[['duration']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-	# write EHF Heatwave number data
-    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFheatwavenumber_ANN.csv"))
-    write_header(nam1, header, metadata)
-    write.table(list("time", "EHFnumber"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-    write.table(cbind((metadata$date.years), index[['heatwave_number']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-
-	# write EHF Heatwave number data
-    nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHFheatwavedays_ANN.csv"))
-    write_header(nam1, header, metadata)
-    write.table(list("time", "EHFdays"), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
-    write.table(cbind((metadata$date.years), index[['heatwave_days']]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	# write daily ECF values
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_ECFdaily.csv"))
+	write_header(nam1, "ECF daily values. Note that 29th February is omitted from this calculation.", metadata)
+	write.table(cbind(as.character(index$hw_dates), index$ECF_daily_values), file = nam1, append = TRUE, quote = FALSE, sep = ",", na = "-99.9", row.names = FALSE, col.names = c("date","Excess Cold Factor"))
 }

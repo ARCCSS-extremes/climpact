@@ -3,7 +3,7 @@ source("services/plot_prec_index.R", local = TRUE)
 source("services/write_indices.R", local = TRUE)
 source("services/write_prec_index.R", local = TRUE)
 source("services/calculate/calculate_hw.R", local = TRUE)
-source("services/calculate/calculate_hw_ehf.R", local = TRUE)
+source("services/calculate/calculate_hwEHF.R", local = TRUE)
 source("services/calculate/calculate_spei.R", local = TRUE)
 source("services/calculate/calculate_spi.R", local = TRUE)
 source("services/calculate/custom_cspei.R", local = TRUE)
@@ -78,8 +78,8 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       cio = calculate.hw(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
       next
     }
-	if (index.list$Short.name[i] == "hw_ehf") {
-      calculate.hw_ehf(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+	if (index.list$Short.name[i] == "hwEHF") {
+      calculate.hwEHF(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
       next
     }
     else if (index.list$Short.name[i] == "spei") {
@@ -155,7 +155,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       if (return_dates == TRUE) { 
         index.plot = index.stored[[exact_date_indices[[index.list$Short.name[i]]]]] 
         names(index.plot) = rownames(index.stored) 
-        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = tmp.index.def,freq = frequency,metadata, outputFolders, pdf.dev)
+        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = paste0(tmp.index.name,": ",tmp.index.def),freq = frequency,metadata, outputFolders, pdf.dev)
 
         # plot day of occurrence
         if (!index.list$Short.name[i] %in% c("cwd","cdd","gsl")) {
@@ -169,7 +169,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
         }
       } else { 
         index.plot = index.stored
-        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = tmp.index.def,freq = frequency,metadata, outputFolders, pdf.dev)
+        plot.call(index.plot,index.name = tmp.index.name,index.units = as.character(index.list$Units[i]),x.label = "Years",sub = paste0(tmp.index.name,": ",tmp.index.def),freq = frequency,metadata, outputFolders, pdf.dev)
       }
       },
       error=function(error){
