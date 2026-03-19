@@ -1227,17 +1227,9 @@ get.quantiles.for.stripe <- function(subset, ts, base.range, dim.axes, v.f.idx, 
                     ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
                     tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
 
-                    # record non-running percentiles but first remove leap days for EHF calculations
-				    if ((cal == "proleptic_gregorian") || (cal == "gregorian")) {
-				        leap_days <- date.series[format(date.series, "%m-%d") == "02-29"]
-						tavg_ehf = tavg[!date.series %in% leap_days]
-						date.series_ehf = date.series[!date.series %in% leap_days]
-						date.series.as.year_ehf <- format(date.series_ehf,format="%Y")
-						ind_ehf = which(date.series.as.year_ehf >= base.range[1] & date.series.as.year_ehf <= base.range[2])		#ind[!date.series %in% leap_days]
-				    } else {
-						tavg_ehf = tavg
-						ind_ehf = ind
-					}
+                    # record non-running percentiles
+					tavg_ehf = tavg
+					ind_ehf = ind
 					quant.tmp$tavg$q5 <- quantile(tavg_ehf[ind_ehf],0.05,na.rm=TRUE)
 					quant.tmp$tavg$q95 = quantile(tavg_ehf[ind_ehf],0.95,na.rm=TRUE)
 					ehf = calculate_EHF(tavg_ehf,quant.tmp$tavg$q95)
@@ -1262,17 +1254,9 @@ get.quantiles.for.stripe <- function(subset, ts, base.range, dim.axes, v.f.idx, 
                     ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
                     tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
 
-					# record non-running percentiles but first remove leap days for EHF calculations
-                    if ((cal == "proleptic_gregorian") || (cal == "gregorian")) {
-                        leap_days <- date.series[format(date.series, "%m-%d") == "02-29"]
-                        tavg_ehf = tavg[!date.series %in% leap_days]
-                        date.series_ehf = date.series[!date.series %in% leap_days]
-                        date.series.as.year_ehf <- format(date.series_ehf,format="%Y")
-                        ind_ehf = which(date.series.as.year_ehf >= base.range[1] & date.series.as.year_ehf <= base.range[2])        #ind[!date.series %in% leap_days]
-                    } else {
-                        tavg_ehf = tavg
-                        ind_ehf = ind
-                    }
+					# record non-running percentiles
+                    tavg_ehf = tavg
+                    ind_ehf = ind
                     quant.tmp$tavg$q5 <- quantile(tavg_ehf[ind_ehf],0.05,na.rm=TRUE)
                     quant.tmp$tavg$q95 = quantile(tavg_ehf[ind_ehf],0.95,na.rm=TRUE)
                     ehf = calculate_EHF(tavg_ehf,quant.tmp$tavg$q95)
