@@ -57,6 +57,6 @@ create.indices.from.files(infiles,outdir,file.template,author.data,variable.name
 	thresholds.name.map=c(tx05thresh="tx05thresh",tx10thresh="tx10thresh", tx50thresh="tx50thresh", tx90thresh="tx90thresh",tx95thresh="tx95thresh", 
 			tn05thresh="tn05thresh",tn10thresh="tn10thresh",tn50thresh="tn50thresh",tn90thresh="tn90thresh",tn95thresh="tn95thresh",
 			tx90thresh_15days="tx90thresh_15days",tn90thresh_15days="tn90thresh_15days",tavg90thresh_15days="tavg90thresh_15days",
-			tavg05thresh="tavg05thresh",tavg95thresh="tavg95thresh",
+			tavg05thresh="tavg05thresh",tavg95thresh="tavg95thresh",ehf85thresh="ehf85thresh",
 			txraw="txraw",tnraw="tnraw",precraw="precraw", 
 			r95thresh="r95thresh", r99thresh="r99thresh"))

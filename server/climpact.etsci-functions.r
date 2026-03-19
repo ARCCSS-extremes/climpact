@@ -945,16 +945,6 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
     b2 <- as.numeric(format(ci@base.range[2], format = "%Y"))
 	factor.numeric <- as.numeric(levels(ci@date.factors$annual))[ci@date.factors$annual]
 
-	# if no quantiles provided then create them
-	if (any(is.null(ci@quantiles$tmax$outbase$q90_15days), is.null(ci@quantiles$tmin$outbase$q90_15days), is.null(ci@quantiles$tavg$outbase$q90_15days))) {
-		ind <- which(factor.numeric >= b1 & factor.numeric <= b2)
-		tavg95p <- quantile(tavg[ind], 0.95, na.rm = TRUE)
-		tavg05p <- quantile(tavg[ind], 0.05, na.rm = TRUE)
-	} else {
-		tavg95p <- ci@quantiles$tavg[["q95"]]
-		tavg05p <- ci@quantiles$tavg[["q5"]]
-	}
-
     # create date sequence from beginning of record to end
     if (attr(ci@dates, "cal") == "360") {
         beg2 <- as.PCICt(paste(ci@date.factors$annual[1], "01", "01", sep = "-"), cal = "360_day")
@@ -973,11 +963,21 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
     # remove leap days from factors and time series, except when calendar is 360 day as leap years have no meaning in this case.
     if (attr(ci@dates, "cal") == "proleptic_gregorian" || attr(ci@dates, "cal") == "gregorian") {
         tavg <- tavg[!fact2 %in% as.factor("02-29")]
-        hw_dates = ci@dates[!fact2 %in% as.factor("02-29")]
-        fact2 <- fact2[!fact2 %in% as.factor("02-29")]
+        hw_dates <- ci@dates[!fact2 %in% as.factor("02-29")]
+		factor.numeric <- factor.numeric[!fact2 %in% as.factor("02-29")]
     } else {
         tavg <- tavg
         hw_dates = ci@dates
+    }
+
+    # if no quantiles provided then create them
+    if (any(is.null(ci@quantiles$tmax$outbase$q90_15days), is.null(ci@quantiles$tmin$outbase$q90_15days), is.null(ci@quantiles$tavg$outbase$q90_15days))) {
+        ind <- which(factor.numeric >= b1 & factor.numeric <= b2)
+        tavg95p <- quantile(tavg[ind], 0.95, na.rm = TRUE)
+        tavg05p <- quantile(tavg[ind], 0.05, na.rm = TRUE)
+    } else {
+        tavg95p <- ci@quantiles$tavg[["q95"]]
+        tavg05p <- ci@quantiles$tavg[["q5"]]
     }
 
 	annualrepeat_tavg95 <- annualrepeat_tavg05 <- array(NA, length(tavg))
@@ -1016,7 +1016,11 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	ehf_base = ehf[ind]
 
 	# calculate 85th percentile of base period EHF values
-	ehf85 = quantile(ehf_base[ehf_base>0], 0.85, na.rm = TRUE)
+	if (is.null(ci@quantiles$tavg$ehf85)) {
+		ehf85 = quantile(ehf_base[ehf_base>0], 0.85, na.rm = TRUE)
+	} else {
+		ehf85 = ci@quantiles$tavg$ehf85
+	}
 
 	# identify all heatwaves
 	ehf_days = ehf > 0
@@ -1065,13 +1069,20 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 
 				# year that the previous heatwave is assigned to
 				previous_hw_year = heatwave_stats[[k]]$Year
-				durations_annual[[previous_hw_year]] = durations_annual[[previous_hw_year]][-length(durations_annual[[previous_hw_year]])] # remove previous entry 
-				hwps_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]][-length(hwps_annual[[previous_hw_year]])] # remove previous entry
-				hwpi_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]][-length(hwpi_annual[[previous_hw_year]])] # remove previous entry
-				hwls_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]][-length(hwls_annual[[previous_hw_year]])] # remove previous entry
-				hwli_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]][-length(hwli_annual[[previous_hw_year]])] # remove previous entry
-				hwn_annual[[previous_hw_year]] = hwn_annual[[previous_hw_year]] - 1 # reduce count of heatwaves by one
-				hwf_annual[[year]] = hwf_annual[[year]] - heatwave_stats[[k]]$Duration
+
+				# if the previous year only had one heatwave then set the year's stats to NA's or zeroes, otherwise simply remove its last heatwave
+				if (hwn_annual[[previous_hw_year]]==1) { 
+					durations_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]] = NA
+					hwn_annual[[previous_hw_year]] = hwf_annual[[previous_hw_year]] = 0
+				} else {
+					durations_annual[[previous_hw_year]] = durations_annual[[previous_hw_year]][-length(durations_annual[[previous_hw_year]])] # remove previous entry 
+					hwps_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]][-length(hwps_annual[[previous_hw_year]])] # remove previous entry
+					hwpi_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]][-length(hwpi_annual[[previous_hw_year]])] # remove previous entry
+					hwls_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]][-length(hwls_annual[[previous_hw_year]])] # remove previous entry
+					hwli_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]][-length(hwli_annual[[previous_hw_year]])] # remove previous entry
+					hwn_annual[[previous_hw_year]] = hwn_annual[[previous_hw_year]] - 1 # reduce count of heatwaves by one
+					hwf_annual[[previous_hw_year]] = hwf_annual[[previous_hw_year]] - heatwave_stats[[k]]$Duration
+				}
 				heatwave_stats[[k]] <- NA # now delete previous heatwave
 			}
 		}
@@ -1136,8 +1147,10 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	hwf_annual <- hwf_annual[as.character(sort(as.numeric(names(hwf_annual))))]
 
 	# get annual values
+	tryCatch({
 	hwd_out = sapply(durations_annual, function(x) max(x))
 	hwmd_out = sapply(durations_annual, function(x) mean(x))
+	},warning = function(w) { browser() })
 	hwps_out = sapply(hwps_annual, function(x) mean(x))
 	hwpi_out = sapply(hwpi_annual, function(x) mean(x))
 	hwls_out = sapply(hwls_annual, function(x) sum(x))
@@ -1157,7 +1170,6 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	hwli_out = hwli_out * namask
 	hwn_out = hwn_out * namask
 	hwf_out = hwf_out * namask
-	browser()
 
 	return(list(hwd=hwd_out, hwmd=hwmd_out, hwps=hwps_out, hwpi=hwpi_out, hwls=hwls_out, hwli=hwli_out, hwn=hwn_out, hwf=hwf_out, ehf85=ehf85, hw_dates=hw_dates, EHF_daily_values=EHF, ECF_daily_values=ECF))
 }

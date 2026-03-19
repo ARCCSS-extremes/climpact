@@ -129,8 +129,6 @@ all.the.same <- function(dat) {
 
 #' Creates a list of CMIP5-compliant filenames reflecting the input data.
 #'
-#' Creates a list of CMIP5-compliant filenames reflecting the input data.
-#'
 #' This function takes a split filename (as created by \code{get.split.filename.cmip5}) and a list of variables and creates corresponding filenames for the given variables.
 #'
 #' @param fn.split A vector containing named components, as created by \code{get.split.filename.cmip5}.
@@ -156,8 +154,6 @@ create.climdex.cmip5.filenames <- function(fn.split, vars.list) {
   paste(paste(vars.list, fn.split['model'], fn.split['emissions'], fn.split['run'], sapply(time.res, function(x) { paste(time.range, switch(x, yr=c("", ""), mon=c("01", "12")), sep="", collapse="-") }), sep="_"), ".nc", sep="")
 }
 
-#' Returns a list of Climdex variables given constraints
-#'
 #' Returns a list of Climdex variables given constraints.
 #' 
 #' This function takes a character vector which specifies what source data is present and a time resolution, and generates a list of names consisting of the variable and the time resolution, separated by an underscore.
@@ -309,8 +305,6 @@ get.climdex.functions <- function(vars.list, fclimdex.compatible=TRUE,rxnday_n=7
   return(func[vars.list])
 }
 
-#' Returns metadata for specified Climdex variables
-#' 
 #' Returns metadata for specified Climdex variables.
 #' 
 #' This function returns metadata suitable for use in NetCDF files for the specified variables.
@@ -373,8 +367,6 @@ get.output.time.data <- function(ts, time.origin.PCICt, time.units, time.dim.nam
   return(list(time.dim=time.dim, time.bnds.var=time.bnds.var, time.bnds.data=time.bounds.days))
 }
 
-#' Creates output files for Climdex variables.
-#'
 #' Creates output files for Climdex variables.
 #'
 #' This function creates a set of output files for the set of variable parameters passed in \code{cdx.dat}, as created by \code{\link{get.climdex.variable.metadata}}. It copies metadata from input files as appropriate and adds new metadata as required.
@@ -477,13 +469,16 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
 	} else if (cdx.dat$var.name[x]=="hwEHF") {
 		missingval=1e20
 	    lonlatdim=f.example$var[[v.example]]$dim[1:2]
-	    severity_ehf = ncvar_def("EHFseverity","unitless",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean of the maximum severity of each EHF heatwave, see user guide for definition.",
+	    ehf_hwps = ncvar_def("EHF-HWPS","unitless",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean of the maximum severity of each EHF heatwave, see user guide for definition.",
 								 prec="float")
-		max_ehf = ncvar_def("EHFintensity","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean of the maximum intensity of each EHF heatwave, see user guide for definition.",prec="float")
-		number_ehf = ncvar_def("EHFnumber","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Number of EHF heatwaves, see user guide for definition.",prec="float")
-		days_ehf = ncvar_def("EHFfrequency","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Number of days contributing to EHF heatwaves, see user guide for definition.",prec="float")
-		duration_ehf = ncvar_def("EHFduration","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean EHF heatwave duration, see user guide for definition.",prec="float")
-		nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var,duration_ehf,severity_ehf,max_ehf,number_ehf,days_ehf))#		severity_ehf,max_ehf,number_ehf,days_ehf,duration_ehf))
+		ehf_hwpi = ncvar_def("EHF-HWPI","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean of the maximum intensity of each EHF heatwave, see user guide for definition.",prec="float")
+		ehf_hwls = ncvar_def("EHF-HWLS","unitless",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Sum of EHF heatwave severities, see user guide for definition.", prec="float")
+        ehf_hwli = ncvar_def("EHF-HWLI","degC^2",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Sum of EHF heatwave intensities, see user guide for definition.",prec="float")
+		ehf_hwn = ncvar_def("EHF-HWN","heatwaves",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Number of EHF heatwaves, see user guide for definition.",prec="float")
+		ehf_hwf = ncvar_def("EHF-HWF","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Number of days contributing to EHF heatwaves, see user guide for definition.",prec="float")
+		ehf_hwmd = ncvar_def("EHF-HWMD","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Mean EHF heatwave duration, see user guide for definition.",prec="float")
+		ehf_hwd = ncvar_def("EHF-HWD","days",list(lonlatdim[[1]],lonlatdim[[2]],time.for.file$time.dim),missingval,longname="Duration of the longest EHF heatwave, see user guide for definition.",prec="float")
+		nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var,ehf_hwmd,ehf_hwd,ehf_hwps,ehf_hwpi,ehf_hwls,ehf_hwli,ehf_hwn,ehf_hwf))
     } else if ((cdx.dat$var.name[x] %in% names(exact_date_indices)) && (!cdx.dat$var.name[x] %in% c("cwd","cdd","gsl"))) {
         # here we write the index data as well as the calendar day of the event
         nc.var.list <- c(vars.ncvars, list(time.for.file$time.bnds.var, 
@@ -518,7 +513,7 @@ create.ncdf.output.files <- function(cdx.dat, f, v.f.idx, variable.name.map, ts,
             ncdf4::ncatt_put(new.file, i,"expert_team","ETSCI",definemode=TRUE)
         }
     } else if (cdx.dat$var.name[x]=="hwEHF") {
-		for(i in list(severity_ehf,max_ehf,number_ehf,days_ehf,duration_ehf)) {
+		for(i in list(ehf_hwps,ehf_hwpi,ehf_hwls,ehf_hwli,ehf_hwn,ehf_hwf,ehf_hwd,ehf_hwmd)) {
             ncdf4::ncatt_put(new.file, i,"expert_team","ETSCI",definemode=TRUE)
         }
     } else {
@@ -567,8 +562,6 @@ get.ts <- function(f) {
 ## Compute all indices for a single grid box
 #' Compute Climdex indices using provided data.
 #' 
-#' Compute Climdex indices using provided data.
-#' 
 #' Given the provided data and functions, compute the Climdex indices defined by the functions.
 #'
 #' @param in.dat The input data to compute indices on.
@@ -600,7 +593,7 @@ compute.climdex.indices <- function(in.dat, cdx.funcs, ts, base.range, fclimdex.
                         if(is.null(in.dat$prec)) NULL else ts,
                         tavg=in.dat$tavg, tavg.dates=if(is.null(in.dat$tavg)) NULL else ts,
                         base.range=base.range, northern.hemisphere=in.dat$northern.hemisphere,
-            # added temperature quantiles needed for new indices, nherold.
+			            # added temperature quantiles needed for new indices, nherold.
                         quantiles=in.dat$quantiles,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))  
 
   # If SPEI is to be calculated, adjust the parameters sent to climdex.spei to include the latitude of the current grid cell 
@@ -620,8 +613,6 @@ compute.climdex.indices <- function(in.dat, cdx.funcs, ts, base.range, fclimdex.
   }
 }
 
-#' Flatten the X and Y dimensions down to a space dimension.
-#'
 #' Flatten the X and Y dimensions down to a space dimension.
 #'
 #' This function takes input data, a vector of dimensions to reduce to 1 dimension, and optionally a subset of dimnames to copy. It returns the data with the specified dimensions shrunk down to 1 dimension.
@@ -656,8 +647,6 @@ flatten.dims <- function(dat, reduce.dims, names.subset) {
 ## FIXME: Handle time-minor data gracefully.
 #' Retrieve and convert data to correct units and dimensions.
 #'
-#' Retrieve and convert data to correct units and dimensions.
-#'
 #' This function retrieves NetCDF data for the specified subset from the specified file and variable; converts from \code{src.units} to \code{dest.units}, transposes the data to (T, S) dimensionality, and returns the result.
 #'
 #' @param f The NetCDF file to retrieve data from; an object of class \code{ncdf4}.
@@ -684,8 +673,6 @@ get.data <- function(f, v, subset, src.units, dest.units, dim.axes) {
 }
 
 ## Produce slab of northern.hemisphere booleans of the same shape as the data.
-#' Determine what portions of a subset are within the northern hemisphere.
-#' 
 #' Determine what portions of a subset are within the northern hemisphere.
 #'
 #' Given a subset, a file, a variable, and a projection, determine what positions are within the northern hemisphere, returning the result as an array of booleans.
@@ -737,8 +724,6 @@ get.northern.hemisphere.booleans <- function(subset, f, v, projection,project.la
     return(y.subset.vals >= 0)
 }
 
-#' Extract a single quantiles object from a set of thresholds.
-#'
 #' Extract a single quantiles object from a set of thresholds.
 #'
 #' From a set of thresholds as retrieved from one or more NetCDF files containing thresholds, this function extracts a single point and converts the format to one suitable for passing to \code{climdexInput.raw}.
@@ -793,6 +778,7 @@ get.quantiles.object <- function(thresholds, idx) {
 
   thresh.path.1d <- list(tavg05thresh=c("tavg","q5"),
             tavg95thresh=c("tavg","q95"),
+            ehf85thresh=c("tavg","ehf85"),
             r95thresh=c("prec", "q95"),
             r99thresh=c("prec", "q99"))
   result <- list()
@@ -802,7 +788,6 @@ get.quantiles.object <- function(thresholds, idx) {
     if(is.null(l)) l <- list()
     return(c(l[!(names(l) %in% x[1])], structure(list(recursive.append(tail(x, n=-1), l[[x[1]]], data)), .Names=x[1])))
   }
-  
   
   for(threshold.var in names(thresh.path.2d)[names(thresh.path.2d) %in% names(thresholds)])
     result <- recursive.append(thresh.path.2d[[threshold.var]], result, thresholds[[threshold.var]][,idx])
@@ -814,8 +799,6 @@ get.quantiles.object <- function(thresholds, idx) {
   return(result)
 }
 
-#' Compute Climdex indices for a subset / stripe
-#'
 #' Compute Climdex indices for a subset / stripe
 #'
 #' Given a subset, a set of Climdex functions (as created by \code{\link{get.climdex.functions}}), and ancillary data, load and convert data, create a climdexInput object for each point, run all of the functions in \code{cdx.funcs} on that data, and return the result.
@@ -886,8 +869,6 @@ compute.indices.for.stripe <- function(subset, cdx.funcs, ts, base.range, dim.ax
 
 #' Retrieve thresholds for a subset
 #'
-#' Retrieve thresholds for a subset
-#'
 #' Given a subset, a set of Climdex functions (as created by \code{\link{get.climdex.functions}}), and ancillary data, load the thresholds required for the functions being called and return them.
 #' 
 #' @param subset The subset to use.
@@ -925,7 +906,7 @@ get.thresholds.chunk <- function(subset, cdx.funcs, thresholds.netcdf, t.f.idx, 
 #          performance hit but not deal-breakingly so.
 var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Short.name,tx50thresh=index.data$Short.name,tx90thresh=index.data$Short.name,tx95thresh=index.data$Short.name,
             tn05thresh=index.data$Short.name,tn10thresh=index.data$Short.name,tn90thresh=index.data$Short.name,tn95thresh=index.data$Short.name,
-            tavg05thresh=index.data$Short.name,tavg95thresh=index.data$Short.name,
+            tavg05thresh=index.data$Short.name,tavg95thresh=index.data$Short.name,ehf85thresh=index.data$Short.name,
             tx90thresh_15days=index.data$Short.name,tn90thresh_15days=index.data$Short.name,tavg90thresh_15days=index.data$Short.name,
             txraw=index.data$Short.name,tnraw=index.data$Short.name,precraw=index.data$Short.name,
             r95thresh=index.data$Short.name,r99thresh=index.data$Short.name)
@@ -940,8 +921,6 @@ var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Sh
 }
                             
 ## Write out results for variables computed
-#' Write out computed climdex results
-#' 
 #' Write out computed climdex results
 #' 
 #' Given a set of Climdex results, a subset, a set of files, and dimension sizes, write out the data to the appropriate files.
@@ -984,7 +963,7 @@ var.thresh.map <- list(tx05thresh=index.data$Short.name,tx10thresh=index.data$Sh
 write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim.size, cdx.varname,f.meta) {
   # number of heatwave definitions to store (besides EHF)
   heatwave_defs = 2
-  EHF_characteristics = 5
+  EHF_characteristics = 8
 
   xy.dims <- dim.size[1:2]
   if(!is.null(chunk.subset$X))
@@ -1072,7 +1051,7 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_Tx90"), tmp[,,1,5,], chunk.subset)
         ncdf4.helpers::nc.put.var.subset.by.axes(cdx.ncfile[[v]], tolower("HWF_Tn90"), tmp[,,2,5,], chunk.subset)
 	} else if (cdx.varname[v] == "hwEHF") {
-		t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "severity_EHF", "T")$len
+		t.dim.len <- ncdf4.helpers::nc.get.dim.for.axis(cdx.ncfile[[v]], "EHF-HWPS", "T")$len
 
         # Make an empty array to fill according to the conventions of climdex.pcic.ncdf
         tmp=array(NA,c(xy.dims[1],length(chunk.subset[[1]]),EHF_characteristics,t.dim.len))
@@ -1091,7 +1070,7 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         }
         
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
-		heatwave_characteristics = c("duration_EHF","severity_EHF","max_EHF","number_EHF","days_EHF")#  "severity_EHF","max_EHF","number_EHF","days_EHF","duration_EHF")
+		heatwave_characteristics = c("EHF-HWMD","EHF-HWD","EHF-HWPS","EHF-HWPI","EHF-HWLS","EHF-HWLI","EHF-HWN","EHF-HWF")
         for (j in 1:EHF_characteristics) {
             dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { unname(cr[[ind]][[j]]) })))
             dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)
@@ -1175,8 +1154,18 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
   invisible(0)
 }
 
-#' Compute Climdex thresholds for a subset / stripe
-#'
+# Calculate the Excess Heat Factor (Nairn and Fawcett, 2015)
+calculate_EHF <- function(tavg,tavg95) {
+	EHIaccl <- EHIsig <- EHF <- array(NA, length(tavg))
+    for (a in 33:length(tavg)) {
+        EHIaccl[a] <- (sum(tavg[a], tavg[a - 1], tavg[a - 2]) / 3) - (sum(tavg[(a - 32):(a - 3)], na.rm = TRUE) / 30)
+        EHIsig[a] <- (sum(tavg[a], tavg[a - 1], tavg[a - 2]) / 3) - tavg95
+        EHF[a] <- max(1, EHIaccl[a]) * EHIsig[a]
+    }
+
+	return(EHF)
+}
+
 #' Compute Climdex thresholds for a subset / stripe
 #'
 #' Given a subset and ancillary data, load and convert data, get the out-of-base quantiles for the data for each point, and return the result.
@@ -1238,43 +1227,71 @@ get.quantiles.for.stripe <- function(subset, ts, base.range, dim.axes, v.f.idx, 
                     ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
                     tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
 
-                    # record non-running percentiles
-                    quant.tmp$tavg$q5 <- quantile(tavg[ind],0.05,na.rm=TRUE)  
-                                        quant.tmp$tavg$q95 <- quantile(tavg[ind],0.95,na.rm=TRUE)
+                    # record non-running percentiles but first remove leap days for EHF calculations
+				    if ((cal == "proleptic_gregorian") || (cal == "gregorian")) {
+				        leap_days <- date.series[format(date.series, "%m-%d") == "02-29"]
+						tavg_ehf = tavg[!date.series %in% leap_days]
+						date.series_ehf = date.series[!date.series %in% leap_days]
+						date.series.as.year_ehf <- format(date.series_ehf,format="%Y")
+						ind_ehf = which(date.series.as.year_ehf >= base.range[1] & date.series.as.year_ehf <= base.range[2])		#ind[!date.series %in% leap_days]
+				    } else {
+						tavg_ehf = tavg
+						ind_ehf = ind
+					}
+					quant.tmp$tavg$q5 <- quantile(tavg_ehf[ind_ehf],0.05,na.rm=TRUE)
+					quant.tmp$tavg$q95 = quantile(tavg_ehf[ind_ehf],0.95,na.rm=TRUE)
+					ehf = calculate_EHF(tavg_ehf,quant.tmp$tavg$q95)
+					ehf_base = ehf[ind_ehf]
+					quant.tmp$tavg$ehf85 <- quantile(ehf_base[ehf_base>0],0.85,na.rm=TRUE)
+					
                     # record running percentiles for HW indices, using 15 day window
                     outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
                     quant.tmp$tmax$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
-                                        quant.tmp$tmin$outbase$q90_15days <- outofbase.tmp$tmin$outbase$q90
+                    quant.tmp$tmin$outbase$q90_15days <- outofbase.tmp$tmin$outbase$q90
                     outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(tavg, NULL, NULL, ts, NULL, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
                     quant.tmp$tavg$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
 
                     # record raw data for SPI/SPEI
                     quant.tmp$raw$tmin <- data.list$tmin[ind,x]
-                                        quant.tmp$raw$tmax <- data.list$tmax[ind,x]
-                                        quant.tmp$raw$prec <- data.list$prec[ind,x]
+                    quant.tmp$raw$tmax <- data.list$tmax[ind,x]
+                    quant.tmp$raw$prec <- data.list$prec[ind,x]
 
                     return(quant.tmp)} ))
       } else {
         return(lapply(r, function(x) { quant.tmp <- climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.05,0.10,0.5,0.90,0.95))
-                                        ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
-                                        tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
+                    ind = which(date.series.as.year >= base.range[1] & date.series.as.year <= base.range[2])
+                    tavg <- (data.list$tmax[,x] + data.list$tmin[,x])/2
 
-                                        # record non-running percentiles
-                                        quant.tmp$tavg$q5 <- quantile(tavg[ind],0.05,na.rm=TRUE)  
-                                        quant.tmp$tavg$q95 <- quantile(tavg[ind],0.95,na.rm=TRUE)
-                                        # record running percentiles for HW indices, using 15 day window
-                                        outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
-                                        quant.tmp$tmax$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
-                                        quant.tmp$tmin$outbase$q90_15days <- outofbase.tmp$tmin$outbase$q90
-                                        outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(tavg, NULL, NULL, ts, NULL, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
-                                        quant.tmp$tavg$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
+					# record non-running percentiles but first remove leap days for EHF calculations
+                    if ((cal == "proleptic_gregorian") || (cal == "gregorian")) {
+                        leap_days <- date.series[format(date.series, "%m-%d") == "02-29"]
+                        tavg_ehf = tavg[!date.series %in% leap_days]
+                        date.series_ehf = date.series[!date.series %in% leap_days]
+                        date.series.as.year_ehf <- format(date.series_ehf,format="%Y")
+                        ind_ehf = which(date.series.as.year_ehf >= base.range[1] & date.series.as.year_ehf <= base.range[2])        #ind[!date.series %in% leap_days]
+                    } else {
+                        tavg_ehf = tavg
+                        ind_ehf = ind
+                    }
+                    quant.tmp$tavg$q5 <- quantile(tavg_ehf[ind_ehf],0.05,na.rm=TRUE)
+                    quant.tmp$tavg$q95 = quantile(tavg_ehf[ind_ehf],0.95,na.rm=TRUE)
+                    ehf = calculate_EHF(tavg_ehf,quant.tmp$tavg$q95)
+                    ehf_base = ehf[ind_ehf]
+                    quant.tmp$tavg$ehf85 <- quantile(ehf_base[ehf_base>0],0.85,na.rm=TRUE)
 
-                                        # record raw data for SPI/SPEI
-                                        quant.tmp$raw$tmin <- data.list$tmin[ind,x]
-                                        quant.tmp$raw$tmax <- data.list$tmax[ind,x]
-                                        quant.tmp$raw$prec <- data.list$prec[ind,x]
+                    # record running percentiles for HW indices, using 15 day window
+                    outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(data.list$tmax[,x], data.list$tmin[,x], NULL, ts, ts, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
+                    quant.tmp$tmax$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
+                    quant.tmp$tmin$outbase$q90_15days <- outofbase.tmp$tmin$outbase$q90
+                    outofbase.tmp <- suppressWarnings(climdex.pcic::get.outofbase.quantiles(tavg, NULL, NULL, ts, NULL, NULL, base.range,temp.qtiles=c(0.90),prec.qtiles=NULL,n=15))
+                    quant.tmp$tavg$outbase$q90_15days <- outofbase.tmp$tmax$outbase$q90
+
+                    # record raw data for SPI/SPEI
+                    quant.tmp$raw$tmin <- data.list$tmin[ind,x]
+                    quant.tmp$raw$tmax <- data.list$tmax[ind,x]
+                    quant.tmp$raw$prec <- data.list$prec[ind,x]
                
-                                        return(quant.tmp)} ))
+                    return(quant.tmp)} ))
       }
     } else {
       if(!is.null(data.list$prec)) {
@@ -1313,8 +1330,6 @@ set.up.cluster <- function(parallel, type="SOCK") {
   cluster
 }
 
-#' Creates Climdex thresholds output file.
-#'
 #' Creates Climdex thresholds output file.
 #'
 #' This function creates a file suitable for outputting thresholds to, with all variables that can be created with the input data present in the file.
@@ -1443,8 +1458,6 @@ create.thresholds.file <- function(thresholds.file, f, ts, v.f.idx, variable.nam
 
 #' Create mapping from variables to files.
 #'
-#' Create mapping from variables to files.
-#'
 #' Given a variable name map and list of variables in each file, determine a mapping from variables to files.
 #'
 #' @param variable.name.map A mapping from standardized names (tmax, tmin, prec) to NetCDF variable names.
@@ -1512,8 +1525,6 @@ create.file.metadata <- function(f, variable.name.map) {
 
 #' Retrieve threshold metadata
 #'
-#' Retrieve threshold metadata
-#'
 #' Returns units, long names, locations within the climdexInput data structure, and whether time data should be included given the variable information available.
 #'
 #' @param var.names A vector containing names of available variables (tmax, tmin, prec).
@@ -1534,12 +1545,13 @@ get.thresholds.metadata <- function(var.names) {
                         tn50thresh=list(units="degrees_C", longname="50th_percentile_running_baseline_tasmin", has.time=TRUE, q.path=c("tmin", "outbase", "q50")),
                         tn90thresh=list(units="degrees_C", longname="90th_percentile_running_baseline_tasmin", has.time=TRUE, q.path=c("tmin", "outbase", "q90")),
                         tn95thresh=list(units="degrees_C", longname="95th_percentile_running_baseline_tasmin", has.time=TRUE, q.path=c("tmin", "outbase", "q95")),
-
                         tx90thresh_15days=list(units="degrees_C", longname="90th_percentile_running_baseline_tasmax_15days", has.time=TRUE, q.path=c("tmax", "outbase", "q90_15days")),
                         tn90thresh_15days=list(units="degrees_C", longname="90th_percentile_running_baseline_tasmin_15days", has.time=TRUE, q.path=c("tmin", "outbase", "q90_15days")),
                         tavg90thresh_15days=list(units="degrees_C", longname="90th_percentile_running_baseline_tasavg_15days", has.time=TRUE, q.path=c("tavg", "outbase", "q90_15days")),
+
                         tavg05thresh=list(units="degrees_C", longname="05th_percentile_baseline_tasavg", has.time=FALSE, q.path=c("tavg","q5")),
                         tavg95thresh=list(units="degrees_C", longname="95th_percentile_baseline_tasavg", has.time=FALSE, q.path=c("tavg","q95")),
+						ehf85thresh=list(units="degrees_C^2", longname="85th_percentile_baseline_EHF", has.time=FALSE, q.path=c("tavg","ehf85")),
 
                         r95thresh=list(units="kg m-2 d-1", longname="95th_percentile_baseline_wet_day_pr", has.time=FALSE, q.path=c("prec", "q95")),
                         r99thresh=list(units="kg m-2 d-1", longname="99th_percentile_baseline_wet_day_pr", has.time=FALSE, q.path=c("prec", "q99")),
@@ -1561,8 +1573,6 @@ unsquash.dims <- function(dat.dim, subset, f, n) {
 }
 
 ## Run Climdex to generate indices for computing Climdex on future data
-#' Create Climdex thresholds used for computing threshold-based indices
-#' 
 #' Create Climdex thresholds used for computing threshold-based indices
 #' 
 #' For many applications, one may want to compute thresholds on one data set, then apply them to another. This is usually the case when comparing GCM (Global Climate Model) results for future time periods to either historical reanalysis data or historical / pre-industrial control runs from models. The purpose of this function is to compute these thresholds on the data supplied, saving them to the file specified. Then these thresholds can be used with \code{\link{create.indices.from.files}} to compute indices using the thresholds computed using this code.
@@ -1725,8 +1735,6 @@ get.thresholds.f.idx <- function(thresholds.files, thresholds.name.map) {
 ## Run Climdex and populate the output files
 #' Create Climdex indices from NetCDF input files.
 #' 
-#' Create Climdex indices from NetCDF input files.
-#' 
 #' This function computes Climdex indices from NetCDF input files, writing out one file per variable named like the \code{template.filename}, which must follow the CMIP5 file naming conventions (this is a deficiency which will be corrected in later versions).
 #'
 #' The indices to be calculated can be specified; if not, they will be determined by data availability. Thresholds can be supplied (via \code{thresholds.files}) or, if there is data within the base period, calculated and used as part of the process. Note that in-base thresholds are separate from out-of-base thresholds; this is covered in more detail in the help for the \code{climdex.pcic} package.
@@ -1786,7 +1794,7 @@ get.thresholds.f.idx <- function(thresholds.files, thresholds.name.map) {
 #' }
 #'
 #' @export
-create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output.filename.template, author.data, climdex.vars.subset=NULL, climdex.time.resolution=c("all", "annual", "monthly"), variable.name.map=c(tmax="tasmax", tmin="tasmin", prec="pr", tavg="tas"), axis.to.split.on="Y", fclimdex.compatible=TRUE, base.range=c(1961, 1990), parallel=4, verbose=FALSE, thresholds.files=NULL, thresholds.name.map=c(tx10thresh="tx10thresh", tn10thresh="tn10thresh", tx90thresh="tx90thresh", tn90thresh="tn90thresh", r95thresh="r95thresh", r99thresh="r99thresh"), max.vals.millions=10, cluster.type="SOCK",rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="NF13",wsdin_n=5,csdin_n=5,hddheatn_n=18,cddcoldn_n=18,gddgrown_n=10,project.lat2d.coords=TRUE) {
+create.indices.from.files <- function(root.dir=NULL,input.files, out.dir, output.filename.template, author.data, climdex.vars.subset=NULL, climdex.time.resolution=c("all", "annual", "monthly"), variable.name.map=c(tmax="tasmax", tmin="tasmin", prec="pr", tavg="tas"), axis.to.split.on="Y", fclimdex.compatible=TRUE, base.range=c(1961, 1990), parallel=4, verbose=FALSE, thresholds.files=NULL, thresholds.name.map=c(tx10thresh="tx10thresh", tn10thresh="tn10thresh", tx90thresh="tx90thresh", tn90thresh="tn90thresh", r95thresh="r95thresh", r99thresh="r99thresh", ehf85thresh="ehf85thresh"), max.vals.millions=10, cluster.type="SOCK",rxnday_n=7,rnnmm_n=30,ntxntn_n=3,ntxbntnb_n=3,ehfdef="NF13",wsdin_n=5,csdin_n=5,hddheatn_n=18,cddcoldn_n=18,gddgrown_n=10,project.lat2d.coords=TRUE) {
   if (is.null(root.dir)) { root.dir <- getwd() } 
   assign("root.dir",root.dir,envir=.GlobalEnv)
 
