@@ -2,8 +2,9 @@
 "Station: ","sydney_observatory_hill_1936-2015"
 "Latitude: ","0"
 "Longitude: ","0"
-"Climpact_version: ","3.3"
-"Date_of_calculation: ","2025-08-30"
+"Base_period: ","1971-2000"
+"Climpact_version: ","3.4"
+"Date_of_calculation: ","2026-03-20"
 time, val, ymd
 1936-01, 36.9, 1936-01-16
 1936-02, 27.8, 1936-02-13

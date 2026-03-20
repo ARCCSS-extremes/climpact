@@ -7,7 +7,7 @@ library(climdex.pcic)
 library(SPEI)
 library(lmomco)
 
-software_id <- "3.3.2"
+software_id <- "3.4"
 
 # fd
 # Annual count when TN < 0<U+00BA>C
@@ -959,28 +959,21 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 
     dat.seq2 <- seq(beg2, end2, by = "day")
     fact2 <- factor(format(dat.seq2, format = "%m-%d"))
-    
-    # remove leap days from factors and time series, except when calendar is 360 day as leap years have no meaning in this case.
-    if (attr(ci@dates, "cal") == "proleptic_gregorian" || attr(ci@dates, "cal") == "gregorian") {
-        tavg <- tavg[!fact2 %in% as.factor("02-29")]
-        hw_dates <- ci@dates[!fact2 %in% as.factor("02-29")]
-		factor.numeric <- factor.numeric[!fact2 %in% as.factor("02-29")]
-    } else {
-        tavg <- tavg
-        hw_dates = ci@dates
-    }
+    hw_dates = ci@dates
 
     # if no quantiles provided then create them
     if (any(is.null(ci@quantiles$tmax$outbase$q90_15days), is.null(ci@quantiles$tmin$outbase$q90_15days), is.null(ci@quantiles$tavg$outbase$q90_15days))) {
         ind <- which(factor.numeric >= b1 & factor.numeric <= b2)
         tavg95p <- quantile(tavg[ind], 0.95, na.rm = TRUE)
         tavg05p <- quantile(tavg[ind], 0.05, na.rm = TRUE)
+		ci@quantiles$tavg[["q95"]] = tavg95p
+		ci@quantiles$tavg[["q5"]] = tavg05p
     } else {
         tavg95p <- ci@quantiles$tavg[["q95"]]
         tavg05p <- ci@quantiles$tavg[["q5"]]
     }
 
-	annualrepeat_tavg95 <- annualrepeat_tavg05 <- array(NA, length(tavg))
+#	annualrepeat_tavg95 <- annualrepeat_tavg05 <- array(NA, length(tavg))
 	annualrepeat_tavg95 <- array(tavg95p, length(tavg))
 	annualrepeat_tavg05 <- array(tavg05p, length(tavg))
 
@@ -1018,6 +1011,7 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	# calculate 85th percentile of base period EHF values
 	if (is.null(ci@quantiles$tavg$ehf85)) {
 		ehf85 = quantile(ehf_base[ehf_base>0], 0.85, na.rm = TRUE)
+		ci@quantiles$tavg$ehf85 = ehf85
 	} else {
 		ehf85 = ci@quantiles$tavg$ehf85
 	}

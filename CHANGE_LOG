@@ -1,9 +1,17 @@
 3.4    20 March 2026
 * SCIENCE CHANGE: The Excess Heat Factor (EHF) heatwaves and Excess Cold Factor (ECF) coldwaves have been removed. EHF heatwaves have been replaced
-  by an implementation of EHF documented by Nairn and Fawcett (2015). Eight heatwave aspects are calculated for the new EHF heatwaves: heatwave number (HWN), 
-  heatwave frequency (HWF), heatwave duration (HWD), heatwave mean duration (HWMD), heatwave peak severity (HWPS), heatwave peak intensity (HWPI),
-  heatwave load severity (HWLS) and heatwave load intensity (HWLI). Severity, intensity and load are terms taken from Nairn et al. (2018). Note the definition 
-  of these aspects in Appendix D of the user guide. Tx90 and Tn90 heatwaves remain unchanged.
+  by the implementation of EHF heatwaves documented by Nairn and Fawcett (2015) and Nairn et al. (2018). Eight heatwave aspects are now calculated 
+  for EHF heatwaves: 
+    - heatwave number (HWN)
+    - heatwave frequency (HWF)
+    - heatwave duration (HWD)
+    - heatwave mean duration (HWMD) 
+    - heatwave peak severity (HWPS)
+    - heatwave peak intensity (HWPI)
+    - heatwave load severity (HWLS) 
+    - heatwave load intensity (HWLI) 
+  Severity, intensity and load are concepts taken from Nairn et al. (2018). These aspects are documented in Appendix D of the user guide. 
+  Tx90 and Tn90 heatwaves remain unchanged.
 
 3.3.2  1 December 2025
 * Fixed trend values written to *_trend.csv. Only applies to indices where dates of events are calculated (see January update). The January update introduced

@@ -2,8 +2,9 @@
 "Station: ","sydney_observatory_hill_1936-2015"
 "Latitude: ","0"
 "Longitude: ","0"
-"Climpact_version: ","3.3"
-"Date_of_calculation: ","2025-08-30"
+"Base_period: ","1971-2000"
+"Climpact_version: ","3.4"
+"Date_of_calculation: ","2026-03-20"
 time, r30mm, standardised values (using all years)
 1936, 4, -1.40311309582072
 1937, 10, 0.0421536123207945

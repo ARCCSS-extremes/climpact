@@ -63,15 +63,15 @@ write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "",
   for (asp in 1:length(aspect.names)) {
 	aspect_name = aspect.names[asp]
     aspect_short = aspect.shortforms[asp]
-	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TX90",aspect_name,"_ANN.csv"))
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TX90-",aspect_short,"_ANN.csv"))
 	write_header(nam1, paste0("TX90 heatwave ",aspect_name, " (",aspect_short,")"), metadata)
-	write.table(c("time",aspect_name), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(c("time",aspect_short), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 	write.table(cbind((metadata$date.years), index[['hw_indices']][1,asp,]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 	  
 	# write Tn90 heatwave data 
-	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TN90",aspect_name,"_ANN.csv"))
+	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_TN90-",aspect_short,"_ANN.csv"))
 	write_header(nam1, paste0("TN90 heatwave ",aspect_name, " (",aspect_short,")"), metadata)
-	write.table(c("time",aspect_name), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
+	write.table(c("time",aspect_short), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
 	write.table(cbind((metadata$date.years), index[['hw_indices']][2,asp,]), file = nam1, append = TRUE, quote = FALSE, sep = ", ", na = "-99.9", row.names = FALSE, col.names = FALSE)
   }
 }
