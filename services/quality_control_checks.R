@@ -124,9 +124,9 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   # heat wave thresholds
   tavg <- (cio@data$tmax + cio@data$tmin) / 2
   Tavg90p <- suppressWarnings(get.outofbase.quantiles(tavg, cio@data$tmin, tmax.dates = cio@dates, tmin.dates = cio@dates, base.range = c(metadata$base.start, metadata$base.end), n = 15, temp.qtiles = 0.9, prec.qtiles = NULL,
-                                                                  min.base.data.fraction.present = 0.1))
-  TxTn90p <- suppressWarnings(get.outofbase.quantiles(cio@data$tmax, cio@data$tmin, tmax.dates = cio@dates, tmin.dates = cio@dates, base.range = c(metadata$base.start, metadata$base.end), n = 15, temp.qtiles = 0.9, prec.qtiles = NULL,
-                                                                  min.base.data.fraction.present = 0.1))
+                                                      min.base.data.fraction.present = 0.1))
+  TxTn90p <- suppressWarnings(get.outofbase.quantiles(cio@data$tmax, cio@data$tmin, tmax.dates = cio@dates, tmin.dates = cio@dates, base.range = c(metadata$base.start, metadata$base.end), n = 15, temp.qtiles = 0.9, 
+													  prec.qtiles = NULL, min.base.data.fraction.present = 0.1))
   tn90p <- TxTn90p$tmin$outbase
   tx90p <- TxTn90p$tmax$outbase
   tavg90p <- Tavg90p$tmax$outbase
