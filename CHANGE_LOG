@@ -1,17 +1,18 @@
-3.4    20 March 2026
-* SCIENCE CHANGE: The Excess Heat Factor (EHF) heatwaves and Excess Cold Factor (ECF) coldwaves have been removed. EHF heatwaves have been replaced
-  by the implementation of EHF heatwaves documented by Nairn and Fawcett (2015) and Nairn et al. (2018). Eight heatwave aspects are now calculated 
-  for EHF heatwaves: 
-    - heatwave number (HWN)
-    - heatwave frequency (HWF)
-    - heatwave duration (HWD)
-    - heatwave mean duration (HWMD) 
-    - heatwave peak severity (HWPS)
-    - heatwave peak intensity (HWPI)
-    - heatwave load severity (HWLS) 
-    - heatwave load intensity (HWLI) 
-  Severity, intensity and load are concepts taken from Nairn et al. (2018). These aspects are documented in Appendix D of the user guide. 
-  Tx90 and Tn90 heatwaves remain unchanged.
+3.4    25 March 2026
+* SCIENCE CHANGE: Excess Cold Factor (ECF) coldwaves have been removed. EHF heatwaves have been replaced by the implementation of EHF heatwaves 
+  documented by Nairn and Fawcett (2015) and Nairn et al. (2018). Eight annual heatwave aspects are now calculated for EHF heatwaves: 
+    - heatwave number (HWN): number of heatwaves.
+    - heatwave frequency (HWF): number of days contributing to heatwaves.
+    - heatwave duration (HWD): length of the longest heatwave.
+    - heatwave mean duration (HWMD): mean length of all heatwaves.
+    - heatwave peak severity (HWPS): highest heatwave severity measured across all heatwaves.
+    - heatwave peak intensity (HWPI): highest heatwave intensity measured across all heatwaves.
+    - heatwave load severity (HWLS): sum of heatwave severities across all heatwaves.
+    - heatwave load intensity (HWLI): sum of heatwave intensities across all heatwaves.
+  Note that severity, intensity and load are concepts taken from Nairn et al. (2018). The above heatwave aspects are documented in Appendix D of the user guide. 
+  Note that Tx90 and Tn90 heatwaves remain unchanged.
+  Nairn, J., B. Ostendorf, and P. Bi, 2018: Performance of excess heat factor severity as a global heatwave health impact index. Int J Environ Res Public Health, 15, 2494.
+  Nairn, J. R., and R. J. B. Fawcett, 2015: The excess heat factor: a metric for heatwave intensity and its use in classifying heatwave severity. Int J Environ Res Public Health, 12, 227–253.
 
 3.3.2  1 December 2025
 * Fixed trend values written to *_trend.csv. Only applies to indices where dates of events are calculated (see January update). The January update introduced
