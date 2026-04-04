@@ -104,7 +104,7 @@ create.correlation.plots <- function(progress, user.file, sector.file, stationNa
     indice.file <- filenames[i]
 
     if (file.exists(indice.file)){
-      indice.data.full <- read.csv(indice.file, skip = 6, header = TRUE) # skip first 6 lines since they contain some header text
+      indice.data.full <- read.csv(indice.file, skip = 7, header = TRUE) # skip first 7 lines since they contain some header text
       if (indices[i] %in% names(exact_date_indices)) {
         varcol = exact_date_indices[[indices[i]]]
       } else {
