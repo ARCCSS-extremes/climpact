@@ -52,7 +52,7 @@ ui <- tagList(
       div(
         id = "sitemap",
         h4(paste0("Climpact ","v",unique(strsplit(grep('software_id',readLines("./server/climpact.etsci-functions.r"),value=TRUE),"\"",fixed=TRUE)[[1]])[2])),
-        p("Copyright 2012–2025"),
+        p("Copyright 2012–2026"),
         p("All Rights Reserved.")
       ),
       div(
