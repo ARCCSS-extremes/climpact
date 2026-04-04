@@ -1141,10 +1141,8 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	hwf_annual <- hwf_annual[as.character(sort(as.numeric(names(hwf_annual))))]
 
 	# get annual values
-	tryCatch({
 	hwd_out = sapply(durations_annual, function(x) max(x))
 	hwmd_out = sapply(durations_annual, function(x) mean(x))
-	},warning = function(w) { browser() })
 	hwps_out = sapply(hwps_annual, function(x) mean(x))
 	hwpi_out = sapply(hwpi_annual, function(x) mean(x))
 	hwls_out = sapply(hwls_annual, function(x) sum(x))
