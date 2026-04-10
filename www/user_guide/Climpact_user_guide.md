@@ -779,7 +779,7 @@ For EHF heatwaves, eight annual heatwave aspects are calculated:
 * **Heatwave Load Severity (HWLS)**: The sum of daily EHF heatwave severities.
 * **Heatwave Load Intensity (HWLI)**: The sum of daily EHF heatwave intensities. 
 
-Note that *severity*, *intensity* and *load* are based on nomenclature described in [Nairn and Fawcett (2015; 2018)](#appendixd_refs), where severity is a normalised value making it comparable across locations. Heatwaves with severities larger than 1 are considered severe while those with severities larger than 3 are considered extreme. Heatwave intensity refers to raw EHF values and is only useful for comparing years or events at the same location.
+Note that *severity*, *intensity* and *load* are based on nomenclature described in [Nairn and Fawcett (2015; 2018)](#appendixd_refs), where severity is a normalised value making it comparable across locations. Heatwaves with severities larger than 1 are considered severe while those with severities larger than 3 are considered extreme. Heatwave intensity refers to raw EHF values and should only be compared at the same location.
 
 ### D.3 Notes on the interpretation of heatwave indices
 
