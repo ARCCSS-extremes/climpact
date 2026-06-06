@@ -173,7 +173,7 @@ min_trend_data <- function(climate_data) {
 }
 
 # plot.index
-plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL, calculate_trends = TRUE) {
+plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.label = NULL, sub = "", freq = "annual", metadata, outputFolders, pdf.dev = NULL, calculate_trends = TRUE, plotopt = 1) {
   if (is.null(index.name) | is.null(index) | is.null(index.units)) stop("Need index data, index.name, index units and an x label in order to plot data.")
   if (all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT PLOTTING."), quote = FALSE); return() }
 
@@ -281,7 +281,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
             MAMtrend$stat[2] <<- unname(zsen[[1]][2])
             MAMtrend$stat[3] <<- unname(ci[2, 2])
     	MAMtrend$stat[4] <<- MannKendall(y2)[[2]][[1]] # Mann-Kendall 2-sided p-value
-        }
+		}
     
         JJAtrend <<- list(stat = array(NA, 5))
         if (min_trend_data(JJA[[2]])) {
@@ -326,8 +326,7 @@ plot.call <- function(index = NULL, index.name = NULL, index.units = NULL, x.lab
   if (index.name == "tx95t") { 
 	  xdata <- 1:length(index) 
   	  plotopt = 0 
-  } else { 
-	  plotopt = 1
+  } else {
   	  xdata <- names(index)
   }
 

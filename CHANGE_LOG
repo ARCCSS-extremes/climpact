@@ -1,3 +1,6 @@
+3.4.1  6 June 2026
+* Removed trend text from plots of event dates (e.g. day of Rx1day). These were erroneous and would not be useful the way the plots are currently constructed. Thanks to T. Nakaegawa.
+
 3.4    25 March 2026
 * SCIENCE CHANGE: Excess Cold Factor (ECF) coldwaves have been removed. EHF heatwaves have been replaced by the implementation of EHF heatwaves 
   documented by Nairn and Fawcett (2015) and Nairn et al. (2018). Eight annual heatwave aspects are now calculated for EHF heatwaves: 

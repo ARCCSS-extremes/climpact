@@ -165,7 +165,7 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
             else if (frequency == "annual") { index.plot = as.integer(format(tmpdate, "%j")) }
             names(index.plot) = rownames(index.stored)
             plot.call(index.plot,index.name = paste0("day_of_",tmp.index.name),index.units = "Calendar day",x.label = "Years",sub = paste0("The calendar day of occurrence of ",tolower(tmp.index.def)),
-                    freq = frequency,metadata, outputFolders, pdf.dev, FALSE)
+                    freq = frequency,metadata, outputFolders, pdf.dev, FALSE, 0)
         }
       } else { 
         index.plot = index.stored

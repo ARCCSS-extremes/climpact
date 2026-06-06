@@ -7,7 +7,7 @@ library(climdex.pcic)
 library(SPEI)
 library(lmomco)
 
-software_id <- "3.4"
+software_id <- "3.4.1"
 
 # fd
 # Annual count when TN < 0<U+00BA>C
