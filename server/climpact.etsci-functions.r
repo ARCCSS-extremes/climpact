@@ -919,15 +919,20 @@ get.hw.aspects <- function(aspect.array, boolean.str, yearly.date.factors, month
 }
 
 # climdex.hwEHF
-# Calculates following metrics on an annual scale based off EHF as described in Nairn and Fawcett (2015). 
-#  - number of heatwaves
-#  - number of heatwave days: number of days contributing to heatwaves. Heatwave days are defined (according to the reference above) as any day included in a three day period where EHF is positive.
-#  - mean heatwave duration
-#  - mean of the max heatwave intensity: average of the maximum EHF values from each heatwave.
-#  - mean heatwave severity: mean of each heatwave's mean severity.
+# Calculates following metrics on an annual scale based off EHF as described in Nairn and Fawcett (2015) and Nairn et al. (2018). 
+#  - HWN: Number of heatwaves
+#  - HWF: Number of days contributing to heatwaves. Heatwave days are defined as any day included in a three day period contributing to a positive EHF.
+#  - HWD: Length of the longest heatwave.
+#  - HWMD: Average length of all heatwaves.
+#  - HWPI: Average of each heatwave's maximum intensity. Intensities are defined as the daily EHF values.
+#  - HWLI: Sum of daily intensities across all heatwaves. Intensities are defined as the daily EHF values.
+#  - HWPS: Average of each heatwave's maximum severity. Severities are defined as the daily EHF values divided by the 85th percentile of positive EHF values inside the base period.
+#  - HWLS: Sum of severities across all heatwaves. Severities are defined as the daily EHF values divided by the 85th percentile of positive EHF values inside the base period.
 #
 # Nairn, J.R. and Fawcett, R.J., 2015. The excess heat factor: a metric for heatwave intensity and its use in classifying heatwave severity. 
-# International journal of environmental research and public health, 12(1), pp.227-253.
+# 	International journal of environmental research and public health, 12(1), pp.227-253.
+# Nairn, J., Ostendorf, B. and Bi, P., 2018. Performance of excess heat factor severity as a global heatwave health impact index. 
+# 	International journal of environmental research and public health, 15(11), p.2494.
 climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	if (ehfdef != "NF13") {
 		stop("EHF definition must be 'NF13'")
