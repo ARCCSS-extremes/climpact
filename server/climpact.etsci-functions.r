@@ -1068,7 +1068,7 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 
 				# if the previous year only had one heatwave then set the year's stats to NA's or zeroes, otherwise simply remove its last heatwave
 				if (hwn_annual[[previous_hw_year]]==1) { 
-					durations_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]] = NA
+					durations_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]] = NULL
 					hwn_annual[[previous_hw_year]] = hwf_annual[[previous_hw_year]] = 0
 				} else {
 					durations_annual[[previous_hw_year]] = durations_annual[[previous_hw_year]][-length(durations_annual[[previous_hw_year]])] # remove previous entry 
@@ -1146,8 +1146,8 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	hwf_annual <- hwf_annual[as.character(sort(as.numeric(names(hwf_annual))))]
 
 	# get annual values
-	hwd_out = sapply(durations_annual, function(x) max(x,na.rm=TRUE))
-	hwmd_out = sapply(durations_annual, function(x) mean(x,na.rm=TRUE))
+	hwd_out = sapply(durations_annual, function(x) max(x,na.rm=FALSE))
+	hwmd_out = sapply(durations_annual, function(x) mean(x,na.rm=FALSE))
 	hwps_out = sapply(hwps_annual, function(x) mean(x,na.rm=TRUE))
 	hwpi_out = sapply(hwpi_annual, function(x) mean(x,na.rm=TRUE))
 	hwls_out = sapply(hwls_annual, function(x) sum(x,na.rm=TRUE))
