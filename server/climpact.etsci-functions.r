@@ -1051,9 +1051,6 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 		heatwave_dates <- hw_dates[start_index:end_index]
 		heatwave_values <- ehf[start_index:end_index]
 
-		# heatwaves are assigned to the year they begin in
-		year = format(min(heatwave_dates),"%Y")
-
 		# if current heatwave connects with previous heatwave then remove previous heatwave and 
 		# combine it with the current one to make a single long heatwave.
 		if (i > heatwave_indices[1]) {
@@ -1085,6 +1082,9 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 				heatwave_stats[[k]] <- NA # now delete previous heatwave
 			}
 		}
+
+        # heatwaves are assigned to the year they begin in
+        year = format(min(heatwave_dates),"%Y")
 
 		severities = heatwave_values[heatwave_values>0]/ehf85
 
