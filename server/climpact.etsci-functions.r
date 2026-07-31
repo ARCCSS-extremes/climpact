@@ -1040,15 +1040,20 @@ get.hw.aspects <- function(aspect.array, boolean.str, yearly.date.factors, month
 }
 
 # climdex.hwEHF
-# Calculates following metrics on an annual scale based off EHF as described in Nairn and Fawcett (2015).
-#  - number of heatwaves
-#  - number of heatwave days: number of days contributing to heatwaves. Heatwave days are defined (according to the reference above) as any day included in a three day period where EHF is positive.
-#  - mean heatwave duration
-#  - mean of the max heatwave intensity: average of the maximum EHF values from each heatwave.
-#  - mean heatwave severity: mean of each heatwave's mean severity.
+# Calculates following metrics on an annual scale based off EHF as described in Nairn and Fawcett (2015) and Nairn et al. (2018).
+#  - HWN: Number of heatwaves
+#  - HWF: Number of days contributing to heatwaves. Heatwave days are defined as any day included in a three day period contributing to a positive EHF.
+#  - HWD: Length of the longest heatwave.
+#  - HWMD: Average length of all heatwaves.
+#  - HWPI: Average of each heatwave's maximum intensity. Intensities are defined as the daily EHF values.
+#  - HWLI: Sum of daily intensities across all heatwaves. Intensities are defined as the daily EHF values.
+#  - HWPS: Average of each heatwave's maximum severity. Severities are defined as the daily EHF values divided by the 85th percentile of positive EHF values inside the base period.
+#  - HWLS: Sum of severities across all heatwaves. Severities are defined as the daily EHF values divided by the 85th percentile of positive EHF values inside the base period.
 #
 # Nairn, J.R. and Fawcett, R.J., 2015. The excess heat factor: a metric for heatwave intensity and its use in classifying heatwave severity.
-# International journal of environmental research and public health, 12(1), pp.227-253.
+# 	International journal of environmental research and public health, 12(1), pp.227-253.
+# Nairn, J., Ostendorf, B. and Bi, P., 2018. Performance of excess heat factor severity as a global heatwave health impact index.
+# 	International journal of environmental research and public health, 15(11), p.2494.
 climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	if (ehfdef != "NF13") {
 		stop("EHF definition must be 'NF13'")
@@ -1167,9 +1172,6 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 		heatwave_dates <- hw_dates[start_index:end_index]
 		heatwave_values <- ehf[start_index:end_index]
 
-		# heatwaves are assigned to the year they begin in
-		year = format(min(heatwave_dates),"%Y")
-
 		# if current heatwave connects with previous heatwave then remove previous heatwave and
 		# combine it with the current one to make a single long heatwave.
 		if (i > heatwave_indices[1]) {
@@ -1187,7 +1189,7 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 
 				# if the previous year only had one heatwave then set the year's stats to NA's or zeroes, otherwise simply remove its last heatwave
 				if (hwn_annual[[previous_hw_year]]==1) {
-					durations_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]] = NA
+					durations_annual[[previous_hw_year]] = hwps_annual[[previous_hw_year]] = hwpi_annual[[previous_hw_year]] = hwls_annual[[previous_hw_year]] = hwli_annual[[previous_hw_year]] = NULL
 					hwn_annual[[previous_hw_year]] = hwf_annual[[previous_hw_year]] = 0
 				} else {
 					durations_annual[[previous_hw_year]] = durations_annual[[previous_hw_year]][-length(durations_annual[[previous_hw_year]])] # remove previous entry
@@ -1201,6 +1203,9 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 				heatwave_stats[[k]] <- NA # now delete previous heatwave
 			}
 		}
+
+        # heatwaves are assigned to the year they begin in
+        year = format(min(heatwave_dates),"%Y")
 
 		severities = heatwave_values[heatwave_values>0]/ehf85
 
@@ -1262,12 +1267,12 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 	hwf_annual <- hwf_annual[as.character(sort(as.numeric(names(hwf_annual))))]
 
 	# get annual values
-	hwd_out = sapply(durations_annual, function(x) max(x))
-	hwmd_out = sapply(durations_annual, function(x) mean(x))
-	hwps_out = sapply(hwps_annual, function(x) mean(x))
-	hwpi_out = sapply(hwpi_annual, function(x) mean(x))
-	hwls_out = sapply(hwls_annual, function(x) sum(x))
-	hwli_out = sapply(hwli_annual, function(x) sum(x))
+	hwd_out = sapply(durations_annual, function(x) max(x,na.rm=FALSE))
+	hwmd_out = sapply(durations_annual, function(x) mean(x,na.rm=FALSE))
+	hwps_out = sapply(hwps_annual, function(x) mean(x,na.rm=TRUE))
+	hwpi_out = sapply(hwpi_annual, function(x) mean(x,na.rm=TRUE))
+	hwls_out = sapply(hwls_annual, function(x) sum(x,na.rm=TRUE))
+	hwli_out = sapply(hwli_annual, function(x) sum(x,na.rm=TRUE))
 	hwn_out = sapply(hwn_annual,function(x) x)
 	hwf_out = sapply(hwf_annual,function(x) x)
 
