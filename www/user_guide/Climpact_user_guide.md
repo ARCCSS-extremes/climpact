@@ -600,14 +600,14 @@ To calculate all of the Climpact indices time-series of daily minimum temperatur
 |Tn90-HWD|Heatwave duration (HWD) as defined by either the 90th percentile of TN|The length of the longest heatwave identified by Tn90-HWN.|See Appendix D and [Perkins and Alexander (2013)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
 |Tn90-HWM|Heatwave magnitude (HWM) as defined by the 90th percentile of TN|The mean temperature of all heatwaves identified by Tn90-HWN.|See Appendix D and [Perkins and Alexander (2013)](#appendixa_refs) for more details.|°C|Ann|H, AFS, WRH|
 |Tn90-HWA|Heatwave amplitude (HWA) as defined by the 90th percentile of TN|The peak daily value in the hottest heatwave (defined as the heatwave with highest Tn90-HWM).|See Appendix D and [Perkins and Alexander (2013)](#appendixa_refs) for more details.|°C|Ann|H, AFS, WRH|
-|EHF-HWN|Heatwave number (HWN) as defined by the Excess Heat Factor|The number of heatwaves each year. Where percentiles are calculated from base period specified by user.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|heatwaves|Ann|H, AFS, WRH|
-|EHF-HWF|Heatwave frequency (HWF) as defined by Excess Heat Factor|The number of days that contribute to heatwaves as identified by HWN (EHF).|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
-|EHF-HWD|Heatwave duration (HWD) as defined by the Excess Heat Factor|Length of the longest heatwave identified by HWN (EHF).|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
-|EHF-HWMD|Heatwave mean duration (HWMD) as defined by the Excess Heat Factor|Mean length of all heatwaves identified by HWN (EHF).|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
+|EHF-HWN|Heatwave number (HWN) as defined by the Excess Heat Factor|The number of heatwaves each year. |See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|heatwaves|Ann|H, AFS, WRH|
+|EHF-HWF|Heatwave frequency (HWF) as defined by Excess Heat Factor|The number of days contributing to heatwaves defined by EHF-HWN.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
+|EHF-HWD|Heatwave duration (HWD) as defined by the Excess Heat Factor|Length of the longest heatwave defined by EHF-HWN.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
+|EHF-HWMD|Heatwave mean duration (HWMD) as defined by the Excess Heat Factor|Mean length of all heatwaves defined by EHF-HWN.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|days|Ann|H, AFS, WRH|
 |EHF-HWPI|Heatwave peak intensity (HWPI) as defined by the Excess Heat Factor|The mean of each EHF heatwaves' maximum EHF value.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|°C^2|Ann|H, AFS, WRH|
-|EHF-HWPS|Heatwave peak severity (HWPS) as defined by the Excess Heat Factor|The mean of each EHF heatwaves' maximum severity (severity defined as the daily EHF divided by the 85th percentile of all positive EHF values within the specified base period).|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|unitess|Ann|H, AFS, WRH|
-|EHF-HWLI|Heatwave load intensity (HWLI) as defined by the Excess Heat Factor|The sum of all heatwave intensities.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|°C^2|Ann|H, AFS, WRH|
-|EHF-HWLS|Heatwave load severity (HWLS) as defined by the Excess Heat Factor|The sum of all heatwave severities.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|unitless|Ann|H, AFS, WRH|
+|EHF-HWPS|Heatwave peak severity (HWPS) as defined by the Excess Heat Factor|The mean of each EHF heatwaves' maximum severity, where severity is defined as the daily EHF divided by the 85th percentile of all positive EHF values within the specified base period.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|unitess|Ann|H, AFS, WRH|
+|EHF-HWLI|Heatwave load intensity (HWLI) as defined by the Excess Heat Factor|The sum of all positive EHF values.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|°C^2|Ann|H, AFS, WRH|
+|EHF-HWLS|Heatwave load severity (HWLS) as defined by the Excess Heat Factor|The sum of all heatwave severities, where severity is defined as the daily EHF divided by the 85th percentile of all positive EHF values within the specified base period.|See Appendix D and [Nairn and Fawcett (2015)](#appendixa_refs) for more details.|unitless|Ann|H, AFS, WRH|
 
 <a name="appendixa_refs"></a>
 ### Appendix A references
@@ -743,17 +743,17 @@ Zhang X, Hegerl G, Zwiers F W and Kenyon J 2005 Avoiding Inhomogeneity in Percen
 ## Appendix D: Heatwave calculations
 [RETURN TO TOP](#toc)
 
-### D.1 Heatwave definitions and aspects
-
 There are three heatwave definitions calculated in Climpact:
 
 * **Maximum temperature heatwaves (Tx90)**: defined as any period of three or more days when daily maximum temperature (TX) exceeds the 90th percentile for the corresponding calendar days.
 * **Minimum temperature heatwaves (Tn90)**: defined as any period of three or more days when daily minimum temperature (TN) exceeds the 90th percentile for the corresponding calendar days.
-* **Excees Heat Factor heatwaves (EHF)**: based on [Nairn and Fawcett (2015)](#appendixd_refs). See D.2 for details.
+* **Excees Heat Factor heatwaves (EHF)**: based on [Nairn and Fawcett (2015)](#appendixd_refs).
 
-For Tx90 and Tn90 heatwaves, 90th percentile thresholds are calculated for each calendar day using a 15-day moving window over the user-specified base period. The Tx90 and Tn90 heatwaves are calculated over the extended summer of the relevant hemisphere (i.e. only "summer" heatwaves are detected). In the southern hemisphere the extended summer season runs from November to March inclusive, in the northern hemisphere it runs from May to September inclusive. For more information on the Tx90 and Tn90 heatwaves see [Perkins and Alexander (2013)](#appendixd_refs)
+### D.1 Tx90 and Tn90 heatwaves
 
-Five heatwave aspects are calculated for the Tx90 and Tn90 heatwaves:
+For Tx90 and Tn90 heatwaves, 90th percentile thresholds are calculated for each calendar day using a 15-day moving window over the user-specified base period. The Tx90 and Tn90 heatwaves are calculated over the extended summer of the relevant hemisphere (i.e. only "summer" heatwaves are detected). In the southern hemisphere the extended summer season runs from November to March inclusive, in the northern hemisphere it runs from May to September inclusive. For more information on the Tx90 and Tn90 heatwaves see [Perkins and Alexander (2013)](#appendixd_refs).
+
+Five heatwave aspects are calculated for Tx90 and Tn90 heatwaves:
 
 * **Heatwave Number (HWN)**: The number of heatwave events (>= 3 continuous heatwave days) that begin in the period of interest (the current year or current extended summer) in addition to those that start prior to but continue into the period of interest.
 * **Heatwave Frequency (HWF)**: The number of days that contribute to heatwaves defined by HWN ('heatwave days'). For heatwaves that begin prior to the period of interest, only the heatwave days within the period of interest are counted. For heatwaves that extend beyond the period of interest, a maximum of 14 days beyond the period of interest is counted.
@@ -761,9 +761,9 @@ Five heatwave aspects are calculated for the Tx90 and Tn90 heatwaves:
 * **Heatwave Magnitude (HWM)**: The mean temperature of heatwaves defined by HWN. Means across each heatwave event are calculated prior to a final mean being calculated.
 * **Heatwave Amplitude (HWA)**: The peak daily temperature of the hottest heatwave (defined as the heatwave with the highest mean temperature).
 
-### D.2 The Excess Heat Factor
+### D.2 Excess Heat Factor heatwaves
 
-See [Nairn and Fawcett (2015)](#appendixd_refs) for background information on the EHF. The EHF is calculated daily and is a combination of two excess heat indices (EHI) representing the potential to acclimatise and the climatological significance of the heat accumulated over a particular three day period:
+See [Nairn and Fawcett (2015)](#appendixd_refs) and [Nairn et al. (2018)](#appendixd_refs) for background information on the EHF. The EHF is calculated daily and is a combination of two excess heat indices (EHI) representing the potential to acclimatise and the climatological significance of the heat accumulated over a particular three day period:
 
 EHI(accl.) = [(TM<sub>i</sub> + TM<sub>i-1</sub> + TM<sub>i-2</sub>)/3] – [(TM<sub>i-3</sub> + … + TM<sub>i-32</sub>)/30]
 
@@ -775,22 +775,22 @@ EHF = EHI(sig.) x max(1,EHI(accl.))
 
 For EHF heatwaves, eight annual heatwave aspects are calculated:
 
-* **Heatwave Number (HWN)**: The number of heatwave events that begin each year. Heatwave events are any day with a positive EHF. Given EHF represents accumulated heat over the previous three days, the two days prior to a positive EHF day are included in the heatwave's dates (ensuring that all heatwaves are at least three days long). Given this lead time, positive EHF days that are separated by 2 or fewer negative EHF days are considered a single EHF heatwave.
-* **Heatwave Frequency (HWF)**: The number of days that contribute to heatwaves defined by HWN ('heatwave days'). 
-* **Heatwave Duration (HWD)**: Length in days of the longest heatwave defined by HWN.
-* **Heatwave Mean Duration (HWMD)**: The mean length of all heatwave events defined by HWN.
-* **Heatwave Peak Severity (HWPS)**: The mean of each heatwave's maximum severity. Severity is calculated daily for each heatwave as the EHF divided by the 85th percentile of all positive EHF values in the base period (e.g. 1961-1990).
-* **Heatwave Peak Intensity (HWPI)**: The mean of each heatwave's maximum EHF value.
-* **Heatwave Load Severity (HWLS)**: The sum of daily EHF heatwave severities.
-* **Heatwave Load Intensity (HWLI)**: The sum of daily EHF heatwave intensities. 
+* **Heatwave Number (EHF-HWN)**: The number of heatwave events that begin each year. Heatwave events are defined as any single day or run of consecutive days with a positive EHF. Given EHF represents accumulated heat over three days, the two days prior to the first positive EHF of a heatwave event are included in the heatwave's dates (ensuring that all heatwaves are at least three days long). Given this lead up time, positive EHF days that are separated by up to 2 negative EHF days are considered a single heatwave.
+* **Heatwave Frequency (EHF-HWF)**: The number of days that contribute to heatwaves defined by EHF-HWN. 
+* **Heatwave Duration (EHF-HWD)**: Length of the longest heatwave defined by EHF-HWN.
+* **Heatwave Mean Duration (EHF-HWMD)**: The mean length of all heatwave events defined by EHF-HWN.
+* **Heatwave Peak Severity (EHF-HWPS)**: The mean of each heatwave's maximum severity. Severity is calculated daily for each heatwave as the EHF divided by the 85th percentile of all positive EHF values in the base period (e.g. 1961-1990).
+* **Heatwave Peak Intensity (EHF-HWPI)**: The mean of each heatwave's maximum EHF value.
+* **Heatwave Load Severity (EHF-HWLS)**: The sum of daily EHF heatwave severities across all heatwave events defined by EHF-HWN.
+* **Heatwave Load Intensity (EHF-HWLI)**: The sum of daily EHF values across all heatwave events defined by EHF-HWN. 
 
-Note that *severity*, *intensity* and *load* are based on nomenclature described in [Nairn and Fawcett (2015; 2018)](#appendixd_refs), where severity is a normalised value making it comparable across locations. Heatwaves with severities larger than 1 are considered severe while those with severities larger than 3 are considered extreme. Heatwave intensity refers to raw EHF values and should only be compared at the same location.
+Note that *severity*, *intensity* and *load* are based on nomenclature described in [Nairn and Fawcett (2015)](#appendixd_refs) and [Nairn et al. (2018)](#appendixd_refs), where severity is a normalised value making it comparable across locations. Heatwaves with severities larger than 1 are considered severe while those with severities larger than 3 are considered extreme. Heatwave intensity refers to raw EHF values and should only be compared at the same location.
 
 ### D.3 Notes on the interpretation of heatwave indices
 
 * For Tx90 and Tn90 heatwaves, the year of a heatwave season refers to the year it commences. e.g. the summer season of 2009 for Sydney, Australia, begins in November 2009 and continues until March 2010.
 * For all heatwaves, if there are no heatwaves in a given year, then HWN and HWF will equal 0 and all other heatwave aspects will be set to missing. If this occurs for all years in station data then no plots will be created for these aspects.
-* For netCDF data, any values calculated over ocean grid cells should be ignored.
+* For gridded data, values over ocean grid cells should be ignored.
 
 <a name="appendixd_refs"></a>
 ### Appendix D References

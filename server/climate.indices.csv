@@ -77,8 +77,8 @@ rnnmm	days	Number of customised rain days	Annual number of days when precipitati
 rnnmm	days	Number of customised rain days	Monthly number of days when precipitation >= nn	ETSCI	F	F
 txdtnd	events	User-defined consecutive number of hot days and nights	Annual number of d consecutive days where both TX > 95th percentile and TN > 95th percentile, where 10 >= d >= 2	ETSCI	T	T
 txbdtnbd	events	User-defined consecutive number of cold days and Nights	Annual number of d consecutive days where both TX < 5th percentile and TN < 5th percentile, where 10 >= d >=2	ETSCI	T	T
-hw	NA	Heatwave aspects and definitions	Heatwave magnitude amplitude number duration and frequency calculated for the three definitions of TX90, TN90 and EHF	ETSCI	T	T
-hwEHF	NA	Heatwaves as per Nairn and Fawcett	Heatwave number, days, duration and severity using the Nairn and Fawcett (2015) framework.	ETSCI	T	T
+hw	NA	Heatwave aspects and definitions	Heatwave magnitude, amplitude, number, duration and frequency calculated for Tx90 and Tn90 heatwaves.	ETSCI	T	T
+hwEHF	NA	Heatwaves as per Nairn and Fawcett	Heatwave number, days, duration, mean duration, load severity, peak severity, load intensity and peak intensity, using the Nairn and Fawcett (2015) framework.	ETSCI	T	T
 spei	unitless	Standardised Precipitation Evapotranspiration Index	Measure of 'drought' using the Standardised Precipitation Evapotranspiration Index on time scales of 3, 6 and 12 months	ETSCI	F	T
 spi	unitless	Standardised Precipitation Index	Measure of 'drought' using the Standardised Precipitation Index on time scales of 3, 6 and 12 months	ETSCI	F	T
 tmm	degrees_C	Mean TM	Annual mean daily mean temperature	ETSCI	T	F

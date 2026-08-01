@@ -1,3 +1,6 @@
+3.4.2  31 July 2026
+* Fixed EHF HWLS and HWLI calculations which included sporadic NA values due to improper list manipulations. And properly allocate joint heatwaves to the previous year when they overlap December 31st, as per the user guide.
+
 3.4.1  6 June 2026
 * Removed trend text from plots of event dates (e.g. day of Rx1day). These were erroneous and would not be useful the way the plots are currently constructed. Thanks to T. Nakaegawa.
 
