@@ -23,7 +23,6 @@ calculate.custom.index <- function(cio, metadata, climdexInputParams, outputFold
         cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), frequency, metadata$year.start, metadata$year.end, mktrend[[1]][1], mktrend[[1]][2], mktrend[[1]][3], sep = ","), fill = 180, append = T)
 
         if (frequency == "monthly") {
-          print("monthly index")
           cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), "DJF", metadata$year.start, metadata$year.end, DJFtrend[[1]][1], DJFtrend[[1]][2], DJFtrend[[1]][3], sep = ","), fill = 180, append = T)
           cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), "MAM", metadata$year.start, metadata$year.end, MAMtrend[[1]][1], MAMtrend[[1]][2], MAMtrend[[1]][3], sep = ","), fill = 180, append = T)
           cat(file = trend_file, paste(paste(climdexInputParams$var.choice, op.choice2, climdexInputParams$constant.choice, sep = ""), "JJA", metadata$year.start, metadata$year.end, JJAtrend[[1]][1], JJAtrend[[1]][2], JJAtrend[[1]][3], sep = ","), fill = 180, append = T)

@@ -1070,7 +1070,7 @@ write.climdex.results <- function(climdex.results, chunk.subset, cdx.ncfile, dim
         }
         
         # Fill the empty array according to the conventions of climdex.pcic.ncdf
-		heatwave_characteristics = c("EHF-HWMD","EHF-HWD","EHF-HWPS","EHF-HWPI","EHF-HWLS","EHF-HWLI","EHF-HWN","EHF-HWF")
+		heatwave_characteristics = c("EHF-HWD","EHF-HWMD","EHF-HWPS","EHF-HWPI","EHF-HWLS","EHF-HWLI","EHF-HWN","EHF-HWF")
         for (j in 1:EHF_characteristics) {
             dat <- t(do.call(cbind, lapply(climdex.results, function(cr) { unname(cr[[ind]][[j]]) })))
             dim(dat) <- c(c(xy.dims[1],length(chunk.subset[[1]])),t.dim.len)

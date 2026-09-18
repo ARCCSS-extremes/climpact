@@ -1,3 +1,8 @@
+3.4.3  18th September 2026
+* SCIENCE CHANGE: Counting of EHF heatwaves that span multiple years is changed. The count of EHF heatwaves is incremented by one for each year that a heatwave spans (heatwave days being assigned to the corresponding year they occur in).
+* Improved EHF heatwave documentation in user guide.
+* Empty CSV files not created for heatwaves and SPI/SPEI when there is no data.
+
 3.4.2  31 July 2026
 * Fixed EHF HWLS and HWLI calculations which included sporadic NA values due to improper list manipulations. And properly allocate joint heatwaves to the previous year when they overlap December 31st, as per the user guide.
 
