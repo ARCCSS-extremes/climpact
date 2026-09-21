@@ -1,6 +1,6 @@
 # write.precindex.csv
 write.precindex.csv <- function(index = NULL, index.name = NULL, spifactor = NULL, header = "", metadata, outputFolders, custom_SPEI) {
-  if (is.null(index)) stop("Need SPEI data to write CSV file.")
+  if (is.null(index) | all(is.na(index))) { print(paste0("NO DATA FOR ", index.name, ". NOT WRITING TO FILE."), quote = FALSE); return() }
   colnames <- list("time", index.name)
 
   # write 3 month data

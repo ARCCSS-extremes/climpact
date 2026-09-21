@@ -56,7 +56,7 @@ write.index.csv <- function(index = NULL,
 # write.hw.csv
 # takes a time series of hw and writes to file
 write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
-  if (is.null(index)) stop("Need heatwave data to write CSV file.")
+  if (is.null(index[['hw_indices']]) | all(is.na(index[['hw_indices']]))) { print(paste0("NO DATA FOR ", index.name, ". NOT WRITING TO FILE."), quote = FALSE); return() }
 
   aspect.names <- list("magnitude", "amplitude", "number", "duration", "frequency")
   aspect.shortforms <- list("HWM","HWA","HWN","HWD","HWF")
@@ -79,7 +79,7 @@ write.hw.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "",
 # write.hwEHF.csv
 # takes a time series of hw data related to EHF strictly as per Nairn and Fawcett (2015), and writes to file
 write.hwEHF.csv <- function(index = NULL, cio=NULL, index.name = NULL, header = "", metadata, outputFolders) {
-	if (is.null(index)) stop("Need EHF heatwave data to write CSV files.")
+	if (is.null(index[['hwf']]) | all(is.na(index[['hwf']]))) { print(paste0("NO DATA FOR ", index.name, ". NOT WRITING TO FILE."), quote = FALSE); return() }
 
 	# write EHF HWPS data
 	nam1 <- file.path(outputFolders$outinddir, paste0(metadata$stationName, "_EHF-HWPS_ANN.csv"))
