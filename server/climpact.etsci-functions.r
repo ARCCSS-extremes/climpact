@@ -1237,7 +1237,7 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 
             # If a heatwave crosses Dec 31st and only negative or missing EHF values remain in the first year: Assign a duration but all other indices are set to NULL (since in the case of negative EHF values we do
             # not have negative severities/intensities).
-            if (all(is.na(heatwave_values)) || all(unlist(heatwave_values) <= 0)) {
+            if (all(is.na(heatwave_values)) || all(unlist(heatwave_values) <= 0, na.rm=TRUE)) {
                 heatwave_stats[[hw]] <- list(
                     Duration = length(heatwave_values),
                     Peak_intensity = NULL,
