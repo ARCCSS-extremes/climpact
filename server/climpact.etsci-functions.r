@@ -1234,16 +1234,17 @@ climdex.hwEHF <- function(ci, min.base.data.fraction.present, ehfdef) {
 			if (length(year)>1) { stop("Heatwave spans more than one year") }
 
 			# Calculate heatwave indices.
-			# In the rare situation where a heatwave crosses Dec 31st and only negative EHF values remain in the first year, 
-			# then assign a duration but all other indices are set to NULL (since we do not have negative severities/intensities).
-			if (all(unlist(heatwave_values) <= 0)) {
-				heatwave_stats[[hw]] <- list(
-	                Duration = length(heatwave_values),
-                	Peak_intensity = NULL,
-            	    Load_intensity = NULL,
-        	        Peak_severity = NULL,
-    	            Load_severity = NULL
-	            )
+
+            # If a heatwave crosses Dec 31st and only negative or missing EHF values remain in the first year: Assign a duration but all other indices are set to NULL (since in the case of negative EHF values we do
+            # not have negative severities/intensities).
+            if (all(is.na(heatwave_values)) || all(unlist(heatwave_values) <= 0)) {
+                heatwave_stats[[hw]] <- list(
+                    Duration = length(heatwave_values),
+                    Peak_intensity = NULL,
+                    Load_intensity = NULL,
+                    Peak_severity = NULL,
+                    Load_severity = NULL
+                )
 			} else {
 				severities = heatwave_values[heatwave_values>0]/unname(ehf85)
 				heatwave_stats[[hw]] <- list(
