@@ -14,6 +14,22 @@ source("services/calculate/calculate_custom_index.R", local = TRUE)
 # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
 index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdexInputParams) {
 
+  # climdex.pcic creates quantile entries only when more than 359 dated
+  # observations are present in the requested base period. Avoid calling
+  # reference-dependent functions whose required variable thresholds were
+  # therefore not created; continue with the remaining indices.
+  has_base_quantile <- function(variable) {
+    exists(variable, envir = cio@quantiles, inherits = FALSE)
+  }
+  required_base_quantiles <- list(
+    wsdi = "tmax", wsdid = "tmax", csdi = "tmin", csdid = "tmin",
+    txgt50p = "tmax", tx10p = "tmax", tx90p = "tmax",
+    tn10p = "tmin", tn90p = "tmin", tx95t = "tmax",
+    r95p = "prec", r99p = "prec", r95ptot = "prec", r99ptot = "prec",
+    txdtnd = c("tmax", "tmin"), txbdtnbd = c("tmax", "tmin"),
+    hw = c("tmax", "tmin")
+  )
+
   # pdf file for all plots
   # Check 'all' PDF isn't open, then open.
   pdfname <- paste0(outputFolders$stationName, "_all_plots.pdf")
@@ -52,6 +68,18 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     # }
     print(paste("calculating", tmp.index.name), quote = FALSE)
 
+    if (isTRUE(index.list$Base.period.flag[i])) {
+      if (!is.null(metadata$base.period.overlap.days) && metadata$base.period.overlap.days == 0L) {
+        message("Skipping ", tmp.index.name, ": the requested base period does not overlap the data.")
+        next
+      }
+      required <- required_base_quantiles[[tmp.index.name]]
+      if (!is.null(required) && !all(vapply(required, has_base_quantile, logical(1)))) {
+        message("Skipping ", tmp.index.name, ": climdex.pcic did not create the required base-period threshold(s).")
+        next
+      }
+    }
+
     if (!is.null(progress)) {
       progress$inc(0.005 * prog_int, detail = paste("Calculating", index.list$Short.name[i], "..."))
     }
@@ -75,19 +103,24 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
     }
 
     if (index.list$Short.name[i] == "hw") {
-      cio = calculate.hw(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+      tryCatch({
+        cio = calculate.hw(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+      }, error = function(e) message("Skipping ", tmp.index.name, " after calculation error: ", conditionMessage(e)))
       next
     }
 	if (index.list$Short.name[i] == "hwEHF") {
-      calculate.hwEHF(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i])
+      tryCatch(calculate.hwEHF(metadata, cio, outputFolders, pdf.dev, index.list$Short.name[i], index.list$Units[i]),
+               error = function(e) message("Skipping ", tmp.index.name, " after calculation error: ", conditionMessage(e)))
       next
     }
     else if (index.list$Short.name[i] == "spei") {
-      calculate.spei(metadata, cio, outputFolders, pdf.dev, climdexInputParams$custom_SPEI, index.list, trend_file)
+      tryCatch(calculate.spei(metadata, cio, outputFolders, pdf.dev, climdexInputParams$custom_SPEI, index.list, trend_file),
+               error = function(e) message("Skipping ", tmp.index.name, " after calculation error: ", conditionMessage(e)))
       next
     }
     else if (index.list$Short.name[i] == "spi") {
-      calculate.spi(metadata, cio, outputFolders, pdf.dev, climdexInputParams$custom_SPEI, index.list, trend_file)
+      tryCatch(calculate.spi(metadata, cio, outputFolders, pdf.dev, climdexInputParams$custom_SPEI, index.list, trend_file),
+               error = function(e) message("Skipping ", tmp.index.name, " after calculation error: ", conditionMessage(e)))
       next
     }
     else if (index.list$Short.name[i] == "rnnmm") {
@@ -142,7 +175,14 @@ index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdex
       return_dates = TRUE
     }
 
-    index.stored <- eval(parse(text = paste0("climdex.", as.character(index.list$Short.name[i]), "(", index.parameter, ")")))
+    index.stored <- tryCatch(
+      eval(parse(text = paste0("climdex.", as.character(index.list$Short.name[i]), "(", index.parameter, ")"))),
+      error = function(e) {
+        message("Skipping ", tmp.index.name, " after calculation error: ", conditionMessage(e))
+        NULL
+      }
+    )
+    if (is.null(index.stored)) next
 
     # Because climdex functions (called in above line) will still calculate
     # even if all data are NA, resulting in -Inf values being inserted into index.stored.

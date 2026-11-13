@@ -45,10 +45,6 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   if (is.null(quantiles)) {
     firstyr = as.numeric(format(metadata$dates[1], format = "%Y"))
     lastyr = as.numeric(format(metadata$dates[length(metadata$dates)], format = "%Y"))
-    firstyr_valid = ifelse(metadata$base.start < firstyr,firstyr,metadata$base.start)
-    lastyr_valid = ifelse(metadata$base.end > lastyr,lastyr,metadata$base.end)
-    ideal_duration = metadata$base.end - metadata$base.start + 1
-    valid_duration = lastyr_valid - firstyr_valid + 1
 	firstdate = as.Date(metadata$dates[1]) #as.Date(paste0(format(metadata$dates[1], format = "%Y-%m"),"-01")
 	lastdate = as.Date(metadata$dates[length(metadata$dates)])
 	basestart = as.Date(paste0(metadata$base.start,"-01-01"))
@@ -60,19 +56,13 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       Please correct by refreshing this web page and re-entering a new base period in step 1.")))
     }
 
-    # If user has entered a base period that is wholly outside of the provided time series, then return an error.
-    if ((basestart < firstdate && baseend < firstdate) || (basestart > lastdate && baseend > lastdate)) {
-	    return(list(errors = paste("Your data covers the years ", firstdate, " to ", lastdate, " and your specified base period must at least partially 
-      cover this, but you have specified a base period of ",metadata$base.start," to ",metadata$base.end,". Please correct by refreshing this web page and 
-      entering a new base period in step 1.")))
-    }
-
-	# Make sure base period has at least 365 days (a calendar year) present. Note QC code fails without this in any case.
+	# Keep QC moving when the reference period is absent or too short for climdex.pcic
+	# to generate percentile thresholds. The package creates those thresholds only
+	# when more than 359 dated observations fall inside the requested base period.
 	overlap_start <- max(firstdate, basestart)
 	overlap_end   <- min(lastdate, baseend)
-	if ((as.integer(overlap_end - overlap_start) + 1L) < 365) {
-	  return(list(errors = paste0("Less than one year of data is present within the base period. Data range: ",firstdate," to ",lastdate,". Base period: ",basestart," to ",baseend)))
-	}
+	overlap_days <- if (overlap_end >= overlap_start) as.integer(overlap_end - overlap_start) + 1L else 0L
+	metadata$base.period.overlap.days <- overlap_days
 
     # If user has entered a base period that is partially outside of the provided time series (this can happen for batch processing) then we
     # do not calculate percentile indices.
@@ -84,6 +74,9 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
       metadata$base.start,"-",metadata$base.end," but your data covers ",firstyr,"-",lastyr,
       ". If this was deliberate you can ignore this message and only the overlapping years between your requested base period and the
        provided data will be used to calculate base period percentiles. Otherwise, please refresh this webpage and enter a valid base period in Step 1."),sep="\n")
+    }
+    if (overlap_days == 0L) {
+      warnings = paste(warnings, "WARNING: The requested base period does not overlap the supplied data. Indices that require base-period thresholds will be skipped.", sep = "\n")
     }
   }
 
@@ -128,7 +121,12 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
 
   ##############################
   if (!is.null(progress)) progress$inc(0.05 * prog_int, detail = "Calculating thresholds...")
-  # Calculate and write out thresholds
+  # Calculate and write out thresholds only when climdex.pcic's 360-day
+  # minimum is met. climdexInput.raw leaves the corresponding quantile entry
+  # absent otherwise; index.calc uses that to skip dependent indices.
+  threshold_days <- sum(cio@dates >= as.PCICt(paste0(metadata$base.start, "-01-01"), cal = attr(cio@dates, "cal")) &
+                          cio@dates <= as.PCICt(paste0(metadata$base.end, "-12-31"), cal = attr(cio@dates, "cal")))
+  if (threshold_days > 359) {
   tavgqtiles <- get.outofbase.quantiles(cio@data$tavg, cio@data$tmin, tmax.dates = cio@dates, tmin.dates = cio@dates, base.range = c(metadata$base.start, metadata$base.end), temp.qtiles = temp.quantiles, prec.qtiles = NULL)
   cio@quantiles$tavg$outbase <- tavgqtiles$tmax$outbase # while this says tmax it is actually tavg, refer to above line.
 
@@ -147,6 +145,9 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
   nam1 <- file.path(outputFolders$outthresdir, paste0(outputFolders$stationName, "_thres.csv"))
   write.table(as.data.frame(thres), file = nam1, append = FALSE, quote = FALSE, sep = ", ", na = "NA", col.names = c(paste("tmax", names(cio@quantiles$tmax$outbase), sep = "_"), paste("tmin", names(cio@quantiles$tmin$outbase), sep = "_"),
   paste("tavg", names(cio@quantiles$tavg$outbase), sep = "_"), paste("prec", names(cio@quantiles$prec), sep = "_"), "HW_TN90", "HW_TX90", "HW_TAVG90"), row.names = FALSE)
+  } else {
+    warnings <- paste(warnings, "WARNING: climdex.pcic did not create base-period percentile thresholds because fewer than 360 dated observations overlap the requested period. Reference-dependent indices will be skipped.", sep = "\n")
+  }
 
   if (!is.null(progress)) progress$inc(0.05 * prog_int)
 

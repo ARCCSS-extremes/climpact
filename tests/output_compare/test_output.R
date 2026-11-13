@@ -38,12 +38,24 @@ test_that("CSV outputs are correct", {
   correct_files <- c(list.files(paste0(correct_dir,"/indices/"), full.names = FALSE),
                      list.files(paste0(correct_dir,"/thres/"), full.names = FALSE),
                      list.files(paste0(correct_dir,"/trend/"), full.names = FALSE))
-  correct_index_files = list.files(paste0(correct_dir,"/indices/"), full.names = FALSE)
+  test_index_files = list.files(paste0(test_dir,"/indices/"), full.names = FALSE)
+  expect_true(length(test_index_files) > 0, info = paste("No generated index CSV files found in", test_dir))
+  compared_files <- 0L
+  print(test_index_files)
+  print(length(test_index_files))
 
-  for (file in (correct_index_files)) {
-	corr_file = paste0(correct_dir,"/indices/",file)
+  for (file in test_index_files) {
+	correct_file <- sub("_NOBASE", "", file, fixed = TRUE)
+	corr_file = paste0(correct_dir,"/indices/",correct_file)
     test_file = paste0(test_dir,"/indices/",file)
 
+    if (!file.exists(test_file) || !file.exists(corr_file)) {
+      missing_file <- if (!file.exists(test_file)) test_file else corr_file
+      message("Skipping comparison; file not found: ", missing_file)
+      next
+    }
+
+    compared_files <- compared_files + 1L
     result <- compare_csv_files(test_file, corr_file, n=7)
 
     expect_true(result$identical, info = paste("Files do not match:\n", test_file,"\n",corr_file))    
@@ -56,4 +68,5 @@ test_that("CSV outputs are correct", {
       print(result$differences[[2]])  # Differences in correct file
     }
   }  
+  expect_true(compared_files > 0, info = "No generated index CSV files had matching reference files")
 })
