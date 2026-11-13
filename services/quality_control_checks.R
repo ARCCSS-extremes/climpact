@@ -49,6 +49,10 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
     lastyr_valid = ifelse(metadata$base.end > lastyr,lastyr,metadata$base.end)
     ideal_duration = metadata$base.end - metadata$base.start + 1
     valid_duration = lastyr_valid - firstyr_valid + 1
+	firstdate = as.Date(metadata$dates[1]) #as.Date(paste0(format(metadata$dates[1], format = "%Y-%m"),"-01")
+	lastdate = as.Date(metadata$dates[length(metadata$dates)])
+	basestart = as.Date(paste0(metadata$base.start,"-01-01"))
+	baseend = as.Date(paste0(metadata$base.end,"-12-31"))
 
     # if user has entered a base period start year that is earlier than the base period end year
     if (metadata$base.start > metadata$base.end) {
@@ -57,11 +61,18 @@ qualityControlCheck <- function(progress, prog_int, metadata, user_data, user_fi
     }
 
     # If user has entered a base period that is wholly outside of the provided time series, then return an error.
-    if ((metadata$base.start < firstyr && metadata$base.end < firstyr) || (metadata$base.start > lastyr && metadata$base.end > lastyr)) {
-	    return(list(errors = paste("Your data covers the years ", firstyr, " to ", lastyr, " and your specified base period must at least partially 
+    if ((basestart < firstdate && baseend < firstdate) || (basestart > lastdate && baseend > lastdate)) {
+	    return(list(errors = paste("Your data covers the years ", firstdate, " to ", lastdate, " and your specified base period must at least partially 
       cover this, but you have specified a base period of ",metadata$base.start," to ",metadata$base.end,". Please correct by refreshing this web page and 
       entering a new base period in step 1.")))
     }
+
+	# Make sure base period has at least 365 days (a calendar year) present. Note QC code fails without this in any case.
+	overlap_start <- max(firstdate, basestart)
+	overlap_end   <- min(lastdate, baseend)
+	if ((as.integer(overlap_end - overlap_start) + 1L) < 365) {
+	  return(list(errors = paste0("Less than one year of data is present within the base period. Data range: ",firstdate," to ",lastdate,". Base period: ",basestart," to ",baseend)))
+	}
 
     # If user has entered a base period that is partially outside of the provided time series (this can happen for batch processing) then we
     # do not calculate percentile indices.

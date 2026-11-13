@@ -1,3 +1,6 @@
+3.4.4  13th November 2026
+* Gracefully exit when processing a station in batch when there is less than one year of data in the base period. Thanks to RDunn.
+
 3.4.3  18th September 2026
 * SCIENCE CHANGE: Counting of EHF heatwaves that span multiple years is changed. The count of EHF heatwaves is incremented by one for each year that a heatwave spans (heatwave days being assigned to the corresponding year they occur in).
 * Improved EHF heatwave documentation in user guide.

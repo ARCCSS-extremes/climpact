@@ -64,7 +64,7 @@ processBatch <- function(progress, metadata_filepath, batchFiles, base.start, ba
       qcResult <- suppressWarnings(checkStation(progress, prog_int, batch_metadata, file.number, currentFilePath, stationName, base.start, base.end, outputFolders))
 
       # Print any QC warnings to file
-      if (qcResult$warnings != "") {
+      if (!is.null(qcResult$warnings) && qcResult$warnings != "") {
         print(qcResult$warnings)
         fileConn_warning<-file(warningfile)
         writeLines(toString(qcResult$warnings), fileConn_warning)
